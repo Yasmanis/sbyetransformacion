@@ -16,3 +16,23 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/', function () {
+    return view('vivir_en_plenitud');
+});
+
+Route::get('/consulta_individual', function () {
+    return view('consulta_individual');
+});
+
+Route::get('/taller_online', function () {
+    return view('taller_online');
+});
+
+Route::get('/publicaciones', function () {
+    return view('publicaciones');
+});
+
+Route::get('/contactos', function () {
+    return view('contactos');
+});

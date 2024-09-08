@@ -1,0 +1,102 @@
+#responsive-menu>.nav-item>.nav-link {
+	text-transform: lowercase !important;
+}
+
+.overlay,
+.subscribe {
+	background-color: #407492 !important;
+	background-image: none !important;
+	background-blend-mode: normal !important;
+	opacity: 1 !important;
+}
+
+.btn,
+.btn1,
+.btn2 {
+	background-color: #000000 !important;
+	text-transform: lowercase !important;
+}
+
+.inner-banner {
+	padding-top: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: 400 !important;
+}
+
+body {
+	color: #000000;
+}
+
+.border-company {
+	border-color: #407492 !important;
+}
+
+.font-company {
+	color: #407492 !important;
+}
+
+.bg-company,
+.fixed-top {
+	background-color: #407492 !important;
+}
+
+.font-black {
+	color: #000000 !important;
+}
+
+.summary>li {
+	font-size: .875em;
+}
+
+.summary ul li {
+	list-style: none !important;
+}
+
+.btn {
+	padding: 5px 15px !important;
+}
+
+input[type=text],
+input[type=email],
+input[type=number],
+input[type=search],
+input[type=password],
+input[type=tel],
+input[type=date],
+input[type=time],
+textarea,
+select {
+	padding: 7px 15px !important;
+}
+
+.footer-socials a:hover {
+	background-color: #407492 !important;
+}
+.footer-menu a:hover {
+	color: #407492 !important;;
+}
+/* .slicknav_nav .slicknav_row:hover, */
+.slicknav_nav a:hover,
+a.nav-link:hover {
+	background-color: #407492;
+	color: #fff !important;
+}
+
+.slicknav_nav {
+	top: 130px !important;
+}
+
+video {
+	height: 190px !important;
+}
+.header-title,
+.header-subtitle {
+	font-size: 24px;
+}
