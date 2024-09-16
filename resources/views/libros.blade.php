@@ -6,7 +6,7 @@
         </div>
         <div class="container">
             <div class="page-title text-center position-relative pb-5">
-                <h2 class="text-white">libros</h2>
+                <h2 class="text-white">libro</h2>
             </div>
         </div>
     </section>
