@@ -34,7 +34,7 @@ Route::get('/publicaciones', function () {
 });
 Route::get('/publicaciones/libros', function () {
     return view('libros');
-});
+})->name('publicaciones.libros');
 
 Route::get('/contactos', function () {
     return view('contactos');
