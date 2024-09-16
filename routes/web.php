@@ -32,6 +32,9 @@ Route::get('/taller_online', function () {
 Route::get('/publicaciones', function () {
     return view('publicaciones');
 });
+Route::get('/publicaciones/libros', function () {
+    return view('libros');
+});
 
 Route::get('/contactos', function () {
     return view('contactos');
