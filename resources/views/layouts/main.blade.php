@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
 </head>
+
 <body>
     <header class="main_header_area position-absolute w-100">
         <div class="header_menu " id="header_menu">
@@ -40,7 +41,8 @@
                                     </li>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link px-2 my-4 py-0 text-white" href="{{ url('/taller_online') }}">taller
+                                        <a class="nav-link px-2 my-4 py-0 text-white"
+                                            href="{{ url('/taller_online') }}">taller
                                             online</a>
                                     </li>
                                     <li class="nav-item">
@@ -55,7 +57,7 @@
                                     </li>
                                 </ul>
                                 <div class="menu-search">
-                                    <a class="btn" href="javascript:;">area privada<i
+                                    <a class="btn" href="{{ url('/login') }}">area privada<i
                                             class="fa fa-long-arrow-right ms-4"></i></a>
                                 </div>
                             </div>
@@ -132,4 +134,5 @@
 
     @yield('scripts')
 </body>
+
 </html>

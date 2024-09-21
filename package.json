@@ -1,14 +1,25 @@
 {
     "private": true,
+    "type": "module",
     "scripts": {
         "dev": "vite",
         "build": "vite build"
     },
     "devDependencies": {
-        "axios": "^1.1.2",
-        "laravel-vite-plugin": "^0.7.2",
-        "lodash": "^4.17.19",
-        "postcss": "^8.1.14",
-        "vite": "^4.0.0"
+        "@quasar/vite-plugin": "^1.7.0",
+        "axios": "^1.7.4",
+        "laravel-vite-plugin": "^1.0",
+        "sass": "^1.33.0",
+        "vite": "^5.0"
+    },
+    "dependencies": {
+        "@inertiajs/progress": "^0.2.7",
+        "@inertiajs/vue3": "^1.2.0",
+        "@quasar/extras": "^1.16.12",
+        "@vitejs/plugin-vue": "^5.1.3",
+        "nprogress": "^0.2.0",
+        "quasar": "^2.16.11",
+        "vue-gates": "^2.1.2",
+        "ziggy-js": "^1.7.2"
     }
 }

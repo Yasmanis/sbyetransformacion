@@ -297,17 +297,24 @@
             </div>
         </div>
     </section>
-    <section class="partners pb-11 pt-11">
+    <section class="partners pb-2 pt-2">
         <div class="container">
-            <div class="partner-inner">
-                <div class="partner-title text-center pb-6 w-lg-60 m-auto">
-                    <p class="mb-1 pink"></p>
-                    <h4 class="mb-1">TODAVIA NO HAS LEIDO MI LIBRO?</h4>
-                    <p class="m-0 text-lowercase">podras comprarlo aqui</p>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 text-center">
+                    <div class="container-img-right">
+                    <img src="{{ asset('images/team/maria1.png') }}" alt="group-image" class="w-40">
+                    </div>
                 </div>
-
-                <div class="partner-button text-center">
-                    <a class="btn" href="javascript:;">ir a tienda</a>
+                <div class="col-lg-6 col-md-6">
+                    <div class="partner-inner pt-7">
+                        <div class="partner-title text-center w-lg-60 m-auto">
+                            <h4 class="mb-1">TODAVIA NO HAS LEIDO MI LIBRO?</h4>
+                            <p class="m-0 text-lowercase">podras comprarlo aqui</p>
+                        </div>
+                        <div class="partner-button text-center">
+                            <a class="btn" href="javascript:;">ir a tienda</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,13 @@
+<template>
+    <Head>
+        <title>Welcome to laravel + quasar</title>
+    </Head>
+    <Layout>
+        <q-page class="column flex-center"> Cambiar este contenido... </q-page>
+    </Layout>
+</template>
+<script setup>
+import Layout from "../layouts/MainLayout.vue";
+import { ref, watch } from "vue";
+import { Head } from "@inertiajs/vue3";
+</script>

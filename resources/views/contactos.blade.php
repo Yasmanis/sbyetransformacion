@@ -15,7 +15,7 @@
       <div class="contact-inner text-center text-md-start">
         <div class="row">
           <div class="col-lg-5 col-md-5 text-center">
-            <img src="{{ asset('images/team/maria-delante-ordenador.png') }}" class="w-100">
+            <img src="{{ asset('images/team/maria4.png') }}" class="w-100" style="margin-top: -100px; margin-left: -50px;">
           </div>
           <div class="col-lg-7 col-md-7">
             <div class="contact-form">

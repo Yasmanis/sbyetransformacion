@@ -17,7 +17,7 @@
             <div class="col-lg-6">
               <div class="overview-img">
                 <div class="container-img-right">
-                  <img src="{{ asset('images/team/maria-delante-ordenador.png') }}" alt="group-image" class="w-60 rounded">
+                  <img src="{{ asset('images/team/maria3.png') }}" alt="group-image" class="w-60 rounded">
                 </div>
               </div>
             </div>
@@ -53,7 +53,7 @@
                   <div class="col-lg-6 col-md-6 ">
                     <div class="container-img-left mb-2">
                       <div class="img-left-1 float-end">
-                        <img class="mb-2 w-100 rounded" src="{{ asset('images/others/encontrar-luz.png') }}" alt="group-image">
+                        <img class="mb-2 w-80 rounded" src="{{ asset('images/others/encontrar-luz-mujer.png') }}" alt="group-image">
                       </div>
                     </div>
                   </div>

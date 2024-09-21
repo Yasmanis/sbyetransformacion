@@ -16,7 +16,7 @@
         <div class="row">
           <div class="col-lg-6 col-md-6 text-center pb-6">
             <div class="container-img-right">
-              <img src="{{ asset('images/team/maria-de-pie.png') }}" alt="group-image" style="width: 120px; height: 320px;">
+              <img src="{{ asset('images/team/maria2.png') }}" alt="group-image" class="w-50">
             </div>
           </div>
           <div class="col-lg-6 col-md-6 pt-9">
