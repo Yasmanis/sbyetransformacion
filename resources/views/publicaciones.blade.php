@@ -277,8 +277,8 @@
               <div class="sperator mb-4 m-0 w-20  border-bottom border-2 border-company"></div>
               <ul class="m-0 p-0 list-unstyled">
                 <li class="py-3  border-dashed-bottom-1">
-                  <a href="javascript:;" class="font-company"><i class="fa fa-check font-company pe-3"
-                      aria-hidden="true"></i>libros</a>
+                  <a href="{{ route('publicaciones.libro') }}" class="font-company"><i class="fa fa-check font-company pe-3"
+                      aria-hidden="true"></i>libro</a>
                 </li>
                 <li class="py-3 border-dashed-bottom-1">
                   <a href="javascript:;" class="font-company"><i class="fa fa-check font-company pe-3"
