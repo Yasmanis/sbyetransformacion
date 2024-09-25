@@ -77,18 +77,16 @@ return new class extends Migration
         }
 
         User::create([
-            'name' => 'sa',
+            'username' => 'sa',
             'email' => 'sa@sa.com',
+            'name' => 'sa',
             'sa' => true,
-            'active' => true,
             'password' => Hash::make('password'),
         ]);
 
         $user = User::create([
-            'name' => 'test',
+            'username' => 'test',
             'email' => 'test@test.com',
-            'sa' => false,
-            'active' => true,
             'password' => Hash::make('password'),
         ]);
 
@@ -100,7 +98,5 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-    }
+    public function down() {}
 };

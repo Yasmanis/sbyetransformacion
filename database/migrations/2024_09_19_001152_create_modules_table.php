@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('model');
             $table->string('ico');
             $table->string('url');
-            $table->unsignedBigInteger('application_id');
+            $table->unsignedBigInteger('application_id')->nullable();
             $table->foreign('application_id')->references('id')->on('applications')->onDelete('cascade');
             $table->timestamps();
         });

@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,5 +53,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         return Inertia('home');
     });
     Route::resource('/admin/users', UserController::class);
+    Route::resource('/admin/rols', RoleController::class);
+    Route::resource('/admin/categories', CategoryController::class);
+    Route::resource('/admin/files', FileController::class);
     Route::get('/logout', [AuthController::class, 'logout']);
 });

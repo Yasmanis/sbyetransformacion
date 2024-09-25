@@ -12,6 +12,24 @@
             v-model:selected="selected"
             v-model:pagination="pagination"
             binary-state-sort
+            :selected-rows-label="
+                (numberOfRows) =>
+                    `${numberOfRows} ${
+                        numberOfRows > 1
+                            ? 'registros seleccionados'
+                            : 'registro seleccionado'
+                    }`
+            "
+            :no-data-label="
+                $page.props.search
+                    ? 'no existen coincidencias'
+                    : 'no existen datos'
+            "
+            rows-per-page-label="registros por paginas"
+            :pagination-label="
+                (firstRowIndex, endRowIndex, totalRowsNumber) =>
+                    `${firstRowIndex} - ${endRowIndex} de ${totalRowsNumber}`
+            "
             @request="onRequest"
         >
             <!-- <template v-slot:loading>
@@ -24,15 +42,17 @@
                         class="q-my-xs q-mr-sm cursor-pointer text-subtitle1"
                     >
                         <div class="doc-card-title bg-primary text-white">
-                            <q-icon
-                                :name="current_collection?.ico"
-                                size="22px"
-                            />
-                            modelo_plural
+                            <q-icon :name="current_module?.ico" size="22px" />
+                            {{ current_module?.name }}
                         </div>
                     </section>
                     <q-space />
                     <div class="col-auto">
+                        <q-btn-component
+                            tooltips="actualizar"
+                            icon="mdi-table-sync"
+                            @click="onRequest"
+                        />
                         <visible-columns-component
                             :columns="columns"
                             @change="(vc) => (visibleColumns = vc)"
@@ -50,6 +70,23 @@
                         />
                     </div>
                 </q-toolbar>
+                <div
+                    class="row"
+                    style="
+                        width: 100%;
+                        border-top: 1px solid rgba(0, 0, 0, 0.12);
+                        padding: 10px;
+                    "
+                    v-if="searchFields.length > 0 || filterFields.length > 0"
+                >
+                    <div class="col" v-if="searchFields.length > 0">
+                        <search-component
+                            :fields="searchFields"
+                            @search="onSearch"
+                            @reset="onSearchClear"
+                        ></search-component>
+                    </div>
+                </div>
             </template>
 
             <template v-slot:header-selection="scope">
@@ -198,6 +235,9 @@ import { ref, onBeforeMount, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import VisibleColumnsComponent from "./actions/VisibleColumnsComponent.vue";
 import QBtnComponent from "../base/QBtnComponent.vue";
+import SearchComponent from "./actions/SearchComponent.vue";
+import { router, usePage } from "@inertiajs/vue3";
+import { currentModule } from "../../services/current_module";
 
 defineOptions({
     name: "TableComponent",
@@ -207,10 +247,6 @@ const props = defineProps({
     toStr: {
         type: String,
         default: "id",
-    },
-    icon: {
-        type: String,
-        default: "list",
     },
     columns: {
         type: Array,
@@ -240,21 +276,16 @@ const props = defineProps({
 
 const $q = useQuasar();
 
+const page = usePage();
+
 const loading = ref(false);
 
-const current_collection = ref(null);
-
-const hasAdd = ref(false);
-const hasEdit = ref(false);
-const hasView = ref(false);
-const hasDelete = ref(false);
-const hasHistory = ref(false);
+const current_module = ref(null);
 
 const pagination = ref({
     descending: false,
     page: 1,
-    rowsPerPage: 10,
-    max: 1,
+    rowsPerPage: 20,
     rowsNumber: 1,
     search: null,
     filters: [],
@@ -267,33 +298,42 @@ const visibleColumns = ref([]);
 const rows = ref([]);
 
 onBeforeMount(() => {
-    // current_collection.value = getCurrentCollection();
-    // const permissions = current_collection.value.permissions;
-    // hasAdd.value = permissions.includes("create");
-    // hasEdit.value = permissions.includes("update");
-    // hasDelete.value = permissions.includes("delete");
-    // hasHistory.value = permissions.includes("history");
-    // hasView.value = permissions.includes("view");
+    current_module.value = currentModule(page.url.split("?")[0]).module;
 });
-
-const getCurrentCollection = () => {
-    return null;
-};
 
 onMounted(() => {
     visibleColumns.value = props.columns
         .filter((c) => c.type !== "hidden" && !c.required)
         .map((c) => c.field);
-    rows.value = props.data;
+    const data = page.props.data;
+    rows.value = data.data;
+    pagination.value.rowsNumber = data.total;
+    pagination.value.rowsPerPage = data.per_page;
+    pagination.value.page = data.current_page;
+    if (page.props.sort) {
+        pagination.value.sortBy = page.props.sort.sortBy;
+        pagination.value.descending = page.props.sort.sortDirection === "DESC";
+    }
+    pagination.value.search = page.props.search
+        ? JSON.stringify(page.props.search)
+        : null;
 });
 
 const onFilter = (filters) => {};
 
 const onFilterClear = () => {};
 
-const onSearch = (attrs) => {};
+const onSearch = (attrs) => {
+    pagination.value.search = JSON.stringify(attrs);
+    pagination.value.page = 1;
+    onRequest();
+};
 
-const onSearchClear = () => {};
+const onSearchClear = () => {
+    pagination.value.search = null;
+    pagination.value.page = 1;
+    onRequest();
+};
 
 const onCreated = (record) => {
     onRequest();
@@ -305,16 +345,32 @@ const onUpdated = (record) => {
 
 const onDeleted = (objects) => {};
 
-const onRequest = async (attrs) => {};
+const onRequest = async (attrs) => {
+    console.log(attrs);
+    const { page, rowsPerPage, descending, sortBy, search, filters } = attrs
+        ? attrs.pagination
+        : pagination.value;
+    const sortDirection = descending ? "DESC" : "ASC";
+    router.get("", {
+        page,
+        rowsPerPage,
+        sortBy,
+        sortDirection,
+        search,
+        filters,
+    });
+};
 </script>
 <style>
 .q-table__top {
     padding: 0px !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
+
 .q-table__top .q-btn {
     margin-left: 5px;
 }
+
 .doc-card-title {
     margin-left: -24px;
     padding: 2px 10px 2px 24px;
@@ -342,6 +398,7 @@ th:nth-child(1),
 tbody > tr > td:nth-child(1) {
     left: 0;
 }
+
 .q-table td.actions-def,
 th:nth-child(1),
 tbody > tr > td:nth-child(1),
@@ -350,12 +407,14 @@ tbody > tr > td:nth-child(1),
     z-index: 99;
     background-color: #fff;
 }
+
 .q-table--dark td.actions-def,
 .q-table--dark th:nth-child(1),
 .q-table--dark th.last-column-sticky,
 .q-table--dark tbody > tr > td:nth-child(1) {
     background-color: #1d222e;
 }
+
 td.actions-def > .q-btn {
     margin-right: 3px;
 }

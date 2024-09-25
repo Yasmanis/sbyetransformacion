@@ -23,11 +23,11 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->rememberme)) {
             $user = auth()->user();
             if ($user->active) {
                 $request->session()->regenerate();
-                return redirect()->intended('admin')->with('success', 'bienvenido ' . $user->name);
+                return redirect()->intended('admin')->with('success', 'bienvenido ' . $user->username);
             }
             Auth::logout();
             $request->session()->invalidate();
@@ -40,11 +40,8 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
-
         return redirect('/');
     }
 }

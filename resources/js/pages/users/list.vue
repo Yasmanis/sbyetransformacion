@@ -2,11 +2,7 @@
     <Layout>
         <q-page padding>
             <table-component
-                :collection="collection"
-                :labelPlural="labelPlural"
-                :labelSingular="labelSingular"
                 :toStr="toStr"
-                :icon="icon"
                 :columns="columns"
                 :data="data"
                 :searchFields="searchFields"
@@ -34,11 +30,7 @@ const props = defineProps({
     },
 });
 
-const collection = "users";
-const labelPlural = "usuarios";
-const labelSingular = "usuario";
 const toStr = null;
-const icon = "mdi-account-outline";
 
 const searchFields = [
     {
@@ -46,11 +38,11 @@ const searchFields = [
         label: "usuario",
     },
     {
-        value: "first_name",
+        value: "name",
         label: "primer nombre",
     },
     {
-        value: "last_name",
+        value: "surname",
         label: "apellidos",
     },
     {
@@ -79,16 +71,16 @@ const columns = [
         required: true,
     },
     {
-        field: "first_name",
-        name: "first_name",
+        field: "name",
+        name: "name",
         label: "nombre",
         align: "left",
         sortable: true,
         type: "text",
     },
     {
-        field: "last_name",
-        name: "last_name",
+        field: "surname",
+        name: "surname",
         label: "apellidos",
         align: "left",
         sortable: true,
@@ -101,6 +93,13 @@ const columns = [
         align: "left",
         sortable: true,
         type: "text",
+    },
+    {
+        field: "sa",
+        name: "sa",
+        label: "super admin",
+        align: "center",
+        type: "boolean",
     },
     {
         field: "active",
@@ -127,7 +126,7 @@ const createFields = [
         },
     },
     {
-        name: "first_name",
+        name: "name",
         label: "apellidos",
         type: "text",
         props: {
@@ -135,7 +134,7 @@ const createFields = [
         },
     },
     {
-        name: "last_name",
+        name: "surname",
         label: "apellidos",
         type: "text",
     },
@@ -147,6 +146,11 @@ const createFields = [
             required: true,
             type: "email",
         },
+    },
+    {
+        name: "sa",
+        label: "super admin",
+        type: "checkbox",
     },
     {
         name: "active",
@@ -163,19 +167,24 @@ const updateFields = [
         type: "text",
     },
     {
-        name: "first_name",
-        label: "first_name",
+        name: "name",
+        label: "name",
         type: "text",
     },
     {
-        name: "last_name",
-        label: "last_name",
+        name: "surname",
+        label: "surname",
         type: "text",
     },
     {
         name: "email",
         label: "email",
         type: "text",
+    },
+    {
+        name: "sa",
+        label: "super admin",
+        type: "checkbox",
     },
     {
         name: "active",

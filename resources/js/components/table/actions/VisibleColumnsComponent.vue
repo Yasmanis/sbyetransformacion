@@ -1,6 +1,6 @@
 <template>
     <q-btn-component
-        :tooltips="$q.lang.table.columns"
+        tooltips="columnas"
         icon="mdi-table-check"
         v-if="fullVisibleColums.length > 0"
     >

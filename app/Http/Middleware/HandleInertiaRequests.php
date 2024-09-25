@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -41,15 +42,12 @@ class HandleInertiaRequests extends Middleware
             'auth' => function () {
                 $user = auth()->user();
                 return $user ? [
-                    'apps' => $user->getApps(),
-                    'app_list' => $user->appList(),
+                    'menu' => $user->menu(),
                     'user' => $user,
-                    'roles' => $user->getRoleNames(),
                     'permissions' => $user->getAllPermissions()->pluck('name')
                 ] : null;
             },
-            'lightLogo' => asset('images/logo/1.png'),
-            'darkLogo' => asset('images/logo/2.png'),
+            'public_path' => asset(''),
             'flash_success' => $request->session()->get('success'),
             'flash_error' => $request->session()->get('error'),
             'show_flash_msg' => true

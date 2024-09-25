@@ -14,7 +14,9 @@
                 />
 
                 <q-img
-                    :src="$page.props.logo"
+                    :src="`${$page.props.public_path}images/logo/${
+                        Dark.isActive ? '2' : '1'
+                    }.png`"
                     style="width: 90px"
                     v-if="mini && !leftDrawerOpen"
                 />
@@ -53,7 +55,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import MenuComponent from "../components/navigation/MenuComponent.vue";
 import DarkSwitcher from "../components/profile/DarkSwitcher.vue";
 import { Dark } from "quasar";
@@ -70,4 +72,6 @@ function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
     mini.value = !leftDrawerOpen.value;
 }
+
+onMounted(() => {});
 </script>

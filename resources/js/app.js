@@ -1,6 +1,9 @@
 import "@quasar/extras/material-icons/material-icons.css";
 import "@quasar/extras/mdi-v6/mdi-v6.css";
+import "@quasar/extras/fontawesome-v6/fontawesome-v6.css";
+import "@quasar/extras/animate/animate-list.js";
 import "quasar/src/css/index.sass";
+import "../css/app.css";
 
 import { createInertiaApp, router, usePage } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
@@ -12,6 +15,7 @@ import VueGates from "vue-gates";
 import { ZiggyVue } from "ziggy-js";
 import { success, error } from "./helpers/notifications";
 createInertiaApp({
+    title: (title) => "SBYE-transformacion",
     progress: false,
     resolve: (name) =>
         resolvePageComponent(

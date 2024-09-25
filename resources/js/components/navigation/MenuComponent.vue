@@ -1,11 +1,19 @@
 <template>
     <q-list separator>
         <q-item
-            style="min-height: 49px; font-size: 21px"
+            style="min-height: 50px"
             :class="Dark.isActive ? '' : 'bg-primary'"
         >
             <q-item-section :avatar="mini">
-                <q-img :src="logo" :style="{ width: mini ? '55px' : '100%' }" />
+                <q-img
+                    :src="`${$page.props.public_path}images/logo/${
+                        Dark.isActive ? '2' : '1'
+                    }.png`"
+                    :style="{
+                        width: mini ? '55px' : '100%',
+                        height: mini ? '' : '120px',
+                    }"
+                />
             </q-item-section>
         </q-item>
         <q-item
@@ -27,12 +35,12 @@
     </q-list>
     <q-list
         separator
-        v-for="(o, indexOption) in current_modules"
+        v-for="(o, indexOption) in applications_with_module"
         :key="`menu-option-${indexOption}`"
     >
         <q-item
             clickable
-            :active="isActive(o.url)"
+            :active="isActiveParent(o)"
             @click="navigateTo({ name: o.url })"
             v-if="!o.modules"
         >
@@ -80,7 +88,7 @@
                         :key="`menu_suboption-${indexSubOpt}`"
                         clickable
                         class="custom-item"
-                        :active="$page.url === m.url"
+                        :active="$page.url.split('?')[0] === m.url"
                         @click="navigateTo({ name: m.url })"
                     >
                         <q-item-section avatar>
@@ -108,7 +116,7 @@
                             :key="`menu_suboption-${indexSubOpt}`"
                             clickable
                             class="custom-item"
-                            :active="$page.url === m.url"
+                            :active="$page.url.split('?')[0] === m.url"
                             :inset-level="0.2"
                             @click="navigateTo({ name: m.url })"
                         >
@@ -122,6 +130,24 @@
             </q-card>
         </q-expansion-item>
     </q-list>
+    <q-item
+        v-for="(o, indexOption) in modules_doesnt_have_app"
+        :key="`menu-doesnt-have-app-${indexOption}`"
+        clickable
+        :active="$page.url.split('?')[0] === o.url"
+        @click="navigateTo({ name: o.url })"
+    >
+        <q-item-section avatar>
+            <q-icon :name="o.ico" />
+        </q-item-section>
+        <q-item-section>{{ o.name }}</q-item-section>
+        <q-tooltip-component
+            title="name"
+            anchor="center right"
+            self="center left"
+            v-if="mini"
+        ></q-tooltip-component>
+    </q-item>
     <q-item clickable class="custom-item" @click="logout">
         <q-item-section avatar>
             <q-icon name="mdi-logout" />
@@ -131,11 +157,13 @@
 </template>
 
 <script setup>
-import { onBeforeMount, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import QTooltipComponent from "../base/QTooltipComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { logout } from "../../services/auth";
 import { Dark } from "quasar";
+import { currentModule } from "../../services/current_module";
+
 defineOptions({
     name: "MenuComponent",
 });
@@ -151,18 +179,15 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(["change-url"]);
-
-const current_modules = ref([]);
-
 const page = usePage();
 
-onBeforeMount(() => {
-    current_modules.value = page.props.auth.app_list;
-});
+const emit = defineEmits(["change-url"]);
 
-const logo = computed(() => {
-    return Dark.isActive ? page.props.darkLogo : page.props.lightLogo;
+const applications_with_module = computed(() => {
+    return page.props.auth.menu.applications_with_module;
+});
+const modules_doesnt_have_app = computed(() => {
+    return page.props.auth.menu.modules_doesnt_have_app;
 });
 
 function navigateTo(payload) {
@@ -172,43 +197,18 @@ function navigateTo(payload) {
                 window.open(payload, "_blank");
             } else {
                 router.get(payload);
-                emit("change-url", getCurrentModuleByRoute(payload));
+                emit("change-url", currentModule(payload).module);
             }
         } else if (typeof payload === "object") {
             router.get(payload.name);
-            emit("change-url", getCurrentModuleByRoute(payload.name));
+            emit("change-url", currentModule(payload.name).module);
         }
     }
 }
 
-const isActive = (name) => {
-    console.log(router);
-    return true; //$router.currentRoute.value.name === name;
-};
-
 const isActiveParent = (module) => {
-    let routes = [];
-    module.modules.forEach((m) => {
-        routes.push(m.url);
-    });
-    return routes.includes(router.page.url);
-};
-
-const getCurrentModuleByRoute = (route) => {
-    if (route === "crud") return null;
-    let modules = current_modules.value;
-    for (let i = 0; i < modules.length; i++) {
-        if (modules[i].url === route) {
-            return modules[i];
-        } else if (modules[i].modules) {
-            for (let j = 0; j < modules[i].modules.length; j++) {
-                if (modules[i].modules[j].url === route) {
-                    return modules[i].modules[j];
-                }
-            }
-        }
-    }
-    return null;
+    const application = currentModule(page.url.split("?")[0])?.application;
+    return application && application.id === module.id;
 };
 </script>
 

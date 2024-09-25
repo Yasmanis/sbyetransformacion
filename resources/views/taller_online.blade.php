@@ -134,7 +134,7 @@
     <div class="conference-inner text-center">
       <div class="row gx-lg-5 align-items-center">
         <div class="col-lg-6 order-2 order-lg-1">
-          <div class="conference-left" style="background-image: url('images/others/fondo-mariposas.png') !important">
+          <div class="conference-left" style="background-image: url('images/others/sbye-desarrollo.png') !important">
             <div class="row align-items-center">
               <div class="col-lg-6 col-md-6 px-2 pt-2">
                 <div class="event-benifit-list-left mb-4">
