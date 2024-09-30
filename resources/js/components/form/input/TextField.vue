@@ -1,0 +1,113 @@
+<template>
+    <q-input
+        :ref="modelRef"
+        :name="props.name"
+        :label="props.label"
+        :rules="fieldRules"
+        :error="errorMsg !== null"
+        :error-message="errorMsg"
+        :dense="dense"
+        :clearable="clearable"
+        lazy-rules
+        reactive-rules
+        hide-bottom-space
+        bottom-slots
+        v-model="model"
+        class="full-width"
+        @update:model-value="(val) => update(val)"
+    >
+        <template #hint v-if="fieldHelp?.length > 0">
+            <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
+                <li
+                    v-for="(h, index) in fieldHelp"
+                    :key="`help-${index}`"
+                    style="list-style: none"
+                >
+                    {{ h }}
+                </li>
+            </ul>
+        </template>
+        <template #append v-if="props.options && props.options?.appendIcon">
+            <q-icon :name="props.options?.appendIcon" />
+        </template>
+        <template #prepend v-if="props.options && props.options?.prependIcon">
+            <q-icon :name="props.options?.prependIcon" />
+        </template>
+        <template #loading="props" v-if="props.data && props.data['loading']">
+            <q-spinner-facebook color="info" />
+        </template>
+    </q-input>
+</template>
+
+<script setup>
+import { onBeforeMount, onMounted, ref, watch, computed } from "vue";
+import { validations } from "../../../helpers/validations";
+import { usePage } from "@inertiajs/vue3";
+
+defineOptions({
+    name: "TextField",
+});
+
+const props = defineProps({
+    modelValue: String,
+    name: {
+        type: String,
+        required: true,
+    },
+    label: {
+        type: String,
+        required: true,
+    },
+    dense: {
+        type: Boolean,
+        default: true,
+    },
+    clearable: {
+        type: Boolean,
+        default: true,
+    },
+    othersProps: {
+        type: Object,
+        default: () => ({}),
+    },
+});
+
+const emits = defineEmits(["update"]);
+
+const page = usePage();
+
+const model = ref("");
+const modelRef = ref(null);
+const fieldRules = ref([]);
+const fieldHelp = ref([]);
+
+onBeforeMount(() => {
+    const { rules, help } = validations.getRules(props.othersProps);
+    fieldRules.value = rules;
+    fieldHelp.value = help;
+});
+
+onMounted(() => {
+    model.value = props.modelValue;
+});
+
+watch(
+    () => props.modelValue,
+    (n, o) => {
+        model.value = n;
+    }
+);
+
+const errorMsg = computed(() => {
+    return page.props.errors
+        ? page.props.errors[props.name]
+            ? page.props.errors[props.name]
+            : null
+        : null;
+});
+
+function update(val) {
+    model.value = val;
+    emits("update", props.name, model.value);
+}
+</script>

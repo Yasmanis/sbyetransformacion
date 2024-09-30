@@ -35,10 +35,12 @@ return new class extends Migration
         ];
 
         $module = Module::create([
-            'name' => 'Categorias',
+            'singular_label' => 'Categoria',
+            'plural_label' => 'Categorias',
             'model' => 'Category',
             'ico' => 'mdi-sitemap-outline',
-            'url' => '/admin/categories',
+            'base_url' => '/admin/categories',
+            'to_str' => 'name',
         ]);
 
         foreach ($permissions as $p) {
@@ -50,10 +52,12 @@ return new class extends Migration
         }
 
         $module = Module::create([
-            'name' => 'Archivos',
+            'singular_label' => 'Archivo',
+            'plural_label' => 'Archivos',
             'model' => 'File',
             'ico' => 'mdi-file-document-multiple-outline',
-            'url' => '/admin/files',
+            'base_url' => '/admin/files',
+            'to_str' => 'name',
         ]);
 
         foreach ($permissions as $p) {

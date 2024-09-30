@@ -2,7 +2,6 @@
     <Layout>
         <q-page padding>
             <table-component
-                :toStr="toStr"
                 :columns="columns"
                 :data="data"
                 :searchFields="searchFields"
@@ -15,7 +14,7 @@
 </template>
 
 <script setup>
-import Layout from "../../layouts/MainLayout.vue";
+import Layout from "../../layouts/AdminLayout.vue";
 import TableComponent from "../../components/table/TableComponent.vue";
 
 defineOptions({
@@ -29,25 +28,24 @@ const props = defineProps({
     },
 });
 
-const toStr = null;
-
-const searchFields = [
-    {
-        value: "name",
-        label: "nombre",
+const name = {
+    field: "name",
+    name: "name",
+    label: "nombre",
+    align: "left",
+    sortable: true,
+    type: "text",
+    required: true,
+    othersProps: {
+        required: true,
+        help: ["unico"],
     },
-];
+};
+
+const searchFields = [name];
 
 const columns = [
-    {
-        field: "name",
-        name: "name",
-        label: "nombre",
-        align: "left",
-        sortable: true,
-        type: "text",
-        required: true,
-    },
+    name,
     {
         field: "actions",
         name: "actions",
@@ -56,14 +54,5 @@ const columns = [
     },
 ];
 
-const fields = [
-    {
-        name: "name",
-        label: "nombre",
-        type: "text",
-        props: {
-            required: true,
-        },
-    },
-];
+const fields = [name];
 </script>

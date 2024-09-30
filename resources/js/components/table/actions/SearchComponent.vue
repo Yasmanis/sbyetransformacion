@@ -8,6 +8,7 @@
             label="columna"
             emit-value
             map-options
+            option-value="name"
             hide-bottom-space
             :class="fields.length == 1 ? 'hidden' : ''"
             @update:model-value="onChangeSelect"
@@ -210,7 +211,7 @@ onBeforeMount(() => {
         query.value = search.query.replaceAll("%", "");
         condition.value = search.fullCondition;
     } else {
-        column.value = props.fields[0].value;
+        column.value = props.fields[0];
         condition.value = {
             label: "contiene",
             value: "like",
@@ -219,7 +220,7 @@ onBeforeMount(() => {
     }
 });
 
-const onChangeQuery = (val) => {
+const onChangeQuery = () => {
     querySearchError.value = false;
 };
 
@@ -243,7 +244,7 @@ function search() {
             q = `%${q}%`;
         }
         emit("search", {
-            column: column.value,
+            column: column.value.name,
             condition: c,
             fullCondition: condition.value,
             query: `${q}`,

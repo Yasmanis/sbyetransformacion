@@ -5,7 +5,10 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SelectsController;
+use App\Http\Controllers\ContactsController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,31 +22,29 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/', function () {
-    return view('vivir_en_plenitud');
+    return Inertia('landing/vivir_en_plenitud');
 });
 
 Route::get('/consulta_individual', function () {
-    return view('consulta_individual');
+    return Inertia('landing/consulta_individual');
 });
 
 Route::get('/taller_online', function () {
-    return view('taller_online');
+    return Inertia('landing/taller_online');
 });
 
 Route::get('/publicaciones', function () {
-    return view('publicaciones');
+    return Inertia('landing/publicaciones');
 });
 Route::get('/publicaciones/libro', function () {
     return view('libros');
 })->name('publicaciones.libro');
 
-Route::get('/contactos', function () {
-    return view('contactos');
+Route::get('/contactame', function () {
+    return Inertia('landing/contactos');
 });
+
+Route::post('/contacts/store', [ContactsController::class, 'store']);
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/authenticate', [AuthController::class, 'authenticate']);
@@ -56,5 +57,9 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/files', FileController::class);
+
+    Route::get('/roles', [SelectsController::class, 'roles']);
+    Route::get('/permissions', [SelectsController::class, 'permissions']);
+
     Route::get('/logout', [AuthController::class, 'logout']);
 });

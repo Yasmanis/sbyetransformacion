@@ -10,10 +10,19 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
+
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function ($obj) {
+            $obj->password = Hash::make($obj->password);
+        });
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -67,7 +76,7 @@ class User extends Authenticatable
     public function getModulesFromApp($app)
     {
         $modules_id = $this->getPermissions()->pluck('module_id');
-        $modules = Module::whereIn('id', $modules_id)->where('application_id', $app->id)->select('id', 'name', 'model', 'ico', 'url')->get();
+        $modules = Module::whereIn('id', $modules_id)->where('application_id', $app->id)->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str')->get();
         foreach ($modules as $m) {
             $m->permissions = $this->getPermissionsFromModule($m);
         }
@@ -79,7 +88,7 @@ class User extends Authenticatable
         $permissions = $this->getPermissions()->pluck('id');
         $modules = Module::whereNull('application_id')->whereHas('permissions', function ($query) use ($permissions) {
             $query->whereIn('id',  $permissions);
-        })->select('id', 'name', 'model', 'ico', 'url')->get();
+        })->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str')->get();
         foreach ($modules as $m) {
             $m->permissions = $this->getPermissionsFromModule($m);
         }

@@ -5,7 +5,7 @@ export const currentModule = (route) => {
     for (let i = 0; i < applications_with_module.length; i++) {
         const modules = applications_with_module[i].modules;
         for (let j = 0; j < modules.length; j++) {
-            if (modules[j].url === route) {
+            if (modules[j].base_url === route) {
                 return {
                     application: applications_with_module[i],
                     module: modules[j],
@@ -14,7 +14,7 @@ export const currentModule = (route) => {
         }
     }
     for (let i = 0; i < modules_doesnt_have_app.length; i++) {
-        if (modules_doesnt_have_app[i].url === route) {
+        if (modules_doesnt_have_app[i].base_url === route) {
             return {
                 application: null,
                 module: modules_doesnt_have_app[i],

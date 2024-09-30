@@ -2,9 +2,7 @@
     <Layout>
         <q-page padding>
             <table-component
-                :toStr="toStr"
                 :columns="columns"
-                :data="data"
                 :searchFields="searchFields"
                 :filterFields="filterFields"
                 :createFields="createFields"
@@ -16,40 +14,126 @@
 </template>
 
 <script setup>
-import Layout from "../../layouts/MainLayout.vue";
+import Layout from "../../layouts/AdminLayout.vue";
 import TableComponent from "../../components/table/TableComponent.vue";
 
 defineOptions({
     name: "ListPage",
 });
 
-const props = defineProps({
-    data: {
-        type: Array,
-        default: () => [],
+const username = {
+    field: "username",
+    name: "username",
+    label: "usuario",
+    align: "left",
+    sortable: true,
+    type: "text",
+    required: true,
+    othersProps: {
+        required: true,
+        help: ["unico"],
     },
-});
+};
 
-const toStr = null;
+const name = {
+    field: "name",
+    name: "name",
+    label: "nombre",
+    align: "left",
+    sortable: true,
+    type: "text",
+};
 
-const searchFields = [
-    {
-        value: "username",
-        label: "usuario",
+const surname = {
+    field: "surname",
+    name: "surname",
+    label: "apellidos",
+    align: "left",
+    sortable: true,
+    type: "text",
+};
+
+const email = {
+    field: "email",
+    name: "email",
+    label: "correo",
+    align: "left",
+    sortable: true,
+    type: "text",
+    othersProps: {
+        required: true,
+        type: "email",
+        help: ["unico"],
     },
-    {
-        value: "name",
-        label: "primer nombre",
+};
+
+const password = {
+    field: "password",
+    name: "password",
+    label: "contraseña",
+    type: "password",
+    othersProps: {
+        required: true,
+        minLength: 8,
     },
-    {
-        value: "surname",
-        label: "apellidos",
+};
+
+const sa = {
+    field: "sa",
+    name: "sa",
+    label: "super admin",
+    align: "center",
+    type: "boolean",
+    othersProps: {
+        help: [
+            "indica que el usuario es super-administrador, incluso sin tener rol o permiso asociado tiene acceso a todas las funcionalidades del sistema",
+        ],
     },
-    {
-        value: "email",
-        label: "email",
+};
+
+const active = {
+    field: "active",
+    name: "active",
+    label: "activo",
+    align: "center",
+    type: "boolean",
+    othersProps: {
+        help: [
+            "indica que el usuario esta activo en el sistema, sin esta opcion no puede acceder al mismo",
+        ],
     },
-];
+};
+
+const roles = {
+    field: "roles",
+    name: "roles",
+    label: "roles",
+    type: "select",
+    othersProps: {
+        multiple: true,
+        url_to_options: "/roles",
+    },
+};
+
+const permissions = {
+    field: "permissions",
+    name: "permissions",
+    label: "permisos",
+    type: "select",
+    othersProps: {
+        multiple: true,
+        url_to_options: "/permissions",
+    },
+};
+
+const actions = {
+    field: "actions",
+    name: "actions",
+    label: "Acciones",
+    type: "actions",
+};
+
+const searchFields = [username, name, surname, email];
 
 const filterFields = [
     {
@@ -60,103 +144,18 @@ const filterFields = [
     },
 ];
 
-const columns = [
-    {
-        field: "username",
-        name: "username",
-        label: "usuario",
-        align: "left",
-        sortable: true,
-        type: "text",
-        required: true,
-    },
-    {
-        field: "name",
-        name: "name",
-        label: "nombre",
-        align: "left",
-        sortable: true,
-        type: "text",
-    },
-    {
-        field: "surname",
-        name: "surname",
-        label: "apellidos",
-        align: "left",
-        sortable: true,
-        type: "text",
-    },
-    {
-        field: "email",
-        name: "email",
-        label: "email",
-        align: "left",
-        sortable: true,
-        type: "text",
-    },
-    {
-        field: "sa",
-        name: "sa",
-        label: "super admin",
-        align: "center",
-        type: "boolean",
-    },
-    {
-        field: "active",
-        name: "active",
-        label: "activo",
-        align: "center",
-        type: "boolean",
-    },
-    {
-        field: "actions",
-        name: "actions",
-        label: "Acciones",
-        type: "actions",
-    },
-];
+const columns = [username, name, surname, email, sa, active, actions];
 
 const createFields = [
-    {
-        name: "name",
-        label: "usuario",
-        type: "text",
-        props: {
-            required: true,
-        },
-    },
-    {
-        name: "name",
-        label: "apellidos",
-        type: "text",
-        props: {
-            rules: [(val) => !!val || "Requerido"],
-        },
-    },
-    {
-        name: "surname",
-        label: "apellidos",
-        type: "text",
-    },
-    {
-        name: "email",
-        label: "email",
-        type: "text",
-        props: {
-            required: true,
-            type: "email",
-        },
-    },
-    {
-        name: "sa",
-        label: "super admin",
-        type: "checkbox",
-    },
-    {
-        name: "active",
-        label: "activo",
-        type: "checkbox",
-    },
+    username,
+    name,
+    surname,
+    email,
+    password,
+    sa,
+    active,
+    roles,
+    permissions,
 ];
 
 const updateFields = [

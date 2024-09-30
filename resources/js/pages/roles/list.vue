@@ -2,9 +2,7 @@
     <Layout>
         <q-page padding>
             <table-component
-                :toStr="toStr"
                 :columns="columns"
-                :data="data"
                 :searchFields="searchFields"
                 :createFields="fields"
                 :updateFields="fields"
@@ -15,39 +13,42 @@
 </template>
 
 <script setup>
-import Layout from "../../layouts/MainLayout.vue";
+import Layout from "../../layouts/AdminLayout.vue";
 import TableComponent from "../../components/table/TableComponent.vue";
 
 defineOptions({
     name: "ListPage",
 });
 
-const props = defineProps({
-    data: {
-        type: Array,
-        default: () => [],
+const name = {
+    field: "name",
+    name: "name",
+    label: "nombre",
+    align: "left",
+    sortable: true,
+    type: "text",
+    required: true,
+    othersProps: {
+        required: true,
+        help: ["unico"],
     },
-});
+};
 
-const toStr = null;
-
-const searchFields = [
-    {
-        value: "name",
-        label: "nombre",
+const permissions = {
+    field: "permissions",
+    name: "permissions",
+    label: "permisos",
+    type: "select",
+    othersProps: {
+        multiple: true,
+        url_to_options: "/permissions",
     },
-];
+};
+
+const searchFields = [name];
 
 const columns = [
-    {
-        field: "name",
-        name: "name",
-        label: "nombre",
-        align: "left",
-        sortable: true,
-        type: "text",
-        required: true,
-    },
+    name,
     {
         field: "actions",
         name: "actions",
@@ -56,14 +57,5 @@ const columns = [
     },
 ];
 
-const fields = [
-    {
-        name: "name",
-        label: "nombre",
-        type: "text",
-        props: {
-            required: true,
-        },
-    },
-];
+const fields = [name, permissions];
 </script>

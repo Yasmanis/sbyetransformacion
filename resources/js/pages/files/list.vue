@@ -2,7 +2,6 @@
     <Layout>
         <q-page padding>
             <table-component
-                :toStr="toStr"
                 :columns="columns"
                 :data="data"
                 :searchFields="searchFields"
@@ -15,7 +14,7 @@
 </template>
 
 <script setup>
-import Layout from "../../layouts/MainLayout.vue";
+import Layout from "../../layouts/AdminLayout.vue";
 import TableComponent from "../../components/table/TableComponent.vue";
 
 defineOptions({
@@ -28,8 +27,6 @@ const props = defineProps({
         default: () => [],
     },
 });
-
-const toStr = null;
 
 const searchFields = [
     {

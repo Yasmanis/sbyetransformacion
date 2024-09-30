@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('singular_label');
+            $table->string('plural_label');
             $table->string('model');
             $table->string('ico');
-            $table->string('url');
+            $table->string('base_url');
+            $table->string('to_str');
             $table->unsignedBigInteger('application_id')->nullable();
             $table->foreign('application_id')->references('id')->on('applications')->onDelete('cascade');
             $table->timestamps();

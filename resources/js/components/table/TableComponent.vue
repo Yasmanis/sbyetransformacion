@@ -43,11 +43,18 @@
                     >
                         <div class="doc-card-title bg-primary text-white">
                             <q-icon :name="current_module?.ico" size="22px" />
-                            {{ current_module?.name }}
+                            {{ current_module?.plural_label }}
                         </div>
                     </section>
                     <q-space />
                     <div class="col-auto">
+                        <form-component
+                            :title="current_module.singular_label"
+                            :fields="createFields"
+                            :module="current_module"
+                            size="sm"
+                            v-if="createFields.length > 0"
+                        />
                         <q-btn-component
                             tooltips="actualizar"
                             icon="mdi-table-sync"
@@ -231,8 +238,9 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount, onMounted } from "vue";
+import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
 import { useQuasar } from "quasar";
+import FormComponent from "../form/FormComponent.vue";
 import VisibleColumnsComponent from "./actions/VisibleColumnsComponent.vue";
 import QBtnComponent from "../base/QBtnComponent.vue";
 import SearchComponent from "./actions/SearchComponent.vue";
@@ -244,15 +252,7 @@ defineOptions({
 });
 
 const props = defineProps({
-    toStr: {
-        type: String,
-        default: "id",
-    },
     columns: {
-        type: Array,
-        default: () => [],
-    },
-    data: {
         type: Array,
         default: () => [],
     },
@@ -295,7 +295,33 @@ const selected = ref([]);
 
 const visibleColumns = ref([]);
 
+const properties = computed(() => {
+    return page.props;
+});
+
 const rows = ref([]);
+
+watch(
+    properties,
+    (val) => {
+        const data = val.data;
+        rows.value = data.data;
+        pagination.value.rowsNumber = data.total;
+        pagination.value.rowsPerPage = data.per_page;
+        pagination.value.page = data.current_page;
+        if (val.sort) {
+            pagination.value.sortBy = val.sort.sortBy;
+            pagination.value.descending = val.sort.sortDirection === "DESC";
+        }
+        pagination.value.search = val.search
+            ? JSON.stringify(val.search)
+            : null;
+    },
+    {
+        immediate: true,
+        deep: true,
+    }
+);
 
 onBeforeMount(() => {
     current_module.value = currentModule(page.url.split("?")[0]).module;
@@ -305,18 +331,6 @@ onMounted(() => {
     visibleColumns.value = props.columns
         .filter((c) => c.type !== "hidden" && !c.required)
         .map((c) => c.field);
-    const data = page.props.data;
-    rows.value = data.data;
-    pagination.value.rowsNumber = data.total;
-    pagination.value.rowsPerPage = data.per_page;
-    pagination.value.page = data.current_page;
-    if (page.props.sort) {
-        pagination.value.sortBy = page.props.sort.sortBy;
-        pagination.value.descending = page.props.sort.sortDirection === "DESC";
-    }
-    pagination.value.search = page.props.search
-        ? JSON.stringify(page.props.search)
-        : null;
 });
 
 const onFilter = (filters) => {};
@@ -335,10 +349,6 @@ const onSearchClear = () => {
     onRequest();
 };
 
-const onCreated = (record) => {
-    onRequest();
-};
-
 const onUpdated = (record) => {
     onRequest();
 };
@@ -346,7 +356,6 @@ const onUpdated = (record) => {
 const onDeleted = (objects) => {};
 
 const onRequest = async (attrs) => {
-    console.log(attrs);
     const { page, rowsPerPage, descending, sortBy, search, filters } = attrs
         ? attrs.pagination
         : pagination.value;

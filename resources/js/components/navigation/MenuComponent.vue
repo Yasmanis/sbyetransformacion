@@ -41,13 +41,13 @@
         <q-item
             clickable
             :active="isActiveParent(o)"
-            @click="navigateTo({ name: o.url })"
+            @click="navigateTo({ name: m.base_url })"
             v-if="!o.modules"
         >
             <q-item-section avatar>
                 <q-icon :name="o.ico" />
             </q-item-section>
-            <q-item-section>{{ o.name }}</q-item-section>
+            <q-item-section>{{ m.plural_label }}</q-item-section>
             <q-tooltip-component
                 title="name"
                 anchor="center right"
@@ -65,7 +65,7 @@
                 <q-icon :name="o.ico" />
             </q-item-section>
             <q-tooltip-component
-                :title="o.name"
+                :title="m.plural_label"
                 anchor="center right"
                 self="center left"
             ></q-tooltip-component>
@@ -81,20 +81,20 @@
                         <q-item-section avatar>
                             <q-icon :name="o.ico" />
                         </q-item-section>
-                        <q-item-section>{{ o.name }}</q-item-section>
+                        <q-item-section>{{ m.plural_label }}</q-item-section>
                     </q-item>
                     <q-item
                         v-for="(m, indexSubOpt) in o.modules"
                         :key="`menu_suboption-${indexSubOpt}`"
                         clickable
                         class="custom-item"
-                        :active="$page.url.split('?')[0] === m.url"
-                        @click="navigateTo({ name: m.url })"
+                        :active="$page.url.split('?')[0] === m.base_url"
+                        @click="navigateTo({ name: m.base_url })"
                     >
                         <q-item-section avatar>
                             <q-icon :name="m.ico" />
                         </q-item-section>
-                        <q-item-section>{{ m.name }}</q-item-section>
+                        <q-item-section>{{ m.plural_label }}</q-item-section>
                     </q-item>
                 </q-list>
             </q-menu>
@@ -116,14 +116,16 @@
                             :key="`menu_suboption-${indexSubOpt}`"
                             clickable
                             class="custom-item"
-                            :active="$page.url.split('?')[0] === m.url"
+                            :active="$page.url.split('?')[0] === m.base_url"
                             :inset-level="0.2"
-                            @click="navigateTo({ name: m.url })"
+                            @click="navigateTo({ name: m.base_url })"
                         >
                             <q-item-section avatar>
                                 <q-icon :name="m.ico" />
                             </q-item-section>
-                            <q-item-section>{{ m.name }}</q-item-section>
+                            <q-item-section>{{
+                                m.plural_label
+                            }}</q-item-section>
                         </q-item>
                     </q-list>
                 </q-card-section>
@@ -134,13 +136,13 @@
         v-for="(o, indexOption) in modules_doesnt_have_app"
         :key="`menu-doesnt-have-app-${indexOption}`"
         clickable
-        :active="$page.url.split('?')[0] === o.url"
-        @click="navigateTo({ name: o.url })"
+        :active="$page.url.split('?')[0] === o.base_url"
+        @click="navigateTo({ name: o.base_url })"
     >
         <q-item-section avatar>
             <q-icon :name="o.ico" />
         </q-item-section>
-        <q-item-section>{{ o.name }}</q-item-section>
+        <q-item-section>{{ o.plural_label }}</q-item-section>
         <q-tooltip-component
             title="name"
             anchor="center right"

@@ -19,4 +19,14 @@ class CategoryController extends Controller
         }
         return $this->data_index($repository, $request);
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'max:30', 'unique:category'],
+        ]);
+        $repository = new CategoryRepository();
+        $repository->create($request->only((new ($repository->model()))->getFillable()));
+        return redirect()->back()->with('success', 'categoria adicionado correctamente');
+    }
 }

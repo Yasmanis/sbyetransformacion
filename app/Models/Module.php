@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Permission;
 class Module extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'model', 'ico', 'url', 'application_id'];
+    protected $fillable = ['singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str', 'application_id'];
 
     public function app()
     {

@@ -45,10 +45,12 @@ return new class extends Migration
         ]);
 
         $module = Module::create([
-            'name' => 'Roles',
+            'singular_label' => 'Rol',
+            'plural_label' => 'Roles',
             'model' => 'Role',
             'ico' => 'mdi-account-group-outline',
-            'url' => '/admin/rols',
+            'base_url' => '/admin/rols',
+            'to_str' => 'name',
             'application_id' => $app->id
         ]);
 
@@ -61,10 +63,12 @@ return new class extends Migration
         }
 
         $module = Module::create([
-            'name' => 'Usuarios',
+            'singular_label' => 'Usuario',
+            'plural_label' => 'Usuarios',
             'model' => 'User',
             'ico' => 'mdi-account-outline',
-            'url' => '/admin/users',
+            'base_url' => '/admin/users',
+            'to_str' => 'username',
             'application_id' => $app->id
         ]);
 
