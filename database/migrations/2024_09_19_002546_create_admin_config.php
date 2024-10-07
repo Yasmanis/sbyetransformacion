@@ -85,13 +85,13 @@ return new class extends Migration
             'email' => 'sa@sa.com',
             'name' => 'sa',
             'sa' => true,
-            'password' => Hash::make('password'),
+            'password' => 'password',
         ]);
 
         $user = User::create([
             'username' => 'test',
             'email' => 'test@test.com',
-            'password' => Hash::make('password'),
+            'password' => 'password',
         ]);
 
         $user->givePermissionTo(Permission::findById(1));
