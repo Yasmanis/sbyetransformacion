@@ -17,7 +17,7 @@
                         <div class="col-lg-6 col-md-6 text-center pb-6">
                             <div class="container-img-right">
                                 <img
-                                    :src="`${$page.props.public_path}images/team/maria2.png`"
+                                    :src="`${$page.props.public_path}images/team/maria-consulta-individual.png`"
                                     alt="group-image"
                                     class="w-50"
                                 />
@@ -109,42 +109,15 @@
                                         indefinida, es decir, puedo estar
                                         contigo de una hora a cinco horas
                                         seguidas, dependiendo de lo que
-                                        necesites <br /><br />
+                                        necesites
+                                        <br /><br />
                                         en la consulta trabajare con los
                                         recursos que te he presentado en el
                                         libro y, por tanto, utilizare la
                                         desprogramacion de creencias, la
                                         reflexion y la liberacion emocional,
                                         para conseguir facilitarte el camino
-                                        hacia tu plenitud <br /><br />
-                                        normalmente trabajo en un marco temporal
-                                        de 3 meses con consultas quincenales en
-                                        donde me mantengo en permanente contacto
-                                        con la persona que esta liberando y
-                                        cambiando, para que en ningun momento se
-                                        sienta sola y desamparada, sino querida
-                                        y apoyada, pero siempre buscando su
-                                        empoderamiento, de modo que al cabo de
-                                        este marco temporal, que podra variar
-                                        ligeramente segun cada uno, la persona
-                                        sepa utilizar por si misma todas las
-                                        herramientas y ya solo necesite apoyarse
-                                        en mi en momentos puntuales de crisis
-                                        <br /><br />
-                                        como sabes, mis clientes se convierten
-                                        en mis amigos, sencillamente porque me
-                                        desnudo con ellos, les comprendo y me
-                                        comprenden, tenemos un fin comun y
-                                        conectamos desde lo mas profundo de
-                                        nuestro ser, es por esto que, tanto en
-                                        el periodo de consultas como
-                                        posteriormente a lo largo de toda la
-                                        vida, no cobrare mi acompañamiento, y si
-                                        me siento desbordada, buscare la
-                                        formula, junto con dios, para que nunca,
-                                        jamas, te sientas sola o solo en tu
-                                        proceso de sanancion y cambio, en tu
-                                        camino a la plenitud
+                                        hacia tu plenitud
                                     </p>
                                 </div>
                             </div>
@@ -156,8 +129,8 @@
                                         <div class="container-img-left mb-2">
                                             <div class="img-left-1 float-end">
                                                 <img
-                                                    :src="`${$page.props.public_path}images/others//mujer-llorando.png`"
-                                                    class="mb-2 w-100 rounded"
+                                                    :src="`${$page.props.public_path}images/others/mujer-llorando.png`"
+                                                    class="mb-2 w-80 rounded"
                                                     alt="group-image"
                                                 />
                                             </div>
@@ -165,7 +138,7 @@
                                                 <img
                                                     :src="`${$page.props.public_path}images/others/piezas-faltan.png`"
                                                     alt="group-image"
-                                                    class="w-100 rounded"
+                                                    class="w-80 rounded"
                                                 />
                                             </div>
                                         </div>
@@ -175,73 +148,90 @@
                                             <img
                                                 :src="`${$page.props.public_path}images/others/mujer-timon-barco.png`"
                                                 alt="group-image"
-                                                class="w-100 rounded"
+                                                class="w-80 rounded"
                                             />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row justify-content-around">
-                            <div class="col-lg-3"></div>
+                    </div>
+                    <div class="row">
+                        <p>
+                            normalmente trabajo en un marco temporal de 3 meses
+                            con consultas quincenales en donde me mantengo en
+                            permanente contacto con la persona que esta
+                            liberando y cambiando, para que en ningun momento se
+                            sienta sola y desamparada, sino querida y apoyada,
+                            pero siempre buscando su empoderamiento, de modo que
+                            al cabo de este marco temporal, que podra variar
+                            ligeramente segun cada uno, la persona sepa utilizar
+                            por si misma todas las herramientas y ya solo
+                            necesite apoyarse en mi en momentos puntuales de
+                            crisis
+                            <br /><br />
+                            como sabes, mis clientes se convierten en mis
+                            amigos, sencillamente porque me desnudo con ellos,
+                            les comprendo y me comprenden, tenemos un fin comun
+                            y conectamos desde lo mas profundo de nuestro ser,
+                            es por esto que, tanto en el periodo de consultas
+                            como posteriormente a lo largo de toda la vida, no
+                            cobrare mi acompañamiento, y si me siento
+                            desbordada, buscare la formula, junto con dios, para
+                            que nunca, jamas, te sientas sola o solo en tu
+                            proceso de sanancion y cambio, en tu camino a la
+                            plenitud
+                        </p>
+                    </div>
+                    <div class="row justify-content-around">
+                        <div class="col-lg-3"></div>
 
-                            <div class="col-lg-3 col-md-6">
-                                <a href="javascript:;" class="font-black">
-                                    <div
-                                        class="event-info-box align-items-center d-flex p-4 rounded bg-white box-shadow my-2"
-                                    >
-                                        <div
-                                            class="event-info-icon text-center"
-                                        >
-                                            <img
-                                                :src="`${$page.props.public_path}images/others/euro.png`"
-                                                class="me-3"
-                                                style="
-                                                    width: 50px;
-                                                    height: 50px;
-                                                "
-                                            />
-                                        </div>
-                                        <div class="location-info">
-                                            <h6 class="mb-1">
-                                                <b>PRECIO</b>
-                                            </h6>
-                                            <h5 class="mb-1">150 €</h5>
-                                            <small>sesion</small>
-                                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <a href="javascript:;" class="font-black">
+                                <div
+                                    class="event-info-box align-items-center d-flex p-4 rounded bg-white box-shadow my-2"
+                                    style="max-width: 220px"
+                                >
+                                    <div class="event-info-icon text-center">
+                                        <img
+                                            :src="`${$page.props.public_path}images/others/euro.png`"
+                                            class="me-3"
+                                            style="width: 50px; height: 50px"
+                                        />
                                     </div>
-                                </a>
-                            </div>
-                            <div class="col-lg-3 col-md-6">
-                                <Link href="/contactame" class="font-black">
-                                    <div
-                                        class="event-info-box align-items-center d-flex p-4 rounded bg-white box-shadow my-2"
-                                    >
-                                        <div
-                                            class="event-info-icon text-center"
-                                        >
-                                            <img
-                                                :src="`${$page.props.public_path}images/others/contactos.png`"
-                                                class="me-3"
-                                                style="
-                                                    width: 50px;
-                                                    height: 50px;
-                                                "
-                                            />
-                                        </div>
-                                        <div class="time-info">
-                                            <h5 class="mb-1">
-                                                <b>CONTACTO</b>
-                                            </h5>
-                                            <small
-                                                >cuentame que necesitas</small
-                                            >
-                                        </div>
+                                    <div class="location-info">
+                                        <h6 class="mb-1">
+                                            <b>PRECIO</b>
+                                        </h6>
+                                        <h5>150 €</h5>
+                                        <small>sesion</small>
                                     </div>
-                                </Link>
-                            </div>
-                            <div class="col-lg-3"></div>
+                                </div>
+                            </a>
                         </div>
+                        <div class="col-lg-3 col-md-6">
+                            <Link href="/contactame" class="font-black">
+                                <div
+                                    class="event-info-box align-items-center d-flex p-4 rounded bg-white box-shadow my-2"
+                                    style="max-width: 220px"
+                                >
+                                    <div class="event-info-icon text-center">
+                                        <img
+                                            :src="`${$page.props.public_path}images/others/contactos.png`"
+                                            class="me-3"
+                                            style="width: 50px; height: 50px"
+                                        />
+                                    </div>
+                                    <div class="time-info">
+                                        <h5 class="mb-1">
+                                            <b>CONTACTO</b>
+                                        </h5>
+                                        <small>cuentame que necesitas</small>
+                                    </div>
+                                </div>
+                            </Link>
+                        </div>
+                        <div class="col-lg-3"></div>
                     </div>
                 </div>
             </div>

@@ -7,6 +7,7 @@
             :loading="loading"
             :visible-columns="visibleColumns"
             :rows-per-page-options="[10, 20, 30, 50, 100]"
+            wrap-cells
             row-key="id"
             selection="multiple"
             v-model:selected="selected"
@@ -32,10 +33,6 @@
             "
             @request="onRequest"
         >
-            <!-- <template v-slot:loading>
-        <q-inner-loading showing color="primary" />
-      </template> -->
-
             <template v-slot:top="props">
                 <q-toolbar>
                     <section
@@ -53,7 +50,17 @@
                             :fields="createFields"
                             :module="current_module"
                             size="sm"
-                            v-if="createFields.length > 0"
+                            v-if="
+                                createFields.length > 0 &&
+                                current_module.model !== 'File'
+                            "
+                        />
+                        <form-file
+                            :title="current_module.singular_label"
+                            :module="current_module"
+                            size="sm"
+                            @save="onRequest"
+                            v-if="current_module.model === 'File'"
                         />
                         <q-btn-component
                             tooltips="actualizar"
@@ -172,6 +179,15 @@
                     style="width: 0; position: sticky; right: 0"
                     class="actions-def"
                 >
+                    <form-component
+                        :object="props.row"
+                        :title="current_module.singular_label"
+                        :fields="updateFields"
+                        :module="current_module"
+                        size="sm"
+                        @updated="onUpdated"
+                        v-if="updateFields.length > 0"
+                    />
                 </q-td>
             </template>
 
@@ -241,6 +257,7 @@
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
 import { useQuasar } from "quasar";
 import FormComponent from "../form/FormComponent.vue";
+import FormFile from "../file/FormFile.vue";
 import VisibleColumnsComponent from "./actions/VisibleColumnsComponent.vue";
 import QBtnComponent from "../base/QBtnComponent.vue";
 import SearchComponent from "./actions/SearchComponent.vue";

@@ -107,7 +107,7 @@
                         </li>
                         <li class="d-inline me-2">
                             <a
-                                href="https://www.youtube.com"
+                                href="https://www.youtube.com/@sbyetransformacion"
                                 target="_blank"
                                 class="d-inline-block rounded-circle bg-white bg-opacity-25"
                             >
@@ -116,7 +116,7 @@
                         </li>
                         <li class="d-inline me-2">
                             <a
-                                href="https://www.instagram.com"
+                                href="https://www.instagram.com/sbyetransformacion/"
                                 target="_blank"
                                 class="d-inline-block rounded-circle bg-white bg-opacity-25"
                             >

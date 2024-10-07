@@ -28,50 +28,60 @@ const props = defineProps({
     },
 });
 
-const searchFields = [
-    {
-        value: "name",
-        label: "nombre",
+const category = {
+    field: "category",
+    name: "category",
+    label: "categoria",
+    type: "select",
+    align: "left",
+    othersProps: {
+        url_to_options: "/categories",
     },
-];
+};
+
+const name = {
+    field: "name",
+    name: "name",
+    label: "nombre",
+    align: "left",
+    sortable: true,
+    type: "text",
+    required: true,
+};
+
+const type = {
+    field: "type",
+    name: "type",
+    label: "tipo",
+    align: "left",
+    sortable: true,
+    type: "text",
+};
+
+const size = {
+    field: "size_str",
+    name: "size_str",
+    label: "tamaño",
+    align: "left",
+    sortable: true,
+    type: "text",
+    style: "width: 120px",
+};
+
+const files = {
+    field: "files",
+    name: "files",
+    label: "ficheros",
+    type: "uploader",
+};
+
+const searchFields = [name];
 
 const columns = [
-    {
-        field: "name",
-        name: "name",
-        label: "nombre",
-        align: "left",
-        sortable: true,
-        type: "text",
-        required: true,
-    },
-    {
-        field: "type",
-        name: "type",
-        label: "tipo",
-        align: "left",
-        sortable: true,
-        type: "text",
-        required: true,
-    },
-    {
-        field: "size",
-        name: "size",
-        label: "tamaño",
-        align: "left",
-        sortable: true,
-        type: "text",
-        required: true,
-    },
-    {
-        field: "category",
-        name: "category",
-        label: "categoria",
-        align: "left",
-        sortable: true,
-        type: "text",
-        required: true,
-    },
+    name,
+    type,
+    size,
+    category,
     {
         field: "actions",
         name: "actions",
@@ -81,12 +91,14 @@ const columns = [
 ];
 
 const fields = [
+    name,
     {
-        name: "name",
-        label: "nombre",
-        type: "text",
-        props: {
-            required: true,
+        field: "category_id",
+        name: "category_id",
+        label: "categoria",
+        type: "select",
+        othersProps: {
+            url_to_options: "/categories",
         },
     },
 ];

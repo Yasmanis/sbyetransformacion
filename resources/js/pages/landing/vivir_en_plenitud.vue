@@ -16,7 +16,7 @@
                                 style="padding-bottom: 34px"
                             >
                                 <img
-                                    :src="`${$page.props.public_path}images/team/maria.png`"
+                                    :src="`${$page.props.public_path}images/team/maria-vivir-en-plenitud.png`"
                                     alt="banner-image"
                                     class="w-60"
                                 /><br />
@@ -96,7 +96,7 @@
                                     <p>
                                         vive en plenitud una persona que
                                         consigue equilibrar la trilogia
-                                        cuerpo-mente-dios, por lo que, dialogar
+                                        cuerpo_mente_dios, por lo que, dialogar
                                         con dios es un requisito para vivir en
                                         plenitud y asi me lo ha dicho de forma
                                         directa dios que fue quien me insto a
@@ -520,13 +520,6 @@
                                                 profunda. ejemplo con la
                                                 necesidad de tener razon y otros
                                                 apegos
-                                            </li>
-                                            <li>
-                                                trabajo para reflexionar sobre
-                                                lo que estoy viviendo y como me
-                                                siento, a donde quiero
-                                                dirigirme, que puedo mejorar y
-                                                como quiero acabar sintiendome
                                             </li>
                                         </ul>
                                         <div v-if="more_book3">

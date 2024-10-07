@@ -6,7 +6,7 @@
             >
                 <div class="column q-pa-lg">
                     <q-card square class="shadow-24" style="width: 300px">
-                        <q-card-section class="bg-deep-purple-7">
+                        <q-card-section class="bg-black">
                             <q-img
                                 :src="`${$page.props.public_path}images/logo/1.png`"
                             />
@@ -110,7 +110,7 @@
                                 icon="fab fa-youtube"
                                 tooltipsColor="primary"
                                 tooltips="youtube"
-                                href="https://www.youtube.com"
+                                href="https://www.youtube.com/@sbyetransformacion"
                                 target="_blank"
                             />
                             <q-btn-component
@@ -120,7 +120,7 @@
                                 tooltipsColor="primary"
                                 tooltips="instagram"
                                 class="q-mx-md"
-                                href="https://www.instagram.com"
+                                href="https://www.instagram.com/sbyetransformacion/"
                                 target="_blank"
                             />
 

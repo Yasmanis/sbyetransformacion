@@ -47,7 +47,7 @@
             <q-item-section avatar>
                 <q-icon :name="o.ico" />
             </q-item-section>
-            <q-item-section>{{ m.plural_label }}</q-item-section>
+            <q-item-section>{{ o.plural_label }}</q-item-section>
             <q-tooltip-component
                 title="name"
                 anchor="center right"
@@ -65,7 +65,7 @@
                 <q-icon :name="o.ico" />
             </q-item-section>
             <q-tooltip-component
-                :title="m.plural_label"
+                :title="o.plural_label"
                 anchor="center right"
                 self="center left"
             ></q-tooltip-component>
@@ -81,7 +81,7 @@
                         <q-item-section avatar>
                             <q-icon :name="o.ico" />
                         </q-item-section>
-                        <q-item-section>{{ m.plural_label }}</q-item-section>
+                        <q-item-section>{{ o.name }}</q-item-section>
                     </q-item>
                     <q-item
                         v-for="(m, indexSubOpt) in o.modules"

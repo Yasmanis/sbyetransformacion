@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="col-lg-5 col-md-5 text-center">
                             <img
-                                :src="`${$page.props.public_path}images/team/maria4.png`"
+                                :src="`${$page.props.public_path}images/team/maria-contacto.png`"
                                 class="w-100"
                                 style="margin-top: -100px; margin-left: -50px"
                             />
@@ -258,11 +258,24 @@
                                             v-if="iAmNot"
                                         >
                                             <input
-                                                v-model="form.register"
+                                                v-model="form.msg_title"
                                                 type="text"
-                                                name="register"
-                                                placeholder="registro y alta en area privada"
+                                                name="msg_title"
+                                                placeholder="titulo del mensaje"
+                                                required
                                                 class="mb-3"
+                                            />
+                                            <img
+                                                :src="`${$page.props.public_path}images/icon/aster.png`"
+                                                style="
+                                                    width: 8px;
+                                                    margin-top: -40px;
+                                                    margin-left: 150px;
+                                                    contain: content;
+                                                    float: left;
+                                                    opacity: 0.6;
+                                                "
+                                                v-if="!form.msg_title"
                                             />
                                             <textarea
                                                 v-model="form.message"
@@ -375,7 +388,7 @@ const form = useForm({
     email: null,
     book_number: null,
     book_date: null,
-    register: null,
+    msg_title: null,
     message: null,
     attachments: null,
 });
@@ -403,7 +416,7 @@ watch(contactPrivateArea, (n, o) => {
 });
 
 watch(iAmNot, (n, o) => {
-    form.reset("register");
+    form.reset("msg_title");
     form.reset("message");
     form.reset("attachments");
 });

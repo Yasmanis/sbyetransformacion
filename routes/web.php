@@ -60,6 +60,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);
+    Route::get('/categories', [SelectsController::class, 'categories']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });

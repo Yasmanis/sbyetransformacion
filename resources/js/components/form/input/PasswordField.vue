@@ -77,7 +77,6 @@ defineOptions({
 });
 
 const props = defineProps({
-    modelValue: String,
     name: {
         type: String,
         required: true,
@@ -112,10 +111,6 @@ onBeforeMount(() => {
     const { rules, help } = validations.getRules(props.othersProps);
     fieldRules.value = rules;
     fieldHelp.value = help;
-});
-
-onMounted(() => {
-    model.value = props.modelValue;
 });
 
 const errorPwd = computed(() => {

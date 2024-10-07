@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 
@@ -29,20 +30,48 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $user = auth()->user();
+        if ($user->sa || $user->hasAnyPermission(['view_user', 'update_user', 'delete_user', 'add_user'])) {
+            $request->validate([
+                'username' => ['required', 'unique:users'],
+                'email' => ['required', 'unique:users'],
+                'password' => ['required', 'min:8'],
+                'password_confirmed' => ['required', 'same:password'],
+            ]);
+            $repository = new UserRepository();
+            $user = $repository->create($request->only((new ($repository->model()))->getFillable()));
+            if (isset($request->roles)) {
+                $user->roles()->sync($request->roles);
+            }
+            if (isset($request->permissions)) {
+                $user->permissions()->sync($request->permissions);
+            }
+            return redirect()->back()->with('success', 'usuario adicionado correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+
+
+    public function update(Request $request, $id)
+    {
         $request->validate([
-            'username' => ['required', 'unique:users'],
-            'email' => ['required', 'unique:users'],
-            'password' => ['required', 'min:8'],
-            'password_confirmed' => ['required', 'same:password'],
+            'email' => ['required', Rule::unique('users', 'email')->ignore($id)],
         ]);
         $repository = new UserRepository();
-        $user = $repository->create($request->only((new ($repository->model()))->getFillable()));
+        $user = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
         if (isset($request->roles)) {
             $user->roles()->sync($request->roles);
+        }
+        else {
+            $user->roles()->detach();
         }
         if (isset($request->permissions)) {
             $user->permissions()->sync($request->permissions);
         }
-        return redirect()->back()->with('success', 'usuario adicionado correctamente');
+        else {
+            $user->permissions()->detach();
+        }
+        return redirect()->back()->with('success', 'usuario modificado correctamente');
     }
 }

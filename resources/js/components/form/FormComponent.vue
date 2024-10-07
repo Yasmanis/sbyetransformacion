@@ -19,7 +19,7 @@
                 :icon="icon"
                 :title="
                     object
-                        ? `editar ${object[module.toStr]}`
+                        ? `editar ${object[module.to_str]}`
                         : `adicionar ${module.singular_label.toLowerCase()}`
                 "
                 closable

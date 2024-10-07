@@ -18,7 +18,7 @@
                             <div class="overview-img">
                                 <div class="container-img-right">
                                     <img
-                                        :src="`${$page.props.public_path}images/team/maria3.png`"
+                                        :src="`${$page.props.public_path}images/team/maria-taller-online.png`"
                                         alt="group-image"
                                         class="w-60 rounded"
                                     />

@@ -8,8 +8,28 @@
         hide-bottom-space
         bottom-slots
         @update:model-value="onUpdate"
+    />
+    <div
+        class="q-field__bottom row items-start q-field__bottom--stale"
+        style="padding-left: 0px"
+        v-if="fieldHelp.length > 0"
     >
-    </q-checkbox>
+        <div class="q-field__messages col">
+            <ul style="padding: 0px; margin-top: 0px; margin-bottom: 0px">
+                <li
+                    class="text-help"
+                    v-for="(h, index) in fieldHelp"
+                    :key="`help-field-${index}`"
+                    :style="{
+                        'list-style': 'none',
+                        color: color === 'red' ? 'red' : '',
+                    }"
+                >
+                    {{ h }}
+                </li>
+            </ul>
+        </div>
+    </div>
 </template>
 <script setup>
 import { ref, onMounted, onBeforeMount } from "vue";
@@ -38,7 +58,7 @@ const props = defineProps({
     },
     dense: {
         type: Boolean,
-        default: false,
+        default: true,
     },
     othersProps: {
         type: Object,

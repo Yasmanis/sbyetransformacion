@@ -11,16 +11,24 @@
                     :label="f.label"
                     :name="f.name"
                     :othersProps="f.othersProps"
+                    :modelValue="formData[f.name]"
                     @update="onUpdateField"
                     v-if="f.type === 'text'"
                 />
                 <checkbox-field
                     :label="f.label"
                     :name="f.name"
-                    :modelValue="object ? object[f.name] : false"
+                    :modelValue="formData[f.name]"
                     :othersProps="f.othersProps"
                     @update="onUpdateField"
                     v-else-if="f.type === 'boolean'"
+                />
+                <uploader-field
+                    :label="f.label"
+                    :name="f.name"
+                    :othersProps="f.othersProps"
+                    @update="onUpdateField"
+                    v-else-if="f.type === 'uploader'"
                 />
                 <select-field
                     :label="f.label"
@@ -36,7 +44,7 @@
                 <date-field
                     :label="f.label"
                     :name="f.name"
-                    :modelValue="object ? object[f.name] : null"
+                    :modelValue="formData[f.name]"
                     :othersProps="f.othersProps"
                     @update="onUpdateField"
                     v-else-if="f.type === 'date'"
@@ -44,7 +52,6 @@
                 <password-field
                     :label="f.label"
                     :name="f.name"
-                    :modelValue="object ? object[f.name] : null"
                     :othersProps="f.othersProps"
                     @update="onUpdateField"
                     @confirm="onUpdateField"
@@ -62,6 +69,7 @@
             size="md"
             padding="5px"
             no_caps
+            icon="mdi-content-save-outline"
             @click="save(true)"
         />
         <q-btn-component
@@ -71,6 +79,7 @@
             size="md"
             padding="5px"
             no_caps
+            icon="mdi-checkbox-marked-circle-plus-outline"
             @click="save(false)"
             v-if="!object"
         />
@@ -82,6 +91,7 @@
             padding="5px"
             color="red"
             no_caps
+            icon="mdi-close-circle-outline"
             v-close-popup
         />
     </q-card-actions>
@@ -98,6 +108,7 @@ import SelectField from "./input/SelectField.vue";
 import CheckboxField from "./input/CheckboxField.vue";
 import DateField from "./input/DateField.vue";
 import PasswordField from "./input/PasswordField.vue";
+import UploaderField from "./input/UploaderField.vue";
 import QBtnComponent from "../base/QBtnComponent.vue";
 import { useForm } from "@inertiajs/vue3";
 import { errorException, errorValidation } from "../../helpers/notifications";
@@ -130,11 +141,13 @@ onBeforeMount(() => {
 const setDefaultData = () => {
     props.fields.forEach((f) => {
         if (f.type === "boolean") {
-            formData.value[f.name] = false;
+            formData.value[f.name] = props.object
+                ? props.object[f.name]
+                : false;
         } else if (f.type === "select") {
-            formData.value[f.name] = [];
+            formData.value[f.name] = props.object ? props.object[f.name] : null;
         } else {
-            formData.value[f.name] = null;
+            formData.value[f.name] = props.object ? props.object[f.name] : null;
         }
     });
 };
@@ -146,31 +159,36 @@ const onUpdateField = (name, val) => {
 const save = async (hide) => {
     form.value.validate().then((success) => {
         if (success) {
-            saveRecord(hide);
+            if (props.object) {
+                update();
+            } else {
+                store(hide);
+            }
         } else {
             errorValidation();
         }
     });
 };
 
-const saveRecord = async (hide) => {
-    try {
-        const send = useForm(formData.value);
-        send.post(props.module.base_url, {
-            onSuccess: () => {
-                setDefaultData();
-                if (hide) {
-                    emits("close");
-                } else {
-                    // setDefaultData();
-                    // form.value.reset();
-                }
-            },
-        });
-        //form.value.resetValidation();
-    } catch (e) {
-        errorException(e);
-    } finally {
-    }
+const store = async (hide) => {
+    const send = useForm(formData.value);
+    send.post(props.module.base_url, {
+        onSuccess: () => {
+            setDefaultData();
+            if (hide) {
+                emits("close");
+            }
+        },
+    });
+};
+
+const update = async (hide) => {
+    const send = useForm(formData.value);
+    send.put(`${props.module.base_url}/${props.object.id}`, {
+        onSuccess: () => {
+            setDefaultData();
+            emits("close");
+        },
+    });
 };
 </script>

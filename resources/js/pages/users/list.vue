@@ -158,37 +158,5 @@ const createFields = [
     permissions,
 ];
 
-const updateFields = [
-    {
-        name: "username",
-        readonly: true,
-        label: "username",
-        type: "text",
-    },
-    {
-        name: "name",
-        label: "name",
-        type: "text",
-    },
-    {
-        name: "surname",
-        label: "surname",
-        type: "text",
-    },
-    {
-        name: "email",
-        label: "email",
-        type: "text",
-    },
-    {
-        name: "sa",
-        label: "super admin",
-        type: "checkbox",
-    },
-    {
-        name: "active",
-        label: "active",
-        type: "checkbox",
-    },
-];
+const updateFields = [name, surname, email, sa, active, roles, permissions];
 </script>

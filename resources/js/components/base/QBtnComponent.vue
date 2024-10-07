@@ -110,3 +110,8 @@ const onClick = () => {
     emits("click");
 };
 </script>
+<style scope>
+.on-left {
+    margin-right: 4px !important;
+}
+</style>

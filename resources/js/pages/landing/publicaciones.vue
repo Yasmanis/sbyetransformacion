@@ -682,7 +682,7 @@
                                         </div>
                                         <div class="col-6">
                                             <a
-                                                href="https://www.youtube.com"
+                                                href="https://www.youtube.com/@sbyetransformacion"
                                                 target="_blank"
                                                 class="btn rounded-3 p-2 text-capitalize w-100 text-start bg-company"
                                                 ><i
@@ -694,7 +694,7 @@
                                         </div>
                                         <div class="col-6">
                                             <a
-                                                href="https://www.instagram.com"
+                                                href="https://www.instagram.com/sbyetransformacion/"
                                                 target="_blank"
                                                 class="btn rounded-3 p-2 text-capitalize w-100 text-start bg-company"
                                                 ><i

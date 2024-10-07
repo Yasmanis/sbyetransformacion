@@ -10,20 +10,36 @@
         :options="allOptions"
         :use-input="filterable"
         :use-chips="multiple && chips"
+        :rules="fieldRules"
         :error="errorMsg !== null"
         :error-message="errorMsg"
+        lazy-rules
+        reactive-rules
+        input-debounce="0"
         hide-bottom-space
         emit-value
         map-options
         class="full-width"
         @filter="filterFn"
-        @update:model-value="(val) => updateModel(val)"
+        @update:model-value="updateModel"
     >
+        <template #hint v-if="fieldHelp?.length > 0">
+            <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
+                <li
+                    v-for="(h, index) in fieldHelp"
+                    :key="`help-${index}`"
+                    style="list-style: none"
+                >
+                    {{ h }}
+                </li>
+            </ul>
+        </template>
     </q-select>
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from "vue";
+import { ref, onMounted, watch, computed, onBeforeMount } from "vue";
+import { validations } from "../../../helpers/validations";
 import axios from "axios";
 import { usePage } from "@inertiajs/vue3";
 
@@ -32,10 +48,7 @@ defineOptions({
 });
 
 const props = defineProps({
-    modelValue: {
-        type: Array,
-        default: () => [],
-    },
+    modelValue: Array | Number | Boolean | String,
     dense: {
         type: Boolean,
         default: true,
@@ -92,6 +105,15 @@ const model = ref(null);
 const currentOptions = ref([]);
 const allOptions = ref([]);
 
+const fieldRules = ref([]);
+const fieldHelp = ref([]);
+
+onBeforeMount(() => {
+    const { rules, help } = validations.getRules(props.othersProps);
+    fieldRules.value = rules;
+    fieldHelp.value = help;
+});
+
 onMounted(() => {
     setData();
 });
@@ -137,16 +159,30 @@ const setDataFromServer = async () => {
     }
 };
 
-const setModelValue = () => {
-    if (props.modelValue?.length > 0) {
-        let current_selected = [];
-        props.modelValue.forEach((o) => {
-            let option = currentOptions.value.find((opt) => opt.value === o);
+const setModelValue = async () => {
+    if (props.modelValue) {
+        if (props.multiple) {
+            model.value = [];
+            props.modelValue.forEach((o) => {
+                let option = currentOptions.value.find(
+                    (opt) => opt.value === o
+                );
+                if (option) {
+                    model.value.push(option);
+                }
+            });
+        } else {
+            let option = await currentOptions.value.find(
+                (opt) =>
+                    opt.value ===
+                    (Array.isArray(props.modelValue)
+                        ? props.modelValue[0]
+                        : props.modelValue)
+            );
             if (option) {
-                current_selected.push(option);
+                model.value = option;
             }
-        });
-        model.value = props.multiple ? current_selected : current_selected[0];
+        }
     } else {
         model.value = null;
     }

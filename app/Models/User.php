@@ -60,6 +60,18 @@ class User extends Authenticatable
         'active' => 'boolean'
     ];
 
+    protected $appends = ['permissions', 'roles'];
+
+    public function getPermissionsAttribute()
+    {
+        return $this->permissions()->get()->pluck('id');
+    }
+
+    public function getRolesAttribute()
+    {
+        return $this->roles()->get()->pluck('id');
+    }
+
     public function getPermissions()
     {
         return $this->sa ? Permission::all() : $this->getAllPermissions();
