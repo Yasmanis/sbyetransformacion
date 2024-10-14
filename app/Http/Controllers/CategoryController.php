@@ -10,8 +10,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $user = auth()->user();
-        if ($user->sa || $user->hasAnyPermission(['view_category', 'update_category', 'delete_category', 'add_category'])) {
+        if (auth()->user()->hasView('category')) {
             $repository = new CategoryRepository();
             if (isset($request->search)) {
                 $search = json_decode($request->search);
@@ -22,26 +21,47 @@ class CategoryController extends Controller
             }
             return $this->data_index($repository, $request);
         }
-        return $this->deny_access();
+        return $this->deny_access($request);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'max:30', 'unique:category'],
-        ]);
-        $repository = new CategoryRepository();
-        $repository->create($request->only((new ($repository->model()))->getFillable()));
-        return redirect()->back()->with('success', 'categoria adicionado correctamente');
+        if (auth()->user()->hasCreate('category')) {
+            $request->validate([
+                'name' => ['required', 'max:30', 'unique:category'],
+            ]);
+            $repository = new CategoryRepository();
+            $repository->create($request->only((new ($repository->model()))->getFillable()));
+            return redirect()->back()->with('success', 'categoria adicionado correctamente');
+        }
+        return $this->deny_access($request);
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => ['required', 'max:30', Rule::unique('category', 'name')->ignore($id)],
-        ]);
-        $repository = new CategoryRepository();
-        $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
-        return redirect()->back()->with('success', 'categoria modificada correctamente');
+        if (auth()->user()->hasUpdate('category')) {
+            $request->validate([
+                'name' => ['required', 'max:30', Rule::unique('category', 'name')->ignore($id)],
+            ]);
+            $repository = new CategoryRepository();
+            $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+            return redirect()->back()->with('success', 'categoria modificada correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function destroy(Request $request, $ids)
+    {
+        if (auth()->user()->hasDelete('category')) {
+            $repository = new CategoryRepository();
+            $ids = explode(',', $ids);
+            if (count($ids) == 1) {
+                $repository->deleteById($ids[0]);
+            } else {
+                $repository->deleteMultipleById($ids);
+            }
+            return redirect()->back()->with('success', count($ids) == 1 ? 'categoria eliminada correctamente' : 'categorias eliminadas correctamente');
+        }
+        return $this->deny_access($request);
     }
 }

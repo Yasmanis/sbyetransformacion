@@ -510,7 +510,7 @@
                                 <ul class="m-0 p-0 list-unstyled">
                                     <li class="py-3 border-dashed-bottom-1">
                                         <a
-                                            href="{{ route('publicaciones.libro') }}"
+                                            href="javascript:;"
                                             class="font-company"
                                             ><i
                                                 class="fa fa-check font-company pe-3"

@@ -29,7 +29,7 @@
                             <div
                                 class="overview-left text-center text-lg-start"
                             >
-                                <div class="overview-title pb-4">
+                                <div class="overview-title pt-8">
                                     <p
                                         class="text-white text-center text-lowercase header-subtitle"
                                     >
@@ -255,15 +255,16 @@
                                                 </div>
                                                 <div class="list-box-body">
                                                     <h5 class="text-lowercase">
-                                                        monica
+                                                        lola
                                                     </h5>
                                                     <p class="mb-2 w-75 m-auto">
-                                                        67 años
+                                                        70 años
                                                     </p>
                                                     <div class="box-btn">
                                                         <a
                                                             class="p-0 font-company"
-                                                            href="javascript:;"
+                                                            target="_blank"
+                                                            :href="`${$page.props.public_path}informes/taller_online/lola-70-anios.pdf`"
                                                             >leer<i
                                                                 class="fa fa-long-arrow-right ms-2"
                                                             ></i
@@ -282,7 +283,7 @@
                                                 </div>
                                                 <div class="list-box-body">
                                                     <h5 class="text-lowercase">
-                                                        rosa
+                                                        carol
                                                     </h5>
                                                     <p class="mb-2 w-75 m-auto">
                                                         37 años
@@ -290,7 +291,8 @@
                                                     <div class="box-btn">
                                                         <a
                                                             class="font-company p-0"
-                                                            href="javascript:;"
+                                                            target="_blank"
+                                                            :href="`${$page.props.public_path}informes/taller_online/carol-37-anios.pdf`"
                                                             >leer<i
                                                                 class="fa fa-long-arrow-right ms-2"
                                                             ></i
@@ -315,12 +317,13 @@
                                                     sebas
                                                 </h5>
                                                 <p class="mb-2 w-75 m-auto">
-                                                    61 años
+                                                    60 años
                                                 </p>
                                                 <div class="box-btn">
                                                     <a
                                                         class="font-company p-0"
-                                                        href="javascript:;"
+                                                        target="_blank"
+                                                        :href="`${$page.props.public_path}informes/taller_online/sebas-60-anios.pdf`"
                                                         >leer<i
                                                             class="fa fa-long-arrow-right ms-2"
                                                         ></i

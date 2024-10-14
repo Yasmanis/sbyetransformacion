@@ -274,7 +274,8 @@
                                                     <div class="box-btn">
                                                         <a
                                                             class="p-0 font-company"
-                                                            href="javascript:;"
+                                                            target="_blank"
+                                                            :href="`${$page.props.public_path}informes/consulta_individual/elena-25-anios.pdf`"
                                                             >leer<i
                                                                 class="fa fa-long-arrow-right ms-2"
                                                             ></i
@@ -296,12 +297,13 @@
                                                         marta
                                                     </h5>
                                                     <p class="mb-2 w-75 m-auto">
-                                                        60 años
+                                                        67 años
                                                     </p>
                                                     <div class="box-btn">
                                                         <a
                                                             class="font-company p-0"
-                                                            href="javascript:;"
+                                                            target="_blank"
+                                                            :href="`${$page.props.public_path}informes/consulta_individual/marta-67-anios.pdf`"
                                                             >leer<i
                                                                 class="fa fa-long-arrow-right ms-2"
                                                             ></i
@@ -326,12 +328,13 @@
                                                     sebas
                                                 </h5>
                                                 <p class="mb-2 w-75 m-auto">
-                                                    61 años
+                                                    60 años
                                                 </p>
                                                 <div class="box-btn">
                                                     <a
                                                         class="font-company p-0"
-                                                        href="javascript:;"
+                                                        :href="`${$page.props.public_path}informes/consulta_individual/sebas-60-anios.pdf`"
+                                                        target="_blank"
                                                         >leer<i
                                                             class="fa fa-long-arrow-right ms-2"
                                                         ></i

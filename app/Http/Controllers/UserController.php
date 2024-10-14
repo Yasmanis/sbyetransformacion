@@ -13,8 +13,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $user = auth()->user();
-        if ($user->sa || $user->hasAnyPermission(['view_user', 'update_user', 'delete_user', 'add_user'])) {
+        if (auth()->user()->hasView('user')) {
             $repository = new UserRepository();
             if (isset($request->search)) {
                 $search = json_decode($request->search);
@@ -30,8 +29,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $user = auth()->user();
-        if ($user->sa || $user->hasAnyPermission(['view_user', 'update_user', 'delete_user', 'add_user'])) {
+        if (auth()->user()->hasCreate('user')) {
             $request->validate([
                 'username' => ['required', 'unique:users'],
                 'email' => ['required', 'unique:users'],
@@ -51,27 +49,41 @@ class UserController extends Controller
         return $this->deny_access($request);
     }
 
-
-
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'email' => ['required', Rule::unique('users', 'email')->ignore($id)],
-        ]);
-        $repository = new UserRepository();
-        $user = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
-        if (isset($request->roles)) {
-            $user->roles()->sync($request->roles);
+        if (auth()->user()->hasUpdate('user')) {
+            $request->validate([
+                'email' => ['required', Rule::unique('users', 'email')->ignore($id)],
+            ]);
+            $repository = new UserRepository();
+            $user = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+            if (isset($request->roles)) {
+                $user->roles()->sync($request->roles);
+            } else {
+                $user->roles()->detach();
+            }
+            if (isset($request->permissions)) {
+                $user->permissions()->sync($request->permissions);
+            } else {
+                $user->permissions()->detach();
+            }
+            return redirect()->back()->with('success', 'usuario modificado correctamente');
         }
-        else {
-            $user->roles()->detach();
+        return $this->deny_access($request);
+    }
+
+    public function destroy(Request $request, $ids)
+    {
+        if (auth()->user()->hasDelete('user')) {
+            $repository = new UserRepository();
+            $ids = explode(',', $ids);
+            if (count($ids) == 1) {
+                $repository->deleteById($ids[0]);
+            } else {
+                $repository->deleteMultipleById($ids);
+            }
+            return redirect()->back()->with('success', count($ids) == 1 ? 'usuario eliminado correctamente' : 'usuarios eliminados correctamente');
         }
-        if (isset($request->permissions)) {
-            $user->permissions()->sync($request->permissions);
-        }
-        else {
-            $user->permissions()->detach();
-        }
-        return redirect()->back()->with('success', 'usuario modificado correctamente');
+        return $this->deny_access($request);
     }
 }

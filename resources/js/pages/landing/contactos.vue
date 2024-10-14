@@ -10,7 +10,7 @@
                 </div>
             </div>
         </section>
-        <section class="contact bg-company py-6">
+        <section class="contact bg-company pb-2 pt-2">
             <div class="container">
                 <div class="contact-inner text-center text-md-start">
                     <div class="row">
@@ -18,7 +18,11 @@
                             <img
                                 :src="`${$page.props.public_path}images/team/maria-contacto.png`"
                                 class="w-100"
-                                style="margin-top: -100px; margin-left: -50px"
+                                style="
+                                    margin-top: -60px;
+                                    margin-left: -50px;
+                                    margin-bottom: -40px;
+                                "
                             />
                         </div>
                         <div class="col-lg-7 col-md-7">
@@ -126,6 +130,105 @@
                                                 "
                                                 v-if="!form.email"
                                             />
+                                        </div>
+                                        <div class="message">
+                                            <input
+                                                v-model="form.msg_title"
+                                                type="text"
+                                                name="msg_title"
+                                                placeholder="titulo del mensaje"
+                                                required
+                                                class="mb-3"
+                                            />
+                                            <img
+                                                :src="`${$page.props.public_path}images/icon/aster.png`"
+                                                style="
+                                                    width: 8px;
+                                                    margin-top: -40px;
+                                                    margin-left: 150px;
+                                                    contain: content;
+                                                    float: left;
+                                                    opacity: 0.6;
+                                                "
+                                                v-if="!form.msg_title"
+                                            />
+                                            <textarea
+                                                v-model="form.message"
+                                                placeholder="mensaje"
+                                                name="message"
+                                                class="mb-3"
+                                                rows="5"
+                                                style="resize: none"
+                                                required
+                                            ></textarea>
+                                            <img
+                                                :src="`${$page.props.public_path}images/icon/aster.png`"
+                                                style="
+                                                    width: 8px;
+                                                    margin-top: -130px;
+                                                    margin-left: 82px;
+                                                    contain: content;
+                                                    float: left;
+                                                    opacity: 0.6;
+                                                "
+                                                v-if="!form.message"
+                                            />
+                                            <label
+                                                id="tooltip-attachments"
+                                                href="javascript:;"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                title="añadir adjuntos"
+                                                for="attachments"
+                                                style="
+                                                    float: right;
+                                                    margin-top: -60px;
+                                                    contain: content;
+                                                    margin-right: 10px;
+                                                    cursor: pointer;
+                                                "
+                                            >
+                                                <img
+                                                    :src="`${$page.props.public_path}images/icon/clipper.png`"
+                                                    style="width: 30px"
+                                                />
+                                            </label>
+                                            <input
+                                                @input="
+                                                    form.attachments =
+                                                        $event.target.files
+                                                "
+                                                type="file"
+                                                multiple
+                                                style="display: none"
+                                                id="attachments"
+                                            />
+
+                                            <ul
+                                                v-if="
+                                                    form?.attachments?.length >
+                                                    0
+                                                "
+                                            >
+                                                <li
+                                                    class="text-white"
+                                                    style="
+                                                        list-style: none;
+                                                        margin-left: -20px;
+                                                    "
+                                                >
+                                                    adjuntos
+                                                </li>
+                                                <li
+                                                    class="text-white"
+                                                    v-for="(
+                                                        f, index
+                                                    ) in form.attachments"
+                                                    :key="`attachment_${index}`"
+                                                >
+                                                    {{ f.name }}
+                                                </li>
+                                            </ul>
                                         </div>
                                         <div
                                             class="radio mt-0 mb-2 radio-not-found"
@@ -252,105 +355,28 @@
                                                 el ticket no soy yo</label
                                             >
                                         </div>
-                                        <div
-                                            class="message"
-                                            id="message"
-                                            v-if="iAmNot"
-                                        >
+                                        <div v-if="iAmNot">
                                             <input
-                                                v-model="form.msg_title"
+                                                v-model="form.other_people"
                                                 type="text"
-                                                name="msg_title"
-                                                placeholder="titulo del mensaje"
-                                                required
+                                                name="other_people"
+                                                placeholder="nombre de la persona que aparece en el pedido"
                                                 class="mb-3"
+                                                required
                                             />
                                             <img
                                                 :src="`${$page.props.public_path}images/icon/aster.png`"
                                                 style="
                                                     width: 8px;
                                                     margin-top: -40px;
-                                                    margin-left: 150px;
+                                                    margin-left: 380px;
                                                     contain: content;
                                                     float: left;
                                                     opacity: 0.6;
                                                 "
-                                                v-if="!form.msg_title"
-                                            />
-                                            <textarea
-                                                v-model="form.message"
-                                                placeholder="mensaje"
-                                                name="message"
-                                                class="mb-3"
-                                                rows="5"
-                                                style="resize: none"
-                                                required
-                                            ></textarea>
-                                            <img
-                                                :src="`${$page.props.public_path}images/icon/aster.png`"
-                                                style="
-                                                    width: 8px;
-                                                    margin-top: -130px;
-                                                    margin-left: 82px;
-                                                    contain: content;
-                                                    float: left;
-                                                    opacity: 0.6;
-                                                "
-                                                v-if="!form.message"
-                                            />
-                                            <label
-                                                id="tooltip-attachments"
-                                                href="javascript:;"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="right"
-                                                title="añadir adjuntos"
-                                                for="attachments"
-                                                style="
-                                                    float: right;
-                                                    margin-top: -60px;
-                                                    contain: content;
-                                                    margin-right: 10px;
-                                                    cursor: pointer;
-                                                "
-                                            >
-                                                <img
-                                                    :src="`${$page.props.public_path}images/icon/clipper.png`"
-                                                    style="width: 30px"
-                                                />
-                                            </label>
-                                            <input
-                                                @input="
-                                                    form.attachments =
-                                                        $event.target.files
-                                                "
-                                                type="file"
-                                                multiple
-                                                style="display: none"
-                                                id="attachments"
+                                                v-if="!form.other_people"
                                             />
                                         </div>
-                                        <ul
-                                            v-if="form?.attachments?.length > 0"
-                                        >
-                                            <li
-                                                class="text-white"
-                                                style="
-                                                    list-style: none;
-                                                    margin-left: -20px;
-                                                "
-                                            >
-                                                adjuntos
-                                            </li>
-                                            <li
-                                                class="text-white"
-                                                v-for="(
-                                                    f, index
-                                                ) in form.attachments"
-                                                :key="`attachment_${index}`"
-                                            >
-                                                {{ f.name }}
-                                            </li>
-                                        </ul>
                                         <button
                                             class="btn"
                                             type="submit"
@@ -390,6 +416,7 @@ const form = useForm({
     book_date: null,
     msg_title: null,
     message: null,
+    other_people: null,
     attachments: null,
 });
 
@@ -416,9 +443,7 @@ watch(contactPrivateArea, (n, o) => {
 });
 
 watch(iAmNot, (n, o) => {
-    form.reset("msg_title");
-    form.reset("message");
-    form.reset("attachments");
+    form.reset("other_people");
 });
 
 const onFocusDate = () => {
@@ -444,6 +469,9 @@ const onSubmit = () => {
         onSuccess: () => {
             form.reset();
             sending.value = false;
+            iAmNot.value = false;
+            contactPrivateArea.value = false;
+            book_date.value = "text";
             setHideAlert();
         },
         onError: () => {

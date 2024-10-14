@@ -87,7 +87,7 @@
                                         >la complejidad de nuestras emociones
                                         junto con el desarrollo de nuestra mente
                                         es lo que nos hace seres singulares con
-                                        respecto al resto de la existencia
+                                        respecto al resto de la existencia.
                                         comprender estas emociones, aceptarlas y
                                         liberar el sufrimiento es fundamental
                                         para trascender nuestra personalidad y
@@ -96,7 +96,7 @@
                                     <p>
                                         vive en plenitud una persona que
                                         consigue equilibrar la trilogia
-                                        cuerpo_mente_dios, por lo que, dialogar
+                                        cuerpo_mente_dios, por lo que dialogar
                                         con dios es un requisito para vivir en
                                         plenitud y asi me lo ha dicho de forma
                                         directa dios que fue quien me insto a
@@ -666,8 +666,8 @@
                             valorar otro registro mas
                         </p>
                         <div class="ticket-button">
-                            <a class="btn" href="{{ url('/contactos') }}"
-                                >me registro!</a
+                            <Link class="btn" href="/contactame"
+                                >me registro!</Link
                             >
                         </div>
                     </div>
@@ -764,6 +764,7 @@
 <script setup>
 import Layout from "../../layouts/MainLayout.vue";
 import { ref } from "vue";
+import { Link } from "@inertiajs/vue3";
 
 defineOptions({
     name: "VivirEnPlenitud",

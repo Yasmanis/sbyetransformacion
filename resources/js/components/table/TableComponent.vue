@@ -52,7 +52,8 @@
                             size="sm"
                             v-if="
                                 createFields.length > 0 &&
-                                current_module.model !== 'File'
+                                current_module.model !== 'File' &&
+                                has_add
                             "
                         />
                         <form-file
@@ -60,7 +61,7 @@
                             :module="current_module"
                             size="sm"
                             @save="onRequest"
-                            v-if="current_module.model === 'File'"
+                            v-if="current_module.model === 'File' && has_add"
                         />
                         <q-btn-component
                             tooltips="actualizar"
@@ -81,6 +82,12 @@
                                     : 'fullscreen'
                             "
                             @click="props.toggleFullscreen"
+                        />
+                        <delete-component
+                            :objects="selected"
+                            :module="current_module"
+                            @deleted="selected = []"
+                            v-if="selected.length > 0 && has_delete"
                         />
                     </div>
                 </q-toolbar>
@@ -176,7 +183,11 @@
             <template v-slot:body-cell-actions="props">
                 <q-td
                     :props="props"
-                    style="width: 0; position: sticky; right: 0"
+                    :style="{
+                        position: sticky,
+                        right: 0,
+                        width: props.col.width,
+                    }"
                     class="actions-def"
                 >
                     <form-component
@@ -185,8 +196,13 @@
                         :fields="updateFields"
                         :module="current_module"
                         size="sm"
-                        @updated="onUpdated"
-                        v-if="updateFields.length > 0"
+                        v-if="updateFields.length > 0 && has_edit"
+                    />
+                    <delete-component
+                        :objects="[props.row]"
+                        :module="current_module"
+                        size="sm"
+                        v-if="has_delete"
                     />
                 </q-td>
             </template>
@@ -244,6 +260,32 @@
                                         col.value ? col.value : "..."
                                     }}</q-item-label>
                                 </q-item-section>
+                                <q-item-section
+                                    v-else-if="col.name === 'actions'"
+                                >
+                                    <q-separator />
+                                    <div class="q-pa-sm q-gutter-sm text-right">
+                                        <form-component
+                                            :object="props.row"
+                                            :title="
+                                                current_module.singular_label
+                                            "
+                                            :fields="updateFields"
+                                            :module="current_module"
+                                            size="sm"
+                                            v-if="
+                                                updateFields.length > 0 &&
+                                                has_edit
+                                            "
+                                        />
+                                        <delete-component
+                                            :objects="[props.row]"
+                                            :module="current_module"
+                                            size="sm"
+                                            v-if="has_delete"
+                                        />
+                                    </div>
+                                </q-item-section>
                             </q-item>
                         </q-list>
                     </q-card>
@@ -257,6 +299,7 @@
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
 import { useQuasar } from "quasar";
 import FormComponent from "../form/FormComponent.vue";
+import DeleteComponent from "./actions/DeleteComponent.vue";
 import FormFile from "../file/FormFile.vue";
 import VisibleColumnsComponent from "./actions/VisibleColumnsComponent.vue";
 import QBtnComponent from "../base/QBtnComponent.vue";
@@ -318,6 +361,10 @@ const properties = computed(() => {
 
 const rows = ref([]);
 
+const has_add = ref(false);
+const has_edit = ref(false);
+const has_delete = ref(false);
+
 watch(
     properties,
     (val) => {
@@ -342,6 +389,11 @@ watch(
 
 onBeforeMount(() => {
     current_module.value = currentModule(page.url.split("?")[0]).module;
+    const permissions = current_module.value.permissions.map((p) => p.name);
+    const modelName = current_module.value.model.toLowerCase();
+    has_add.value = permissions.includes(`add_${modelName}`);
+    has_edit.value = permissions.includes(`edit_${modelName}`);
+    has_delete.value = permissions.includes(`delete_${modelName}`);
 });
 
 onMounted(() => {
@@ -365,12 +417,6 @@ const onSearchClear = () => {
     pagination.value.page = 1;
     onRequest();
 };
-
-const onUpdated = (record) => {
-    onRequest();
-};
-
-const onDeleted = (objects) => {};
 
 const onRequest = async (attrs) => {
     const { page, rowsPerPage, descending, sortBy, search, filters } = attrs

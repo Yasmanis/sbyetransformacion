@@ -11,8 +11,7 @@ class RoleController extends Controller
 {
     public function index(Request $request)
     {
-        $user = auth()->user();
-        if ($user->sa || $user->hasAnyPermission(['view_role', 'update_role', 'delete_role', 'add_role'])) {
+        if (auth()->user()->hasView('role')) {
             $repository = new RoleRepository();
             if (isset($request->search)) {
                 $search = json_decode($request->search);
@@ -23,34 +22,55 @@ class RoleController extends Controller
             }
             return $this->data_index($repository, $request);
         }
-        return $this->deny_access();
+        return $this->deny_access($request);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'max:30', 'unique:roles'],
-        ]);
-        $repository = new RoleRepository();
-        $role = $repository->create($request->only((new ($repository->model()))->getFillable()));
-        if (isset($request->permissions)) {
-            $role->permissions()->sync($request->permissions);
+        if (auth()->user()->hasCreate('role')) {
+            $request->validate([
+                'name' => ['required', 'max:30', 'unique:roles'],
+            ]);
+            $repository = new RoleRepository();
+            $role = $repository->create($request->only((new ($repository->model()))->getFillable()));
+            if (isset($request->permissions)) {
+                $role->permissions()->sync($request->permissions);
+            }
+            return redirect()->back()->with('success', 'rol adicionado correctamente');
         }
-        return redirect()->back()->with('success', 'rol adicionado correctamente');
+        return $this->deny_access($request);
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => ['required', 'max:30', Rule::unique('roles', 'name')->ignore($id)],
-        ]);
-        $repository = new RoleRepository();
-        $role = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
-        if (isset($request->permissions)) {
-            $role->permissions()->sync($request->permissions);
-        } else {
-            $role->permissions()->detach();
+        if (auth()->user()->hasUpdate('role')) {
+            $request->validate([
+                'name' => ['required', 'max:30', Rule::unique('roles', 'name')->ignore($id)],
+            ]);
+            $repository = new RoleRepository();
+            $role = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+            if (isset($request->permissions)) {
+                $role->permissions()->sync($request->permissions);
+            } else {
+                $role->permissions()->detach();
+            }
+            return redirect()->back()->with('success', 'rol modificado correctamente');
         }
-        return redirect()->back()->with('success', 'rol modificado correctamente');
+        return $this->deny_access($request);
+    }
+
+    public function destroy(Request $request, $ids)
+    {
+        if (auth()->user()->hasDelete('role')) {
+            $repository = new RoleRepository();
+            $ids = explode(',', $ids);
+            if (count($ids) == 1) {
+                $repository->deleteById($ids[0]);
+            } else {
+                $repository->deleteMultipleById($ids);
+            }
+            return redirect()->back()->with('success', count($ids) == 1 ? 'rol eliminado correctamente' : 'roles eliminados correctamente');
+        }
+        return $this->deny_access($request);
     }
 }

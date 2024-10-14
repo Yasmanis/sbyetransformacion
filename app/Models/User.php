@@ -74,7 +74,7 @@ class User extends Authenticatable
 
     public function getPermissions()
     {
-        return $this->sa ? Permission::all() : $this->getAllPermissions();
+        return $this->sa ? Permission::all() : Permission::whereIn('id', $this->getAllPermissions())->get();
     }
 
     public function getApps()
@@ -125,9 +125,29 @@ class User extends Authenticatable
         ];
     }
 
-    public function hasAccess($perm)
+    public function hasPerm($name)
     {
-        $p = Permission::firstWhere('name', '=', strtolower($perm));
-        return isset($p) ? ($this->sa ? true : $this->hasPermissionTo($p)) : false;
+        return $this->getPermissions()->where('name', $name)->first() != null;
+    }
+
+    public function hasView($model)
+    {
+        $permissions = ['view_' . $model, 'edit_' . $model, 'delete_' . $model, 'add_' . $model];
+        return ($this->sa || $this->getPermissions()->whereIn('name', $permissions)->first() != null) && $this->active;
+    }
+
+    public function hasCreate($model)
+    {
+        return ($this->sa || $this->hasPerm('add_' . $model)) && $this->active;
+    }
+
+    public function hasUpdate($model)
+    {
+        return ($this->sa || $this->hasPerm('edit_' . $model)) && $this->active;
+    }
+
+    public function hasDelete($model)
+    {
+        return ($this->sa || $this->hasPerm('delete_' . $model)) && $this->active;
     }
 }

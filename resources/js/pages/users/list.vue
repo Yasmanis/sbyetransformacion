@@ -131,6 +131,7 @@ const actions = {
     name: "actions",
     label: "Acciones",
     type: "actions",
+    width: "100px",
 };
 
 const searchFields = [username, name, surname, email];

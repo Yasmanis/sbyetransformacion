@@ -87,6 +87,7 @@ const columns = [
         name: "actions",
         label: "Acciones",
         type: "actions",
+        width: "100px",
     },
 ];
 
