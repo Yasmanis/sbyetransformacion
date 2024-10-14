@@ -158,8 +158,8 @@ defineOptions({
 });
 
 const form = ref({
-    email: "test@test.com",
-    password: "password",
+    email: null,
+    password: null,
     rememberme: false,
 });
 
