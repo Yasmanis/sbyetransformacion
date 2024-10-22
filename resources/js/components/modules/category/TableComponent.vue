@@ -166,10 +166,12 @@
             <q-card class="scroll">
                 <dialog-header-component icon="mdi-sort" title="ordenar ficheros" closable />
                 <q-card-section>
-                    <ul id="items">
-                        <li v-for="(f, index) in list" :key="`file-list-${index}`" :data-id="f.id"> {{ f.name }}
-                        </li>
-                    </ul>
+                    <draggable v-model="list" group="people" @start="drag = true" @end="drag = false" item-key="id"
+                        id="items">
+                        <template #item="{ element }">
+                            <li>{{ element.name }}</li>
+                        </template>
+                    </draggable>
                 </q-card-section>
                 <q-separator />
                 <q-card-actions align="right">
@@ -191,9 +193,9 @@ import QBtnComponent from "../../base/QBtnComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
-import { Sortable } from "@shopify/draggable";
 import { useForm } from "@inertiajs/vue3";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
+import draggable from 'vuedraggable';
 
 defineOptions({
     name: "TableComponent",
@@ -292,18 +294,7 @@ onMounted(() => {
     visibleColumns.value = props.columns
         .filter((c) => c.type !== "hidden" && !c.required)
         .map((c) => c.field);
-
-    new Sortable(document.querySelectorAll('ul#items'), {
-        draggable: 'li',
-        onUpdate: function (evt) {
-            console.log(evt);
-        }
-    });
 })
-
-const onFilter = (filters) => { };
-
-const onFilterClear = () => { };
 
 const onSearch = (attrs) => {
     pagination.value.search = JSON.stringify(attrs);
@@ -338,12 +329,11 @@ const onShowSort = (files) => {
 }
 
 const sortFiles = () => {
-    const items = document.querySelectorAll('ul#items > li');
     let files = [];
     let index = 1;
-    items.forEach(el => {
+    list.value.forEach(el => {
         files.push({
-            id: el.getAttribute('data-id'),
+            id: el.id,
             order: index
         });
         index++;
@@ -420,17 +410,17 @@ td.actions-def>.q-btn {
     right: 0;
 }
 
-ul#items {
+#items {
     padding: 0;
 }
 
-ul#items>li {
+#items>li {
     padding: 10px;
     list-style: none;
     cursor: pointer;
 }
 
-ul#items>li:hover {
+#items>li:hover {
     background-color: #cdcdcd;
 }
 </style>
