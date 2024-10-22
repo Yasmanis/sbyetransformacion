@@ -62,7 +62,7 @@ router.on("start", (event) => {
     }
 });
 
-router.on("progress", (event) => {});
+router.on("progress", (event) => { });
 
 router.on("finish", (event) => {
     Loading.hide();

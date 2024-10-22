@@ -36,20 +36,10 @@ Route::get('/taller_online', function () {
     return Inertia('landing/taller_online');
 });
 
-Route::get('/publicaciones/{category?}', function (Request $request) {
-    $files = [];
-    $category_id = $request->category;
-    $categories = Category::all();
-    if (!isset($category_id)) {
-        $category = Category::all()->first();
-        if ($category != null) {
-            $category_id = $category->id;
-        }
-    }
-    if (isset($category_id)) {
-        $files = File::where('category_id', $category_id)->get();
-    }
-    return Inertia('landing/publicaciones', ['files' => $files, 'categories' => $categories]);
+Route::get('/publicaciones', function (Request $request) {
+    $categories = Category::with('files')->get();
+    $recent_files = File::latest()->take(5)->get();
+    return Inertia('landing/publicaciones', ['categories' => $categories, 'recent_files' => $recent_files]);
 });
 Route::get('/publicaciones/libro', function () {
     return view('libros');
@@ -71,6 +61,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/users', UserController::class);
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
+    Route::post('/admin/categories/sort-files', [CategoryController::class, 'sortFiles']);
     Route::resource('/admin/files', FileController::class);
 
     Route::get('/roles', [SelectsController::class, 'roles']);

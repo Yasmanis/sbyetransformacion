@@ -13,7 +13,7 @@ class File extends Model
 
     protected $fillable = ['name', 'size', 'path', 'type', 'category_id'];
 
-    protected $appends = ['category', 'size_str'];
+    protected $appends = ['category', 'size_str', 'date_for_human'];
 
     public function category()
     {
@@ -32,5 +32,10 @@ class File extends Model
         for ($i = 0; $bytes > 1024; $i++)
             $bytes /= 1024;
         return round($bytes, 2) . ' ' . $units[$i];
+    }
+
+    public function getDateForHumanAttribute()
+    {
+        return $this->created_at->locale('es')->isoFormat(('MMMM D, Y'));
     }
 }

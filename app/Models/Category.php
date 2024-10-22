@@ -12,4 +12,9 @@ class Category extends Model
     protected $table = 'category';
 
     protected $fillable = ['name'];
+
+    public function files()
+    {
+        return $this->hasMany(File::class)->orderBy('order', 'ASC');
+    }
 }

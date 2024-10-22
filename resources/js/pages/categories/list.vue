@@ -1,21 +1,15 @@
 <template>
     <Layout>
         <q-page padding>
-            <table-component
-                :columns="columns"
-                :data="data"
-                :searchFields="searchFields"
-                :createFields="fields"
-                :updateFields="fields"
-                :has_delete="false"
-            ></table-component>
+            <table-component :columns="columns" :data="data" :searchFields="searchFields" :createFields="fields"
+                :updateFields="fields" :has_delete="false"></table-component>
         </q-page>
     </Layout>
 </template>
 
 <script setup>
 import Layout from "../../layouts/AdminLayout.vue";
-import TableComponent from "../../components/table/TableComponent.vue";
+import TableComponent from "../../components/modules/category/TableComponent.vue";
 
 defineOptions({
     name: "ListPage",
@@ -50,8 +44,7 @@ const columns = [
         field: "actions",
         name: "actions",
         label: "Acciones",
-        type: "actions",
-        width: "100px",
+        type: "actions"
     },
 ];
 

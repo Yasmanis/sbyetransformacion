@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
 use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -61,6 +62,22 @@ class CategoryController extends Controller
                 $repository->deleteMultipleById($ids);
             }
             return redirect()->back()->with('success', count($ids) == 1 ? 'categoria eliminada correctamente' : 'categorias eliminadas correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function sortFiles(Request $request)
+    {
+        if (auth()->user()->hasUpdate('category')) {
+            $files = json_decode($request->ids);
+            foreach ($files as $f) {
+                $file = File::find($f->id);
+                if ($file != null) {
+                    $file->order = $f->order;
+                    $file->save();
+                }
+            }
+            return redirect()->back()->with('success', 'ficheros ordenados correctamente');
         }
         return $this->deny_access($request);
     }
