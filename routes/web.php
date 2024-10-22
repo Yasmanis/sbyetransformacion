@@ -7,6 +7,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SelectsController;
 use App\Http\Controllers\ContactsController;
+use App\Models\Category;
+use App\Models\File;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -33,8 +36,20 @@ Route::get('/taller_online', function () {
     return Inertia('landing/taller_online');
 });
 
-Route::get('/publicaciones', function () {
-    return Inertia('landing/publicaciones');
+Route::get('/publicaciones/{category?}', function (Request $request) {
+    $files = [];
+    $category_id = $request->category;
+    $categories = Category::all();
+    if (!isset($category_id)) {
+        $category = Category::all()->first();
+        if ($category != null) {
+            $category_id = $category->id;
+        }
+    }
+    if (isset($category_id)) {
+        $files = File::where('category_id', $category_id)->get();
+    }
+    return Inertia('landing/publicaciones', ['files' => $files, 'categories' => $categories]);
 });
 Route::get('/publicaciones/libro', function () {
     return view('libros');
@@ -60,7 +75,9 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);
-    Route::get('/categories', [SelectsController::class, 'categories']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });
+
+Route::get('/categories', [SelectsController::class, 'categories']);
+Route::get('/download/{id}', [FileController::class, 'download']);

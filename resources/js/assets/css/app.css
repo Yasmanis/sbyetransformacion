@@ -100,3 +100,6 @@ video {
 .header-subtitle {
 	font-size: 24px;
 }
+.slicknav_nav a {
+	text-transform: lowercase !important;
+}

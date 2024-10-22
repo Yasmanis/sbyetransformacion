@@ -14,7 +14,7 @@
             <div class="container">
                 <div class="inner-overview position-relative">
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 text-center">
                             <div class="overview-img">
                                 <div class="container-img-right">
                                     <img

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
 use App\Repositories\FileRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -86,5 +87,11 @@ class FileController extends Controller
             return redirect()->back()->with('success', count($ids) == 1 ? 'archivo eliminado correctamente' : 'archivos eliminados correctamente');
         }
         return $this->deny_access($request);
+    }
+
+    public function download(Request $request, $id)
+    {
+        $file = File::find($id);
+        return Storage::download(public_path().'/storage/'.$file->path);
     }
 }

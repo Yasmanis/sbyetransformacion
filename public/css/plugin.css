@@ -217,7 +217,7 @@ Change the following styles to modify the appearance of the menu.
     -moz-transition: all 0.3s ease;
     transition: all 0.3s ease;
     font-weight: 400;
-    text-transform: uppercase;
+    text-transform: lowercase;
     font-size: 12px;
     text-align: left;
 }
