@@ -141,7 +141,7 @@
                                     </q-item-label>
                                     <q-item-label caption v-else>{{
                                         col.value ? col.value : "..."
-                                        }}</q-item-label>
+                                    }}</q-item-label>
                                 </q-item-section>
                                 <q-item-section v-else-if="col.name === 'actions'">
                                     <q-separator />
@@ -299,9 +299,6 @@ onMounted(() => {
             console.log(evt);
         }
     });
-    this.$nextTick(function () {
-        alert('test');
-    })
 })
 
 const onFilter = (filters) => { };
