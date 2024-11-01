@@ -1,6 +1,13 @@
 import { createInertiaApp, router, usePage } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
-import { Quasar, Loading, Notify, QSpinnerFacebook, Dialog } from "quasar";
+import {
+    Quasar,
+    Loading,
+    Notify,
+    QSpinnerFacebook,
+    Dialog,
+    Meta,
+} from "quasar";
 import quasarIconSet from "quasar/icon-set/svg-mdi-v6";
 import { createApp, h } from "vue";
 import permissions from "./plugins/permissions";
@@ -27,6 +34,7 @@ createInertiaApp({
                     Loading,
                     Notify,
                     Dialog,
+                    Meta,
                 },
                 iconSet: quasarIconSet,
                 config: {},
@@ -62,7 +70,7 @@ router.on("start", (event) => {
     }
 });
 
-router.on("progress", (event) => { });
+router.on("progress", (event) => {});
 
 router.on("finish", (event) => {
     Loading.hide();

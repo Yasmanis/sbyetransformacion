@@ -699,8 +699,11 @@
                                 </p>
                             </div>
                             <div class="partner-button text-center">
-                                <a class="btn" href="https://www.amazon.es/dp/B0DJG45MMK?binding=paperback&ref=dbs_dp_sirpi"
-                                    target="_blank">ir a tienda</a
+                                <a
+                                    class="btn"
+                                    href="https://www.amazon.es/dp/B0DJG45MMK?binding=paperback&ref=dbs_dp_sirpi"
+                                    target="_blank"
+                                    >ir a tienda</a
                                 >
                             </div>
                         </div>

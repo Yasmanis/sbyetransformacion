@@ -1,8 +1,13 @@
 <template>
     <Layout>
         <q-page padding>
-            <table-component :columns="columns" :data="data" :searchFields="searchFields" :createFields="fields"
-                :updateFields="fields" :has_delete="false"></table-component>
+            <table-component
+                :columns="columns"
+                :searchFields="searchFields"
+                :createFields="fields"
+                :updateFields="fields"
+                :has_delete="false"
+            ></table-component>
         </q-page>
     </Layout>
 </template>
@@ -13,13 +18,6 @@ import TableComponent from "../../components/modules/category/TableComponent.vue
 
 defineOptions({
     name: "ListPage",
-});
-
-const props = defineProps({
-    data: {
-        type: Array,
-        default: () => [],
-    },
 });
 
 const name = {
@@ -44,7 +42,7 @@ const columns = [
         field: "actions",
         name: "actions",
         label: "Acciones",
-        type: "actions"
+        type: "actions",
     },
 ];
 

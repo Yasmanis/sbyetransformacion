@@ -71,18 +71,6 @@
                     </div>
                 </nav>
             </div>
-            <div id="search1">
-                <button type="button" class="close">×</button>
-                <form>
-                    <input
-                        class="form-control form-control-lg rounded text-white"
-                        placeholder="Search..."
-                    />
-                </form>
-                <button type="button" class="btn">
-                    <i class="fa fa-search text-white" aria-hidden="true"></i>
-                </button>
-            </div>
         </div>
     </header>
 

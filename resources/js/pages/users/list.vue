@@ -143,6 +143,12 @@ const filterFields = [
         type: "boolean",
         value: null,
     },
+    {
+        name: "sa",
+        label: "super admin",
+        type: "boolean",
+        value: null,
+    },
 ];
 
 const columns = [username, name, surname, email, sa, active, actions];

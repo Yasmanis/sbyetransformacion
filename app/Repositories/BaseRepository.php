@@ -347,9 +347,66 @@ abstract class BaseRepository implements BaseInterface
      */
     public function orderBy($column, $direction = 'asc')
     {
-        $this->orderBys[] = compact('column', 'direction');
-
+        if (isset($column)) {
+            $this->orderBys[] = compact('column', 'direction');
+        }
         return $this;
+    }
+
+    /**
+     * Set filters to query.
+     *
+     * @param string $filters on json format
+     */
+    public function filters($filters)
+    {
+        if (isset($filters)) {
+            $filters = json_decode($filters);
+            foreach ($filters as $f) {
+                if (isset($f->scope)) {
+                    $this->scopes[] = ['method' => $f->scope, 'args' => $f->value];
+                } else {
+                    if ($f->type === 'select') {
+                        $this->whereIn($f->name, $f->value);
+                    } else if ($f->type === 'boolean') {
+                        $this->where($f->name, '=', $f->value);
+                    } else if ($f->type === 'date') {
+                        $from = date('Y-m-d 00:00:00', strtotime($f->value[0]));
+                        $to = date('Y-m-d 23:59:59', strtotime($f->value[1]));
+                        $this->whereBetween($f->name, [$from, $to]);
+                    } else if ($f->type === 'range') {
+                        $this->whereBetween($f->name, [$f->value->min, $f->value->max]);
+                    } else if ($f->type === 'range_size') {
+                        $this->whereBetween($f->name, [($f->value->min) * ($f->value->unitValue), ($f->value->max) * ($f->value->unitValue)]);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Set search to query.
+     *
+     * @param string $fields on json format
+     */
+    public function search($attr)
+    {
+        if (isset($attr)) {
+            $attr = json_decode($attr);
+            $this->where($attr->column, $attr->condition, $attr->query);
+        }
+    }
+
+    /**
+     * Set sort to query.
+     *
+     * @param string $fields on json format
+     */
+    public function sort($column, $direction)
+    {
+        if (isset($column) && isset($direction)) {
+            $this->orderBy($attr->column, $attr->condition, $attr->query);
+        }
     }
 
     /**
@@ -481,8 +538,8 @@ abstract class BaseRepository implements BaseInterface
      */
     protected function setScopes()
     {
-        foreach ($this->scopes as $method => $args) {
-            $this->query->$method(implode(', ', $args));
+        foreach ($this->scopes as $scope) {
+            $this->query->{$scope['method']}($scope['args']);
         }
 
         return $this;

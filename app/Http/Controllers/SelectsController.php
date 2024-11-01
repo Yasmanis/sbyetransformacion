@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\File;
 use App\Models\Role;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,14 @@ class SelectsController extends Controller
     {
         return response()->json([
             'options' => Category::select('id as value', 'name as label')->get()
+        ]);
+    }
+
+    public function typeOfFiles()
+    {
+        return response()->json([
+            'options' => DB::table('file')
+                ->select(DB::raw('SUBSTRING_INDEX(TYPE, "/", 1) as value, SUBSTRING_INDEX(TYPE, "/", 1) label'))->distinct()->get()
         ]);
     }
 }

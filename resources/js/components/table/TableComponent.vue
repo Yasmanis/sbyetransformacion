@@ -72,6 +72,18 @@
                             :columns="columns"
                             @change="(vc) => (visibleColumns = vc)"
                         />
+                        <filter-component
+                            :fields="filterFields"
+                            @filter="onFilter"
+                            @clear="onFilterClear"
+                            v-if="filterFields.length > 0"
+                        />
+                        <delete-component
+                            :objects="selected"
+                            :module="current_module"
+                            @deleted="selected = []"
+                            v-if="selected.length > 0 && has_delete"
+                        />
                         <q-btn-component
                             :tooltips="
                                 props.inFullscreen ? 'restaurar' : 'maximizar'
@@ -82,12 +94,6 @@
                                     : 'fullscreen'
                             "
                             @click="props.toggleFullscreen"
-                        />
-                        <delete-component
-                            :objects="selected"
-                            :module="current_module"
-                            @deleted="selected = []"
-                            v-if="selected.length > 0 && has_delete"
                         />
                     </div>
                 </q-toolbar>
@@ -184,7 +190,7 @@
                 <q-td
                     :props="props"
                     :style="{
-                        position: sticky,
+                        position: 'sticky',
                         right: 0,
                         width: props.col.width,
                     }"
@@ -304,6 +310,7 @@ import FormFile from "../file/FormFile.vue";
 import VisibleColumnsComponent from "./actions/VisibleColumnsComponent.vue";
 import QBtnComponent from "../base/QBtnComponent.vue";
 import SearchComponent from "./actions/SearchComponent.vue";
+import FilterComponent from "./actions/FilterComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../services/current_module";
 
@@ -348,7 +355,7 @@ const pagination = ref({
     rowsPerPage: 20,
     rowsNumber: 1,
     search: null,
-    filters: [],
+    filters: null,
 });
 
 const selected = ref([]);
@@ -380,6 +387,9 @@ watch(
         pagination.value.search = val.search
             ? JSON.stringify(val.search)
             : null;
+        pagination.value.filters = val.filters
+            ? JSON.stringify(val.filters)
+            : null;
     },
     {
         immediate: true,
@@ -402,12 +412,21 @@ onMounted(() => {
         .map((c) => c.field);
 });
 
-const onFilter = (filters) => {};
+const onFilter = (filters) => {
+    console.log(filters);
 
-const onFilterClear = () => {};
+    pagination.value.filters = filters;
+    pagination.value.page = 1;
+    onRequest();
+};
+
+const onFilterClear = () => {
+    pagination.value.filters = null;
+    onRequest();
+};
 
 const onSearch = (attrs) => {
-    pagination.value.search = JSON.stringify(attrs);
+    pagination.value.search = attrs;
     pagination.value.page = 1;
     onRequest();
 };
@@ -423,14 +442,20 @@ const onRequest = async (attrs) => {
         ? attrs.pagination
         : pagination.value;
     const sortDirection = descending ? "DESC" : "ASC";
-    router.get("", {
-        page,
-        rowsPerPage,
-        sortBy,
-        sortDirection,
-        search,
-        filters,
-    });
+    router.get(
+        "",
+        {
+            page,
+            rowsPerPage,
+            sortBy,
+            sortDirection,
+            search: search ? JSON.stringify(search) : null,
+            filters: filters ? JSON.stringify(filters) : null,
+        },
+        {
+            preserveState: true,
+        }
+    );
 };
 </script>
 <style>

@@ -7,7 +7,7 @@
         :label="label"
         :multiple="multiple"
         :clearable="clearable"
-        :options="allOptions"
+        :options="currentOptions"
         :use-input="filterable"
         :use-chips="multiple && chips"
         :rules="fieldRules"

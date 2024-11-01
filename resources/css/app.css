@@ -141,6 +141,10 @@
     src: local('Poppins Black Italic'), url('./fonts/poppins-webfont/Poppins-BlackItalic.woff') format('woff');
 }
 
-.q-table > thead > tr > th {
+.bg-success-notify {
+    background-color: #acced6;
+}
+
+.q-table>thead>tr>th {
     font-weight: bold;
 }

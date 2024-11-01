@@ -13,13 +13,9 @@ class CategoryController extends Controller
     {
         if (auth()->user()->hasView('category')) {
             $repository = new CategoryRepository();
-            if (isset($request->search)) {
-                $search = json_decode($request->search);
-                $repository->where($search->column, $search->condition, $search->query);
-            }
-            if (isset($request->sortBy)) {
-                $repository->orderBy($request->sortBy, $request->sortDirection);
-            }
+            $repository->search($request->search);
+            $repository->filters($request->filters);
+            $repository->orderBy($request->sortBy, $request->sortDirection);
             return $this->data_index($repository, $request);
         }
         return $this->deny_access($request);

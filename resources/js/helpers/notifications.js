@@ -29,7 +29,7 @@ export const success = (
     progress = true,
     close = false
 ) => {
-    notify("info", msg, position, progress, close, "blue-3");
+    notify("info", msg, position, progress, close, "success-notify");
 };
 
 export const info = (

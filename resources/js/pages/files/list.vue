@@ -3,8 +3,8 @@
         <q-page padding>
             <table-component
                 :columns="columns"
-                :data="data"
                 :searchFields="searchFields"
+                :filterFields="filterFields"
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
@@ -19,13 +19,6 @@ import TableComponent from "../../components/table/TableComponent.vue";
 
 defineOptions({
     name: "ListPage",
-});
-
-const props = defineProps({
-    data: {
-        type: Array,
-        default: () => [],
-    },
 });
 
 const category = {
@@ -101,6 +94,34 @@ const fields = [
         othersProps: {
             url_to_options: "/categories",
         },
+    },
+];
+
+const filterFields = [
+    {
+        field: "category_id",
+        name: "category_id",
+        label: "categoria",
+        type: "select",
+        othersProps: {
+            url_to_options: "/categories",
+        },
+    },
+    {
+        field: "type_scope",
+        name: "type_scope",
+        label: "tipo",
+        type: "select",
+        scope: "typeOfFile",
+        othersProps: {
+            url_to_options: "/type-of-files",
+        },
+    },
+    {
+        field: "size",
+        name: "size",
+        label: "tamaño",
+        type: "range_size",
     },
 ];
 </script>

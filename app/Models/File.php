@@ -38,4 +38,9 @@ class File extends Model
     {
         return $this->created_at->locale('es')->isoFormat(('MMMM D, Y'));
     }
+
+    public function scopeTypeOfFile($query, $args)
+    {
+        return $query->where('type', 'like', $args[0] . '%');
+    }
 }

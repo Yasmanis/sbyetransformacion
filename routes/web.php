@@ -7,6 +7,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SelectsController;
 use App\Http\Controllers\ContactsController;
+use App\Http\Controllers\LifeController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\PostController;
 use App\Models\Category;
 use App\Models\File;
 use Illuminate\Http\Request;
@@ -38,7 +41,7 @@ Route::get('/taller_online', function () {
 
 Route::get('/publicaciones', function (Request $request) {
     $categories = Category::with('files')->get();
-    $recent_files = File::latest()->take(5)->get();
+    $recent_files = File::latest()->take(6)->get();
     return Inertia('landing/publicaciones', ['categories' => $categories, 'recent_files' => $recent_files]);
 });
 Route::get('/publicaciones/libro', function () {
@@ -67,8 +70,13 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);
 
+    Route::get('/admin/life', [LifeController::class, 'index']);
+    Route::get('/admin/posts', [PostController::class, 'index']);
+    Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
+
     Route::get('/logout', [AuthController::class, 'logout']);
 });
 
 Route::get('/categories', [SelectsController::class, 'categories']);
+Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
 Route::get('/download/{id}', [FileController::class, 'download']);

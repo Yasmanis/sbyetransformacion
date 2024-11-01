@@ -5,7 +5,7 @@
             :class="Dark.isActive ? '' : 'bg-primary'"
         >
             <q-item-section :avatar="mini">
-                <q-img
+                <img
                     :src="`${$page.props.public_path}images/logo/${
                         Dark.isActive ? '2' : '1'
                     }.png`"

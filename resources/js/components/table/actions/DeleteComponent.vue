@@ -38,7 +38,7 @@ const handleDelete = async () => {
         title: "confirmacion",
         message:
             props.objects.length === 1
-                ? "seguro que desea eliminar el registro seleccionado"
+                ? "seguro que desea eliminar este registro"
                 : "seguro que desea eliminar los registros seleccionados",
         cancel: {
             label: "cancelar",

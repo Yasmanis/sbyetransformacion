@@ -26,10 +26,8 @@ class FileController extends Controller
     {
         if (auth()->user()->hasView('file')) {
             $repository = new FileRepository();
-            if (isset($request->search)) {
-                $search = json_decode($request->search);
-                $repository->where($search->column, $search->condition, $search->query);
-            }
+            $repository->search($request->search);
+            $repository->filters($request->filters);
             if (isset($request->sortBy)) {
                 if ($request->sortBy == 'size_str') {
                     $request['sortBy'] = 'size';
@@ -92,6 +90,6 @@ class FileController extends Controller
     public function download(Request $request, $id)
     {
         $file = File::find($id);
-        return Storage::download(public_path().'/storage/'.$file->path);
+        return Storage::download(public_path() . '/storage/' . $file->path);
     }
 }
