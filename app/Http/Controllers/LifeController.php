@@ -13,7 +13,7 @@ class LifeController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->user()->hasView('life')) {
+        if (auth()->user()->hasView('legal')) {
             return Inertia::render('life/index');
         }
         return $this->deny_access($request);

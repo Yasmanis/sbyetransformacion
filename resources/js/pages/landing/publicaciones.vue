@@ -1,572 +1,312 @@
 <template>
-    <Layout>
-        <section class="banner page-banner position-relative pb-0">
-            <div class="overlay"></div>
-            <div class="container">
-                <div class="page-title text-center position-relative pb-5">
-                    <p class="text-white text-uppercase header-title">
-                        publicaciones
-                    </p>
+    <Layout title="publicaciones">
+        <div class="row container q-mt-xl">
+            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                <div class="row" v-if="files.length > 0">
+                    <template v-for="(f, indexFile) in files" :key="`file-${indexFile}`">
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 q-pa-sm text-center"
+                            :class="screen.xs || screen.sm ? 'q-mb-md' : ''"
+                            v-if="currentCategory.name === 'newsletters'">
+                            <div class="q-pa-none" style="height: 200px;">
+                                <video :src="`${$page.props.public_path}storage/${f.path}`" controls
+                                    class="full-width full-height" v-if="f.type.startsWith('video/')"></video>
+                                <q-img class="full-width full-height"
+                                    :src="`${$page.props.public_path}storage/${f.path}`"
+                                    v-else-if="f.type.startsWith('image/')" />
+                                <a :href="`${$page.props.public_path}storage/${f.path}`" target="_blank" v-else>
+                                    <q-img class="full-width full-height"
+                                        :src="`${$page.props.public_path}images/others/file.png`" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 q-pa-sm" style="height: 250px !important"
+                            v-else-if="currentCategory.name === 'posts' || currentCategory.name === 'post'">
+                            <video :src="`${$page.props.public_path}storage/${f.path}`" controls class="w-100 h-100"
+                                v-if="f.type.startsWith('video/') || f.type.startsWith('audio/')"></video>
+                            <q-img class="full-width full-height" :src="`${$page.props.public_path}storage/${f.path}`"
+                                v-else-if="f.type.startsWith('image/')" />
+                            <q-item v-else clickable target="_blank"
+                                :href="`${$page.props.public_path}storage/${f.path}`"><q-img
+                                    class="full-width full-height"
+                                    :src="`${$page.props.public_path}images/others/file.png`" /></q-item>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" v-else>
+                            <q-card class="my-card q-ma-sm rounded">
+                                <q-card-section class="q-pa-none">
+                                    <video :src="`${$page.props.public_path}storage/${f.path}`" controls
+                                        class="full-width rounded-top header-card" v-if="
+                                            f.type.startsWith('video/') ||
+                                            f.type.startsWith('audio/')
+                                        " />
+                                    <a :href="`${$page.props.public_path}storage/${f.path}`" target="_blank" v-else>
+                                        <q-img :src="`${$page.props.public_path}images/group/6.jpg`"
+                                            class="rounded-top full-width header-card" />
+                                        <div class="column items-center">
+                                            <i class="fa fa-file fa-4x text-white" style="margin-top: -120px"></i>
+                                        </div>
+                                    </a>
+                                </q-card-section>
+                                <q-card-section class="text-center">
+                                    <q-item-label lines="3">
+                                        {{
+                                            f.name.indexOf(".") >= 0
+                                                ? f.name.substring(
+                                                    0,
+                                                    f.name.lastIndexOf(".")
+                                                )
+                                                : f.name
+                                        }}
+                                    </q-item-label>
+                                    <q-item-label class="q-pt-sm cursor-pointer text-primary">
+                                        <a class="text-uppercase text-primary"
+                                            :href="`${$page.props.public_path}storage/${f.path}`"
+                                            target="_blank"><small>ver</small></a>
+                                    </q-item-label>
+                                </q-card-section>
+                            </q-card>
+                        </div>
+                    </template>
                 </div>
-            </div>
-        </section>
-        <section class="news-archive">
-            <div class="container">
-                <div class="news-archive-inner">
-                    <div class="row gy-5">
-                        <div class="col-lg-8">
-                            <div class="news-left me-4 m-md-0">
-                                <div
-                                    class="row g-md-5 gy-5"
-                                    v-if="files.length > 0"
-                                >
-                                    <template
-                                        v-for="(f, indexFile) in files"
-                                        :key="`file-${indexFile}`"
-                                    >
-                                        <div
-                                            class="col-lg-3 col-md-3"
-                                            v-if="
-                                                currentCategory.name ===
-                                                'newsletters'
-                                            "
-                                        >
-                                            <video
-                                                :src="`${$page.props.public_path}storage/${f.path}`"
-                                                controls
-                                                class="w-100 h-100"
-                                                v-if="
-                                                    f.type.startsWith('video/')
-                                                "
-                                            ></video>
-                                            <img
-                                                class="w-100 h-100"
-                                                :src="`${$page.props.public_path}storage/${f.path}`"
-                                                v-else-if="
-                                                    f.type.startsWith('image/')
-                                                "
-                                            />
-                                            <a
-                                                :href="`${$page.props.public_path}storage/${f.path}`"
-                                                target="_blank"
-                                                v-else
-                                            >
-                                                <img
-                                                    class="blog-img rounded-top w-100 h-auto"
-                                                    :src="`${$page.props.public_path}images/others/file.png`"
-                                                    style="
-                                                        height: 160px !important;
-                                                    "
-                                                />
-                                            </a>
+                <div class="row text-center q-mb-md" v-else>
+                    <h3>
+                        lo sentimos, aun no se han hecho publicaciones en esta
+                        categoria
+                    </h3>
+                </div>
+                <div class="row bg-primary q-pa-md" v-if="currentCategory?.name === 'testimonios'">
+                    <div class="col-lg-12 p-4 mt-4" :class="showForm ? 'bg-company' : 'text-center'">
+                        <div>
+                            <p class="text-white" style="font-size: 26px">
+                                sube tu testimonio
+                            </p>
+                            <p class="text-white">
+                                si estas leyendo el libro o haces consulta
+                                conmigo tendras mucho que compartir con los
+                                demas. inicia sesion y podras escribir y/o subir
+                                un video con tu testimonio. la mejor opcion es
+                                siempre el video ya que llega a mas personas,
+                                ademas te ayuda a desprogramar miedos escenicos
+                                ligados a la aceptacion social. ya sabes que los
+                                miedos se deben enfrentar, peo si todavia no
+                                estas preparado para ello, por favor escribe lo
+                                que sientas, pues ayudaras a muchas personas.
+                                <br />
+                                gracias!
+                            </p>
+                            <q-form ref="formRef" greedy v-if="showForm">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <i class="mdi mdi-asterisk text-red" style="margin-left: 75px"
+                                            v-if="!form.name" />
+                                        <q-input v-model="form.name" name="name" placeholder="nombre" required dense
+                                            rounded outlined bg-color="white" :class="!screen.xs ? 'q-mr-xs' : ''"
+                                            :rules="[
+                                                (val) => !!val || 'requerido',
+                                            ]" hide-bottom-space />
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"
+                                        :class="screen.xs ? 'q-mt-md' : ''">
+                                        <i class="mdi mdi-asterisk text-red" style="margin-left: 88px"
+                                            v-if="!form.surname" />
+                                        <q-input v-model="form.surname" type="text" name="surname"
+                                            placeholder="apellidos" required dense rounded outlined bg-color="white"
+                                            :class="!screen.xs ? 'q-ml-xs' : ''" :rules="[
+                                                (val) => !!val || 'requerido',
+                                            ]" hide-bottom-space />
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md">
+                                        <i class="mdi mdi-asterisk text-red" style="margin-left: 58px"
+                                            v-if="!form.email" />
+                                        <q-input v-model="form.email" name="email" placeholder="email" required dense
+                                            rounded outlined bg-color="white" :rules="[
+                                                (val) => !!val || 'requerido',
+                                                (val, rules) =>
+                                                    !!rules.email(val) ||
+                                                    'email no valido',
+                                            ]" hide-bottom-space />
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md">
+                                        <i class="mdi mdi-asterisk text-red" style="margin-left: 158px"
+                                            v-if="!form.msg_title" />
+                                        <q-input v-model="form.msg_title" type="text" name="msg_title"
+                                            placeholder="titulo del mensaje" required dense rounded outlined
+                                            bg-color="white" :rules="[
+                                                (val) => !!val || 'requerido',
+                                            ]" hide-bottom-space />
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md">
+                                        <i class="mdi mdi-asterisk text-red img-aster-msg" v-if="!form.message" />
+                                        <q-input type="textarea" v-model="form.message" placeholder="mensaje"
+                                            name="message" required dense rounded outlined bg-color="white" :rules="[
+                                                (val) => !!val || 'requerido',
+                                            ]" hide-bottom-space>
+                                        </q-input>
+                                        <div class="column items-end">
+                                            <q-btn :icon="`img:${$page.props.public_path}images/icon/clipper.png`" dense
+                                                flat @click="fileRef.pickFiles()" style="
+                                                    margin-top: -52px;
+                                                    margin-right: 10px;
+                                                " />
                                         </div>
-                                        <div
-                                            class="col-lg-4 col-md-4"
-                                            style="height: 250px !important"
-                                            v-else-if="
-                                                currentCategory.name === 'posts'
-                                            "
-                                        >
-                                            <video
-                                                :src="`${$page.props.public_path}storage/${f.path}`"
-                                                controls
-                                                class="w-100 h-100"
-                                                v-if="
-                                                    f.type.startsWith('video/')
-                                                "
-                                            ></video>
-                                            <img
-                                                class="w-100 h-100"
-                                                :src="`${$page.props.public_path}storage/${f.path}`"
-                                                v-else-if="
-                                                    f.type.startsWith('image/')
-                                                "
-                                            />
-                                        </div>
-                                        <div class="col-lg-6 col-md-6" v-else>
-                                            <div
-                                                class="blog-box border border-1 rounded pb-2 text-center"
-                                            >
-                                                <div class="blog-img">
-                                                    <video
-                                                        :src="`${$page.props.public_path}storage/${f.path}`"
-                                                        controls
-                                                        class="blog-img rounded-top w-100"
-                                                        v-if="
-                                                            f.type.startsWith(
-                                                                'video/'
-                                                            ) ||
-                                                            f.type.startsWith(
-                                                                'audio/'
-                                                            )
-                                                        "
-                                                    ></video>
-                                                    <a
-                                                        :href="`${$page.props.public_path}storage/${f.path}`"
-                                                        target="_blank"
-                                                        v-else
-                                                    >
-                                                        <img
-                                                            class="blog-img rounded-top w-100 h-auto"
-                                                            :src="`${$page.props.public_path}images/group/6.jpg`"
-                                                            style="
-                                                                height: 160px !important;
-                                                            "
-                                                        />
-                                                    </a>
-                                                </div>
-                                                <div class="blog-info p-4">
-                                                    <h5
-                                                        class="mb-2 text-lowercase"
-                                                    >
-                                                        <a
-                                                            :href="`${$page.props.public_path}storage/${f.path}`"
-                                                            target="_blank"
-                                                            class="font-black"
-                                                        >
-                                                            {{
-                                                                f.name.indexOf(
-                                                                    "."
-                                                                ) >= 0
-                                                                    ? f.name.substring(
-                                                                          0,
-                                                                          f.name.lastIndexOf(
-                                                                              "."
-                                                                          )
-                                                                      )
-                                                                    : f.name
-                                                            }}</a
-                                                        >
-                                                    </h5>
-                                                    <a
-                                                        class="text-uppercase font-company"
-                                                        :href="`${$page.props.public_path}storage/${f.path}`"
-                                                        target="_blank"
-                                                        ><small>ver</small></a
-                                                    >
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </div>
-                                <div class="row g-md-5 gy-5 text-center" v-else>
-                                    <h3>
-                                        lo sentimos, aun no se han hecho
-                                        publicaciones en esta categoria
-                                    </h3>
-                                </div>
-                                <div
-                                    class="row"
-                                    v-if="
-                                        currentCategory?.name === 'testimonios'
-                                    "
-                                >
-                                    <div
-                                        class="col-lg-12 p-4 mt-4"
-                                        :class="
-                                            showForm
-                                                ? 'bg-company'
-                                                : 'text-center'
-                                        "
-                                    >
-                                        <div class="form" v-if="showForm">
-                                            <p
-                                                class="text-white"
-                                                style="font-size: 26px"
-                                            >
-                                                sube tu testimonio
-                                            </p>
-                                            <p class="text-white">
-                                                si estas leyendo el libro o
-                                                haces consulta conmigo tendras
-                                                mucho que compartir con los
-                                                demas. inicia sesion y podras
-                                                escribir y/o subir un video con
-                                                tu testimonio. la mejor opcion
-                                                es siempre el video ya que llega
-                                                a mas personas, ademas te ayuda
-                                                a desprogramar miedos escenicos
-                                                ligados a la aceptacion social.
-                                                ya sabes que los miedos se deben
-                                                enfrentar, peo si todavia no
-                                                estas preparado para ello, por
-                                                favor escribe lo que sientas,
-                                                pues ayudaras a muchas personas.
-                                                <br />
-                                                gracias!
-                                            </p>
-                                            <form
-                                                id="form-contact"
-                                                @submit.prevent="onSubmit"
-                                            >
-                                                <div class="row">
-                                                    <div class="col-lg-6">
-                                                        <input
-                                                            v-model="form.name"
-                                                            type="text"
-                                                            name="name"
-                                                            placeholder="nombre"
-                                                            required
-                                                            class="mb-3"
-                                                        />
-                                                        <img
-                                                            :src="`${$page.props.public_path}images/icon/aster.png`"
-                                                            style="
-                                                                width: 8px;
-                                                                margin-top: -40px;
-                                                                margin-left: 77px;
-                                                                contain: content;
-                                                                float: left;
-                                                                opacity: 0.6;
-                                                            "
-                                                            v-if="!form.name"
-                                                        />
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        <input
-                                                            v-model="
-                                                                form.surname
-                                                            "
-                                                            type="text"
-                                                            name="surname"
-                                                            placeholder="apellidos"
-                                                            required
-                                                            class="mb-3"
-                                                        />
-                                                        <img
-                                                            :src="`${$page.props.public_path}images/icon/aster.png`"
-                                                            style="
-                                                                width: 8px;
-                                                                margin-top: -40px;
-                                                                margin-left: 86px;
-                                                                contain: content;
-                                                                float: left;
-                                                                opacity: 0.6;
-                                                            "
-                                                            v-if="!form.surname"
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div class="subject">
-                                                    <input
-                                                        v-model="form.email"
-                                                        type="email"
-                                                        name="email"
-                                                        placeholder="email"
-                                                        required
-                                                        class="mb-3"
-                                                    />
-                                                    <img
-                                                        :src="`${$page.props.public_path}images/icon/aster.png`"
-                                                        style="
-                                                            width: 8px;
-                                                            margin-top: -40px;
-                                                            margin-left: 60px;
-                                                            contain: content;
-                                                            float: left;
-                                                            opacity: 0.6;
-                                                        "
-                                                        v-if="!form.email"
-                                                    />
-                                                </div>
-                                                <div class="message">
-                                                    <input
-                                                        v-model="form.msg_title"
-                                                        type="text"
-                                                        name="msg_title"
-                                                        placeholder="titulo del mensaje"
-                                                        required
-                                                        class="mb-3"
-                                                    />
-                                                    <img
-                                                        :src="`${$page.props.public_path}images/icon/aster.png`"
-                                                        style="
-                                                            width: 8px;
-                                                            margin-top: -40px;
-                                                            margin-left: 150px;
-                                                            contain: content;
-                                                            float: left;
-                                                            opacity: 0.6;
-                                                        "
-                                                        v-if="!form.msg_title"
-                                                    />
-                                                    <textarea
-                                                        v-model="form.message"
-                                                        placeholder="mensaje"
-                                                        name="message"
-                                                        class="mb-3"
-                                                        rows="5"
-                                                        style="resize: none"
-                                                        required
-                                                    ></textarea>
-                                                    <img
-                                                        :src="`${$page.props.public_path}images/icon/aster.png`"
-                                                        style="
-                                                            width: 8px;
-                                                            margin-top: -130px;
-                                                            margin-left: 82px;
-                                                            contain: content;
-                                                            float: left;
-                                                            opacity: 0.6;
-                                                        "
-                                                        v-if="!form.message"
-                                                    />
-                                                    <label
-                                                        id="tooltip-attachments"
-                                                        href="javascript:;"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="right"
-                                                        title="añadir adjuntos"
-                                                        for="attachments"
-                                                        style="
-                                                            float: right;
-                                                            margin-top: -60px;
-                                                            contain: content;
-                                                            margin-right: 10px;
-                                                            cursor: pointer;
-                                                        "
-                                                    >
-                                                        <img
-                                                            :src="`${$page.props.public_path}images/icon/clipper.png`"
-                                                            style="width: 30px"
-                                                        />
-                                                    </label>
-                                                    <input
-                                                        @input="
-                                                            form.attachments =
-                                                                $event.target.files
-                                                        "
-                                                        type="file"
-                                                        multiple
-                                                        style="display: none"
-                                                        id="attachments"
-                                                    />
-
-                                                    <ul
-                                                        v-if="
-                                                            form?.attachments
-                                                                ?.length > 0
-                                                        "
-                                                    >
-                                                        <li
-                                                            class="text-white"
-                                                            style="
-                                                                list-style: none;
-                                                                margin-left: -20px;
-                                                            "
-                                                        >
-                                                            adjuntos
-                                                        </li>
-                                                        <li
-                                                            class="text-white"
-                                                            v-for="(
-                                                                f, index
-                                                            ) in form.attachments"
-                                                            :key="`attachment_${index}`"
-                                                        >
-                                                            {{ f.name }}
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <button
-                                                    class="btn"
-                                                    type="submit"
-                                                    :disabled="sending"
-                                                >
-                                                    publicar<i
-                                                        class="fa fa-long-arrow-right ms-3"
-                                                    ></i>
-                                                </button>
-
-                                                <button
-                                                    class="btn mx-2"
-                                                    @click="onCancel"
-                                                >
-                                                    <i class="fa fa-times"></i>
-                                                    cancelar
-                                                </button>
-                                            </form>
-                                        </div>
-                                        <button
-                                            class="btn"
-                                            style="width: 220px"
-                                            @click="showForm = true"
-                                            v-if="!showForm"
-                                        >
-                                            sube tu testimonio
-                                        </button>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="row q-pt-md" v-if="form.attachments?.length > 0">
+                                    <q-list dense>
+                                        <q-item class="q-ma-none" style="padding: 0">
+                                            <q-item-section avatar class="q-pa-none" style="min-width: 30px" v-if="
+                                                form.attachments?.length > 1
+                                            ">
+                                                <q-btn flat icon="fa fa-times-circle" color="red" padding="0" @click="
+                                                    form.attachments = null
+                                                    ">
+                                                    <q-tooltip>quitar todos los
+                                                        adjuntos</q-tooltip>
+                                                </q-btn>
+                                            </q-item-section>
+                                            <q-item-section class="text-white">
+                                                <q-item-label>adjuntos</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-separator color="white"></q-separator>
+                                        <q-item v-for="(
+                                                f, index
+                                            ) in form.attachments" :key="`attachment_${index}`" class="q-ma-none"
+                                            style="padding: 0">
+                                            <q-item-section avatar class="q-pa-none" style="min-width: 30px">
+                                                <q-btn flat icon="fa fa-times-circle" color="red" padding="0" @click="
+                                                    fileRef.removeAtIndex(
+                                                        index
+                                                    )
+                                                    ">
+                                                    <q-tooltip>quitar
+                                                        adjunto</q-tooltip>
+                                                </q-btn>
+                                            </q-item-section>
+                                            <q-item-section class="text-white">
+                                                <q-item-label>{{
+                                                    f.name
+                                                }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                    </q-list>
+                                </div>
+                                <q-file ref="fileRef" v-model="form.attachments" multiple class="hidden" />
+                                <q-btn rounded color="black" label="publicar" no-caps :disabled="sending"
+                                    :loading="sending" class="q-mt-md" icon="mdi-cloud-upload-outline"
+                                    @click="onSubmit" />
+                                <q-btn rounded color="black" label="cancelar" no-caps class="q-mt-md q-ml-xs"
+                                    icon="mdi-window-close" @click="onCancel" />
+                            </q-form>
                         </div>
-                        <div class="col-lg-4">
-                            <div class="news-right ms-4 m-md-0"></div>
-                            <div class="catagories p-6 rounded box-shadow mb-6">
-                                <h6 class="mb-3">categorias</h6>
-                                <div
-                                    class="sperator mb-4 m-0 w-20 border-bottom border-2 border-company"
-                                ></div>
-                                <ul class="m-0 p-0 list-unstyled">
-                                    <li
-                                        v-for="(c, index) in categories"
-                                        :key="`category-${index}`"
-                                        class="py-3 border-dashed-bottom-1"
-                                    >
-                                        <a
-                                            href="javascript:;"
-                                            @click="currentCategory = c"
-                                            class="font-company"
-                                            :style="{
-                                                'font-weight':
-                                                    currentCategory?.id === c.id
-                                                        ? 'bold'
-                                                        : '',
-                                            }"
-                                            ><i
-                                                class="fa fa-check font-company pe-3"
-                                                aria-hidden="true"
-                                            ></i
-                                            >{{ c.name }}</a
-                                        >
-                                    </li>
-                                </ul>
-                            </div>
-                            <div
-                                class="recent-post-box p-6 box-shadow rounded mb-6"
-                            >
-                                <h6 class="mb-2">mas recientes</h6>
-                                <div
-                                    class="sperator w-20 border-bottom border-2 border-company mb-5"
-                                ></div>
-                                <div class="recent-post-list">
-                                    <div class="row">
-                                        <div
-                                            v-for="(
-                                                f, indexRecent
-                                            ) in recent_files"
-                                            :key="`recent-file-${indexRecent}`"
-                                            class="col-lg-12 col-md-6"
-                                        >
-                                            <div
-                                                class="recent-post d-flex align-items-center mb-4"
-                                            >
-                                                <div class="post-img">
-                                                    <a
-                                                        :href="`${$page.props.public_path}storage/${f.path}`"
-                                                        target="_blank"
-                                                        ><img
-                                                            :src="`${$page.props.public_path}images/others/publicaciones-recientes.png`"
-                                                    /></a>
-                                                </div>
-                                                <div
-                                                    class="post-detail"
-                                                    style="width: 70%"
-                                                >
-                                                    <a
-                                                        :href="`${$page.props.public_path}storage/${f.path}`"
-                                                        target="_blank"
-                                                        class="font-black fw-bold text-uppercase"
-                                                    >
-                                                        <q-item-label
-                                                            lines="3"
-                                                            class="text-lowercase font-company"
-                                                            >{{
-                                                                f.name.substring(
-                                                                    0,
-                                                                    f.name.lastIndexOf(
-                                                                        "."
-                                                                    )
-                                                                )
-                                                            }}</q-item-label
-                                                        >
-                                                    </a>
-                                                    <p class="mb-0">
-                                                        <small>{{
-                                                            f.date_for_human
-                                                        }}</small>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="social-media-links">
-                                <h6 class="mb-2">redes sociales</h6>
-                                <div
-                                    class="sperator m-0 mb-5 w-20 border-bottom border-2 border-company"
-                                ></div>
-                                <div class="social-media-inner">
-                                    <div class="row g-3">
-                                        <div class="col-6">
-                                            <a
-                                                href="https://www.facebook.com/profile.php?id=61563937152210"
-                                                target="_blank"
-                                                class="btn rounded-3 p-2 text-capitalize w-100 text-start bg-company"
-                                                ><i
-                                                    class="fa fa-facebook-official rounded mx-2 me-3"
-                                                    aria-hidden="true"
-                                                ></i
-                                                >facebook</a
-                                            >
-                                        </div>
-                                        <div class="col-6">
-                                            <a
-                                                href="https://www.youtube.com/@sbyetransformacion"
-                                                target="_blank"
-                                                class="btn rounded-3 p-2 text-capitalize w-100 text-start bg-company"
-                                                ><i
-                                                    class="fa fa-youtube-play rounded mx-2 me-3"
-                                                    aria-hidden="true"
-                                                ></i
-                                                >youtube</a
-                                            >
-                                        </div>
-                                        <div class="col-6">
-                                            <a
-                                                href="https://www.instagram.com/sbyetransformacion/"
-                                                target="_blank"
-                                                class="btn rounded-3 p-2 text-capitalize w-100 text-start bg-company"
-                                                ><i
-                                                    class="fa fa-instagram rounded mx-2 me-3"
-                                                    aria-hidden="true"
-                                                ></i
-                                                >instagram</a
-                                            >
-                                        </div>
-                                        <div class="col-6">
-                                            <a
-                                                href="https://www.tiktok.com/@sbyetransformacion"
-                                                target="_blank"
-                                                class="btn rounded-3 p-2 text-capitalize w-100 text-start bg-company"
-                                            >
-                                                <img
-                                                    :src="`${$page.props.public_path}images/icon/tiktok.png`"
-                                                    class="rounded mx-2 me-3"
-                                                    style="width: 20px"
-                                                />tiktok</a
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <q-btn label="sube tu testimonio" rounded color="black" no-caps @click="showForm = true"
+                            v-if="!showForm" />
                     </div>
                 </div>
             </div>
-        </section>
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <div class="column items-center q-px-sm">
+                    <q-card class="my-card rounded shadow-4 full-width">
+                        <q-card-section class="q-pb-none">
+                            <p class="q-my-sm text-uppercase">categorias</p>
+                            <div style="border-bottom: 2px solid #407492"></div>
+                            <ul class="q-pa-none q-my-none list-unstyled">
+                                <li v-for="(c, index) in categories" :key="`category-${index}`" class="q-py-md" :class="index === categories.length - 1
+                                    ? 'q-pb-none'
+                                    : 'border-dashed-bottom-1'
+                                    ">
+                                    <a href="javascript:;" @click="currentCategory = c" class="text-primary" :style="{
+                                        'font-weight':
+                                            currentCategory?.id === c.id
+                                                ? 'bold'
+                                                : '',
+                                    }"><i class="fa fa-check font-company q-mr-sm" aria-hidden="true"></i>{{ c.name
+                                        }}</a>
+                                </li>
+                            </ul>
+                        </q-card-section>
+                    </q-card>
+
+                    <q-card class="my-card rounded shadow-4 full-width q-mt-lg" v-if="recent_files.length > 0">
+                        <q-card-section class="q-pb-none">
+                            <p class="q-my-sm text-uppercase">mas recientes</p>
+                            <div style="border-bottom: 2px solid #407492"></div>
+                            <q-list>
+                                <q-item v-for="(f, indexRecent) in recent_files" :key="`recent-file-${indexRecent}`"
+                                    class="q-py-md q-px-none" :class="indexRecent === recent_files.length - 1
+                                        ? 'q-pb-none'
+                                        : 'border-dashed-bottom-1'
+                                        " :href="`${$page.props.public_path}storage/${f.path}`" target="_blank"
+                                    clickable>
+                                    <q-item-section avatar style="width: 70px" class="q-pr-none">
+                                        <q-img
+                                            :src="`${$page.props.public_path}images/others/publicaciones-recientes.png`" />
+                                    </q-item-section>
+                                    <q-item-section>
+                                        <q-item-label lines="3" class="text-lowercase text-primary text-weight-bold">{{
+                                            f.name.substring(
+                                                0,
+                                                f.name.lastIndexOf(".")
+                                            )
+                                        }}</q-item-label>
+                                        <q-item-label><small>{{
+                                            f.date_for_human
+                                                }}</small></q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-list>
+                        </q-card-section>
+                    </q-card>
+
+                    <q-card class="my-card rounded shadow-4 full-width q-my-lg">
+                        <q-card-section class="q-pb-none">
+                            <p class="q-my-sm text-uppercase">redes sociales</p>
+                            <div style="border-bottom: 2px solid #407492"></div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm">
+                                    <q-btn color="primary" icon="fab fa-facebook-f" label="facebook" class="full-width"
+                                        no-caps href="https://www.facebook.com/profile.php?id=61563937152210"
+                                        target="_blank" align="left" />
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm">
+                                    <q-btn color="primary" icon="fab fa-youtube" label=" youtube" class="full-width"
+                                        no-caps align="left" href="https://www.youtube.com/@sbyetransformacion"
+                                        target="_blank" />
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm">
+                                    <q-btn color="primary" icon="fab fa-instagram" label="instagram" class="full-width"
+                                        no-caps align="left" href="https://www.instagram.com/sbyetransformacion/"
+                                        target="_blank" />
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm">
+                                    <q-btn color="primary" icon="fab fa-tiktok" label="tiktok" class="full-width"
+                                        no-caps align="left" href="https://www.tiktok.com/@sbyetransformacion"
+                                        target="_blank" />
+                                </div>
+                            </div>
+                        </q-card-section>
+                    </q-card>
+                </div>
+            </div>
+        </div>
     </Layout>
 </template>
 
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
 import Layout from "../../layouts/MainLayout.vue";
-import { Link, usePage, useForm } from "@inertiajs/vue3";
+import { usePage, useForm, router } from "@inertiajs/vue3";
 import { QItemLabel } from "quasar";
-import "@quasar/extras/animate/animate-list.js";
+import { useQuasar } from "quasar";
+import { errorValidation } from "../../helpers/notifications.js";
 
 defineOptions({
     name: "Publicaciones",
+});
+
+const $q = useQuasar();
+
+const screen = computed(() => {
+    return $q.screen;
 });
 
 const page = usePage();
@@ -585,15 +325,17 @@ const recent_files = computed(() => {
 
 const showForm = ref(false);
 
+const fileRef = ref(null);
+
+const formRef = ref(null);
+
+const sending = ref(false);
 const form = useForm({
     name: null,
     surname: null,
     email: null,
-    book_number: null,
-    book_date: null,
     msg_title: null,
     message: null,
-    other_people: null,
     attachments: null,
 });
 
@@ -614,17 +356,75 @@ const onCancel = () => {
     form.reset();
     showForm.value = false;
 };
+
+const onSubmit = () => {
+    formRef.value.validate().then((success) => {
+        if (success) {
+            // sending.value = true;
+            // form.post("/contacts/store", {
+            //     preserveScroll: true,
+            //     onSuccess: () => {
+            //         sending.value = false;
+            //         iAmNot.value = false;
+            //         contactPrivateArea.value = false;
+            //         book_date.value = "text";
+            //         form.reset();
+            //         formRef.value.reset();
+            //     },
+            //     onError: () => {
+            //         sending.value = false;
+            //     },
+            // });
+        } else {
+            errorValidation();
+        }
+    });
+};
 </script>
 
 <style scope>
-.ellipsis {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+.border-dashed-bottom-1 {
+    border-bottom: 1px dashed #70707057;
 }
 
-.q-item__label {
-    line-height: 1.2em !important;
-    max-width: 100%;
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+
+.mdi-asterisk {
+    opacity: 0.8;
+    position: absolute;
+    font-size: 12px;
+    z-index: 9;
+    margin-top: 5px;
+}
+
+.img-aster-msg {
+    margin-top: 5px !important;
+    margin-left: 83px;
+    z-index: 9;
+}
+
+.q-field__control::before,
+.q-field__control::after {
+    border: 0.5px solid !important;
+}
+
+.q-textarea .q-field__native {
+    resize: none !important;
+}
+
+.q-field__messages {
+    font-size: 14px;
+}
+
+.rounded-top {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.header-card {
+    height: 160px;
 }
 </style>

@@ -10,7 +10,9 @@ use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\LifeController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ConfigurationController;
 use App\Models\Category;
+use App\Models\Configuration;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,12 +46,25 @@ Route::get('/publicaciones', function (Request $request) {
     $recent_files = File::latest()->take(6)->get();
     return Inertia('landing/publicaciones', ['categories' => $categories, 'recent_files' => $recent_files]);
 });
-Route::get('/publicaciones/libro', function () {
-    return view('libros');
-})->name('publicaciones.libro');
+
+Route::get('/publicaciones1', function (Request $request) {
+    $categories = Category::with('files')->get();
+    $recent_files = File::latest()->take(6)->get();
+    return Inertia('landing/publicaciones1', ['categories' => $categories, 'recent_files' => $recent_files]);
+});
 
 Route::get('/contactame', function () {
     return Inertia('landing/contactos');
+});
+
+Route::get('/legal', function () {
+    $config = Configuration::where('key', 'legal')->first();
+    return Inertia('landing/legal', ['config' => $config]);
+});
+
+Route::get('/private', function () {
+    $config = Configuration::where('key', 'private')->first();
+    return Inertia('landing/private', ['config' => $config]);
 });
 
 Route::post('/contacts/store', [ContactsController::class, 'store']);
@@ -75,6 +90,11 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/admin/configuration/legal', [ConfigurationController::class, 'legal']);
+    Route::get('/admin/configuration/private', [ConfigurationController::class, 'private']);
+    Route::get('/admin/configuration/index/{keyName}', [ConfigurationController::class, 'index']);
+    Route::post('/admin/configuration/save', [ConfigurationController::class, 'save']);
 });
 
 Route::get('/categories', [SelectsController::class, 'categories']);

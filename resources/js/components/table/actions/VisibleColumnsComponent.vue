@@ -1,31 +1,17 @@
 <template>
-    <q-btn-component
-        tooltips="columnas"
-        icon="mdi-table-check"
-        v-if="fullVisibleColums.length > 0"
-    >
-        <q-menu
-            transition-show="scale"
-            transition-hide="scale"
-            :offset="[0, 5]"
-        >
+    <q-btn-component class="btn-show-hide-columns" tooltips="columnas"
+        :icon="`img:${$page.props.public_path}images/icon/show-hide-columns.png`" v-if="fullVisibleColums.length > 0">
+        <q-menu transition-show="scale" transition-hide="scale" :offset="[0, 5]">
             <q-list dense>
-                <q-item
-                    clickable
-                    v-for="(c, index) in fullVisibleColums"
-                    :key="`visible-columns-${index}`"
-                    @click="onChange(c)"
-                >
+                <q-item clickable v-for="(c, index) in fullVisibleColums" :key="`visible-columns-${index}`"
+                    @click="onChange(c)">
                     <q-item-section :class="c.checked ? 'text-primary' : ''">
-                        {{ c.label }}
+                        <q-item-label class="text-lowercase">{{
+                            c.label
+                            }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                        <q-icon
-                            name="check"
-                            size="xs"
-                            class="text-primary"
-                            v-if="c.checked"
-                        ></q-icon>
+                        <q-icon name="check" size="xs" class="text-primary" v-if="c.checked"></q-icon>
                     </q-item-section>
                 </q-item>
             </q-list>
@@ -74,3 +60,9 @@ const onChange = (c) => {
     emit("change", visibleColumns.value);
 };
 </script>
+<style>
+.btn-show-hide-columns img {
+    height: 14px !important;
+    width: 14px !important;
+}
+</style>

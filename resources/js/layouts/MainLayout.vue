@@ -1,170 +1,150 @@
 <template>
-    <header class="main_header_area position-absolute w-100">
-        <div class="header_menu" id="header_menu">
-            <div class="container">
-                <nav class="navbar navbar-expand-lg py-6">
-                    <div class="row">
-                        <div class="col-lg-2 col-md-6">
-                            <div class="navbar-brand m-0">
-                                <img
-                                    :src="`${$page.props.public_path}images/logo/1.png`"
-                                    alt="Logo"
-                                    class="w-100"
-                                />
-                            </div>
-                        </div>
-                        <div class="col-lg-10 col-md-6">
-                            <div
-                                class="collapse navbar-collapse justify-content-between ms-8"
-                                id="bs-example-navbar-collapse-1"
-                            >
-                                <ul
-                                    class="navbar-nav align-items-center"
-                                    id="responsive-menu"
-                                >
-                                    <li class="nav-item">
-                                        <Link
-                                            href="/"
-                                            class="nav-link px-2 my-4 py-0 text-white"
-                                            >vivir en plenitud</Link
-                                        >
-                                    </li>
-                                    <li class="nav-item">
-                                        <Link
-                                            href="/consulta_individual"
-                                            class="nav-link px-2 my-4 py-0 text-white"
-                                            >consulta individual</Link
-                                        >
-                                    </li>
-                                    <li class="nav-item">
-                                        <Link
-                                            href="/taller_online"
-                                            class="nav-link px-2 my-4 py-0 text-white"
-                                            >taller online</Link
-                                        >
-                                    </li>
-                                    <li class="nav-item">
-                                        <Link
-                                            href="/publicaciones"
-                                            class="nav-link px-2 my-4 py-0 text-white"
-                                            >publicaciones</Link
-                                        >
-                                    </li>
-                                    <li class="nav-item">
-                                        <Link
-                                            href="/contactame"
-                                            class="nav-link px-2 my-4 py-0 text-white"
-                                            >contactame</Link
-                                        >
-                                    </li>
-                                </ul>
-                                <div class="menu-search">
-                                    <a href="/login" class="btn"
-                                        >area privada<i
-                                            class="fa fa-long-arrow-right ms-4"
-                                        ></i
-                                    ></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="slicknav-mobile"></div>
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <slot />
-
-    <footer
-        class="pt-6 text-center text-white position-relative z-1"
-        style="background: #000000"
-    >
-        <div class="container">
-            <div class="footer-disciption mt-2 mb-4">
-                <div class="footer-socials">
-                    <ul class="m-0 p-0">
-                        <li class="d-inline me-2">
-                            <a
-                                href="https://www.facebook.com/profile.php?id=61563937152210"
-                                target="_blank"
-                                class="d-inline-block rounded-circle bg-white bg-opacity-25"
-                            >
-                                <i class="fa fa-facebook"></i>
-                            </a>
-                        </li>
-                        <li class="d-inline me-2">
-                            <a
-                                href="https://www.youtube.com/@sbyetransformacion"
-                                target="_blank"
-                                class="d-inline-block rounded-circle bg-white bg-opacity-25"
-                            >
-                                <i class="fa fa-youtube-play"></i>
-                            </a>
-                        </li>
-                        <li class="d-inline me-2">
-                            <a
-                                href="https://www.instagram.com/sbyetransformacion/"
-                                target="_blank"
-                                class="d-inline-block rounded-circle bg-white bg-opacity-25"
-                            >
-                                <i class="fa fa-instagram"></i>
-                            </a>
-                        </li>
-                        <li class="d-inline me-2">
-                            <a
-                                href="https://www.tiktok.com/@sbyetransformacion"
-                                target="_blank"
-                                class="d-inline-block rounded-circle bg-white bg-opacity-25"
-                            >
-                                <img
-                                    :src="`${$page.props.public_path}images/icon/tiktok.png`"
-                                    style="width: 20px"
-                                />
-                            </a>
-                        </li>
-                    </ul>
+    <q-layout view="hHh lpR fff">
+        <q-header class="bg-primary text-white container">
+            <q-toolbar class="q-px-none q-pt-md">
+                <q-toolbar-title :shrink="!screen.xs && !screen.sm">
+                    <img :src="`${$page.props.public_path}images/logo/1.png`" width="180px" />
+                </q-toolbar-title>
+                <div class="q-gutter-lg" style="flex: 1; display: flex; justify-content: center"
+                    v-if="!screen.xs && !screen.sm">
+                    <Link v-for="(l, index) in links" :key="`index-link-${index}`" :href="l.url" class="text-white">{{
+                        l.title }}</Link>
                 </div>
+                <q-btn flat round dense icon="menu" v-if="screen.xs || screen.sm">
+                    <q-menu style="min-width: 300px">
+                        <q-list separator>
+                            <q-item clickable v-for="(l, indexItem) in links" :key="`index-item-${indexItem}`"
+                                @click="router.get(l.url)">
+                                <q-item-section>{{ l.title }}</q-item-section>
+                            </q-item>
+                            <q-item clickable @click="router.get('/login')">
+                                <q-item-section> area privada </q-item-section>
+                            </q-item>
+                        </q-list>
+                    </q-menu>
+                </q-btn>
+                <q-btn no-caps color="black" rounded label="area privada" href="/login" v-else>
+                    <q-icon name="fa fa-long-arrow-right" size="xs" class="q-ml-md" />
+                </q-btn>
+            </q-toolbar>
+            <p class="text-center text-uppercase" style="font-size: 24px" v-if="title">
+                {{ title }}
+            </p>
+        </q-header>
+
+        <q-page-container>
+            <slot />
+        </q-page-container>
+
+        <q-footer class="bg-black text-white q-pa-xl">
+            <div class="text-center">
+                <q-btn-component size="md" color="grey-9" href="https://www.facebook.com/profile.php?id=61563937152210"
+                    target="blank">
+                    <q-icon name="fab fa-facebook-f" size="xs" />
+                </q-btn-component>
+                <q-btn-component size="md" color="grey-9" style="margin-left: 10px; margin-right: 10px"
+                    href="https://www.youtube.com/@sbyetransformacion" target="blank">
+                    <q-icon name="fab fa-youtube" size="xs" />
+                </q-btn-component>
+                <q-btn-component size="md" color="grey-9" style="margin-right: 10px"
+                    href="https://www.instagram.com/sbyetransformacion/" target="blank">
+                    <q-icon name="fab fa-instagram" size="xs" />
+                </q-btn-component>
+                <q-btn-component size="md" color="grey-9" href="https://www.tiktok.com/@sbyetransformacion"
+                    target="blank">
+                    <q-icon name="fab fa-tiktok" size="xs" />
+                </q-btn-component>
             </div>
-            <div class="footer-menu pb-2">
-                <ul class="p-0 m-0">
-                    <li class="d-inline mx-2">
-                        <a href="javascript:;"><small>avisos legales</small></a>
-                    </li>
-                    <li class="d-inline mx-2">
-                        <a href="javascript:;"><small>privacidad</small></a>
-                    </li>
-                </ul>
+            <div class="text-center q-pa-md">
+                <Link href="/legal" class="text-white q-mr-md">
+                avisos legales
+                </Link>
+                <Link href="/private" class="text-white q-ml-md">
+                privacidad
+                </Link>
             </div>
-        </div>
-        <div class="copyright pb-6 pt-1">
-            <small>&#169;2024 sbye salud s.l.</small>
-        </div>
-    </footer>
-    <div id="back-to-top" style="display: block">
-        <a
-            href="#"
-            class="bg-company position-relative align-items-center rounded-circle d-block"
-        ></a>
-    </div>
+            <div class="text-center">&#169;2024 sbye salud s.l.</div>
+        </q-footer>
+
+        <q-page-scroller position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
+            <q-btn fab icon="mdi-arrow-up" color="primary" padding="sm" />
+        </q-page-scroller>
+    </q-layout>
 </template>
-
 <script setup>
-import "../assets/css/bootstrap.min.css";
-import "../assets/css/plugin.css";
-import "../assets/css/default.css";
-import "../assets/css/styles.css";
-import "../assets/css/app.css";
-import "../assets/css/font-awesome.min.css";
-
-import "../assets/js/jquery-3.7.1.min.js";
-import "../assets/js/bootstrap.bundle.min.js";
-import "../assets/js/custom-nav.js";
-import "../assets/js/plugin.js";
-import "../assets/js/main.js";
-
+import QBtnComponent from "../components/base/QBtnComponent.vue";
+import { router } from "@inertiajs/vue3";
+import { ref, computed } from "vue";
 import { Link } from "@inertiajs/vue3";
+import { useQuasar } from "quasar";
+
 defineOptions({
     name: "MainLayout",
 });
+
+const props = defineProps({
+    title: String,
+});
+
+const $q = useQuasar();
+
+const screen = computed(() => {
+    return $q.screen;
+});
+
+const links = ref([
+    {
+        title: "vivir en plenitud",
+        url: "/",
+    },
+    {
+        title: "consulta individual",
+        url: "/consulta_individual",
+    },
+    {
+        title: "taller online",
+        url: "/taller_online",
+    },
+    {
+        title: "publicaciones",
+        url: "/publicaciones",
+    },
+    {
+        title: "contactame",
+        url: "/contactame",
+    },
+]);
 </script>
+<style scope>
+a {
+    text-decoration: none;
+}
+
+.container {
+    padding-left: 8%;
+    padding-right: 8%;
+}
+
+.header-title,
+.header-subtitle {
+    font-size: 24px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #223645;
+    font-weight: 400;
+    font-size: 21px;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1.22;
+}
+
+.rounded {
+    border-radius: 25px !important;
+}
+</style>

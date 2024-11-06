@@ -1,66 +1,33 @@
 <template>
     <q-layout view="lHh Lpr lFf">
-        <q-header elevated>
-            <q-toolbar
-                :style="{ background: Dark.isActive ? '#1d1d1d' : '#407492' }"
-            >
-                <q-btn
-                    flat
-                    dense
-                    round
-                    icon="menu"
-                    aria-label="Menu"
-                    @click="toggleLeftDrawer"
-                />
+        <q-header>
+            <q-toolbar :style="{ background: Dark.isActive ? '#1d1d1d' : '#407492' }">
+                <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
-                <q-img
-                    :src="`${$page.props.public_path}images/logo/${
-                        Dark.isActive ? '2' : '1'
-                    }.png`"
-                    style="width: 90px"
-                    v-if="mini && !leftDrawerOpen"
-                />
+                <img :src="`${$page.props.public_path}images/logo/1.png`" style="width: 90px"
+                    v-if="mini && !leftDrawerOpen" />
                 <q-toolbar-title />
 
-                <DarkSwitcher
-                    class="z-max"
-                    size="md"
-                    colorDark="black"
-                    colorLight="white"
-                />
+                <DarkSwitcher class="z-max" size="md" colorDark="black" colorLight="white" />
             </q-toolbar>
         </q-header>
 
-        <q-drawer
-            v-model="leftDrawerOpen"
-            show-if-above
-            bordered
-            :mini="true"
-            v-if="mini"
-        >
-            <menu-component
-                @change-url="(nav) => (currentNav = nav)"
-                :mini="true"
-            />
+        <q-drawer :class="Dark.isActive ? '' : 'bg-primary text-white'" v-model="leftDrawerOpen" show-if-above
+            :mini="true" v-if="mini">
+            <menu-component @change-url="(nav) => (currentNav = nav)" :mini="true" />
         </q-drawer>
 
-        <q-drawer v-model="leftDrawerOpen" show-if-above bordered v-else>
+        <q-drawer :class="Dark.isActive ? '' : 'bg-primary text-white'" v-model="leftDrawerOpen" show-if-above v-else>
             <menu-component @change-url="(nav) => (currentNav = nav)" />
         </q-drawer>
 
-        <q-page-container>
+        <q-page-container :class="Dark.isActive ? '' : 'bg-primary'">
             <slot />
         </q-page-container>
     </q-layout>
 </template>
 
 <script setup>
-import "@quasar/extras/material-icons/material-icons.css";
-import "@quasar/extras/mdi-v6/mdi-v6.css";
-import "@quasar/extras/fontawesome-v6/fontawesome-v6.css";
-import "@quasar/extras/animate/animate-list.js";
-import "quasar/src/css/index.sass";
-import "../../css/app.css";
 import { ref, onMounted } from "vue";
 import MenuComponent from "../components/navigation/MenuComponent.vue";
 import DarkSwitcher from "../components/profile/DarkSwitcher.vue";
@@ -79,5 +46,5 @@ function toggleLeftDrawer() {
     mini.value = !leftDrawerOpen.value;
 }
 
-onMounted(() => {});
+onMounted(() => { });
 </script>

@@ -1,13 +1,8 @@
 <template>
     <Layout>
         <q-page padding>
-            <table-component
-                :columns="columns"
-                :searchFields="searchFields"
-                :createFields="fields"
-                :updateFields="fields"
-                :has_delete="false"
-            ></table-component>
+            <table-component :columns="columns" :searchFields="searchFields" :createFields="fields"
+                :updateFields="fields" :has_delete="false"></table-component>
         </q-page>
     </Layout>
 </template>
@@ -43,6 +38,7 @@ const columns = [
         name: "actions",
         label: "Acciones",
         type: "actions",
+        width: 100
     },
 ];
 

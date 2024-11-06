@@ -89,10 +89,12 @@ const icon = ref(null);
 const showDialog = ref(false);
 const setDefault = ref(false);
 
+const page = usePage();
+
 onMounted(() => {
     if (props.object != null) {
         fullTitle.value = `Editar ${props.title}`;
-        icon.value = "edit";
+        icon.value = `img:${page.props.public_path}images/icon/white-edit.png`;
     } else {
         fullTitle.value = `Adicionar ${props.title}`;
         icon.value = "add";
@@ -101,6 +103,6 @@ onMounted(() => {
 
 const onHide = () => {
     setDefault.value = !setDefault.value;
-    usePage().props.errors = {};
+    page.props.errors = {};
 };
 </script>
