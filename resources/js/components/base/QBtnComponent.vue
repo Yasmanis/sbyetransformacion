@@ -27,7 +27,7 @@
             v-if="tooltips"
             :class="`bg-${tooltipsColor ? tooltipsColor : color}`"
         />
-        <slot></slot>
+        <slot />
     </q-btn>
 </template>
 

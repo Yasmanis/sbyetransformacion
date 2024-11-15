@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
-use Inertia\Inertia;
 
 class UserController extends Controller
 {

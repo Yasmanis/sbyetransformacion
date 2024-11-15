@@ -3,46 +3,100 @@
         <div class="row container q-mt-xl">
             <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                 <div class="row" v-if="files.length > 0">
-                    <template v-for="(f, indexFile) in files" :key="`file-${indexFile}`">
-                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 q-pa-sm text-center"
+                    <template
+                        v-for="(f, indexFile) in files"
+                        :key="`file-${indexFile}`"
+                    >
+                        <div
+                            class="col-lg-3 col-md-3 col-sm-4 col-xs-12 q-pa-sm text-center"
                             :class="screen.xs || screen.sm ? 'q-mb-md' : ''"
-                            v-if="currentCategory.name === 'newsletters'">
-                            <div class="q-pa-none" style="height: 200px;">
-                                <video :src="`${$page.props.public_path}storage/${f.path}`" controls
-                                    class="full-width full-height" v-if="f.type.startsWith('video/')"></video>
-                                <q-img class="full-width full-height"
+                            v-if="currentCategory.name === 'newsletters'"
+                        >
+                            <div class="q-pa-none" style="height: 200px">
+                                <video
                                     :src="`${$page.props.public_path}storage/${f.path}`"
-                                    v-else-if="f.type.startsWith('image/')" />
-                                <a :href="`${$page.props.public_path}storage/${f.path}`" target="_blank" v-else>
-                                    <q-img class="full-width full-height"
-                                        :src="`${$page.props.public_path}images/others/file.png`" />
+                                    controls
+                                    class="full-width full-height"
+                                    v-if="f.type.startsWith('video/')"
+                                ></video>
+                                <q-img
+                                    class="full-width full-height"
+                                    :src="`${$page.props.public_path}storage/${f.path}`"
+                                    v-else-if="f.type.startsWith('image/')"
+                                />
+                                <a
+                                    :href="`${$page.props.public_path}storage/${f.path}`"
+                                    target="_blank"
+                                    v-else
+                                >
+                                    <q-img
+                                        class="full-width full-height"
+                                        :src="`${$page.props.public_path}images/others/file.png`"
+                                    />
                                 </a>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 q-pa-sm" style="height: 250px !important"
-                            v-else-if="currentCategory.name === 'posts' || currentCategory.name === 'post'">
-                            <video :src="`${$page.props.public_path}storage/${f.path}`" controls class="w-100 h-100"
-                                v-if="f.type.startsWith('video/') || f.type.startsWith('audio/')"></video>
-                            <q-img class="full-width full-height" :src="`${$page.props.public_path}storage/${f.path}`"
-                                v-else-if="f.type.startsWith('image/')" />
-                            <q-item v-else clickable target="_blank"
-                                :href="`${$page.props.public_path}storage/${f.path}`"><q-img
+                        <div
+                            class="col-lg-4 col-md-4 col-sm-6 col-xs-12 q-pa-sm"
+                            style="height: 250px !important"
+                            v-else-if="
+                                currentCategory.name === 'posts' ||
+                                currentCategory.name === 'post'
+                            "
+                        >
+                            <video
+                                :src="`${$page.props.public_path}storage/${f.path}`"
+                                controls
+                                class="full-width full-height"
+                                v-if="
+                                    f.type.startsWith('video/') ||
+                                    f.type.startsWith('audio/')
+                                "
+                            ></video>
+                            <q-img
+                                class="full-width full-height"
+                                :src="`${$page.props.public_path}storage/${f.path}`"
+                                v-else-if="f.type.startsWith('image/')"
+                            />
+                            <q-item
+                                v-else
+                                clickable
+                                target="_blank"
+                                :href="`${$page.props.public_path}storage/${f.path}`"
+                                ><q-img
                                     class="full-width full-height"
-                                    :src="`${$page.props.public_path}images/others/file.png`" /></q-item>
+                                    :src="`${$page.props.public_path}images/others/file.png`"
+                            /></q-item>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" v-else>
+                        <div
+                            class="col-lg-6 col-md-6 col-sm-6 col-xs-12"
+                            v-else
+                        >
                             <q-card class="my-card q-ma-sm rounded">
                                 <q-card-section class="q-pa-none">
-                                    <video :src="`${$page.props.public_path}storage/${f.path}`" controls
-                                        class="full-width rounded-top header-card" v-if="
+                                    <video
+                                        :src="`${$page.props.public_path}storage/${f.path}`"
+                                        controls
+                                        class="full-width rounded-top header-card"
+                                        v-if="
                                             f.type.startsWith('video/') ||
                                             f.type.startsWith('audio/')
-                                        " />
-                                    <a :href="`${$page.props.public_path}storage/${f.path}`" target="_blank" v-else>
-                                        <q-img :src="`${$page.props.public_path}images/group/6.jpg`"
-                                            class="rounded-top full-width header-card" />
+                                        "
+                                    />
+                                    <a
+                                        :href="`${$page.props.public_path}storage/${f.path}`"
+                                        target="_blank"
+                                        v-else
+                                    >
+                                        <q-img
+                                            :src="`${$page.props.public_path}images/group/6.jpg`"
+                                            class="rounded-top full-width header-card"
+                                        />
                                         <div class="column items-center">
-                                            <i class="fa fa-file fa-4x text-white" style="margin-top: -120px"></i>
+                                            <i
+                                                class="fa fa-file fa-4x text-white"
+                                                style="margin-top: -120px"
+                                            ></i>
                                         </div>
                                     </a>
                                 </q-card-section>
@@ -51,16 +105,21 @@
                                         {{
                                             f.name.indexOf(".") >= 0
                                                 ? f.name.substring(
-                                                    0,
-                                                    f.name.lastIndexOf(".")
-                                                )
+                                                      0,
+                                                      f.name.lastIndexOf(".")
+                                                  )
                                                 : f.name
                                         }}
                                     </q-item-label>
-                                    <q-item-label class="q-pt-sm cursor-pointer text-primary">
-                                        <a class="text-uppercase text-primary"
+                                    <q-item-label
+                                        class="q-pt-sm cursor-pointer text-primary"
+                                    >
+                                        <a
+                                            class="text-uppercase text-primary"
                                             :href="`${$page.props.public_path}storage/${f.path}`"
-                                            target="_blank"><small>ver</small></a>
+                                            target="_blank"
+                                            ><small>ver</small></a
+                                        >
                                     </q-item-label>
                                 </q-card-section>
                             </q-card>
@@ -73,8 +132,14 @@
                         categoria
                     </h3>
                 </div>
-                <div class="row bg-primary q-pa-md" v-if="currentCategory?.name === 'testimonios'">
-                    <div class="col-lg-12 p-4 mt-4" :class="showForm ? 'bg-company' : 'text-center'">
+                <div
+                    class="row bg-primary q-pa-md"
+                    v-if="currentCategory?.name === 'testimonios'"
+                >
+                    <div
+                        class="col-lg-12 p-4 mt-4"
+                        :class="showForm ? 'bg-company' : 'text-center'"
+                    >
                         <div>
                             <p class="text-white" style="font-size: 26px">
                                 sube tu testimonio
@@ -95,91 +160,212 @@
                             </p>
                             <q-form ref="formRef" greedy v-if="showForm">
                                 <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                        <i class="mdi mdi-asterisk text-red" style="margin-left: 75px"
-                                            v-if="!form.name" />
-                                        <q-input v-model="form.name" name="name" placeholder="nombre" required dense
-                                            rounded outlined bg-color="white" :class="!screen.xs ? 'q-mr-xs' : ''"
+                                    <div
+                                        class="col-lg-6 col-md-6 col-sm-6 col-xs-12"
+                                    >
+                                        <i
+                                            class="mdi mdi-asterisk text-red"
+                                            style="margin-left: 75px"
+                                            v-if="!form.name"
+                                        />
+                                        <q-input
+                                            v-model="form.name"
+                                            name="name"
+                                            placeholder="nombre"
+                                            required
+                                            dense
+                                            rounded
+                                            outlined
+                                            bg-color="white"
+                                            :class="!screen.xs ? 'q-mr-xs' : ''"
                                             :rules="[
                                                 (val) => !!val || 'requerido',
-                                            ]" hide-bottom-space />
+                                            ]"
+                                            hide-bottom-space
+                                        />
                                     </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"
-                                        :class="screen.xs ? 'q-mt-md' : ''">
-                                        <i class="mdi mdi-asterisk text-red" style="margin-left: 88px"
-                                            v-if="!form.surname" />
-                                        <q-input v-model="form.surname" type="text" name="surname"
-                                            placeholder="apellidos" required dense rounded outlined bg-color="white"
-                                            :class="!screen.xs ? 'q-ml-xs' : ''" :rules="[
+                                    <div
+                                        class="col-lg-6 col-md-6 col-sm-6 col-xs-12"
+                                        :class="screen.xs ? 'q-mt-md' : ''"
+                                    >
+                                        <i
+                                            class="mdi mdi-asterisk text-red"
+                                            style="margin-left: 88px"
+                                            v-if="!form.surname"
+                                        />
+                                        <q-input
+                                            v-model="form.surname"
+                                            type="text"
+                                            name="surname"
+                                            placeholder="apellidos"
+                                            required
+                                            dense
+                                            rounded
+                                            outlined
+                                            bg-color="white"
+                                            :class="!screen.xs ? 'q-ml-xs' : ''"
+                                            :rules="[
                                                 (val) => !!val || 'requerido',
-                                            ]" hide-bottom-space />
+                                            ]"
+                                            hide-bottom-space
+                                        />
                                     </div>
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md">
-                                        <i class="mdi mdi-asterisk text-red" style="margin-left: 58px"
-                                            v-if="!form.email" />
-                                        <q-input v-model="form.email" name="email" placeholder="email" required dense
-                                            rounded outlined bg-color="white" :rules="[
+                                    <div
+                                        class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
+                                    >
+                                        <i
+                                            class="mdi mdi-asterisk text-red"
+                                            style="margin-left: 58px"
+                                            v-if="!form.email"
+                                        />
+                                        <q-input
+                                            v-model="form.email"
+                                            name="email"
+                                            placeholder="email"
+                                            required
+                                            dense
+                                            rounded
+                                            outlined
+                                            bg-color="white"
+                                            :rules="[
                                                 (val) => !!val || 'requerido',
                                                 (val, rules) =>
                                                     !!rules.email(val) ||
                                                     'email no valido',
-                                            ]" hide-bottom-space />
+                                            ]"
+                                            hide-bottom-space
+                                        />
                                     </div>
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md">
-                                        <i class="mdi mdi-asterisk text-red" style="margin-left: 158px"
-                                            v-if="!form.msg_title" />
-                                        <q-input v-model="form.msg_title" type="text" name="msg_title"
-                                            placeholder="titulo del mensaje" required dense rounded outlined
-                                            bg-color="white" :rules="[
+                                    <div
+                                        class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
+                                    >
+                                        <i
+                                            class="mdi mdi-asterisk text-red"
+                                            style="margin-left: 158px"
+                                            v-if="!form.msg_title"
+                                        />
+                                        <q-input
+                                            v-model="form.msg_title"
+                                            type="text"
+                                            name="msg_title"
+                                            placeholder="titulo del mensaje"
+                                            required
+                                            dense
+                                            rounded
+                                            outlined
+                                            bg-color="white"
+                                            :rules="[
                                                 (val) => !!val || 'requerido',
-                                            ]" hide-bottom-space />
+                                            ]"
+                                            hide-bottom-space
+                                        />
                                     </div>
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md">
-                                        <i class="mdi mdi-asterisk text-red img-aster-msg" v-if="!form.message" />
-                                        <q-input type="textarea" v-model="form.message" placeholder="mensaje"
-                                            name="message" required dense rounded outlined bg-color="white" :rules="[
+                                    <div
+                                        class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
+                                    >
+                                        <i
+                                            class="mdi mdi-asterisk text-red img-aster-msg"
+                                            v-if="!form.message"
+                                        />
+                                        <q-input
+                                            type="textarea"
+                                            v-model="form.message"
+                                            placeholder="mensaje"
+                                            name="message"
+                                            required
+                                            dense
+                                            rounded
+                                            outlined
+                                            bg-color="white"
+                                            :rules="[
                                                 (val) => !!val || 'requerido',
-                                            ]" hide-bottom-space>
+                                            ]"
+                                            hide-bottom-space
+                                        >
                                         </q-input>
                                         <div class="column items-end">
-                                            <q-btn :icon="`img:${$page.props.public_path}images/icon/clipper.png`" dense
-                                                flat @click="fileRef.pickFiles()" style="
+                                            <q-btn
+                                                :icon="`img:${$page.props.public_path}images/icon/clipper.png`"
+                                                dense
+                                                flat
+                                                @click="fileRef.pickFiles()"
+                                                style="
                                                     margin-top: -52px;
                                                     margin-right: 10px;
-                                                " />
+                                                "
+                                            />
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row q-pt-md" v-if="form.attachments?.length > 0">
+                                <div
+                                    class="row q-pt-md"
+                                    v-if="form.attachments?.length > 0"
+                                >
                                     <q-list dense>
-                                        <q-item class="q-ma-none" style="padding: 0">
-                                            <q-item-section avatar class="q-pa-none" style="min-width: 30px" v-if="
-                                                form.attachments?.length > 1
-                                            ">
-                                                <q-btn flat icon="fa fa-times-circle" color="red" padding="0" @click="
-                                                    form.attachments = null
-                                                    ">
-                                                    <q-tooltip>quitar todos los
-                                                        adjuntos</q-tooltip>
+                                        <q-item
+                                            class="q-ma-none"
+                                            style="padding: 0"
+                                        >
+                                            <q-item-section
+                                                avatar
+                                                class="q-pa-none"
+                                                style="min-width: 30px"
+                                                v-if="
+                                                    form.attachments?.length > 1
+                                                "
+                                            >
+                                                <q-btn
+                                                    flat
+                                                    icon="fa fa-times-circle"
+                                                    color="red"
+                                                    padding="0"
+                                                    @click="
+                                                        form.attachments = null
+                                                    "
+                                                >
+                                                    <q-tooltip
+                                                        >quitar todos los
+                                                        adjuntos</q-tooltip
+                                                    >
                                                 </q-btn>
                                             </q-item-section>
                                             <q-item-section class="text-white">
-                                                <q-item-label>adjuntos</q-item-label>
+                                                <q-item-label
+                                                    >adjuntos</q-item-label
+                                                >
                                             </q-item-section>
                                         </q-item>
-                                        <q-separator color="white"></q-separator>
-                                        <q-item v-for="(
+                                        <q-separator
+                                            color="white"
+                                        ></q-separator>
+                                        <q-item
+                                            v-for="(
                                                 f, index
-                                            ) in form.attachments" :key="`attachment_${index}`" class="q-ma-none"
-                                            style="padding: 0">
-                                            <q-item-section avatar class="q-pa-none" style="min-width: 30px">
-                                                <q-btn flat icon="fa fa-times-circle" color="red" padding="0" @click="
-                                                    fileRef.removeAtIndex(
-                                                        index
-                                                    )
-                                                    ">
-                                                    <q-tooltip>quitar
-                                                        adjunto</q-tooltip>
+                                            ) in form.attachments"
+                                            :key="`attachment_${index}`"
+                                            class="q-ma-none"
+                                            style="padding: 0"
+                                        >
+                                            <q-item-section
+                                                avatar
+                                                class="q-pa-none"
+                                                style="min-width: 30px"
+                                            >
+                                                <q-btn
+                                                    flat
+                                                    icon="fa fa-times-circle"
+                                                    color="red"
+                                                    padding="0"
+                                                    @click="
+                                                        fileRef.removeAtIndex(
+                                                            index
+                                                        )
+                                                    "
+                                                >
+                                                    <q-tooltip
+                                                        >quitar
+                                                        adjunto</q-tooltip
+                                                    >
                                                 </q-btn>
                                             </q-item-section>
                                             <q-item-section class="text-white">
@@ -190,16 +376,42 @@
                                         </q-item>
                                     </q-list>
                                 </div>
-                                <q-file ref="fileRef" v-model="form.attachments" multiple class="hidden" />
-                                <q-btn rounded color="black" label="publicar" no-caps :disabled="sending"
-                                    :loading="sending" class="q-mt-md" icon="mdi-cloud-upload-outline"
-                                    @click="onSubmit" />
-                                <q-btn rounded color="black" label="cancelar" no-caps class="q-mt-md q-ml-xs"
-                                    icon="mdi-window-close" @click="onCancel" />
+                                <q-file
+                                    ref="fileRef"
+                                    v-model="form.attachments"
+                                    multiple
+                                    class="hidden"
+                                />
+                                <q-btn
+                                    rounded
+                                    color="black"
+                                    label="publicar"
+                                    no-caps
+                                    :disabled="sending"
+                                    :loading="sending"
+                                    class="q-mt-md"
+                                    icon="mdi-cloud-upload-outline"
+                                    @click="onSubmit"
+                                />
+                                <q-btn
+                                    rounded
+                                    color="black"
+                                    label="cancelar"
+                                    no-caps
+                                    class="q-mt-md q-ml-xs"
+                                    icon="mdi-window-close"
+                                    @click="onCancel"
+                                />
                             </q-form>
                         </div>
-                        <q-btn label="sube tu testimonio" rounded color="black" no-caps @click="showForm = true"
-                            v-if="!showForm" />
+                        <q-btn
+                            label="sube tu testimonio"
+                            rounded
+                            color="black"
+                            no-caps
+                            @click="showForm = true"
+                            v-if="!showForm"
+                        />
                     </div>
                 </div>
             </div>
@@ -210,47 +422,83 @@
                             <p class="q-my-sm text-uppercase">categorias</p>
                             <div style="border-bottom: 2px solid #407492"></div>
                             <ul class="q-pa-none q-my-none list-unstyled">
-                                <li v-for="(c, index) in categories" :key="`category-${index}`" class="q-py-md" :class="index === categories.length - 1
-                                    ? 'q-pb-none'
-                                    : 'border-dashed-bottom-1'
-                                    ">
-                                    <a href="javascript:;" @click="currentCategory = c" class="text-primary" :style="{
-                                        'font-weight':
-                                            currentCategory?.id === c.id
-                                                ? 'bold'
-                                                : '',
-                                    }"><i class="fa fa-check font-company q-mr-sm" aria-hidden="true"></i>{{ c.name
-                                        }}</a>
+                                <li
+                                    v-for="(c, index) in categories"
+                                    :key="`category-${index}`"
+                                    class="q-py-md"
+                                    :class="
+                                        index === categories.length - 1
+                                            ? 'q-pb-none'
+                                            : 'border-dashed-bottom-1'
+                                    "
+                                >
+                                    <a
+                                        href="javascript:;"
+                                        @click="currentCategory = c"
+                                        class="text-primary"
+                                        :style="{
+                                            'font-weight':
+                                                currentCategory?.id === c.id
+                                                    ? 'bold'
+                                                    : '',
+                                        }"
+                                        ><i
+                                            class="fa fa-check font-company q-mr-sm"
+                                            aria-hidden="true"
+                                        ></i
+                                        >{{ c.name }}</a
+                                    >
                                 </li>
                             </ul>
                         </q-card-section>
                     </q-card>
 
-                    <q-card class="my-card rounded shadow-4 full-width q-mt-lg" v-if="recent_files.length > 0">
+                    <q-card
+                        class="my-card rounded shadow-4 full-width q-mt-lg"
+                        v-if="recent_files.length > 0"
+                    >
                         <q-card-section class="q-pb-none">
                             <p class="q-my-sm text-uppercase">mas recientes</p>
                             <div style="border-bottom: 2px solid #407492"></div>
                             <q-list>
-                                <q-item v-for="(f, indexRecent) in recent_files" :key="`recent-file-${indexRecent}`"
-                                    class="q-py-md q-px-none" :class="indexRecent === recent_files.length - 1
-                                        ? 'q-pb-none'
-                                        : 'border-dashed-bottom-1'
-                                        " :href="`${$page.props.public_path}storage/${f.path}`" target="_blank"
-                                    clickable>
-                                    <q-item-section avatar style="width: 70px" class="q-pr-none">
+                                <q-item
+                                    v-for="(f, indexRecent) in recent_files"
+                                    :key="`recent-file-${indexRecent}`"
+                                    class="q-py-md q-px-none"
+                                    :class="
+                                        indexRecent === recent_files.length - 1
+                                            ? 'q-pb-none'
+                                            : 'border-dashed-bottom-1'
+                                    "
+                                    :href="`${$page.props.public_path}storage/${f.path}`"
+                                    target="_blank"
+                                    clickable
+                                >
+                                    <q-item-section
+                                        avatar
+                                        style="width: 70px"
+                                        class="q-pr-none"
+                                    >
                                         <q-img
-                                            :src="`${$page.props.public_path}images/others/publicaciones-recientes.png`" />
+                                            :src="`${$page.props.public_path}images/others/publicaciones-recientes.png`"
+                                        />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label lines="3" class="text-lowercase text-primary text-weight-bold">{{
-                                            f.name.substring(
-                                                0,
-                                                f.name.lastIndexOf(".")
-                                            )
-                                        }}</q-item-label>
-                                        <q-item-label><small>{{
-                                            f.date_for_human
-                                                }}</small></q-item-label>
+                                        <q-item-label
+                                            lines="3"
+                                            class="text-lowercase text-primary text-weight-bold"
+                                            >{{
+                                                f.name.substring(
+                                                    0,
+                                                    f.name.lastIndexOf(".")
+                                                )
+                                            }}</q-item-label
+                                        >
+                                        <q-item-label
+                                            ><small>{{
+                                                f.date_for_human
+                                            }}</small></q-item-label
+                                        >
                                     </q-item-section>
                                 </q-item>
                             </q-list>
@@ -262,25 +510,61 @@
                             <p class="q-my-sm text-uppercase">redes sociales</p>
                             <div style="border-bottom: 2px solid #407492"></div>
                             <div class="row">
-                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm">
-                                    <q-btn color="primary" icon="fab fa-facebook-f" label="facebook" class="full-width"
-                                        no-caps href="https://www.facebook.com/profile.php?id=61563937152210"
-                                        target="_blank" align="left" />
+                                <div
+                                    class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm"
+                                >
+                                    <q-btn
+                                        color="primary"
+                                        icon="fab fa-facebook-f"
+                                        label="facebook"
+                                        class="full-width"
+                                        no-caps
+                                        href="https://www.facebook.com/profile.php?id=61563937152210"
+                                        target="_blank"
+                                        align="left"
+                                    />
                                 </div>
-                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm">
-                                    <q-btn color="primary" icon="fab fa-youtube" label=" youtube" class="full-width"
-                                        no-caps align="left" href="https://www.youtube.com/@sbyetransformacion"
-                                        target="_blank" />
+                                <div
+                                    class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm"
+                                >
+                                    <q-btn
+                                        color="primary"
+                                        icon="fab fa-youtube"
+                                        label=" youtube"
+                                        class="full-width"
+                                        no-caps
+                                        align="left"
+                                        href="https://www.youtube.com/@sbyetransformacion"
+                                        target="_blank"
+                                    />
                                 </div>
-                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm">
-                                    <q-btn color="primary" icon="fab fa-instagram" label="instagram" class="full-width"
-                                        no-caps align="left" href="https://www.instagram.com/sbyetransformacion/"
-                                        target="_blank" />
+                                <div
+                                    class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm"
+                                >
+                                    <q-btn
+                                        color="primary"
+                                        icon="fab fa-instagram"
+                                        label="instagram"
+                                        class="full-width"
+                                        no-caps
+                                        align="left"
+                                        href="https://www.instagram.com/sbyetransformacion/"
+                                        target="_blank"
+                                    />
                                 </div>
-                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm">
-                                    <q-btn color="primary" icon="fab fa-tiktok" label="tiktok" class="full-width"
-                                        no-caps align="left" href="https://www.tiktok.com/@sbyetransformacion"
-                                        target="_blank" />
+                                <div
+                                    class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm"
+                                >
+                                    <q-btn
+                                        color="primary"
+                                        icon="fab fa-tiktok"
+                                        label="tiktok"
+                                        class="full-width"
+                                        no-caps
+                                        align="left"
+                                        href="https://www.tiktok.com/@sbyetransformacion"
+                                        target="_blank"
+                                    />
                                 </div>
                             </div>
                         </q-card-section>

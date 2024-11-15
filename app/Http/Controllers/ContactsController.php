@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Attachment;
 use App\Repositories\ContactRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ContactsController extends Controller
 {

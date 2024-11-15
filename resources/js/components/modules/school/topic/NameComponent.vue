@@ -27,16 +27,25 @@
                 </li>
             </ul>
         </template>
+        <template #after v-if="btnDelete">
+            <q-btn-component
+                icon="mdi-trash-can-outline"
+                color="red"
+                tooltips="eliminar tema"
+                @click="deleteTopic"
+            ></q-btn-component>
+        </template>
     </q-input>
 </template>
 
 <script setup>
 import { onBeforeMount, onMounted, ref, watch, computed } from "vue";
-import { validations } from "../../../helpers/validations";
+import { validations } from "../../../../helpers/validations";
 import { usePage } from "@inertiajs/vue3";
+import QBtnComponent from "../../../base/QBtnComponent.vue";
 
 defineOptions({
-    name: "TextField",
+    name: "NameComponent",
 });
 
 const props = defineProps({
@@ -61,9 +70,13 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    btnDelete: {
+        type: Boolean,
+        default: false,
+    },
 });
 
-const emits = defineEmits(["update"]);
+const emits = defineEmits(["update", "remove"]);
 
 const page = usePage();
 
@@ -101,4 +114,8 @@ function update(val) {
     model.value = val;
     emits("update", props.name, model.value);
 }
+
+const deleteTopic = () => {
+    emits("remove");
+};
 </script>

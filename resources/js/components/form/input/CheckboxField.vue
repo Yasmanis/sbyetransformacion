@@ -5,6 +5,7 @@
         :left-label="leftLabel"
         :name="name"
         :dense="dense"
+        :class="class"
         hide-bottom-space
         bottom-slots
         @update:model-value="onUpdate"
@@ -64,6 +65,7 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    class: String,
 });
 
 const emits = defineEmits(["update"]);

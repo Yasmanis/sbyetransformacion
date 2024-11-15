@@ -1,17 +1,20 @@
 <template>
     <q-uploader
         ref="uploader"
-        field-name="file"
+        class="full-width"
+        :class="class"
+        :field-name="name"
         :label="label"
         :name="name"
         :url="url"
         :form-fields="formFields"
         :color="color"
+        :accept="accept"
+        :no-thumbnails="noThumbnails"
         hide-upload-btn
-        multiple
+        :multiple="multiple"
         @failed="onFailed"
         @finish="onFinish"
-        @factory-failed="onFactoryFailed"
         @rejected="onRejected"
         @uploaded="onUploaded"
         @added="onAdeded"
@@ -47,13 +50,15 @@ defineOptions({
 });
 
 const props = defineProps({
+    accept: String,
+    class: String,
     modelValue: {
         type: Boolean,
         default: false,
     },
     name: {
         type: String,
-        required: true,
+        default: "file",
     },
     label: {
         type: String,
@@ -64,6 +69,10 @@ const props = defineProps({
         default: false,
     },
     dense: {
+        type: Boolean,
+        default: false,
+    },
+    noThumbnails: {
         type: Boolean,
         default: false,
     },
@@ -87,9 +96,13 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    multiple: {
+        type: Boolean,
+        default: true,
+    },
 });
 
-const emits = defineEmits(["uploaded", "uploading"]);
+const emits = defineEmits(["uploaded", "uploading", "finish", "change-files"]);
 
 const model = ref(false);
 const uploader = ref(null);
@@ -129,6 +142,11 @@ const onFinish = () => {
     if (failed.value === 0) {
         emits("uploaded");
     }
+    emits("finish", {
+        uploaded: uploaded.value,
+        failed: failed.value,
+        total: uploaded.value + failed.value,
+    });
     failed.value = 0;
     uploaded.value = 0;
 };
@@ -138,7 +156,7 @@ const onFailed = (info) => {
 };
 
 const onRejected = (info) => {
-    console.log("onRejected");
+    error("fichero(s) no admitido(s)");
 };
 
 const onUploaded = (info) => {
@@ -148,10 +166,12 @@ const onUploaded = (info) => {
 
 const onAdeded = (files) => {
     countFiles.value += files.length;
+    emits("change-files", countFiles.value);
 };
 
 const onRemoved = (files) => {
     countFiles.value -= files.length;
+    emits("change-files", countFiles.value);
 };
 </script>
 <style scope>

@@ -6,7 +6,6 @@ use App\Models\File;
 use App\Repositories\FileRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 
 class FileController extends Controller
 {

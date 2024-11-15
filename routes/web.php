@@ -11,9 +11,11 @@ use App\Http\Controllers\LifeController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ConfigurationController;
+use App\Http\Controllers\SchoolTopicsController;
 use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
+use App\Models\SchoolTopic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -79,13 +81,14 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/users', UserController::class);
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
+    Route::resource('/admin/life', LifeController::class);
+    Route::resource('/admin/schooltopics', SchoolTopicsController::class);
+    Route::post('/admin/schooltopics/addResources', [SchoolTopicsController::class, 'addResource']);
     Route::post('/admin/categories/sort-files', [CategoryController::class, 'sortFiles']);
     Route::resource('/admin/files', FileController::class);
 
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);
-
-    Route::get('/admin/life', [LifeController::class, 'index']);
     Route::get('/admin/posts', [PostController::class, 'index']);
     Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
 
