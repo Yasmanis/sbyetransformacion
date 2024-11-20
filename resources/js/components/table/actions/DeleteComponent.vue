@@ -1,6 +1,11 @@
 <template>
-    <q-btn-component tooltips="eliminar" :size="size"
-        :icon="`img:${$page.props.public_path}images/icon/recicle-bin.png`" color="red" @click="handleDelete" />
+    <q-btn-component
+        tooltips="eliminar"
+        :size="size"
+        :icon="`img:${$page.props.public_path}images/icon/recicle-bin.png`"
+        color="red"
+        @click="handleDelete"
+    />
 </template>
 
 <script setup>

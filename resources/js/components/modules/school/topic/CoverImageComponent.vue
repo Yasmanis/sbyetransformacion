@@ -27,8 +27,8 @@
                 />
                 <q-btn-component
                     color="red"
-                    :tooltips="!file ? '' : 'eliminar'"
-                    :disable="!file"
+                    :tooltips="hasDefaultImage ? '' : 'eliminar'"
+                    :disable="hasDefaultImage"
                     class="q-ml-xs"
                     icon="mdi-trash-can-outline"
                     @click="resetImg"
@@ -49,9 +49,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { error } from "../../../../helpers/notifications";
 import QBtnComponent from "../../../base/QBtnComponent.vue";
+import { usePage } from "@inertiajs/vue3";
 
 defineOptions({
     name: "CoverImageComponent",
@@ -66,16 +67,32 @@ const emits = defineEmits(["change"]);
 const image = ref(props.src);
 const file = ref(null);
 const fileRef = ref(null);
+const hasDefaultImage = ref(false);
+const defaultImage = ref(
+    `${usePage().props.public_path}images/icon/img-upload-black.png`
+);
+
+onMounted(() => {
+    if (props.src !== null) {
+        image.value = props.src;
+        hasDefaultImage.value = false;
+    } else {
+        image.value = defaultImage.value;
+        hasDefaultImage.value = true;
+    }
+});
 
 const onChangeFile = (f) => {
     image.value = URL.createObjectURL(f);
+    hasDefaultImage.value = false;
     emits("change", f);
 };
 
 const resetImg = () => {
-    image.value = props.src;
+    image.value = defaultImage.value;
+    hasDefaultImage.value = true;
     file.value = null;
-    emits("change", { file: null, topic: props.topic });
+    emits("change", null);
 };
 
 const onRejected = (e) => {

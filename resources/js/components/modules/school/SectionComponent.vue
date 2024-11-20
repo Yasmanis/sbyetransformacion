@@ -156,7 +156,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import axios from "axios";
@@ -167,10 +167,6 @@ defineOptions({
 });
 
 const props = defineProps({
-    imgbase: String,
-    url: String,
-    base: String,
-    app_config: Object,
     section: Object,
     topic: Object,
     index: {
@@ -180,10 +176,6 @@ const props = defineProps({
     totalSections: {
         type: Number,
         default: 0,
-    },
-    reload: {
-        type: Boolean,
-        default: false,
     },
 });
 
@@ -195,10 +187,6 @@ const currentTime = ref(0);
 const totalTime = ref(0);
 
 const page = usePage();
-
-onMounted(() => {
-    //changeSection();
-});
 
 const principalVideo = computed(() => {
     return props.topic.resources.find((r) => r.principal);

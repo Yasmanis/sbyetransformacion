@@ -1,17 +1,17 @@
 <template>
     <q-separator class="q-mt-lg q-mb-sm" v-if="btnDelete" />
     <name-component
-        v-model="model"
+        v-model="formData.name"
         :label="label"
         :name="name"
         :othersProps="{
             required: true,
         }"
-        :modelValue="topic.name"
+        :modelValue="formData.name"
         :btnDelete="btnDelete"
         @update="
             (name, val) => {
-                current.name = val;
+                formData.name = val;
             }
         "
         @remove="onRemove"
@@ -19,10 +19,15 @@
     <div class="row q-mt-md q-ml-none">
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding: 0px">
             <cover-image-component
-                :src="current.src"
+                :src="
+                    formData.coverImage
+                        ? `${$page.props.public_path}storage/${formData.coverImage}`
+                        : null
+                "
                 @change="
                     (img) => {
-                        current.coverImage = img;
+                        formData.coverImage = img;
+                        isOk();
                     }
                 "
             />
@@ -32,41 +37,124 @@
                 class="row"
                 :class="screen.xs || screen.sm ? 'q-mt-sm' : 'q-ml-md'"
             >
-                <uploader-field
-                    label="video principal"
-                    :multiple="false"
-                    :formFields="[
-                        {
-                            name: 'id',
-                            value: current.id,
-                        },
-                        {
-                            name: 'principal',
-                            value: 1,
-                        },
-                    ]"
-                    :upload="upload"
-                    accept="video/*"
-                    url="/admin/schooltopics/addResources"
-                    @uploaded="onUploaded"
-                    @change-files="
-                        (files) => {
-                            current.principalVideo = files > 0;
-                        }
-                    "
-                    @finish="(info, principal) => onFinishUploaded(info, true)"
-                />
+                <q-list
+                    dense
+                    class="full-width"
+                    v-if="ppalVideo && !changePrincipalVideo"
+                >
+                    <q-item style="padding: 2px 0px">
+                        <q-item-section avatar>
+                            <q-icon name="mdi-video" />
+                        </q-item-section>
+                        <q-item-section>
+                            <q-item-label lines="1">
+                                {{ ppalVideo.name }}
+                            </q-item-label>
+                        </q-item-section>
+                        <q-item-section avatar>
+                            <btn-edit-component
+                                tooltips="cambiar video principal"
+                                @click="changePrincipalVideo = true"
+                            />
+                        </q-item-section>
+                        <q-item-section avatar>
+                            <btn-delete-component
+                                tooltips="eliminar video principal"
+                                @click="onRemoveAttachment(ppalVideo)"
+                            />
+                        </q-item-section>
+                    </q-item>
+                </q-list>
+                <div
+                    class="row full-width"
+                    :class="screen.xs || screen.sm ? '' : 'q-ml-md'"
+                    v-if="!ppalVideo || changePrincipalVideo"
+                >
+                    <uploader-field
+                        :label="
+                            changePrincipalVideo
+                                ? 'cambiar video principal'
+                                : 'video principal'
+                        "
+                        :multiple="false"
+                        :formFields="[
+                            {
+                                name: 'id',
+                                value: formData.id,
+                            },
+                            {
+                                name: 'principal',
+                                value: 1,
+                            },
+                        ]"
+                        :upload="upload"
+                        :errorWhenEmpty="false"
+                        :changeFromTopic="changePrincipalVideo"
+                        accept="video/*"
+                        url="/admin/schooltopics/addResources"
+                        @uploaded="onUploaded"
+                        @change-files="
+                            (files) => {
+                                formData.principalVideo = files > 0;
+                                isOk();
+                            }
+                        "
+                        @finish="
+                            (info, principal) => onFinishUploaded(info, true)
+                        "
+                        @cancel="changePrincipalVideo = false"
+                    />
+                </div>
+                <q-list
+                    dense
+                    class="full-width"
+                    :class="!ppalVideo || changePrincipalVideo ? 'q-mt-sm' : ''"
+                    v-if="attachments.length > 0 || topic.id !== null"
+                >
+                    <q-item
+                        style="padding: 2px 0px"
+                        v-for="(r, index) in attachments"
+                        :key="`index-resource-${index}`"
+                    >
+                        <q-item-section avatar>
+                            <q-icon name="mdi-attachment fa-rotate-90" />
+                        </q-item-section>
+                        <q-item-section>
+                            <q-item-label lines="1">
+                                {{ r.name }}
+                            </q-item-label>
+                        </q-item-section>
+                        <q-item-section avatar>
+                            <btn-delete-component
+                                tooltips="eliminar adjunto"
+                                @click="onRemoveAttachment(r)"
+                            />
+                        </q-item-section>
+                    </q-item>
+                    <q-item
+                        style="padding: 2px 0px"
+                        v-if="attachments.length !== 0 && !addNewAttachments"
+                    >
+                        <q-item-section avatar>
+                            <btn-add-component
+                                tooltips="adicionar adjuntos"
+                                @click="addNewAttachments = true"
+                            />
+                        </q-item-section>
+                    </q-item>
+                </q-list>
             </div>
             <div
                 class="row q-mt-sm"
                 :class="screen.xs || screen.sm ? '' : 'q-ml-md'"
+                v-if="attachments.length === 0 || addNewAttachments"
             >
                 <uploader-field
                     label="adjuntos"
                     :formFields="[
                         {
                             name: 'id',
-                            value: current.id,
+                            value: formData.id,
                         },
                         {
                             name: 'principal',
@@ -75,6 +163,8 @@
                     ]"
                     :upload="upload"
                     :noThumbnails="true"
+                    :errorWhenEmpty="false"
+                    :changeFromTopic="addNewAttachments"
                     url="/admin/schooltopics/addResources"
                     @uploaded="onUploaded"
                     @change-files="
@@ -83,37 +173,39 @@
                         }
                     "
                     @finish="(info, principal) => onFinishUploaded(info, false)"
+                    @cancel="addNewAttachments = false"
                 />
             </div>
         </div>
     </div>
     <checkbox-field
-        v-model="current.descriptionAdd"
+        v-model="addDescription"
         label="añadir descripcion"
         name="add_description"
-        :modelValue="current.description"
         class="q-ml-none q-mt-sm"
+        :modelValue="addDescription"
         @update="
             (name, val) => {
-                current.descriptionAdd = val;
+                addDescription = val;
+                formData.description = null;
             }
         "
     />
 
     <editor-field
-        v-model="current.description"
+        v-model="formData.description"
         name="description"
         :rows="3"
-        :modelValue="current.description"
+        :modelValue="formData.description"
         :othersProps="{
             required: true,
         }"
         @update="
             (name, val) => {
-                current.description = val;
+                formData.description = val;
             }
         "
-        v-if="current.descriptionAdd"
+        v-if="addDescription"
     />
 </template>
 
@@ -124,8 +216,12 @@ import CoverImageComponent from "./CoverImageComponent.vue";
 import CheckboxField from "../../../form/input/CheckboxField.vue";
 import EditorField from "../../../form/input/EditorField.vue";
 import UploaderField from "../../../form/input/UploaderField.vue";
+import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
+import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
+import BtnAddComponent from "../../../btn/BtnAddComponent.vue";
 import axios from "axios";
-import { useQuasar } from "quasar";
+import { Loading, useQuasar, Notify } from "quasar";
+import { useForm } from "@inertiajs/vue3";
 
 defineOptions({
     name: "TopicComponent",
@@ -156,24 +252,53 @@ const props = defineProps({
 
 const $q = useQuasar();
 
-const emits = defineEmits(["add", "update", "remove", "change-files", "save"]);
+const emits = defineEmits([
+    "add",
+    "update",
+    "remove",
+    "change-files",
+    "save",
+    "is-ok",
+]);
 
-const model = ref(null);
-const current = ref(null);
 const upload = ref(false);
 const totalFiles = ref(0);
 const finishVideo = ref(false);
 const finishResources = ref(false);
+const addNewAttachments = ref(false);
+const changePrincipalVideo = ref(false);
+const formData = ref({});
+const ppalVideo = ref(null);
+const addDescription = ref(false);
+const attachments = ref([]);
 
 onBeforeMount(() => {
-    model.value = props.topic.name;
-    current.value = props.topic;
+    let { id, name, description, coverImage, section_id, principalVideo } =
+        props.topic;
+    formData.value = {
+        id,
+        name,
+        description,
+        coverImage,
+        section_id,
+        principalVideo,
+    };
+    addDescription.value =
+        props.topic && props.topic.description !== null ? true : false;
+    ppalVideo.value = props.topic.resources.find((r) => r.principal);
+    attachments.value = props.topic.resources.filter((r) => !r.principal);
 });
 
 watch(
     () => props.save,
     (n, o) => {
-        if (n) saveTopic();
+        if (n) {
+            if (formData.value.id !== null) update();
+            else {
+                formData.value.section_id = props.topic.section_id;
+                store();
+            }
+        }
     }
 );
 
@@ -181,36 +306,65 @@ const screen = computed(() => {
     return $q.screen;
 });
 
+const isOk = () => {
+    emits(
+        "is-ok",
+        formData.value.principalVideo && formData.value.coverImage !== null
+    );
+};
+
 const onRemove = () => {
     emits("remove");
 };
 
-const saveTopic = async () => {
-    let { name, coverImage, description, section_id } = current.value;
+const store = async () => {
     await axios
-        .post(
-            "/admin/schooltopics",
-            { name, coverImage, description, section_id },
-            {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            }
-        )
+        .post("/admin/schooltopics", formData.value, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
         .then((response) => {
-            current.value.id = response.data.id;
+            formData.value.id = response.data.id;
             setTimeout(() => {
                 upload.value = true;
             }, 1000);
-            if (!current.value.principalVideo && totalFiles.value === 0) {
-                emits("save", {
-                    uploaded: 0,
-                    failed: 0,
-                    total: 0,
-                });
+            if (!formData.value.principalVideo && totalFiles.value === 0) {
+                emits(
+                    "save",
+                    {
+                        uploaded: 0,
+                        failed: 0,
+                        total: 0,
+                    },
+                    true
+                );
             }
         })
         .catch(() => {});
+};
+
+const update = async () => {
+    let { name, description, coverImage } = formData.value;
+    const send = useForm({
+        name,
+        description,
+        coverImage,
+        _method: "put",
+        excludeFlash: totalFiles.value > 0 || formData.value.principalVideo,
+    });
+    send.post(`/admin/schooltopics/${formData.value.id}`, {
+        onSuccess: () => {
+            if (totalFiles.value === 0 && !formData.value.principalVideo) {
+                emits("update");
+            } else {
+                upload.value = true;
+            }
+        },
+        onError: () => {
+            emits("error");
+        },
+    });
 };
 
 const onUploaded = () => {};
@@ -223,10 +377,43 @@ const onFinishUploaded = (info, principal) => {
     }
     if (
         (finishVideo.value && finishResources.value) ||
-        (!current.value.principalVideo && finishResources.value) ||
+        (!formData.value.principalVideo && finishResources.value) ||
         (finishVideo.value && totalFiles.value === 0)
     ) {
-        emits("save", info);
+        emits("save", info, formData.value.id === null);
     }
+};
+
+const onRemoveAttachment = (attachment) => {
+    $q.dialog({
+        title: "confirmacion",
+        html: true,
+        message: `seguro que deseas eliminar ${
+            attachment.principal ? "el video principal" : "este adjunto"
+        }`,
+        cancel: {
+            label: "cancelar",
+            icon: "mdi-cancel",
+        },
+        ok: {
+            label: "si",
+            icon: "mdi-check",
+            color: "red",
+        },
+        persistent: true,
+    }).onOk(() => {
+        const send = useForm({});
+        send.delete(`/admin/schooltopics/deleteResource/${attachment.id}`, {
+            onSuccess: () => {
+                if (attachment.principal) {
+                    ppalVideo.value = null;
+                } else {
+                    attachments.value = attachments.value.filter(
+                        (r) => r.id !== attachment.id
+                    );
+                }
+            },
+        });
+    });
 };
 </script>

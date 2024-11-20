@@ -19,32 +19,10 @@
             />
             <q-card-section class="col q-pt-none">
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
-                    <text-field
-                        v-model="formData['name']"
-                        label="nombre"
-                        name="name"
-                        :othersProps="{
-                            required: true,
-                        }"
-                        :modelValue="formData['name']"
-                        @update="onUpdateField"
-                    />
-                    <checkbox-field
-                        label="añadir descripcion"
-                        name="add_description"
-                        :modelValue="formData['add_description']"
-                        class="q-ml-none"
-                        @update="onUpdateField"
-                    />
-                    <editor-field
-                        v-model="formData['description_section']"
-                        name="description_section"
-                        :rows="3"
-                        :modelValue="formData['description_section']"
-                        :othersProps="{
-                            required: true,
-                        }"
-                        v-if="formData['add_description']"
+                    <section-form-component
+                        :save="saveSection"
+                        @store="onStoreSection"
+                        @error="saveSection = false"
                     />
                     <topic-component
                         v-for="(item, index) in itemsTopics"
@@ -56,6 +34,11 @@
                         :save="item.save"
                         @remove="itemsTopics.splice(index, 1)"
                         @save="onSaveTopic"
+                        @is-ok="
+                            (ok) => {
+                                item.isOk = ok;
+                            }
+                        "
                     />
                 </q-form>
             </q-card-section>
@@ -86,21 +69,16 @@
 <script setup>
 import { ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
-import TextField from "../../form/input/TextField.vue";
+import SectionFormComponent from "./section/SectionFormComponent.vue";
 import TopicComponent from "./topic/TopicComponent.vue";
-import CheckboxField from "../../form/input/CheckboxField.vue";
-import EditorField from "../../form/input/EditorField.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
-import { usePage, useForm, router } from "@inertiajs/vue3";
+import { usePage, router } from "@inertiajs/vue3";
 import { useQuasar, Loading } from "quasar";
 import {
     error,
-    error500,
     errorValidation,
     success,
-    warning,
 } from "../../../helpers/notifications";
-import axios from "axios";
 
 defineOptions({
     name: "SectionAddComponent",
@@ -123,17 +101,9 @@ const form = ref(null);
 const showDialog = ref(false);
 
 const formData = ref({});
-
+const saveSection = ref(false);
 const itemsTopics = ref([]);
-const totalUploaded = ref(0);
-const totalFailed = ref(0);
 const totalSave = ref(0);
-const totalCoverImage = ref(0);
-const totalPrincipalVideo = ref(0);
-
-const onUpdateField = (name, val) => {
-    formData.value[name] = val;
-};
 
 const newTopic = (reset) => {
     let topic = {
@@ -141,12 +111,12 @@ const newTopic = (reset) => {
         name: null,
         description: null,
         descriptionAdd: false,
-        src: `${page.props.public_path}images/icon/img-upload-black.png`,
         coverImage: null,
         resources: [],
         principalVideo: false,
         save: false,
         section_id: null,
+        isOk: false,
     };
     if (reset) {
         itemsTopics.value = [topic];
@@ -177,17 +147,7 @@ const addTopic = () => {
 const save = async () => {
     form.value.validate().then(async (success) => {
         if (success) {
-            let show_confirm = false;
-            let topics = itemsTopics.value;
-            for (let i = 0; i < topics.length; i++) {
-                if (
-                    topics[i].coverImage === null ||
-                    !topics[i].principalVideo
-                ) {
-                    show_confirm = true;
-                    break;
-                }
-            }
+            let show_confirm = itemsTopics.value.find((t) => t.isOk === false);
             if (show_confirm) {
                 $q.dialog({
                     title: "confirmacion",
@@ -206,10 +166,10 @@ const save = async () => {
                     },
                     persistent: true,
                 }).onOk(() => {
-                    createSection();
+                    saveSection.value = true;
                 });
             } else {
-                createSection();
+                saveSection.value = true;
             }
         } else {
             errorValidation();
@@ -217,33 +177,18 @@ const save = async () => {
     });
 };
 
-const createSection = async () => {
-    Loading.show({
-        message: "adicionando seccion",
+const onStoreSection = (id) => {
+    saveSection.value = false;
+    itemsTopics.value.forEach((topic) => {
+        topic.section_id = id;
+        topic.save = true;
     });
-    await axios
-        .post("/admin/life", formData.value)
-        .then((response) => {
-            itemsTopics.value.forEach((topic) => {
-                topic.section_id = response.data.id;
-                topic.save = true;
-            });
-            Loading.show({
-                message: "adicionando temas a la seccion",
-            });
-        })
-        .catch((err) => {
-            if (err.response.data.errors) {
-                error(
-                    "ya existe una seccion con el nombre actual especificado"
-                );
-            }
-            Loading.hide();
-        });
+    Loading.show({
+        message: "adicionando temas a la seccion",
+    });
 };
 
 const onSaveTopic = (info) => {
-    let { uploaded, failed, total } = info;
     totalSave.value++;
     if (totalSave.value === itemsTopics.value.length) {
         Loading.hide();
@@ -251,5 +196,9 @@ const onSaveTopic = (info) => {
         showDialog.value = false;
         router.reload();
     }
+};
+
+const onRemoveTopic = (index) => {
+    itemsTopics.value.splice(itemsTopics.value.length - index, 1);
 };
 </script>

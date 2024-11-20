@@ -6,7 +6,7 @@ import "quasar/src/css/index.sass";
 import "../css/app.css";
 import { createInertiaApp, router, usePage } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
-import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
+import { CkeditorPlugin } from "@ckeditor/ckeditor5-vue";
 import {
     Quasar,
     Loading,
@@ -46,7 +46,7 @@ createInertiaApp({
                 },
                 iconSet: quasarIconSet,
                 config: {
-                    lang: 'es'
+                    lang: "es",
                 },
             })
             .mount(el);
@@ -56,7 +56,9 @@ createInertiaApp({
 const page = usePage();
 
 router.on("success", (event) => {
-    setMessages();
+    if (!router.page.props.exclude_flash) {
+        setMessages();
+    }
 });
 
 router.on("error", (event) => {
@@ -80,10 +82,12 @@ router.on("start", (event) => {
     }
 });
 
-router.on("progress", (event) => { });
+router.on("progress", (event) => {});
 
 router.on("finish", (event) => {
-    Loading.hide();
+    if (!router.page.props.exclude_flash) {
+        Loading.hide();
+    }
 });
 
 const setMessages = () => {

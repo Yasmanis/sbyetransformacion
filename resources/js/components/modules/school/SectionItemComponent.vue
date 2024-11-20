@@ -94,7 +94,7 @@
                                 </q-item-section>
                                 <q-item-section avatar>
                                     <q-btn-component
-                                        tooltips="ver"
+                                        tooltips="pasar a pantalla principal"
                                         icon="mdi-play"
                                         size="xs"
                                         @click="changeTopic(topic, section)"
@@ -118,7 +118,6 @@ defineOptions({
 });
 
 const props = defineProps({
-    imgbase: String,
     section: Object,
     sectionIndex: Number,
     expand: {
@@ -136,9 +135,12 @@ onMounted(() => {
     updateViewSection();
 });
 
-watch(props, () => {
-    updateViewSection();
-});
+watch(
+    () => props.section,
+    (n, o) => {
+        updateViewSection();
+    }
+);
 
 const updateViewSection = () => {
     const topics = props.section.topics;

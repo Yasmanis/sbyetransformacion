@@ -3,8 +3,9 @@
         <q-page padding>
             <q-card>
                 <q-card-section class="q-pa-none">
-                    <q-toolbar>
+                    <q-toolbar class="q-gutter-x-sm">
                         <section-add-component />
+                        <section-edit-component />
                     </q-toolbar>
                 </q-card-section>
                 <q-separator />
@@ -36,6 +37,7 @@
 <script setup>
 import Layout from "../../layouts/AdminLayout.vue";
 import SectionAddComponent from "../../components/modules/school/SectionAddComponent.vue";
+import SectionEditComponent from "../../components/modules/school/SectionEditComponent.vue";
 import SectionComponent from "../../components/modules/school/SectionComponent.vue";
 import SectionItemComponent from "../../components/modules/school/SectionItemComponent.vue";
 import { usePage } from "@inertiajs/vue3";
@@ -50,27 +52,66 @@ const page = usePage();
 const currentTopic = ref(null);
 const currentSection = ref(null);
 const index = ref(0);
-const principalVideo = ref(null);
 
 const sections = computed(() => {
     return page.props.sections ? page.props.sections : [];
 });
 
-onMounted(() => {
-    currentSection.value = sections.value.length > 0 ? sections.value[0] : null;
-    currentTopic.value = currentSection.value
-        ? currentSection.value.topics.length > 0
-            ? currentSection.value.topics[0]
-            : null
-        : null;
+watch(sections, (n, o) => {
+    setDefaults();
 });
+
+onMounted(() => {
+    setDefaults();
+});
+
+const setDefaults = () => {
+    let n = sections.value;
+    if (n.length > 0) {
+        if (currentSection.value !== null) {
+            let exist = n.find((s) => s.id === currentSection.value.id);
+            if (exist === null || exist === undefined) {
+                currentSection.value = n[0];
+                index.value = 0;
+            } else {
+                currentSection.value = exist;
+                for (let i = 0; i < n.length; i++) {
+                    if (n[i].id === currentSection.value.id) {
+                        index.value = i;
+                        break;
+                    }
+                }
+            }
+        } else {
+            currentSection.value = n[0];
+            index.value = 0;
+        }
+        if (currentTopic.value !== null) {
+            let exist = currentSection.value.topics.find(
+                (t) => t.id === currentTopic.value.id
+            );
+            currentTopic.value = exist
+                ? exist
+                : currentSection.value.topics.length > 0
+                ? currentSection.value.topics[0]
+                : null;
+        } else {
+            currentTopic.value =
+                currentSection.value.topics.length > 0
+                    ? currentSection.value.topics[0]
+                    : null;
+        }
+    } else {
+        currentSection.value = null;
+        currentTopic.value = null;
+        index.value = 0;
+    }
+};
 
 const onChangeTopic = (attrs) => {
     const { section, topic, sectionIndex } = attrs;
+    currentSection.value = section;
     currentTopic.value = topic;
     index.value = sectionIndex;
-    principalVideo.value = currentTopic.value.resources.find(
-        (r) => r.principal
-    );
 };
 </script>

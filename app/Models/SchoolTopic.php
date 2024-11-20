@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class SchoolTopic extends Model
 {
     protected $fillable = ['name', 'coverImage', 'description', 'section_id'];
-    protected $appends = ['duration_string', 'percent', 'has_resources'];
+    protected $appends = ['duration_string', 'percent', 'has_resources', 'has_principal_video'];
 
     public static function boot()
     {
@@ -16,6 +17,13 @@ class SchoolTopic extends Model
             if ($obj->description == 'null') {
                 $obj->description = null;
             }
+        });
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($obj) {
+            $obj->deleteResourceFromDisk();
         });
     }
 
@@ -41,6 +49,11 @@ class SchoolTopic extends Model
         return $resources != null;
     }
 
+    public function getHasPrincipalVideoAttribute()
+    {
+        return $this->resources()->where('principal', true)->first() != null;
+    }
+
     public function section()
     {
         return $this->belongsTo(SchoolSection::class);
@@ -54,5 +67,13 @@ class SchoolTopic extends Model
     public function users_views()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function deleteResourceFromDisk()
+    {
+        Storage::delete('public/' . $this->coverImage);
+        foreach ($this->resources as $r) {
+            Storage::delete('public/' . $r->path);
+        }
     }
 }

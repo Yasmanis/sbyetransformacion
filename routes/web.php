@@ -84,6 +84,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/life', LifeController::class);
     Route::resource('/admin/schooltopics', SchoolTopicsController::class);
     Route::post('/admin/schooltopics/addResources', [SchoolTopicsController::class, 'addResource']);
+    Route::delete('/admin/schooltopics/deleteResource/{id}', [SchoolTopicsController::class, 'deleteResource']);
     Route::post('/admin/categories/sort-files', [CategoryController::class, 'sortFiles']);
     Route::resource('/admin/files', FileController::class);
 

@@ -19,7 +19,76 @@
         @uploaded="onUploaded"
         @added="onAdeded"
         @removed="onRemoved"
-    />
+    >
+        <template v-slot:header="scope">
+            <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
+                <q-btn
+                    v-if="scope.queuedFiles.length > 0"
+                    icon="clear_all"
+                    @click="scope.removeQueuedFiles"
+                    round
+                    dense
+                    flat
+                >
+                    <q-tooltip>limpiar</q-tooltip>
+                </q-btn>
+                <q-btn
+                    v-if="scope.uploadedFiles.length > 0"
+                    icon="done_all"
+                    @click="scope.removeUploadedFiles"
+                    round
+                    dense
+                    flat
+                >
+                    <q-tooltip>eliminar ficheros subidos</q-tooltip>
+                </q-btn>
+                <q-spinner
+                    v-if="scope.isUploading"
+                    class="q-uploader__spinner"
+                />
+                <div class="col">
+                    <div class="q-uploader__title">{{ label }}</div>
+                    <div class="q-uploader__subtitle">
+                        {{ scope.uploadSizeLabel }} /
+                        {{ scope.uploadProgressLabel }}
+                    </div>
+                </div>
+                <q-btn
+                    v-if="scope.canAddFiles"
+                    type="a"
+                    icon="add_box"
+                    @click="scope.pickFiles"
+                    round
+                    dense
+                    flat
+                >
+                    <q-uploader-add-trigger />
+                    <q-tooltip>adicionar</q-tooltip>
+                </q-btn>
+                <q-btn
+                    v-if="changeFromTopic"
+                    icon="close"
+                    @click="onCancel"
+                    round
+                    dense
+                    flat
+                >
+                    <q-tooltip>cancelar</q-tooltip>
+                </q-btn>
+
+                <q-btn
+                    v-if="scope.isUploading"
+                    icon="clear"
+                    @click="scope.abort"
+                    round
+                    dense
+                    flat
+                >
+                    <q-tooltip>abortar</q-tooltip>
+                </q-btn>
+            </div>
+        </template>
+    </q-uploader>
     <div
         class="q-field__bottom row items-start q-field__bottom--stale"
         style="padding-left: 0px"
@@ -100,9 +169,23 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    errorWhenEmpty: {
+        type: Boolean,
+        default: true,
+    },
+    changeFromTopic: {
+        type: Boolean,
+        default: false,
+    },
 });
 
-const emits = defineEmits(["uploaded", "uploading", "finish", "change-files"]);
+const emits = defineEmits([
+    "uploaded",
+    "uploading",
+    "finish",
+    "change-files",
+    "cancel",
+]);
 
 const model = ref(false);
 const uploader = ref(null);
@@ -131,7 +214,9 @@ watch(
                 color.value = "primary";
                 uploader.value.upload();
             } else {
-                error("al menos debe seleccionar un fichero");
+                if (props.errorWhenEmpty) {
+                    error("al menos debe seleccionar un fichero");
+                }
             }
             emits("uploading");
         }
@@ -172,6 +257,10 @@ const onAdeded = (files) => {
 const onRemoved = (files) => {
     countFiles.value -= files.length;
     emits("change-files", countFiles.value);
+};
+
+const onCancel = () => {
+    emits("cancel");
 };
 </script>
 <style scope>

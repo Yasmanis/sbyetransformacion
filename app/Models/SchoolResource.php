@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class SchoolResource extends Model
@@ -12,11 +13,6 @@ class SchoolResource extends Model
     protected $casts = [
         'principal' => 'boolean',
     ];
-
-    public static function boot()
-    {
-        parent::boot();
-    }
 
     public function getVideoAttribute()
     {
