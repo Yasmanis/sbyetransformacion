@@ -16,5 +16,5 @@ class SchoolSectionsRepository extends BaseRepository
         return 'life/index';
     }
 
-    protected $with = ['topics', 'topics.resources'];
+    protected $with = ['topics', 'topics.resources', 'topics.messages', 'topics.messages.attachments', 'topics.messages.reacts', 'topics.messages.highligths'];
 }

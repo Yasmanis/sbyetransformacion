@@ -62,38 +62,9 @@
     </q-card-section>
     <q-separator />
     <q-card-actions align="right">
-        <q-btn-component
-            label="guardar"
-            outline
-            square
-            size="md"
-            padding="5px"
-            no_caps
-            icon="mdi-content-save-outline"
-            @click="save(true)"
-        />
-        <q-btn-component
-            label="guardar y adicionar otro"
-            outline
-            square
-            size="md"
-            padding="5px"
-            no_caps
-            icon="mdi-checkbox-marked-circle-plus-outline"
-            @click="save(false)"
-            v-if="!object"
-        />
-        <q-btn-component
-            label="cancelar"
-            outline
-            square
-            size="md"
-            padding="5px"
-            color="red"
-            no_caps
-            icon="mdi-close-circle-outline"
-            v-close-popup
-        />
+        <btn-save-component @click="save(true)" />
+        <btn-save-and-new-component @click="save(false)" v-if="!object" />
+        <btn-cancel-component :cancel="true" @click="emits('close')" />
     </q-card-actions>
 </template>
 
@@ -110,6 +81,9 @@ import DateField from "./input/DateField.vue";
 import PasswordField from "./input/PasswordField.vue";
 import UploaderField from "./input/UploaderField.vue";
 import QBtnComponent from "../base/QBtnComponent.vue";
+import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
+import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
+import BtnSaveAndNewComponent from "../btn/BtnSaveAndNewComponent.vue";
 import { useForm } from "@inertiajs/vue3";
 import { errorException, errorValidation } from "../../helpers/notifications";
 

@@ -49,10 +49,8 @@
                             />
                         </q-item-section>
                         <q-item-section avatar>
-                            <q-btn-component
-                                icon="mdi-trash-can-outline"
+                            <btn-delete-component
                                 tooltips="eliminar seccion"
-                                color="red"
                                 @click="sectionRemove(s)"
                             />
                         </q-item-section>
@@ -80,6 +78,7 @@
                                                 : 'reproducir'
                                         "
                                         icon="fab fa-youtube"
+                                        color="primary"
                                         :disabled="!topic.has_principal_video"
                                     />
                                 </div>
@@ -113,10 +112,8 @@
                             />
                         </q-item-section>
                         <q-item-section avatar>
-                            <q-btn-component
-                                icon="mdi-trash-can-outline"
+                            <btn-delete-component
                                 tooltips="eliminar tema"
-                                color="red"
                                 @click="topicRemove(topic)"
                             />
                         </q-item-section>
@@ -125,17 +122,7 @@
             </q-card-section>
             <q-separator />
             <q-card-actions align="right">
-                <q-btn-component
-                    label="cancelar"
-                    outline
-                    square
-                    size="md"
-                    padding="5px"
-                    color="red"
-                    no_caps
-                    icon="mdi-close-circle-outline"
-                    v-close-popup
-                />
+                <btn-cancel-component v-close-popup />
             </q-card-actions>
         </q-card>
     </q-dialog>
@@ -158,49 +145,47 @@
             />
             <q-card-section class="col q-pt-none">
                 <q-form class="q-gutter-sm q-mt-sm" ref="formTopic" greedy>
-                    <topic-component
-                        v-for="(item, index) in itemsTopics"
-                        :key="index"
-                        :label="index === 0 ? 'tema' : `tema ${index + 1}`"
-                        :name="`topic-${index}`"
-                        :btnDelete="index > 0"
-                        :topic="currentTopic ? currentTopic : item"
-                        :save="item.save"
-                        @remove="itemsTopics.splice(index, 1)"
-                        @save="onSaveTopic"
-                        @update="
-                            () => {
-                                item.save = false;
-                                showDialogTopic = false;
-                            }
-                        "
-                        @is-ok="
-                            (ok) => {
-                                item.isOk = ok;
-                            }
-                        "
-                    />
+                    <template v-for="(item, index) in itemsTopics" :key="index">
+                        <topic-component
+                            :label="
+                                index === 0 ? 'tema' : `tema ${getIndex(item)}`
+                            "
+                            :name="`topic-${index}`"
+                            :btnDelete="index > 0"
+                            :topic="currentTopic ? currentTopic : item"
+                            :save="item.save"
+                            @remove="
+                                () => {
+                                    item.visible = false;
+                                    item.name = 'tema oculto';
+                                }
+                            "
+                            @save="onSaveTopic"
+                            @update="
+                                () => {
+                                    item.save = false;
+                                    showDialogTopic = false;
+                                }
+                            "
+                            @is-ok="
+                                (ok) => {
+                                    item.isOk = ok;
+                                }
+                            "
+                            v-if="item.visible"
+                        />
+                    </template>
                 </q-form>
             </q-card-section>
             <q-separator />
             <q-card-actions align="right">
-                <q-btn-component
-                    tooltips="añadir tema"
-                    icon="mdi-plus"
+                <btn-add-component
+                    tooltips="adicionar nuevo tema"
                     @click="addTopic"
                     v-if="!currentTopic"
                 />
-                <q-btn-component
-                    tooltips="guardar"
-                    icon="mdi-content-save-outline"
-                    @click="saveTopic"
-                />
-                <q-btn-component
-                    color="red"
-                    icon="mdi-close"
-                    tooltips="cancelar"
-                    v-close-popup
-                />
+                <btn-save-component @click="saveTopic" />
+                <btn-cancel-component @click="showDialogTopic = false" />
             </q-card-actions>
         </q-card>
     </q-dialog>
@@ -229,27 +214,8 @@
             </q-card-section>
             <q-separator />
             <q-card-actions align="right">
-                <q-btn-component
-                    label="guardar"
-                    outline
-                    square
-                    size="md"
-                    padding="5px"
-                    no_caps
-                    icon="mdi-content-save-outline"
-                    @click="updateSection"
-                />
-                <q-btn-component
-                    label="cancelar"
-                    outline
-                    square
-                    size="md"
-                    padding="5px"
-                    color="red"
-                    no_caps
-                    icon="mdi-close-circle-outline"
-                    v-close-popup
-                />
+                <btn-save-component @click="updateSection" />
+                <btn-cancel-component @click="showDialogSection = false" />
             </q-card-actions>
         </q-card>
     </q-dialog>
@@ -259,6 +225,10 @@
 import { computed, ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
+import BtnAddComponent from "../../btn/BtnAddComponent.vue";
+import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
+import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
+import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import TopicComponent from "./topic/TopicComponent.vue";
 import SectionFormComponent from "./section/SectionFormComponent.vue";
 import BtnEditComponent from "../../btn/BtnEditComponent.vue";
@@ -299,12 +269,26 @@ const formSection = ref(null);
 const currentSection = ref(null);
 const currentTopic = ref(null);
 const saveSection = ref(false);
+const index = ref(0);
 
 const sections = computed(() => {
     return page.props.sections ? page.props.sections : [];
 });
 
+const prueba = ref([
+    {
+        name: "nombre 1",
+    },
+    {
+        name: "nombre 2",
+    },
+    {
+        name: "nombre 3",
+    },
+]);
+
 const newTopic = (reset) => {
+    index.value++;
     let topic = {
         id: null,
         name: null,
@@ -316,6 +300,8 @@ const newTopic = (reset) => {
         save: false,
         section_id: currentSection.value.id,
         isOk: false,
+        visible: true,
+        index: index.value,
     };
     if (reset) {
         itemsTopics.value = [topic];
@@ -379,7 +365,9 @@ const addTopic = () => {
 const saveTopic = async () => {
     formTopic.value.validate().then(async (success) => {
         if (success) {
-            let show_confirm = itemsTopics.value.find((t) => t.isOk === false);
+            let show_confirm = itemsTopics.value.find(
+                (t) => !t.isOk && t.visible
+            );
             if (show_confirm) {
                 $q.dialog({
                     title: "confirmacion",
@@ -414,14 +402,16 @@ const saveNewTopic = () => {
         message: "adicionando temas a la seccion",
     });
     itemsTopics.value.forEach((topic) => {
-        topic.save = true;
+        if (topic.visible) {
+            topic.save = true;
+        }
     });
 };
 
 const onSaveTopic = (info, store) => {
     let { uploaded, failed, total } = info;
     totalSave.value++;
-    if (totalSave.value === itemsTopics.value.length) {
+    if (totalSave.value === itemsTopics.value.filter((t) => t.visible).length) {
         Loading.hide();
         if (store) {
             success(
@@ -459,5 +449,10 @@ const updateSection = () => {
             errorValidation();
         }
     });
+};
+
+const getIndex = (t) => {
+    let visibles = itemsTopics.value.filter((t) => t.visible);
+    return visibles.findIndex((v) => v.index === t.index) + 1;
 };
 </script>

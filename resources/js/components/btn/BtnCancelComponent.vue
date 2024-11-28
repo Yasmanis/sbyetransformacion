@@ -1,8 +1,9 @@
 <template>
     <q-btn-component
-        :tooltips="tooltips"
-        icon="mdi-trash-can-outline"
+        :tooltips="cancel ? 'cancelar' : 'cerrar'"
+        icon="mdi-cancel"
         :size="size"
+        class="fa-rotate-90"
         @click="onClick"
     />
 </template>
@@ -10,13 +11,13 @@
 <script setup>
 import QBtnComponent from "../base/QBtnComponent.vue";
 defineOptions({
-    name: "BtnDeleteComponent",
+    name: "BtnCancelComponent",
 });
 
 const props = defineProps({
-    tooltips: {
-        type: String,
-        default: "eliminar",
+    cancel: {
+        type: Boolean,
+        default: false,
     },
     flat: {
         type: Boolean,

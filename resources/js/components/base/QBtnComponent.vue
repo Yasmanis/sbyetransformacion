@@ -60,7 +60,7 @@ const props = defineProps({
     },
     flat: {
         type: Boolean,
-        default: false,
+        default: true,
     },
     no_caps: {
         type: Boolean,
@@ -94,13 +94,16 @@ const props = defineProps({
         type: String,
         default: "center",
     },
-    padding: String,
-    color: { type: String, default: "primary" },
+    padding: {
+        type: String,
+        default: "2px",
+    },
+    color: { type: String, default: "black" },
     text_color: String,
     icon: String,
     size: {
         type: String,
-        default: "sm",
+        default: "md",
     },
 });
 
@@ -110,8 +113,14 @@ const onClick = () => {
     emits("click");
 };
 </script>
-<style scope>
+<style scoped>
 .on-left {
     margin-right: 4px !important;
 }
+/* .q-focus-helper {
+    background: transparent !important;
+}
+.q-btn:hover {
+    color: rgb(172, 206, 214) !important;
+} */
 </style>

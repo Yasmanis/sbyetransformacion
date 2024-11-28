@@ -69,6 +69,11 @@ class SchoolTopic extends Model
         return $this->belongsToMany(User::class);
     }
 
+    public function messages()
+    {
+        return $this->hasMany(SchoolChat::class, 'topic_id');
+    }
+
     public function deleteResourceFromDisk()
     {
         Storage::delete('public/' . $this->coverImage);

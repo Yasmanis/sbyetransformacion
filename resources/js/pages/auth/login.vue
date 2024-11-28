@@ -29,6 +29,7 @@
                                             rules.email(val) ||
                                             'correo no valido',
                                     ]"
+                                    @keydown.enter.prevent="authenticate"
                                 >
                                     <template v-slot:prepend>
                                         <q-icon name="email" />
@@ -48,6 +49,7 @@
                                             (val && val.length > 0) ||
                                             'la contraseña es requerido',
                                     ]"
+                                    @keydown.enter.prevent="authenticate"
                                 >
                                     <template v-slot:append>
                                         <q-icon
@@ -76,13 +78,7 @@
                                 color="primary"
                                 class="full-width text-white"
                                 label="acceder"
-                                @click="
-                                    authenticate(
-                                        form.email,
-                                        form.password,
-                                        form.rememberme
-                                    )
-                                "
+                                @click="authenticate"
                             />
                         </q-card-actions>
                         <q-card-section align="center">
@@ -93,6 +89,8 @@
                                 tooltipsColor="primary"
                                 tooltips="volver a inicio"
                                 href="/"
+                                :flat="false"
+                                color="primary"
                             />
                             <q-btn-component
                                 size="sm"
@@ -103,6 +101,8 @@
                                 class="q-mx-md"
                                 href="https://www.facebook.com/profile.php?id=61563937152210"
                                 target="_blank"
+                                :flat="false"
+                                color="primary"
                             />
                             <q-btn-component
                                 size="sm"
@@ -112,6 +112,8 @@
                                 tooltips="youtube"
                                 href="https://www.youtube.com/@sbyetransformacion"
                                 target="_blank"
+                                :flat="false"
+                                color="primary"
                             />
                             <q-btn-component
                                 size="sm"
@@ -122,6 +124,8 @@
                                 class="q-mx-md"
                                 href="https://www.instagram.com/sbyetransformacion/"
                                 target="_blank"
+                                :flat="false"
+                                color="primary"
                             />
 
                             <q-btn-component
@@ -132,6 +136,8 @@
                                 tooltips="tiktok"
                                 href="https://www.tiktok.com/@sbyetransformacion"
                                 target="_blank"
+                                :flat="false"
+                                color="primary"
                             />
                         </q-card-section>
                     </q-card>
@@ -165,9 +171,10 @@ const errors = computed(() => {
     return usePage().props.errors;
 });
 
-const authenticate = (email, password, rememberme) => {
+const authenticate = () => {
     formRef.value.validate().then((success) => {
         if (success) {
+            let { email, password, rememberme } = form.value;
             login(email, password, rememberme);
         } else {
             errorValidation();

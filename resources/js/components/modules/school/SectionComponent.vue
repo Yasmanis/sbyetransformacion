@@ -21,7 +21,7 @@
                     </div>
                     <template v-slot:error>
                         <div
-                            class="absolute-full flex flex-center bg-negative text-white"
+                            class="absolute-full flex flex-center bg-negative text-black"
                         >
                             error al tratar de obtener la imagen
                         </div>
@@ -29,7 +29,9 @@
                 </q-img>
             </div>
             <div class="col-md-8 col-sm-12 col-xs-12">
-                <p class="text-center text-uppercase section-number">
+                <p
+                    class="text-center text-uppercase section-number text-h6 q-mb-none"
+                >
                     <span>
                         seccion
                         {{ totalSections > 0 ? index + 1 : 0 }}/{{
@@ -39,7 +41,7 @@
                 </p>
 
                 <p
-                    class="text-center section-title"
+                    class="text-center section-title text-h6 q-mt-none"
                     style="margin-bottom: 15px !important"
                 >
                     {{ topic?.name }}
@@ -89,8 +91,7 @@
                         >
                             <q-btn-component
                                 tooltips="reproducir"
-                                icon="mdi-play"
-                                size="xs"
+                                icon="mdi-play-circle-outline"
                                 @click="startVideo(r)"
                             />
                         </q-item-section>
@@ -103,7 +104,6 @@
                                 :href="`${page.props.public_path}storage/${r.path}`"
                                 target="_blank"
                                 icon="mdi-cloud-download-outline"
-                                size="xs"
                             />
                         </q-item-section>
                     </q-item>
@@ -111,6 +111,8 @@
             </div>
         </div>
     </div>
+
+    <chat-component :topic="props.topic" />
 
     <q-dialog
         v-model="showVideo"
@@ -159,8 +161,8 @@
 import { computed, ref } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
-import axios from "axios";
-import { usePage } from "@inertiajs/vue3";
+import ChatComponent from "./chat/ChatComponent.vue";
+import { usePage, useForm } from "@inertiajs/vue3";
 
 defineOptions({
     name: "SectionComponent",
@@ -185,7 +187,6 @@ const currentVideo = ref(null);
 const showVideo = ref(false);
 const currentTime = ref(0);
 const totalTime = ref(0);
-
 const page = usePage();
 
 const principalVideo = computed(() => {
@@ -193,21 +194,14 @@ const principalVideo = computed(() => {
 });
 
 const onHideVideo = async () => {
-    await axios
-        .post(
-            `${props.url}/${props.base}/update-video-percentaje-to-user/${currentVideo.value.id}`,
-            {
-                last_time: currentTime.value,
-                total_time: totalTime.value,
-            }
-        )
-        .then((response) => {
-            const data = response.data;
-            currentVideo.value.percent = data.video.percent;
-            currentTopic.value.percent = data.video.percent;
-            emit("realod-sections", data.course_percentage);
-        })
-        .catch((error) => {});
+    if (currentVideo.value.principal) {
+        const send = useForm({
+            id: currentVideo.value.id,
+            last_time: currentTime.value,
+            total_time: totalTime.value,
+        });
+        send.post(`/admin/schooltopics/update-video-percentaje-to-user`);
+    }
 };
 
 const onTimeUpdate = (ev) => {

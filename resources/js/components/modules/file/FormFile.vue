@@ -1,10 +1,6 @@
 <template>
-    <q-btn-component
-        :tooltips="object === null ? 'adicionar' : 'editar'"
-        :icon="icon"
-        :size="size"
-        @click="showDialog = true"
-    />
+    <btn-add-component @click="showDialog = true" v-if="!object" />
+    <btn-edit-component @click="showDialog = true" v-else />
 
     <q-dialog
         v-model="showDialog"
@@ -42,7 +38,7 @@
                         <uploader-field
                             ref="uploader"
                             label="ficheros"
-                            name="files"
+                            name="file"
                             required
                             :formFields="formFields"
                             :upload="upload"
@@ -54,27 +50,8 @@
             </q-card-section>
             <q-separator />
             <q-card-actions align="right">
-                <q-btn-component
-                    label="guardar"
-                    outline
-                    square
-                    size="md"
-                    padding="5px"
-                    no_caps
-                    icon="mdi-content-save-outline"
-                    @click="save"
-                />
-                <q-btn-component
-                    label="cancelar"
-                    outline
-                    square
-                    size="md"
-                    padding="5px"
-                    color="red"
-                    no_caps
-                    icon="mdi-close-circle-outline"
-                    v-close-popup
-                />
+                <btn-save-component @click="save" />
+                <btn-cancel-component @click="showDialog = false" />
             </q-card-actions>
         </q-card>
     </q-dialog>
@@ -86,12 +63,15 @@ defineOptions({
 });
 
 import { ref, onMounted } from "vue";
-import DialogHeaderComponent from "../base/DialogHeaderComponent.vue";
-import QBtnComponent from "../base/QBtnComponent.vue";
-import SelectField from "../form/input/SelectField.vue";
-import UploaderField from "../form/input/UploaderField.vue";
+import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
+import BtnAddComponent from "../../btn/BtnAddComponent.vue";
+import BtnEditComponent from "../../btn/BtnEditComponent.vue";
+import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
+import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
+import SelectField from "../../form/input/SelectField.vue";
+import UploaderField from "../../form/input/UploaderField.vue";
 import { usePage } from "@inertiajs/vue3";
-import { success, errorValidation } from "../../helpers/notifications";
+import { success, errorValidation } from "../../../helpers/notifications";
 
 const props = defineProps({
     module: {
@@ -138,10 +118,10 @@ const form = ref(null);
 onMounted(() => {
     if (props.object != null) {
         fullTitle.value = `Editar ${props.title}`;
-        icon.value = "edit";
+        icon.value = `img:${$page.props.public_path}images/icon/black-edit.png`;
     } else {
         fullTitle.value = `Adicionar ${props.title}`;
-        icon.value = "add";
+        icon.value = "mdi-plus";
     }
 });
 

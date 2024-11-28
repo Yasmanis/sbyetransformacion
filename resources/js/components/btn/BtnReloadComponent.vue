@@ -1,28 +1,18 @@
 <template>
-    <q-btn-component
-        :tooltips="tooltips"
-        icon="mdi-trash-can-outline"
-        :size="size"
-        @click="onClick"
-    />
+    <q-btn-component :tooltips="tooltips" icon="mdi-reload" @click="onClick" />
 </template>
 
 <script setup>
 import QBtnComponent from "../base/QBtnComponent.vue";
 defineOptions({
-    name: "BtnDeleteComponent",
+    name: "BtnReloadComponent",
 });
 
 const props = defineProps({
     tooltips: {
         type: String,
-        default: "eliminar",
+        default: "actualizar",
     },
-    flat: {
-        type: Boolean,
-        default: false,
-    },
-    size: String,
 });
 
 const emits = defineEmits(["click"]);

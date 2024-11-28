@@ -27,13 +27,17 @@
                 </li>
             </ul>
         </template>
-        <template #after v-if="btnDelete">
-            <q-btn-component
-                icon="mdi-trash-can-outline"
-                color="red"
-                tooltips="eliminar tema"
+        <template #after>
+            <btn-add-component
+                @click="addTopic"
+                tooltips="adicionar nuevo tema"
+                v-if="btnAdd"
+            />
+            <btn-delete-component
                 @click="deleteTopic"
-            ></q-btn-component>
+                tooltips="eliminar tema"
+                v-if="btnDelete"
+            />
         </template>
     </q-input>
 </template>
@@ -43,6 +47,8 @@ import { onBeforeMount, onMounted, ref, watch, computed } from "vue";
 import { validations } from "../../../../helpers/validations";
 import { usePage } from "@inertiajs/vue3";
 import QBtnComponent from "../../../base/QBtnComponent.vue";
+import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
+import BtnAddComponent from "../../../btn/BtnAddComponent.vue";
 
 defineOptions({
     name: "NameComponent",
@@ -74,9 +80,13 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    btnAdd: {
+        type: Boolean,
+        default: false,
+    },
 });
 
-const emits = defineEmits(["update", "remove"]);
+const emits = defineEmits(["add", "update", "remove"]);
 
 const page = usePage();
 
@@ -109,6 +119,10 @@ const errorMsg = computed(() => {
             : null
         : null;
 });
+
+const addTopic = () => {
+    emits("add");
+};
 
 function update(val) {
     model.value = val;

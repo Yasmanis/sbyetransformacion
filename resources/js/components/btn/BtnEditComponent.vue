@@ -1,7 +1,8 @@
 <template>
     <q-btn-component
         :tooltips="tooltips"
-        :icon="`img:${$page.props.public_path}images/icon/white-edit.png`"
+        :icon="`img:${$page.props.public_path}images/icon/black-edit.png`"
+        size="12px"
         @click="onClick"
     />
 </template>

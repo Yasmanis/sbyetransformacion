@@ -273,20 +273,20 @@ const addDescription = ref(false);
 const attachments = ref([]);
 
 onBeforeMount(() => {
-    let { id, name, description, coverImage, section_id, principalVideo } =
-        props.topic;
+    let { id, name, description, coverImage, section_id } = props.topic;
+    let resources = props.topic.resources;
+    ppalVideo.value = resources.find((r) => r.principal);
     formData.value = {
         id,
         name,
         description,
         coverImage,
         section_id,
-        principalVideo,
+        principalVideo: false,
     };
     addDescription.value =
         props.topic && props.topic.description !== null ? true : false;
-    ppalVideo.value = props.topic.resources.find((r) => r.principal);
-    attachments.value = props.topic.resources.filter((r) => !r.principal);
+    attachments.value = resources.filter((r) => !r.principal);
 });
 
 watch(

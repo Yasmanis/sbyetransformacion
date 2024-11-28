@@ -50,6 +50,9 @@ createInertiaApp({
                 },
             })
             .mount(el);
+            setTimeout(() => {
+                document.getElementById('app').removeAttribute('data-page');
+            }, 0);
     },
 });
 
@@ -73,12 +76,10 @@ router.on("start", (event) => {
         "/publicaciones",
         "/contactame",
         "/contacts/store",
+        "/admin/schooltopics/update-video-percentaje-to-user",
     ];
     if (!routes.includes(event.detail.visit.url.pathname)) {
-        Loading.show({
-            //spinner: QSpinnerFacebook,
-            //spinnerColor: '#407492'
-        });
+        Loading.show();
     }
 });
 

@@ -29,26 +29,26 @@ class ConfigurationController extends Controller
     public function save(Request $request)
     {
         $user = auth()->user();
-        if ($user->hasPerm('edit_'.$request->keyName.'_configuration')) {
-            $config = Configuration::where('key', $request->keyName)->first();
-            if (!isset($config)) {
-                $config = new Configuration();
-                $config->key = $request->keyName;
-            }
-            $config->value = $request->keyValue;
-            $config->save();
-            return redirect()->back()->with('success', 'configuracion guardada correctamente');
+        //if ($user->hasPerm('edit_' . $request->keyName . '_configuration')) {
+        $config = Configuration::where('key', $request->keyName)->first();
+        if (!isset($config)) {
+            $config = new Configuration();
+            $config->key = $request->keyName;
         }
+        $config->value = $request->keyValue;
+        $config->save();
+        return redirect()->back()->with('success', 'configuracion guardada correctamente');
+        //}
         return $this->deny_access($request);
     }
 
     public function index(Request $request)
     {
         $user = auth()->user();
-        if ($user->hasPerm('view_'.$request->keyName.'_configuration')) {
-            $config = Configuration::where('key', $request->keyName)->first();
-            return $config;
-        }
+        //if ($user->hasPerm('view_'.$request->keyName.'_configuration')) {
+        $config = Configuration::where('key', $request->keyName)->first();
+        return $config;
+        //}
         return $this->deny_access($request);
     }
 }

@@ -24,22 +24,30 @@
                         @store="onStoreSection"
                         @error="saveSection = false"
                     />
-                    <topic-component
-                        v-for="(item, index) in itemsTopics"
-                        :key="index"
-                        :label="index === 0 ? 'tema' : `tema ${index + 1}`"
-                        :name="`topic-${index}`"
-                        :btnDelete="index > 0"
-                        :topic="item"
-                        :save="item.save"
-                        @remove="itemsTopics.splice(index, 1)"
-                        @save="onSaveTopic"
-                        @is-ok="
-                            (ok) => {
-                                item.isOk = ok;
-                            }
-                        "
-                    />
+                    <template v-for="(item, index) in itemsTopics" :key="index">
+                        <topic-component
+                            :label="
+                                index === 0 ? 'tema' : `tema ${getIndex(item)}`
+                            "
+                            :name="`topic-${index}`"
+                            :btnDelete="index > 0"
+                            :topic="item"
+                            :save="item.save"
+                            @remove="
+                                () => {
+                                    item.visible = false;
+                                    itema.name = 'topic oculto';
+                                }
+                            "
+                            @save="onSaveTopic"
+                            @is-ok="
+                                (ok) => {
+                                    item.isOk = ok;
+                                }
+                            "
+                            v-if="item.visible"
+                        />
+                    </template>
                 </q-form>
             </q-card-section>
             <q-separator />
@@ -55,12 +63,7 @@
                     @click="save"
                     class="r-position"
                 />
-                <q-btn-component
-                    color="red"
-                    icon="mdi-close"
-                    tooltips="cancelar"
-                    v-close-popup
-                />
+                <btn-cancel-component @click="showDialog = false" />
             </q-card-actions>
         </q-card>
     </q-dialog>
@@ -72,6 +75,7 @@ import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import SectionFormComponent from "./section/SectionFormComponent.vue";
 import TopicComponent from "./topic/TopicComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
+import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import { usePage, router } from "@inertiajs/vue3";
 import { useQuasar, Loading } from "quasar";
 import {
@@ -104,8 +108,10 @@ const formData = ref({});
 const saveSection = ref(false);
 const itemsTopics = ref([]);
 const totalSave = ref(0);
+const index = ref(0);
 
 const newTopic = (reset) => {
+    index.value++;
     let topic = {
         id: null,
         name: null,
@@ -117,6 +123,8 @@ const newTopic = (reset) => {
         save: false,
         section_id: null,
         isOk: false,
+        visible: true,
+        index: index.value,
     };
     if (reset) {
         itemsTopics.value = [topic];
@@ -147,7 +155,9 @@ const addTopic = () => {
 const save = async () => {
     form.value.validate().then(async (success) => {
         if (success) {
-            let show_confirm = itemsTopics.value.find((t) => t.isOk === false);
+            let show_confirm = itemsTopics.value.find(
+                (t) => !t.isOk && t.visible
+            );
             if (show_confirm) {
                 $q.dialog({
                     title: "confirmacion",
@@ -190,7 +200,7 @@ const onStoreSection = (id) => {
 
 const onSaveTopic = (info) => {
     totalSave.value++;
-    if (totalSave.value === itemsTopics.value.length) {
+    if (totalSave.value === itemsTopics.value.filter((t) => t.visible).length) {
         Loading.hide();
         success("seccion adicionada correctamente");
         showDialog.value = false;
@@ -198,7 +208,8 @@ const onSaveTopic = (info) => {
     }
 };
 
-const onRemoveTopic = (index) => {
-    itemsTopics.value.splice(itemsTopics.value.length - index, 1);
+const getIndex = (t) => {
+    let visibles = itemsTopics.value.filter((t) => t.visible);
+    return visibles.findIndex((v) => v.index === t.index) + 1;
 };
 </script>

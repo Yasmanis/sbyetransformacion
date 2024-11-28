@@ -1,7 +1,7 @@
 <template>
     <q-btn-component
-        :tooltips="tooltips"
-        icon="mdi-trash-can-outline"
+        tooltips="guardar"
+        icon="mdi-content-save-outline"
         :size="size"
         @click="onClick"
     />
@@ -10,18 +10,10 @@
 <script setup>
 import QBtnComponent from "../base/QBtnComponent.vue";
 defineOptions({
-    name: "BtnDeleteComponent",
+    name: "BtnSaveComponent",
 });
 
 const props = defineProps({
-    tooltips: {
-        type: String,
-        default: "eliminar",
-    },
-    flat: {
-        type: Boolean,
-        default: false,
-    },
     size: String,
 });
 

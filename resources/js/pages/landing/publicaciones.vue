@@ -54,7 +54,9 @@
                                 "
                             ></video>
                             <q-img
-                                class="full-width full-height"
+                                width="100%"
+                                height="100%"
+                                fit="fill"
                                 :src="`${$page.props.public_path}storage/${f.path}`"
                                 v-else-if="f.type.startsWith('image/')"
                             />

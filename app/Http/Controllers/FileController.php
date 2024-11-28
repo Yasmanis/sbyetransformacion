@@ -45,16 +45,14 @@ class FileController extends Controller
     {
         if (auth()->user()->hasCreate('file')) {
             if ($request->hasFile('file')) {
+                $repository = new FileRepository();
+                $data = $request->only((new ($repository->model()))->getFillable());
                 $properties = $this->getPropertiesFromFile($request->file('file'));
-                $request['name'] = $properties['originalName'];
-                $request['path'] = $properties['path'];
-                $request['type'] = $properties['type'];
-                $request['size'] = $properties['size'];
-            }
-            $repository = new FileRepository();
-            $role = $repository->create($request->only((new ($repository->model()))->getFillable()));
-            if (isset($request->permissions)) {
-                $role->permissions()->sync($request->permissions);
+                $data['name'] = $properties['originalName'];
+                $data['path'] = $properties['path'];
+                $data['type'] = $properties['type'];
+                $data['size'] = $properties['size'];
+                $repository->create($data);
             }
             return redirect()->back()->with('success', 'archivo adicionado correctamente');
         }

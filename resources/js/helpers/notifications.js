@@ -6,20 +6,17 @@ export const notify = (
     msg,
     position = "top-right",
     progress = true,
-    close = false,
-    color = null
+    close = false
 ) => {
     let props = {
         message: msg,
         position: position,
         progress: progress,
         closeBtn: close,
+        type: type,
+        textColor: type !== "info" ? "black" : "white",
+        classes: "bg-custom-blue",
     };
-    if (color) {
-        props["color"] = color;
-    } else {
-        props["type"] = type;
-    }
     Notify.create(props);
 };
 
@@ -29,7 +26,7 @@ export const success = (
     progress = true,
     close = false
 ) => {
-    notify("info", msg, position, progress, close, "success-notify");
+    notify("info", msg, position, progress, close);
 };
 
 export const info = (

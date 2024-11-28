@@ -85,6 +85,12 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/schooltopics', SchoolTopicsController::class);
     Route::post('/admin/schooltopics/addResources', [SchoolTopicsController::class, 'addResource']);
     Route::delete('/admin/schooltopics/deleteResource/{id}', [SchoolTopicsController::class, 'deleteResource']);
+    Route::post('/admin/schooltopics/update-video-percentaje-to-user', [SchoolTopicsController::class, 'updateVideoPercentage']);
+    Route::post('/admin/schooltopics/add-message/{id}', [SchoolTopicsController::class, 'addMessage']);
+    Route::delete('/admin/schooltopics/delete-message/{id}', [SchoolTopicsController::class, 'deleteMsg']);
+    Route::post('/admin/schooltopics/react-message/{id}', [SchoolTopicsController::class, 'reactMsg']);
+    Route::post('/admin/schooltopics/highligth-message/{id}', [SchoolTopicsController::class, 'highligthMsg']);
+    Route::post('/admin/schooltopics/add-attachment-message', [SchoolTopicsController::class, 'addAttachmentToMsg']);
     Route::post('/admin/categories/sort-files', [CategoryController::class, 'sortFiles']);
     Route::resource('/admin/files', FileController::class);
 

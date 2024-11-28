@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed, watch } from "vue";
+import { onMounted, ref, computed, watch, readonly } from "vue";
 import { useQuasar } from "quasar";
 import {
     ClassicEditor,
@@ -80,6 +80,10 @@ const props = defineProps({
         default: 0,
     },
     othersProps: Object,
+    readonly: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const $q = useQuasar();
@@ -91,6 +95,8 @@ const screen = computed(() => {
 const emits = defineEmits(["update", "save"]);
 
 const model = ref("");
+
+const editorInstance = ref(null);
 
 class SaveBtn extends Plugin {
     init() {
@@ -264,11 +270,21 @@ watch(
     }
 );
 
+watch(
+    () => props.readonly,
+    (n, o) => {
+        if (n) editorInstance.value.enableReadOnlyMode("editor");
+        else editorInstance.value.disableReadOnlyMode("editor");
+    }
+);
+
 const setModelValue = async () => {
     model.value = props.modelValue ?? "";
 };
 
 const onReady = (editor) => {
+    editorInstance.value = editor;
+
     editor.editing.view.change((writer) => {
         writer.setStyle(
             "height",
@@ -276,18 +292,37 @@ const onReady = (editor) => {
             editor.editing.view.document.getRoot()
         );
     });
+
+    const toolbar = editor.ui.view.toolbar.element;
+
+    editor.on("change:isReadOnly", (evt, name, val, olVal) => {
+        toolbar.parentNode.style.display = val ? "none" : "flex";
+    });
+
+    if (props.readonly) {
+        editorInstance.value.enableReadOnlyMode("editor");
+    }
+
+    editor.focus();
 };
 
 const onEditorInput = (editor) => {
     emits("update", props.name, editor);
 };
 </script>
-<style scope>
+<style>
 .ck-powered-by {
     display: none;
 }
 .help-editor {
     font-size: 11px;
     color: rgba(0, 0, 0, 0.54);
+}
+.ck.ck-dropdown {
+    z-index: 9999 !important;
+}
+:root {
+    --ck-z-default: 100;
+    --ck-z-panel: 9999 !important; /* Asegúrate de que este valor es mayor que el del modal */
 }
 </style>

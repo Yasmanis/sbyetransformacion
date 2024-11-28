@@ -60,7 +60,7 @@ class User extends Authenticatable
         'active' => 'boolean'
     ];
 
-    protected $appends = ['permissions', 'roles'];
+    protected $appends = ['permissions', 'roles', 'full_name'];
 
     public function getPermissionsAttribute()
     {
@@ -70,6 +70,11 @@ class User extends Authenticatable
     public function getRolesAttribute()
     {
         return $this->roles()->get()->pluck('id');
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->name . ' ' . $this->surname;
     }
 
     public function getPermissions()

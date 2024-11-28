@@ -16,5 +16,5 @@ class SchoolTopicRepository extends BaseRepository
         return null;
     }
 
-    protected $with = ['resources'];
+    protected $with = ['resources', 'messages'];
 }

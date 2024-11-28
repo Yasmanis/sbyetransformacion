@@ -141,10 +141,27 @@
     src: local('Poppins Black Italic'), url('./fonts/poppins-webfont/Poppins-BlackItalic.woff') format('woff');
 }
 
-.bg-success-notify {
-    background-color: #acced6;
+.q-notifications__list {
+    color: #000;
 }
 
 .q-table>thead>tr>th {
     font-weight: bold;
+}
+
+.q-field--error .q-field__bottom .q-field__messages{
+    background: rgb(172, 206, 214);
+    color: #000;
+    font-weight: bold;
+    padding: 5px;
+    margin-top: -8px;;
+}
+
+.bg-custom-blue,
+.q-img__content .bg-negative {
+    background: rgb(172, 206, 214) !important;
+}
+
+.text-negative {
+    color: #000 !important;
 }

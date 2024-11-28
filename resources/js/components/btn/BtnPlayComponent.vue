@@ -1,8 +1,9 @@
 <template>
     <q-btn-component
         :tooltips="tooltips"
-        icon="mdi-trash-can-outline"
+        icon="mdi-play-circle-outline"
         :size="size"
+        :flat="flat"
         @click="onClick"
     />
 </template>
@@ -10,13 +11,13 @@
 <script setup>
 import QBtnComponent from "../base/QBtnComponent.vue";
 defineOptions({
-    name: "BtnDeleteComponent",
+    name: "BtnPlayComponent",
 });
 
 const props = defineProps({
     tooltips: {
         type: String,
-        default: "eliminar",
+        default: "reproducir",
     },
     flat: {
         type: Boolean,

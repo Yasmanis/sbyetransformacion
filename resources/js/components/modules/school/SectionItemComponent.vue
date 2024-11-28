@@ -9,14 +9,8 @@
                         </q-item-label>
                     </q-item-section>
                     <q-item-section avatar>
-                        <q-btn-component
-                            :tooltips="expand ? 'ocultar' : 'mostrar'"
-                            :icon="
-                                expand
-                                    ? 'mdi-chevron-double-up'
-                                    : 'mdi-chevron-double-down'
-                            "
-                            size="xs"
+                        <btn-down-up-component
+                            :up="expand"
                             @click="expand = !expand"
                         />
                     </q-item-section>
@@ -49,6 +43,7 @@
                             >
                                 <q-item-section
                                     avatar
+                                    top
                                     style="padding-right: 5px"
                                 >
                                     <q-icon
@@ -66,10 +61,6 @@
                                             :thickness="1"
                                             color="black"
                                             track-color="transparent"
-                                            style="
-                                                position: absolute;
-                                                margin-top: -2px;
-                                            "
                                         ></q-knob>
                                     </q-icon>
                                 </q-item-section>
@@ -83,20 +74,21 @@
                                         v-if="topic.duration_string !== null"
                                     >
                                         <q-icon
-                                            :name="`img:${imgbase}imagenes/icono-video-negro.png`"
+                                            name="mdi-video"
+                                            size="sm"
                                         ></q-icon>
                                         ({{ topic.duration_string }})
                                         <q-icon
-                                            :name="`img:${imgbase}imagenes/icono-clip-archivo-ajunto-negro.png`"
+                                            name="mdi-attachment fa-rotate-90"
+                                            size="sm"
                                             v-if="topic.has_resources"
                                         ></q-icon>
                                     </q-item-label>
                                 </q-item-section>
-                                <q-item-section avatar>
+                                <q-item-section avatar top>
                                     <q-btn-component
                                         tooltips="pasar a pantalla principal"
-                                        icon="mdi-play"
-                                        size="xs"
+                                        icon="mdi-play-circle-outline"
                                         @click="changeTopic(topic, section)"
                                     />
                                 </q-item-section>
@@ -112,6 +104,7 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
+import BtnDownUpComponent from "../../btn/BtnDownUpComponent.vue";
 
 defineOptions({
     name: "SectionItemComponent",
@@ -170,3 +163,8 @@ const changeTopic = (topic, section) => {
     });
 };
 </script>
+<style scope>
+.q-knob--editable:before {
+    border: 1px solid #000;
+}
+</style>

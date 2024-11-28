@@ -1,11 +1,6 @@
 <template>
-    <q-btn-component
-        :tooltips="object === null ? 'adicionar' : 'editar'"
-        :icon="icon"
-        :size="size"
-        @click="showDialog = true"
-    />
-
+    <btn-add-component @click="showDialog = true" v-if="!object" />
+    <btn-edit-component @click="showDialog = true" v-else />
     <q-dialog
         v-model="showDialog"
         persistent
@@ -41,7 +36,8 @@ defineOptions({
 
 import { ref, onMounted } from "vue";
 import DialogHeaderComponent from "../base/DialogHeaderComponent.vue";
-import QBtnComponent from "../base/QBtnComponent.vue";
+import BtnAddComponent from "../btn/BtnAddComponent.vue";
+import BtnEditComponent from "../btn/BtnEditComponent.vue";
 import FormBody from "./FormBody.vue";
 import { usePage } from "@inertiajs/vue3";
 
@@ -94,10 +90,10 @@ const page = usePage();
 onMounted(() => {
     if (props.object != null) {
         fullTitle.value = `Editar ${props.title}`;
-        icon.value = `img:${page.props.public_path}images/icon/white-edit.png`;
+        icon.value = `img:${page.props.public_path}images/icon/black-edit.png`;
     } else {
         fullTitle.value = `Adicionar ${props.title}`;
-        icon.value = "add";
+        icon.value = "mdi-plus";
     }
 });
 

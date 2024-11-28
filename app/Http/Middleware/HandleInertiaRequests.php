@@ -50,7 +50,11 @@ class HandleInertiaRequests extends Middleware
             'public_path' => asset(''),
             'flash_success' => $request->session()->get('success'),
             'flash_error' => $request->session()->get('error'),
-            'exclude_flash' => $request->session()->get('exclude_flash')
+            'exclude_flash' => $request->session()->get('exclude_flash'),
+            'loading' => [
+                'exclude' => $request->session()->get('exclude_loading'),
+                'message' => $request->session()->get('loading_msg')
+            ]
         ]);
     }
 }

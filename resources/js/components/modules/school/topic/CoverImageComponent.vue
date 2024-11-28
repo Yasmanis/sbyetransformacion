@@ -25,12 +25,10 @@
                     class="q-mr-xs"
                     @click="fileRef.pickFiles()"
                 />
-                <q-btn-component
-                    color="red"
+                <btn-delete-component
                     :tooltips="hasDefaultImage ? '' : 'eliminar'"
                     :disable="hasDefaultImage"
                     class="q-ml-xs"
-                    icon="mdi-trash-can-outline"
                     @click="resetImg"
                 />
             </div>
@@ -52,6 +50,7 @@
 import { onMounted, ref, watch } from "vue";
 import { error } from "../../../../helpers/notifications";
 import QBtnComponent from "../../../base/QBtnComponent.vue";
+import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 
 defineOptions({

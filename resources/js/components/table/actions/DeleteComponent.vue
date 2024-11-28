@@ -1,15 +1,9 @@
 <template>
-    <q-btn-component
-        tooltips="eliminar"
-        :size="size"
-        :icon="`img:${$page.props.public_path}images/icon/recicle-bin.png`"
-        color="red"
-        @click="handleDelete"
-    />
+    <btn-delete-component @click="handleDelete" />
 </template>
 
 <script setup>
-import QBtnComponent from "../../base/QBtnComponent.vue";
+import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
 import { useForm } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 defineOptions({
