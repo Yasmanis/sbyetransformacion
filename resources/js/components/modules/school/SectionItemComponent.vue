@@ -1,5 +1,5 @@
 <template>
-    <q-card>
+    <q-card :class="class">
         <q-card-section class="q-pa-sm">
             <q-list dense>
                 <q-item style="padding: 2px 8px">
@@ -10,7 +10,7 @@
                     </q-item-section>
                     <q-item-section avatar>
                         <btn-down-up-component
-                            :up="expand"
+                            :up="!expand"
                             @click="expand = !expand"
                         />
                     </q-item-section>
@@ -59,7 +59,11 @@
                                             v-model="topic.percent"
                                             size="18px"
                                             :thickness="1"
-                                            color="black"
+                                            :color="
+                                                Dark.isActive
+                                                    ? 'white'
+                                                    : 'black'
+                                            "
                                             track-color="transparent"
                                         ></q-knob>
                                     </q-icon>
@@ -67,7 +71,7 @@
                                 <q-item-section>
                                     <q-item-label
                                         style="cursor: pointer"
-                                        @click="changeTopic(topic, section)"
+                                        @click="changeTopic(topic)"
                                         >{{ topic.name }}</q-item-label
                                     >
                                     <q-item-label
@@ -89,7 +93,7 @@
                                     <q-btn-component
                                         tooltips="pasar a pantalla principal"
                                         icon="mdi-play-circle-outline"
-                                        @click="changeTopic(topic, section)"
+                                        @click="changeTopic(topic)"
                                     />
                                 </q-item-section>
                             </q-item>
@@ -99,12 +103,20 @@
             </q-list>
         </q-card-section>
     </q-card>
+
+    <video-component
+        :show="showVideo"
+        :video="principalVideo"
+        @close="showVideo = false"
+    ></video-component>
 </template>
 
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnDownUpComponent from "../../btn/BtnDownUpComponent.vue";
+import VideoComponent from "./VideoComponent.vue";
+import { Dark } from "quasar";
 
 defineOptions({
     name: "SectionItemComponent",
@@ -113,6 +125,7 @@ defineOptions({
 const props = defineProps({
     section: Object,
     sectionIndex: Number,
+    class: String,
     expand: {
         type: Boolean,
         default: false,
@@ -123,6 +136,8 @@ const emits = defineEmits(["change-topic"]);
 
 const expand = ref(props.expand);
 const courses_completed = ref(0);
+const showVideo = ref(false);
+const principalVideo = ref(null);
 
 onMounted(() => {
     updateViewSection();
@@ -155,12 +170,16 @@ const updateViewSection = () => {
     }
 };
 
-const changeTopic = (topic, section) => {
+const changeTopic = (topic) => {
     emits("change-topic", {
         topic: topic,
-        section: section,
+        section: props.section,
         sectionIndex: props.sectionIndex,
     });
+    principalVideo.value = topic.resources.find((r) => r.principal);
+    if (principalVideo.value) {
+        showVideo.value = true;
+    }
 };
 </script>
 <style scope>

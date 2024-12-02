@@ -52,6 +52,7 @@ import { error } from "../../../../helpers/notifications";
 import QBtnComponent from "../../../base/QBtnComponent.vue";
 import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
 import { usePage } from "@inertiajs/vue3";
+import { Dark } from "quasar";
 
 defineOptions({
     name: "CoverImageComponent",

@@ -200,7 +200,6 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
 import BtnDownUpComponent from "../../../btn/BtnDownUpComponent.vue";
 import ChatActionsComponent from "./ChatActionsComponent.vue";
 
@@ -213,9 +212,5 @@ const props = defineProps({
         type: Array,
         default: [],
     },
-});
-
-onMounted(() => {
-    console.log(props.messages);
 });
 </script>

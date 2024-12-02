@@ -21,6 +21,21 @@
             <q-item-section avatar>
                 <btn-play-component flat tooltips="activar chat" />
             </q-item-section>
+            <q-item-section avatar>
+                <btn-left-right-component
+                    title="tema anterior"
+                    :disable="index === 0"
+                    @click="emits('change-topic', index - 1)"
+                />
+            </q-item-section>
+            <q-item-section avatar>
+                <btn-left-right-component
+                    :leftDirection="false"
+                    title="tema siguiente"
+                    :disable="index === section?.topics.length - 1"
+                    @click="emits('change-topic', index + 1)"
+                />
+            </q-item-section>
         </q-item>
     </q-list>
     <div class="chat-panel" v-show="showPanel">
@@ -60,28 +75,22 @@
         <div class="messages" v-else>
             <chat-message-component :messages="topic?.messages" />
         </div>
-        <q-btn-component
-            icon="mdi-reload"
-            tooltips="actualizar"
-            flat
-            size="md"
-            padding="5px"
-            @click="router.reload()"
-        />
+        <!-- <btn-reload-component @click="router.reload()" />
         <form-chat-component :topic="props.topic" />
-        <help-chat-component />
+        <help-chat-component /> -->
     </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import BtnDownUpComponent from "../../../btn/BtnDownUpComponent.vue";
+import BtnLeftRightComponent from "../../../btn/BtnLeftRightComponent.vue";
 import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
 import BtnPlayComponent from "../../../btn/BtnPlayComponent.vue";
-import QBtnComponent from "../../../base/QBtnComponent.vue";
 import HelpChatComponent from "./HelpChatComponent.vue";
 import FormChatComponent from "./FormChatComponent.vue";
 import ChatMessageComponent from "./ChatMessageComponent.vue";
+import BtnReloadComponent from "../../../btn/BtnReloadComponent.vue";
 import { router } from "@inertiajs/vue3";
 
 defineOptions({
@@ -90,6 +99,11 @@ defineOptions({
 
 const props = defineProps({
     topic: Object,
+    section: Object,
+    index: {
+        type: Number,
+        default: 0,
+    },
     save: {
         type: Boolean,
         default: false,
@@ -98,6 +112,7 @@ const props = defineProps({
 
 const showPanel = ref(false);
 const messages = [];
+const emits = defineEmits(["change-topic"]);
 
 const clearChat = async () => {
     showLoading.value = true;

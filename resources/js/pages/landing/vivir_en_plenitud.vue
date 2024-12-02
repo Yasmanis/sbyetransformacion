@@ -2,36 +2,66 @@
     <Layout title="VIVIR EN PLENITUD">
         <div class="banner bg-primary">
             <div class="row items-center container">
-                <div class="col-md-6 col-sm-12 col-xs-12 text-center" style="z-index: 1;">
-                    <img :src="`${$page.props.public_path}images/team/maria-vivir-en-plenitud.png`"
-                        style="width: 50%; z-index: 9999 !important" />
+                <div
+                    class="col-md-6 col-sm-12 col-xs-12 text-center"
+                    style="z-index: 1"
+                >
+                    <img
+                        :src="`${$page.props.public_path}images/team/maria-vivir-en-plenitud.png`"
+                        style="width: 50%; z-index: 9999 !important"
+                    />
                 </div>
                 <div class="col-md-6 col-sm-12 col-xs-12 text-center">
-                    <span class="text-white header-title" style="font-size: 33px; line-height: 1">LIBERACION
-                        EMOCIONAL</span>
+                    <span
+                        class="text-white header-title"
+                        style="font-size: 33px; line-height: 1"
+                        >LIBERACION EMOCIONAL</span
+                    >
                     <br />
-                    <span class="text-white text-lowercase" style="font-size: 22px">la puerta para</span>
+                    <span
+                        class="text-white text-lowercase"
+                        style="font-size: 22px"
+                        >la puerta para</span
+                    >
                     <br />
-                    <span class="text-white header-title" style="font-size: 44px; line-height: 1">VIVIR EN
-                        PLENITUD</span>
+                    <span
+                        class="text-white header-title"
+                        style="font-size: 44px; line-height: 1"
+                        >VIVIR EN PLENITUD</span
+                    >
                     <br />
-                    <span class="text-white text-lowercase" style="font-size: 22px">con la intervencion directa de
-                        dios</span>
+                    <span
+                        class="text-white text-lowercase"
+                        style="font-size: 22px"
+                        >con la intervencion directa de dios</span
+                    >
                 </div>
             </div>
-            <div class="wave overflow-hidden" :style="{
-                'margin-top':
-                    !screen.xs && !screen.sm ? '-100px' : '',
-            }">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"
-                    class="d-block position-relative">
-                    <path class="elementor-shape-fill" d="M790.5,93.1c-59.3-5.3-116.8-18-192.6-50c-29.6-12.7-76.9-31-100.5-35.9c-23.6-4.9-52.6-7.8-75.5-5.3
+            <div
+                class="wave overflow-hidden"
+                :style="{
+                    'margin-top': !screen.xs && !screen.sm ? '-100px' : '',
+                }"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 1000 100"
+                    preserveAspectRatio="none"
+                    class="d-block position-relative"
+                >
+                    <path
+                        class="elementor-shape-fill"
+                        d="M790.5,93.1c-59.3-5.3-116.8-18-192.6-50c-29.6-12.7-76.9-31-100.5-35.9c-23.6-4.9-52.6-7.8-75.5-5.3
             c-10.2,1.1-22.6,1.4-50.1,7.4c-27.2,6.3-58.2,16.6-79.4,24.7c-41.3,15.9-94.9,21.9-134,22.6C72,58.2,0,25.8,0,25.8V100h1000V65.3
-            c0,0-51.5,19.4-106.2,25.7C839.5,97,814.1,95.2,790.5,93.1z"></path>
+            c0,0-51.5,19.4-106.2,25.7C839.5,97,814.1,95.2,790.5,93.1z"
+                    ></path>
                 </svg>
             </div>
         </div>
-        <div class="row items-center container q-py-xl bg-white" style="margin-top: -5px;">
+        <div
+            class="row items-center container q-py-xl bg-white"
+            style="margin-top: -5px"
+        >
             <div class="col-md-6 col-sm-12">
                 <p>
                     la complejidad de nuestras emociones junto con el desarrollo
@@ -63,15 +93,21 @@
                 </p>
             </div>
             <div class="col-md-6 col-sm-12 text-center">
-                <img :src="`${$page.props.public_path}images/books/tree-books.png`" alt="group-image"
-                    style="width: 80%" />
+                <img
+                    :src="`${$page.props.public_path}images/books/tree-books.png`"
+                    alt="group-image"
+                    style="width: 80%"
+                />
             </div>
         </div>
         <div class="row container q-py-md">
             <div class="col-md-4 col-sm-12 q-pa-lg">
                 <div class="text-center">
-                    <img class="blog-img" :src="`${$page.props.public_path}images/books/book-1.png`"
-                        style="width: 270px; height: 340px" />
+                    <img
+                        class="blog-img"
+                        :src="`${$page.props.public_path}images/books/book-1.png`"
+                        style="width: 270px; height: 340px"
+                    />
                     <p class="q-mt-sm q-mb-none" style="font-size: 18px">
                         en el tomo 1
                     </p>
@@ -165,17 +201,35 @@
                     </ul>
                 </div>
                 <div class="text-center">
-                    <q-btn color="black" :label="more_book1 ? 'leer menos' : 'leer mas'" no-caps rounded
-                        @click="more_book1 = !more_book1">
-                        <q-icon name="fa fa-long-arrow-left" size="xs" class="q-ml-md" v-if="more_book1" />
-                        <q-icon name="fa fa-long-arrow-right" size="xs" class="q-ml-md" v-else />
+                    <q-btn
+                        color="black"
+                        :label="more_book1 ? 'leer menos' : 'leer mas'"
+                        no-caps
+                        rounded
+                        @click="more_book1 = !more_book1"
+                    >
+                        <q-icon
+                            name="fa fa-long-arrow-left"
+                            size="xs"
+                            class="q-ml-md"
+                            v-if="more_book1"
+                        />
+                        <q-icon
+                            name="fa fa-long-arrow-right"
+                            size="xs"
+                            class="q-ml-md"
+                            v-else
+                        />
                     </q-btn>
                 </div>
             </div>
             <div class="col-md-4 col-sm-12 q-pa-lg">
                 <div class="text-center">
-                    <img class="blog-img" :src="`${$page.props.public_path}images/books/book-2.png`"
-                        style="width: 320px; height: 340px" />
+                    <img
+                        class="blog-img"
+                        :src="`${$page.props.public_path}images/books/book-2.png`"
+                        style="width: 320px; height: 340px"
+                    />
                     <p class="q-mt-sm q-mb-none" style="font-size: 18px">
                         en el tomo 2
                     </p>
@@ -223,17 +277,35 @@
                     </span>
                 </div>
                 <div class="text-center">
-                    <q-btn color="black" :label="more_book2 ? 'leer menos' : 'leer mas'" no-caps rounded
-                        @click="more_book2 = !more_book2">
-                        <q-icon name="fa fa-long-arrow-left" size="xs" class="q-ml-md" v-if="more_book2" />
-                        <q-icon name="fa fa-long-arrow-right" size="xs" class="q-ml-md" v-else />
+                    <q-btn
+                        color="black"
+                        :label="more_book2 ? 'leer menos' : 'leer mas'"
+                        no-caps
+                        rounded
+                        @click="more_book2 = !more_book2"
+                    >
+                        <q-icon
+                            name="fa fa-long-arrow-left"
+                            size="xs"
+                            class="q-ml-md"
+                            v-if="more_book2"
+                        />
+                        <q-icon
+                            name="fa fa-long-arrow-right"
+                            size="xs"
+                            class="q-ml-md"
+                            v-else
+                        />
                     </q-btn>
                 </div>
             </div>
             <div class="col-md-4 col-sm-12 q-pa-lg">
                 <div class="text-center">
-                    <img class="blog-img" :src="`${$page.props.public_path}images/books/book-3.png`"
-                        style="width: 270px; height: 340px" />
+                    <img
+                        class="blog-img"
+                        :src="`${$page.props.public_path}images/books/book-3.png`"
+                        style="width: 270px; height: 340px"
+                    />
                     <p class="q-mt-sm q-mb-none" style="font-size: 18px">
                         en el tomo 3
                     </p>
@@ -245,8 +317,10 @@
                     liberar emocionalmente
                 </p>
                 <p class="text-center text-lowercase q-mb-none">SUMARIO</p>
-                <span>PARTE VI EJERCICIOS, RECURSOS Y ACTIVIDADES PARA PRACTICAR
-                    Y APRENDER A DESPROGRAMARTE POR COMPLETO</span>
+                <span
+                    >PARTE VI EJERCICIOS, RECURSOS Y ACTIVIDADES PARA PRACTICAR
+                    Y APRENDER A DESPROGRAMARTE POR COMPLETO</span
+                >
                 <ul class="summary q-mt-none" v-if="!more_book3">
                     <li>
                         significado de las principales dolencias y enfermedades
@@ -316,20 +390,41 @@
                     </ul>
                 </div>
                 <div class="text-center">
-                    <q-btn color="black" :label="more_book3 ? 'leer menos' : 'leer mas'" no-caps rounded
-                        @click="more_book3 = !more_book3">
-                        <q-icon name="fa fa-long-arrow-left" size="xs" class="q-ml-md" v-if="more_book3" />
-                        <q-icon name="fa fa-long-arrow-right" size="xs" class="q-ml-md" v-else />
+                    <q-btn
+                        color="black"
+                        :label="more_book3 ? 'leer menos' : 'leer mas'"
+                        no-caps
+                        rounded
+                        @click="more_book3 = !more_book3"
+                    >
+                        <q-icon
+                            name="fa fa-long-arrow-left"
+                            size="xs"
+                            class="q-ml-md"
+                            v-if="more_book3"
+                        />
+                        <q-icon
+                            name="fa fa-long-arrow-right"
+                            size="xs"
+                            class="q-ml-md"
+                            v-else
+                        />
                     </q-btn>
                 </div>
             </div>
         </div>
-        <div class="column bg-primary text-center text-white q-mt-xl" style="padding-left: 17%; padding-right: 17%">
-            <h6 style="
+        <div
+            class="column bg-primary text-center text-white q-mt-xl"
+            style="padding-left: 17%; padding-right: 17%"
+        >
+            <h6
+                style="
                     font-size: 18.2px;
                     margin-top: 18px;
                     margin-bottom: 15px !important;
-                " class="q-py-none q-my-none text-white">
+                "
+                class="q-py-none q-my-none text-white"
+            >
                 ACCEDE A TODO EL CONTENIDO DEL LIBRO LEIDO POR MI EN VIDEOS A
                 TRAVES DEL AREA PRIVADA
             </h6>
@@ -368,23 +463,42 @@
                 valorar otro registro mas
             </p>
             <div class="text-center q-pb-md">
-                <q-btn no-caps label="me registro!" color="black" rounded @click="router.get('/contactame')" />
+                <q-btn
+                    no-caps
+                    label="me registro!"
+                    color="black"
+                    rounded
+                    @click="router.get('/contactame')"
+                />
             </div>
         </div>
         <div class="row container q-py-md items-center">
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
-                <img :src="`${$page.props.public_path}images/team/maria1.png`" alt="group-image" style="width: 40%" />
+                <img
+                    :src="`${$page.props.public_path}images/team/maria1.png`"
+                    alt="group-image"
+                    style="width: 40%"
+                />
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="column text-center">
-                    <h4 class="q-my-none" style="font-size: 26px; line-height: 1.22">
+                    <h4
+                        class="q-my-none"
+                        style="font-size: 26px; line-height: 1.22"
+                    >
                         TODAVIA NO HAS LEIDO <br />
                         MI LIBRO?
                     </h4>
                     <p class="q-my-none">podras comprarlo aqui</p>
                     <div>
-                        <q-btn href="https://www.amazon.es/dp/B0DJG45MMK?binding=paperback&ref=dbs_dp_sirpi"
-                            target="_blank" rounded label="ir a tienda" color="black" no-caps />
+                        <q-btn
+                            href="https://www.amazon.es/dp/B0DJG45MMK?binding=paperback&ref=dbs_dp_sirpi"
+                            target="_blank"
+                            rounded
+                            label="ir a tienda"
+                            color="black"
+                            no-caps
+                        />
                     </div>
                 </div>
             </div>
@@ -392,13 +506,43 @@
         <div class="row container bg-primary text-white q-pa-lg">
             <div class="col-md-6">
                 <h5 class="q-mx-sm q-my-none text-white">
-                    no te vayas sin suscribirte a la newsletter de sbye
-                    transformacion!
+                    SUSCRIBETE A MI NEWSLETTER EXCLUSIVA DONDE DESARROLLO DESDE
+                    OTRA PERSPECTIVA O CON OTRO MATIZ LOS TEMAS QUE ABORDO EN MI
+                    LIBRO, EN REDES SOCIALES Y EN MIS CONFERENCIAS
                 </h5>
-                <p class="text-justify q-mx-sm">
-                    por suscribirte te regalare el ultimo capitulo que habia
-                    escrito y que no he publicado en el libro por exceso de
-                    paginas: “enemigos del aprendizaje. analiza con los
+                <p class="q-mx-sm q-mt-md">
+                    mas o menos cada mes, aunque la periodicidad puede variar,
+                    abordo un tema concreto de mi libro liberacion emocional la
+                    puerta para vivir en plenitud con la intervencion directa de
+                    dios, para desarrollarlo desde distintos puntos de vista.
+                    utilizo todo tipo de formas de comunicacion, desde posts y
+                    videos breves en las redes sociales, que tambien cuelgo en
+                    el apartado de publicaciones de este sitio web, a estas
+                    newsletters, entrevistas y conferencias online o
+                    presenciales. la idea es destacar los aspectos mas
+                    relevantes que abordo en el libro y que son las claves
+                    necesarias para vivir en plenitud
+                </p>
+                <p class="q-mx-sm q-mt-md">
+                    vive en plenitud una persona que obtiene en cada momento el
+                    mayor potencial de si misma y sabe con total certeza que es
+                    un instrumento divino en accion, porque dios se lo corrobora
+                    dialogando de forma directa con ella a traves de su
+                    pensamiento. vivir en plenitud es el siguiente paso de la
+                    humanidad y mi libro es un eslabon mas del camino que dios
+                    ha trazado para que podamos vivir en plenitud, podamos vivir
+                    el paraiso en la tierra, la tierra prometida como dirian en
+                    la biblia
+                    <img
+                        :src="`${$page.props.public_path}images/icon/smile.png`"
+                    />
+                    te apuntas a despertar? mis newsletters te seran preparado
+                    para todos nosotros!
+                </p>
+                <p class="q-mx-sm q-mt-md">
+                    ademas por suscribirte te regalare el ultimo capitulo que
+                    habia escrito y que no he publicado en el libro por exceso
+                    de paginas “enemigos del aprendizaje. analiza con los
                     siguientes test esta parte de tu personalidad”
                 </p>
             </div>
@@ -406,12 +550,25 @@
                 <div class="row q-mx-lg">
                     <div class="col-md-8">
                         <div class="sub-email">
-                            <q-input type="email" placeholder="Email" required dense rounded outlined
-                                bg-color="white" />
+                            <q-input
+                                type="email"
+                                placeholder="Email"
+                                required
+                                dense
+                                rounded
+                                outlined
+                                bg-color="white"
+                            />
                         </div>
                     </div>
                     <div class="col-md-4 text-center">
-                        <q-btn label="me apunto!" color="black" rounded no-caps class="btn-fixed-width" />
+                        <q-btn
+                            label="me apunto!"
+                            color="black"
+                            rounded
+                            no-caps
+                            class="btn-fixed-width"
+                        />
                     </div>
                 </div>
             </div>

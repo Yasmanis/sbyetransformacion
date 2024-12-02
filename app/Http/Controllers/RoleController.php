@@ -24,7 +24,7 @@ class RoleController extends Controller
     {
         if (auth()->user()->hasCreate('role')) {
             $request->validate([
-                'name' => ['required', 'max:30', 'unique:roles'],
+                'name' => ['required', 'unique:roles'],
             ]);
             $repository = new RoleRepository();
             $role = $repository->create($request->only((new ($repository->model()))->getFillable()));
@@ -40,7 +40,7 @@ class RoleController extends Controller
     {
         if (auth()->user()->hasUpdate('role')) {
             $request->validate([
-                'name' => ['required', 'max:30', Rule::unique('roles', 'name')->ignore($id)],
+                'name' => ['required', Rule::unique('roles', 'name')->ignore($id)],
             ]);
             $repository = new RoleRepository();
             $role = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));

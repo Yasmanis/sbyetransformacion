@@ -6,7 +6,8 @@ export const notify = (
     msg,
     position = "top-right",
     progress = true,
-    close = false
+    close = false,
+    icon
 ) => {
     let props = {
         message: msg,
@@ -17,6 +18,9 @@ export const notify = (
         textColor: type !== "info" ? "black" : "white",
         classes: "bg-custom-blue",
     };
+    if (icon) {
+        props["icon"] = icon;
+    }
     Notify.create(props);
 };
 
@@ -53,7 +57,7 @@ export const error = (
     progress = true,
     close = false
 ) => {
-    notify("negative", msg, position, progress, close);
+    notify("negative", msg, position, progress, close, "mdi-alert-outline");
 };
 
 export const error500 = () => {

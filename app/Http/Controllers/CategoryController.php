@@ -25,7 +25,7 @@ class CategoryController extends Controller
     {
         if (auth()->user()->hasCreate('category')) {
             $request->validate([
-                'name' => ['required', 'max:30', 'unique:category'],
+                'name' => ['required', 'unique:category'],
             ]);
             $repository = new CategoryRepository();
             $repository->create($request->only((new ($repository->model()))->getFillable()));
@@ -38,7 +38,7 @@ class CategoryController extends Controller
     {
         if (auth()->user()->hasUpdate('category')) {
             $request->validate([
-                'name' => ['required', 'max:30', Rule::unique('category', 'name')->ignore($id)],
+                'name' => ['required', Rule::unique('category', 'name')->ignore($id)],
             ]);
             $repository = new CategoryRepository();
             $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));

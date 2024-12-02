@@ -165,3 +165,11 @@
 .text-negative {
     color: #000 !important;
 }
+
+.q-icon.text-negative {
+    color: rgb(172, 206, 214) !important;
+}
+
+.q-btn .q-focus-helper {
+    display: none;
+}

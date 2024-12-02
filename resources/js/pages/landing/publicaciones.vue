@@ -1,6 +1,9 @@
 <template>
     <Layout title="publicaciones">
-        <div class="row container q-mt-xl">
+        <div
+            class="row container q-mt-xl"
+            :style="{ 'padding-top': screen.xs || screen.sm ? '40px' : '' }"
+        >
             <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                 <div class="row" v-if="files.length > 0">
                     <template
@@ -20,7 +23,9 @@
                                     v-if="f.type.startsWith('video/')"
                                 ></video>
                                 <q-img
-                                    class="full-width full-height"
+                                    width="100%"
+                                    height="100%"
+                                    fit="fill"
                                     :src="`${$page.props.public_path}storage/${f.path}`"
                                     v-else-if="f.type.startsWith('image/')"
                                 />
@@ -54,9 +59,9 @@
                                 "
                             ></video>
                             <q-img
+                                fit="fill"
                                 width="100%"
                                 height="100%"
-                                fit="fill"
                                 :src="`${$page.props.public_path}storage/${f.path}`"
                                 v-else-if="f.type.startsWith('image/')"
                             />
@@ -389,11 +394,8 @@
                                     color="black"
                                     label="publicar"
                                     no-caps
-                                    :disabled="sending"
-                                    :loading="sending"
-                                    class="q-mt-md"
-                                    icon="mdi-cloud-upload-outline"
-                                    @click="onSubmit"
+                                    icon="mdi-upload"
+                                    class="q-mt-md q-ml-xs"
                                 />
                                 <q-btn
                                     rounded
@@ -419,42 +421,11 @@
             </div>
             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                 <div class="column items-center q-px-sm">
-                    <q-card class="my-card rounded shadow-4 full-width">
-                        <q-card-section class="q-pb-none">
-                            <p class="q-my-sm text-uppercase">categorias</p>
-                            <div style="border-bottom: 2px solid #407492"></div>
-                            <ul class="q-pa-none q-my-none list-unstyled">
-                                <li
-                                    v-for="(c, index) in categories"
-                                    :key="`category-${index}`"
-                                    class="q-py-md"
-                                    :class="
-                                        index === categories.length - 1
-                                            ? 'q-pb-none'
-                                            : 'border-dashed-bottom-1'
-                                    "
-                                >
-                                    <a
-                                        href="javascript:;"
-                                        @click="currentCategory = c"
-                                        class="text-primary"
-                                        :style="{
-                                            'font-weight':
-                                                currentCategory?.id === c.id
-                                                    ? 'bold'
-                                                    : '',
-                                        }"
-                                        ><i
-                                            class="fa fa-check font-company q-mr-sm"
-                                            aria-hidden="true"
-                                        ></i
-                                        >{{ c.name }}</a
-                                    >
-                                </li>
-                            </ul>
-                        </q-card-section>
-                    </q-card>
-
+                    <list-category-component
+                        :categories="categories"
+                        @change="(cat) => (currentCategory = cat)"
+                        :sticky="screen.xs || screen.sm"
+                    />
                     <q-card
                         class="my-card rounded shadow-4 full-width q-mt-lg"
                         v-if="recent_files.length > 0"
@@ -581,7 +552,7 @@
 import { computed, onMounted, ref, watch } from "vue";
 import Layout from "../../layouts/MainLayout.vue";
 import { usePage, useForm, router } from "@inertiajs/vue3";
-import { QItemLabel } from "quasar";
+import ListCategoryComponent from "../../components/modules/category/ListCategoryComponent.vue";
 import { useQuasar } from "quasar";
 import { errorValidation } from "../../helpers/notifications.js";
 

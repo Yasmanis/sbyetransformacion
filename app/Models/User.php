@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
@@ -154,5 +155,35 @@ class User extends Authenticatable
     public function hasDelete($model)
     {
         return ($this->sa || $this->hasPerm('delete_' . $model)) && $this->active;
+    }
+
+    public function getCoursePercentage()
+    {
+        $videos_views = DB::table('school_users_videos')
+            ->join('school_resources', function ($join) {
+                $join->on('school_users_videos.resource_id', '=', 'school_resources.id');
+            })
+            ->join('school_topics', function ($join) {
+                $join->on('school_resources.topic_id', '=', 'school_topics.id');
+            })
+            ->where('school_users_videos.user_id', '=', $this->id)
+            ->where('school_users_videos.percent', 100)
+            ->select('school_users_videos.resource_id')
+            ->distinct()->count();
+        $percentage = 0;
+        if ($videos_views > 0) {
+            $all_videos = DB::table('school_resources')
+                ->join('school_topics', function ($join) {
+                    $join->on('school_resources.topic_id', '=', 'school_topics.id');
+                })
+                ->where('school_resources.principal', true)
+                //->where('type', 'like', 'video/%')
+                ->select('school_resources.*')
+                ->distinct()->count();
+            if ($all_videos > 0) {
+                $percentage = $videos_views / $all_videos * 100;
+            }
+        }
+        return (int)$percentage;
     }
 }

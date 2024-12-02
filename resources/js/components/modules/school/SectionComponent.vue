@@ -4,19 +4,21 @@
             <div class="col-md-4 col-sm-12 col-xs-12 text-center">
                 <q-img
                     :src="`${page.props.public_path}storage/${topic?.coverImage}`"
+                    fit="fill"
                     style="
-                        height: 180px;
-                        width: 180px;
                         border: 1px solid lightgray;
+                        max-width: 200px;
+                        max-height: 200px;
                     "
                 >
                     <div class="absolute-full text-subtitle2 flex flex-center">
                         <q-btn-component
                             :tooltips="!principalVideo ? '' : 'reproducir'"
                             icon="fab fa-youtube"
+                            color="primary"
                             @click="startVideo(principalVideo)"
                             :disable="!principalVideo"
-                            size="md"
+                            size="xl"
                         />
                     </div>
                     <template v-slot:error>
@@ -29,23 +31,36 @@
                 </q-img>
             </div>
             <div class="col-md-8 col-sm-12 col-xs-12">
-                <p
-                    class="text-center text-uppercase section-number text-h6 q-mb-none"
-                >
-                    <span>
-                        seccion
-                        {{ totalSections > 0 ? index + 1 : 0 }}/{{
-                            totalSections
-                        }}
-                    </span>
-                </p>
+                <q-item dense>
+                    <q-item-section
+                        class="text-center text-uppercase section-number text-h6 q-mb-none"
+                    >
+                        <q-item-label>
+                            <btn-left-right-component
+                                :disable="index === 0"
+                                @click="emits('change-section', index - 1)"
+                            />
+                            seccion {{ totalSections > 0 ? index + 1 : 0 }}/{{
+                                totalSections
+                            }}
+                            <btn-left-right-component
+                                :leftDirection="false"
+                                :disable="totalSections === index + 1"
+                                @click="emits('change-section', index + 1)"
+                            />
+                        </q-item-label>
+                    </q-item-section>
+                </q-item>
 
-                <p
-                    class="text-center section-title text-h6 q-mt-none"
-                    style="margin-bottom: 15px !important"
-                >
-                    {{ topic?.name }}
-                </p>
+                <q-item dense>
+                    <q-item-section
+                        class="text-center section-title text-h6 q-mt-none"
+                    >
+                        <q-item-label>
+                            {{ topic?.name }}
+                        </q-item-label>
+                    </q-item-section>
+                </q-item>
 
                 <q-list dense>
                     <q-item
@@ -70,7 +85,11 @@
                                 <a
                                     :href="`${page.props.public_path}storage/${r.path}`"
                                     target="_blank"
-                                    class="text-black"
+                                    :class="
+                                        Dark.isActive
+                                            ? 'text-white'
+                                            : 'text-black'
+                                    "
                                     style="text-decoration: none"
                                     v-else
                                     >{{ r.name }}</a
@@ -111,58 +130,28 @@
             </div>
         </div>
     </div>
+    <chat-component
+        :topic="props.topic"
+        :section="section"
+        :index="indexTopic"
+        @change-topic="(i) => emits('change-topic', i)"
+    />
 
-    <chat-component :topic="props.topic" />
-
-    <q-dialog
-        v-model="showVideo"
-        persistent
-        @before-hide="onHideVideo"
-        v-if="currentVideo"
-    >
-        <q-card>
-            <dialog-header-component
-                icon="mdi-video"
-                :title="currentVideo.name"
-                closable
-            />
-            <q-card-section class="col q-pt-none">
-                <div class="col-sm-12 col-md-12 text-center">
-                    <video
-                        width="320"
-                        height="240"
-                        :src="`${page.props.public_path}storage/${currentVideo.path}`"
-                        controls
-                        @timeupdate="onTimeUpdate"
-                        @loadedmetadata="onLoadedMetadata"
-                        @play="onPlay"
-                    ></video>
-                </div>
-            </q-card-section>
-            <q-separator />
-            <q-card-actions align="right">
-                <q-btn-component
-                    label="cerrar"
-                    outline
-                    square
-                    size="md"
-                    padding="5px"
-                    color="red"
-                    no_caps
-                    icon="mdi-close-circle-outline"
-                    v-close-popup
-                />
-            </q-card-actions>
-        </q-card>
-    </q-dialog>
+    <video-component
+        :show="showVideo"
+        :video="currentVideo"
+        @close="showVideo = false"
+    />
 </template>
 
 <script setup>
 import { computed, ref } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
-import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
+import BtnLeftRightComponent from "../../btn/BtnLeftRightComponent.vue";
 import ChatComponent from "./chat/ChatComponent.vue";
-import { usePage, useForm } from "@inertiajs/vue3";
+import VideoComponent from "./VideoComponent.vue";
+import { usePage } from "@inertiajs/vue3";
+import { useQuasar, Dark } from "quasar";
 
 defineOptions({
     name: "SectionComponent",
@@ -175,43 +164,31 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    indexTopic: {
+        type: Number,
+        default: 0,
+    },
     totalSections: {
         type: Number,
         default: 0,
     },
 });
 
-const emits = defineEmits(["video-completed", "realod-sections"]);
+const $q = useQuasar();
+
+const screen = computed(() => {
+    return $q.screen;
+});
+
+const emits = defineEmits(["change-section", "change-topic"]);
 
 const currentVideo = ref(null);
 const showVideo = ref(false);
-const currentTime = ref(0);
-const totalTime = ref(0);
 const page = usePage();
 
 const principalVideo = computed(() => {
     return props.topic.resources.find((r) => r.principal);
 });
-
-const onHideVideo = async () => {
-    if (currentVideo.value.principal) {
-        const send = useForm({
-            id: currentVideo.value.id,
-            last_time: currentTime.value,
-            total_time: totalTime.value,
-        });
-        send.post(`/admin/schooltopics/update-video-percentaje-to-user`);
-    }
-};
-
-const onTimeUpdate = (ev) => {
-    currentTime.value = ev.target.currentTime;
-};
-
-const onLoadedMetadata = (ev) => {
-    totalTime.value = ev.target.duration;
-    ev.target.currentTime = currentVideo.value.current_time;
-};
 
 const startVideo = (video) => {
     currentVideo.value = video;

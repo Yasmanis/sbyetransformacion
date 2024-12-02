@@ -26,7 +26,12 @@ class ContactsController extends Controller
             'email' => ['required', 'email'],
         ]);
         $repository = new ContactRepository();
-        $contact = $repository->create($request->only((new ($repository->model()))->getFillable()));
+        $data = $request->only((new ($repository->model()))->getFillable());
+        if ($request->hasFile('ticket')) {
+            $path = $request->file('ticket')->store('tickets', 'public');
+            $data['ticket'] = $path;
+        }
+        $contact = $repository->create($data);
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
                 $properties = $this->getPropertiesFromFile($file);

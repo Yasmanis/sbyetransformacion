@@ -11,10 +11,12 @@ class LifeController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->user()->hasView('legal')) {
+        $user = auth()->user();
+        if ($user->hasView('legal')) {
             $repository = new SchoolSectionsRepository();
             return Inertia::render($repository->component(), [
-                'sections' => $repository->all()
+                'sections' => $repository->all(),
+                'course_percentage' => $user->getCoursePercentage()
             ]);
         }
         return $this->deny_access($request);
@@ -37,7 +39,7 @@ class LifeController extends Controller
     {
         if (auth()->user()->hasUpdate('role')) {
             $request->validate([
-                'name' => ['required', 'max:30', Rule::unique('school_sections', 'name')->ignore($id)],
+                'name' => ['required', Rule::unique('school_sections', 'name')->ignore($id)],
             ]);
             $repository = new SchoolSectionsRepository();
             $role = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));

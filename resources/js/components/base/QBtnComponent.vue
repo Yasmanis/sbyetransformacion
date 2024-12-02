@@ -24,7 +24,7 @@
             :self="tooltipsSelf"
             :anchor="tooltipsAnchor"
             :offset="tooltipsOffset"
-            v-if="tooltips"
+            v-if="tooltips && !disable"
             :class="`bg-${tooltipsColor ? tooltipsColor : color}`"
         />
         <slot />
@@ -98,7 +98,7 @@ const props = defineProps({
         type: String,
         default: "2px",
     },
-    color: { type: String, default: "black" },
+    color: String,
     text_color: String,
     icon: String,
     size: {
