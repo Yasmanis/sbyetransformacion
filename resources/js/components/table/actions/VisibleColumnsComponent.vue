@@ -3,7 +3,9 @@
         class="btn-show-hide-columns"
         tooltips="columnas"
         size="9px"
-        :icon="`img:${$page.props.public_path}images/icon/black-show-hide-columns.png`"
+        :icon="`img:${$page.props.public_path}images/icon/${
+            Dark.isActive ? 'white' : 'black'
+        }-show-hide-columns.png`"
         v-if="fullVisibleColums.length > 0"
     >
         <q-menu
@@ -38,12 +40,13 @@
 </template>
 
 <script setup>
+import { ref, onMounted, watch } from "vue";
+import QBtnComponent from "../../base/QBtnComponent.vue";
+import { Dark } from "quasar";
+
 defineOptions({
     name: "VisibleColumnsComponent",
 });
-
-import { ref, onMounted, watch } from "vue";
-import QBtnComponent from "../../base/QBtnComponent.vue";
 
 const props = defineProps({
     columns: {

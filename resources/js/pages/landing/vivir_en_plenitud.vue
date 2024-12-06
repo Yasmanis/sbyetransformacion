@@ -446,7 +446,8 @@
                 el nombre completo de la persona que compro el libro (si no es
                 el tuyo)<br />
                 fecha en que se compro<br />
-                el numero de pedido
+                el numero de pedido<br />
+                factura o ticket de compra
             </p>
             <p>
                 para acceder a todo el contenido <br />
@@ -512,9 +513,11 @@
                 </h5>
                 <p class="q-mx-sm q-mt-md">
                     mas o menos cada mes, aunque la periodicidad puede variar,
-                    abordo un tema concreto de mi libro liberacion emocional la
-                    puerta para vivir en plenitud con la intervencion directa de
-                    dios, para desarrollarlo desde distintos puntos de vista.
+                    abordo un tema concreto de mi libro
+                    <i
+                        >liberacion emocional la puerta para vivir en plenitud
+                        con la intervencion directa de dios</i
+                    >, para desarrollarlo desde distintos puntos de vista.
                     utilizo todo tipo de formas de comunicacion, desde posts y
                     videos breves en las redes sociales, que tambien cuelgo en
                     el apartado de publicaciones de este sitio web, a estas
@@ -534,43 +537,40 @@
                     el paraiso en la tierra, la tierra prometida como dirian en
                     la biblia
                     <img
-                        :src="`${$page.props.public_path}images/icon/smile.png`"
+                        :src="`${$page.props.public_path}images/icon/smile-2.png`"
+                        style="width: 22px; margin-bottom: -5px"
                     />
-                    te apuntas a despertar? mis newsletters te seran preparado
+                    te apuntas a despertar? mis newsletters te seran muy utiles
+                    para ir interiorizando el mensaje que dios tiene preparado
                     para todos nosotros!
                 </p>
                 <p class="q-mx-sm q-mt-md">
                     ademas por suscribirte te regalare el ultimo capitulo que
                     habia escrito y que no he publicado en el libro por exceso
-                    de paginas “enemigos del aprendizaje. analiza con los
-                    siguientes test esta parte de tu personalidad”
+                    de paginas
+                    <img
+                        :src="`${$page.props.public_path}images/icon/smile-1.png`"
+                        style="width: 22px; margin-bottom: -5px"
+                    />
+                    “enemigos del aprendizaje. analiza con los siguientes test
+                    esta parte de tu personalidad”
                 </p>
             </div>
             <div class="col-md-6">
-                <div class="row q-mx-lg">
-                    <div class="col-md-8">
-                        <div class="sub-email">
-                            <q-input
-                                type="email"
-                                placeholder="Email"
-                                required
-                                dense
-                                rounded
-                                outlined
-                                bg-color="white"
-                            />
-                        </div>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <q-btn
-                            label="me apunto!"
-                            color="black"
-                            rounded
-                            no-caps
-                            class="btn-fixed-width"
-                        />
-                    </div>
-                </div>
+                <iframe
+                    width="540"
+                    height="305"
+                    src="https://fa479f52.sibforms.com/serve/MUIFAByQgnpgnI0dUcpdRlAFkcRJX3QAlJRK8S8rn7h84jAimy5s1VXmD5hXoVDHnou6_jQMGi7nebX5e4syae4E4bzKW867b65Y75AUdfMj0ZojDxjbokIeCyUW-Z9MHuP1A4BGDEed51XpiJvWAnZt86mmb4TEgIoOLsf_LpqSc9lVGeJURaX3aW2_KuAkvhikvDqzUtvR1e"
+                    frameborder="0"
+                    scrolling="auto"
+                    allowfullscreen
+                    style="
+                        display: block;
+                        margin-left: auto;
+                        margin-right: auto;
+                        max-width: 100%;
+                    "
+                ></iframe>
             </div>
         </div>
     </Layout>

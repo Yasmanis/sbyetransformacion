@@ -154,12 +154,16 @@
     color: #000;
     font-weight: bold;
     padding: 5px;
-    margin-top: -8px;;
+    margin-top: -8px;
+    flex: none !important;
 }
 
 .bg-custom-blue,
 .q-img__content .bg-negative {
     background: rgb(172, 206, 214) !important;
+}
+.text-custom-blue {
+    color: rgb(172, 206, 214) !important;
 }
 
 .text-negative {

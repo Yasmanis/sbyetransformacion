@@ -3,23 +3,22 @@
         :tooltips="tooltips"
         :icon="`img:${$page.props.public_path}images/icon/${
             Dark.isActive ? 'white' : 'black'
-        }-edit.png`"
-        size="12px"
+        }-download.png`"
         @click="onClick"
     />
 </template>
 
 <script setup>
-import QBtnComponent from "../base/QBtnComponent.vue";
 import { Dark } from "quasar";
+import QBtnComponent from "../base/QBtnComponent.vue";
 defineOptions({
-    name: "BtnEditComponent",
+    name: "BtnDownloadComponent",
 });
 
 const props = defineProps({
     tooltips: {
         type: String,
-        default: "editar",
+        default: "descargar",
     },
 });
 

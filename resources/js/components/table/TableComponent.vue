@@ -50,18 +50,7 @@
                             :fields="createFields"
                             :module="current_module"
                             size="sm"
-                            v-if="
-                                createFields.length > 0 &&
-                                current_module.model !== 'File' &&
-                                has_add
-                            "
-                        />
-                        <form-file
-                            :title="current_module.singular_label"
-                            :module="current_module"
-                            size="sm"
-                            @save="onRequest"
-                            v-if="current_module.model === 'File' && has_add"
+                            v-if="createFields.length > 0 && has_add"
                         />
                         <btn-reload-component @click="onRequest" />
                         <visible-columns-component
@@ -312,7 +301,6 @@ import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
 import { useQuasar } from "quasar";
 import FormComponent from "../form/FormComponent.vue";
 import DeleteComponent from "./actions/DeleteComponent.vue";
-import FormFile from "../modules/file/FormFile.vue";
 import VisibleColumnsComponent from "./actions/VisibleColumnsComponent.vue";
 import BtnReloadComponent from "../btn/BtnReloadComponent.vue";
 import QBtnComponent from "../base/QBtnComponent.vue";

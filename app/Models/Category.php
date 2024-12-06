@@ -13,6 +13,15 @@ class Category extends Model
 
     protected $fillable = ['name'];
 
+    protected static function booted()
+    {
+        static::deleting(function ($category) {
+            foreach ($category->files as $f) {
+                $f->deleteFileFromDisk();
+            }
+        });
+    }
+
     public function files()
     {
         return $this->hasMany(File::class)->orderBy('order', 'ASC');

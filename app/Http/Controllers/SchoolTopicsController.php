@@ -6,6 +6,7 @@ use App\Models\SchoolChat;
 use App\Models\SchoolChat_Attachment;
 use App\Models\SchoolResource;
 use App\Models\SchoolSection;
+use App\Models\SchoolTopic;
 use App\Models\SchoolUserVideo;
 use App\Models\User;
 use App\Repositories\SchoolTopicRepository;
@@ -57,7 +58,7 @@ class SchoolTopicsController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->hasCreate('role')) {
+        if (auth()->user()->hasCreate('schoolsection') || auth()->user()->hasUpdate('schoolsection')) {
             $request->validate([
                 'name' => ['required'],
             ]);
@@ -75,7 +76,7 @@ class SchoolTopicsController extends Controller
 
     public function addResource(Request $request)
     {
-        if (auth()->user()->hasCreate('role')) {
+        if (auth()->user()->hasCreate('schoolsection') || auth()->user()->hasUpdate('schoolsection')) {
             $repository = new SchoolTopicRepository();
             $topic = $repository->getById($request->id);
             if ($request->hasFile('file')) {
@@ -88,7 +89,7 @@ class SchoolTopicsController extends Controller
 
     public function deleteResource(Request $request, $id)
     {
-        if (auth()->user()->hasCreate('role')) {
+        if (auth()->user()->hasUpdate('schoolsection')) {
             $resource = SchoolResource::find($id);
             $principal = $resource->principal;
             Storage::delete('public/' . $resource->path);
@@ -100,7 +101,7 @@ class SchoolTopicsController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('role')) {
+        if (auth()->user()->hasUpdate('schoolsection')) {
             $request->validate([
                 'name' => ['required'],
             ]);
@@ -130,10 +131,26 @@ class SchoolTopicsController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        if (auth()->user()->hasDelete('file')) {
+        if (auth()->user()->hasUpdate('schoolsection')) {
             $repository = new SchoolTopicRepository();
             $repository->deleteById($id);
             return redirect()->back()->with('success', 'tema eliminado correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function sortTopics(Request $request)
+    {
+        if (auth()->user()->hasUpdate('schoolsection')) {
+            $list = json_decode($request->ids);
+            foreach ($list as $l) {
+                $topic = SchoolTopic::find($l->id);
+                if ($topic != null) {
+                    $topic->order = $l->order;
+                    $topic->save();
+                }
+            }
+            return redirect()->back()->with('success', 'temas ordenados correctamente');
         }
         return $this->deny_access($request);
     }
@@ -164,6 +181,7 @@ class SchoolTopicsController extends Controller
         return redirect()->back()->with('loading_msg', 'actualizando porciento...');
     }
 
+    //Chat
     public function addAttachmentToMsg(Request $request)
     {
         $attachment = new SchoolChat_Attachment();

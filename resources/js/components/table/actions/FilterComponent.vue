@@ -1,26 +1,78 @@
 <template>
-    <q-btn-component :class="filteredBy && filteredBy.length > 0 ? 'animated pulse infinite' : ''
-        " tooltips="filtrar" icon="filter_alt" @click="showDialog = true">
-        <q-badge color="red" floating transparent v-if="currentFilters.length > 0">
+    <q-btn-component
+        :class="
+            filteredBy && filteredBy.length > 0 ? 'animated pulse infinite' : ''
+        "
+        tooltips="filtrar"
+        icon="filter_alt"
+        @click="showDialog = true"
+    >
+        <q-badge
+            color="primary"
+            floating
+            transparent
+            v-if="currentFilters.length > 0"
+        >
             {{ currentFilters.length }}
         </q-badge>
     </q-btn-component>
 
-    <q-dialog v-model="showDialog" position="right" full-height @before-show="onBeforeShow">
+    <q-dialog
+        v-model="showDialog"
+        position="right"
+        full-height
+        @before-show="onBeforeShow"
+    >
         <q-card style="width: 320px">
-            <dialog-header-component icon="filter_alt" title="filtrar" closable />
+            <dialog-header-component
+                icon="filter_alt"
+                title="filtrar"
+                closable
+            />
             <q-card-section>
-                <div class="row" v-for="(f, index) in filters" :key="`filter-${index}`" style="padding-bottom: 10px">
-                    <select-field :name="f.name" :label="f.label" :options="f.options" :othersProps="f.othersProps"
-                        :modelValue="f.value" :filterable="f.filterable" @update="onUpdate" v-if="f.type === 'select'" />
-                    <boolean-select-field :name="f.name" :label="f.label" :modelValue="f.value" @update="onUpdate"
-                        v-if="f.type === 'boolean'" />
-                    <range-size :name="f.name" :label="f.label" :modelValue="f.value" :min="f.min" :max="f.max"
-                        :unitOfMeasurement="f.unitOfMeasurement" @update="onUpdate" v-if="f.type === 'range_size'" />
+                <div
+                    class="row"
+                    v-for="(f, index) in filters"
+                    :key="`filter-${index}`"
+                    style="padding-bottom: 10px"
+                >
+                    <select-field
+                        :name="f.name"
+                        :label="f.label"
+                        :options="f.options"
+                        :othersProps="f.othersProps"
+                        :modelValue="f.value"
+                        :filterable="f.filterable"
+                        @update="onUpdate"
+                        v-if="f.type === 'select'"
+                    />
+                    <boolean-select-field
+                        :name="f.name"
+                        :label="f.label"
+                        :modelValue="f.value"
+                        @update="onUpdate"
+                        v-if="f.type === 'boolean'"
+                    />
+                    <range-size
+                        :name="f.name"
+                        :label="f.label"
+                        :modelValue="f.value"
+                        :min="f.min"
+                        :max="f.max"
+                        :unitOfMeasurement="f.unitOfMeasurement"
+                        @update="onUpdate"
+                        v-if="f.type === 'range_size'"
+                    />
                 </div>
             </q-card-section>
             <q-card-actions align="right">
-                <q-btn flat label="limpiar" color="brown" @click="clear" v-if="currentFilters.length > 0" />
+                <q-btn
+                    flat
+                    label="limpiar"
+                    color="brown"
+                    @click="clear"
+                    v-if="currentFilters.length > 0"
+                />
                 <q-btn flat label="cerrar" color="red" v-close-popup />
             </q-card-actions>
         </q-card>
@@ -78,7 +130,7 @@ function clear() {
     filters.value.forEach((f) => {
         f.value = null;
     });
-    emit("refresh-data", 'filters');
+    emit("refresh-data", "filters");
 }
 
 const onUpdate = (name, val, full) => {
@@ -107,6 +159,10 @@ const setFilters = () => {
             };
         });
     }
-    emit("refresh-data", 'filters', currentFilters.length > 0 ? currentFilters : null);
+    emit(
+        "refresh-data",
+        "filters",
+        currentFilters.length > 0 ? currentFilters : null
+    );
 };
 </script>

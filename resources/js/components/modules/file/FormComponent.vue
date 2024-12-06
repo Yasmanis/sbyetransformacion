@@ -59,7 +59,7 @@
 
 <script setup>
 defineOptions({
-    name: "FormFile",
+    name: "FormComponent",
 });
 
 import { ref, onMounted } from "vue";
@@ -115,10 +115,12 @@ const formFields = ref(null);
 
 const form = ref(null);
 
+const page = usePage();
+
 onMounted(() => {
     if (props.object != null) {
         fullTitle.value = `Editar ${props.title}`;
-        icon.value = `img:${$page.props.public_path}images/icon/black-edit.png`;
+        icon.value = `img:${page.props.public_path}images/icon/black-edit.png`;
     } else {
         fullTitle.value = `Adicionar ${props.title}`;
         icon.value = "mdi-plus";

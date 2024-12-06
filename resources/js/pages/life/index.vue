@@ -28,8 +28,13 @@
                     <q-card>
                         <q-card-section class="q-pa-none">
                             <q-toolbar class="q-gutter-x-sm">
-                                <section-add-component />
-                                <section-edit-component />
+                                <section-add-component v-if="has_add" />
+                                <section-edit-component
+                                    :has_add="has_add"
+                                    :has_edit="has_edit"
+                                    :has_delete="has_delete"
+                                    v-if="has_edit"
+                                />
                             </q-toolbar>
                         </q-card-section>
                         <q-separator />
@@ -76,8 +81,9 @@ import SectionEditComponent from "../../components/modules/school/SectionEditCom
 import SectionComponent from "../../components/modules/school/SectionComponent.vue";
 import SectionItemComponent from "../../components/modules/school/SectionItemComponent.vue";
 import { usePage } from "@inertiajs/vue3";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 import { useQuasar } from "quasar";
+import { currentModule } from "../../services/current_module";
 
 defineOptions({
     name: "LifePage",
@@ -94,6 +100,10 @@ const currentTopic = ref(null);
 const currentSection = ref(null);
 const sIndex = ref(0);
 const tIndex = ref(0);
+
+const has_add = ref(false);
+const has_edit = ref(false);
+const has_delete = ref(false);
 
 const sections = computed(() => {
     return page.props.sections ? page.props.sections : [];
@@ -113,6 +123,15 @@ watch(currentTopic, (n, o) => {
             (t) => t.id === currentTopic.value.id
         );
     else tIndex.value = 0;
+});
+
+onBeforeMount(() => {
+    const current_module = currentModule(page.url.split("?")[0]).module;
+    const permissions = current_module.permissions.map((p) => p.name);
+    const modelName = current_module.model.toLowerCase();
+    has_add.value = permissions.includes(`add_${modelName}`);
+    has_edit.value = permissions.includes(`edit_${modelName}`);
+    has_delete.value = permissions.includes(`delete_${modelName}`);
 });
 
 onMounted(() => {

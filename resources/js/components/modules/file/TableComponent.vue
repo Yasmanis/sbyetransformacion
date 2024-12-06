@@ -7,6 +7,7 @@
             :loading="loading"
             :visible-columns="visibleColumns"
             :rows-per-page-options="[10, 20, 30, 50, 100]"
+            wrap-cells
             row-key="id"
             selection="multiple"
             v-model:selected="selected"
@@ -44,17 +45,22 @@
                     </section>
                     <q-space />
                     <div class="col-auto">
-                        <form-component
+                        <form-file
                             :title="current_module.singular_label"
-                            :fields="createFields"
                             :module="current_module"
                             size="sm"
-                            v-if="createFields.length > 0 && has_add"
+                            @save="onRequest"
+                            v-if="has_add"
                         />
                         <btn-reload-component @click="onRequest" />
                         <visible-columns-component
                             :columns="columns"
                             @change="(vc) => (visibleColumns = vc)"
+                        />
+                        <filter-component
+                            :fields="filterFields"
+                            @refresh-data="onRefreshData"
+                            v-if="filterFields.length > 0"
                         />
                         <delete-component
                             :objects="selected"
@@ -149,7 +155,7 @@
                             dense
                             size="sm"
                             style="max-width: min-content"
-                            :color="props.value ? 'positive' : 'negative'"
+                            :color="props.value ? 'primary' : 'negative'"
                             text-color="white"
                             :icon="props.value ? 'check' : 'error'"
                             :label="props.value ? 'Si' : 'No'"
@@ -191,14 +197,9 @@
                         :fields="updateFields"
                         :module="current_module"
                         size="sm"
-                        v-if="updateFields.length > 0 && has_edit"
-                    />
-                    <sort-elements-component
-                        tooltips="ordenar ficheros"
-                        :items="props.row.files"
-                        :url="`${current_module.base_url}/sort-files`"
                         v-if="has_edit"
                     />
+                    <form-poster :object="props.row" v-if="has_edit" />
                     <delete-component
                         :objects="[props.row]"
                         :module="current_module"
@@ -247,7 +248,7 @@
                                             style="max-width: min-content"
                                             :color="
                                                 col.value
-                                                    ? 'positive'
+                                                    ? 'primary'
                                                     : 'negative'
                                             "
                                             text-color="white"
@@ -274,15 +275,10 @@
                                             :fields="updateFields"
                                             :module="current_module"
                                             size="sm"
-                                            v-if="
-                                                updateFields.length > 0 &&
-                                                has_edit
-                                            "
+                                            v-if="has_edit"
                                         />
-                                        <sort-elements-component
-                                            tooltips="ordenar ficheros"
-                                            :items="props.row.files"
-                                            :url="`${current_module.base_url}/sort-files`"
+                                        <form-poster
+                                            :object="props.row"
                                             v-if="has_edit"
                                         />
                                         <delete-component
@@ -305,15 +301,17 @@
 <script setup>
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
 import { useQuasar } from "quasar";
-import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
+import FormFile from "./FormComponent.vue";
+import FormPoster from "./FormPoster.vue";
 import FormComponent from "../../form/FormComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
+import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
+import FilterComponent from "../../table/actions/FilterComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
-import SortElementsComponent from "../../others/SortElementsComponent.vue";
 
 defineOptions({
     name: "TableComponent",
@@ -348,10 +346,6 @@ const page = usePage();
 
 const loading = ref(false);
 
-const showDialog = ref(false);
-
-const list = ref([]);
-
 const current_module = ref(null);
 
 const pagination = ref({
@@ -360,7 +354,7 @@ const pagination = ref({
     rowsPerPage: 20,
     rowsNumber: 1,
     search: null,
-    filters: [],
+    filters: null,
 });
 
 const selected = ref([]);
@@ -392,7 +386,6 @@ watch(
         pagination.value.search = val.search
             ? JSON.stringify(val.search)
             : null;
-
         pagination.value.filters = val.filters
             ? JSON.stringify(val.filters)
             : null;
@@ -499,19 +492,5 @@ td.actions-def > .q-btn {
 
 .q-table th.last-column-sticky {
     right: 0;
-}
-
-#items {
-    padding: 0;
-}
-
-#items > li {
-    padding: 10px;
-    list-style: none;
-    cursor: pointer;
-}
-
-#items > li:hover {
-    background-color: #cdcdcd;
 }
 </style>

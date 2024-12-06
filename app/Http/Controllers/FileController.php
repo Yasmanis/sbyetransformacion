@@ -89,4 +89,31 @@ class FileController extends Controller
         $file = File::find($id);
         return Storage::download(public_path() . '/storage/' . $file->path);
     }
+
+    public function poster(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('file')) {
+            $file = File::find($id);
+            $has_poster = isset($file->poster);
+            $msg = 'portada agregada correctamente';
+            if ($request->hasFile('poster')) {
+                if ($has_poster) {
+                    $file->deletePosterFromDisk();
+                    $msg = 'portada cambiada correctamente';
+                }
+                $path = $request->file('poster')->store('files/poster', 'public');
+                $file->poster = $path;
+            }
+            else {
+                if ($has_poster) {
+                    $file->poster = null;
+                    $file->deletePosterFromDisk();
+                    $msg = 'portada eliminada correctamente';
+                }
+            }
+            $file->save();
+            return redirect()->back()->with('success', $msg);
+        }
+        return $this->deny_access($request);
+    }
 }

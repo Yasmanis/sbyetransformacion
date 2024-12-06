@@ -247,6 +247,43 @@
                             </div>
                             <div
                                 class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
+                                v-if="contactPrivateArea"
+                            >
+                                <i
+                                    class="mdi mdi-asterisk text-red"
+                                    style="margin-left: 110px"
+                                    v-if="!form.ticket"
+                                />
+                                <q-file
+                                    v-model="form.ticket"
+                                    ref="fileTicket"
+                                    name="ticket"
+                                    dense
+                                    rounded
+                                    outlined
+                                    :label="
+                                        form.ticket ? null : 'foto del ticket'
+                                    "
+                                    bg-color="white"
+                                    :input-style="{ 'margin-top': '-10px' }"
+                                    required
+                                    :rules="[(val) => !!val || 'requerido']"
+                                    hide-bottom-space
+                                    accept="image/*, .pdf"
+                                    @rejected="onRejected"
+                                >
+                                    <template v-slot:append>
+                                        <q-btn
+                                            flat
+                                            dense
+                                            rounded
+                                            icon="mdi-file-image-outline"
+                                            @click="showExplorerTicket"
+                                        /> </template
+                                ></q-file>
+                            </div>
+                            <div
+                                class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
                             >
                                 <q-checkbox
                                     v-model="iAmNot"
@@ -282,42 +319,6 @@
                                     :rules="[(val) => !!val || 'requerido']"
                                     hide-bottom-space
                                 />
-                            </div>
-                            <div
-                                class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
-                            >
-                                <i
-                                    class="mdi mdi-asterisk text-red"
-                                    style="margin-left: 110px"
-                                    v-if="!form.ticket"
-                                />
-                                <q-file
-                                    v-model="form.ticket"
-                                    ref="fileTicket"
-                                    name="ticket"
-                                    dense
-                                    rounded
-                                    outlined
-                                    :label="
-                                        form.ticket ? null : 'foto del ticket'
-                                    "
-                                    bg-color="white"
-                                    :input-style="{ 'margin-top': '-10px' }"
-                                    required
-                                    :rules="[(val) => !!val || 'requerido']"
-                                    hide-bottom-space
-                                    accept="image/*"
-                                    @rejected="onRejected"
-                                >
-                                    <template v-slot:append>
-                                        <q-btn
-                                            flat
-                                            dense
-                                            rounded
-                                            icon="mdi-file-image-outline"
-                                            @click="showExplorerTicket"
-                                        /> </template
-                                ></q-file>
                             </div>
                         </div>
                         <div
@@ -470,7 +471,7 @@ const onBlurDate = () => {
 };
 
 const onRejected = () => {
-    error("imagen no valida");
+    error("fichero no admitido, solo se permiten imagenes y documentos pdf");
 };
 
 const showExplorerTicket = () => {

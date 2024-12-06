@@ -1,6 +1,6 @@
 <template>
     <q-btn
-        :color="color"
+        :color="color ? color : Dark.isActive ? 'white' : 'black'"
         :round="round"
         :size="size"
         :icon="icon"
@@ -25,7 +25,7 @@
             :anchor="tooltipsAnchor"
             :offset="tooltipsOffset"
             v-if="tooltips && !disable"
-            :class="`bg-${tooltipsColor ? tooltipsColor : color}`"
+            :class="`bg-${tooltipsColor ? tooltipsColor : 'black'}`"
         />
         <slot />
     </q-btn>
@@ -33,6 +33,7 @@
 
 <script setup>
 import QTooltipComponent from "./QTooltipComponent.vue";
+import { Dark } from "quasar";
 defineOptions({
     name: "QBtnComponent",
 });

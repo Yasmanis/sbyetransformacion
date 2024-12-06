@@ -1,14 +1,22 @@
 <template>
     <div class="row items-center">
         <div
-            class="column full-width items-center q-pa-xs"
-            style="border: 1px solid rgba(0, 0, 0, 0.12)"
+            class="column full-width full-height items-center q-pa-xs"
+            :style="{
+                border: `1px solid ${
+                    Dark.isActive
+                        ? 'rgba(255, 255, 255, 0.28)'
+                        : 'rgba(0, 0, 0, 0.12)'
+                }`,
+            }"
         >
             <q-img
                 :src="image"
-                class="cover-image"
-                width="100px"
                 @click="fileRef.pickFiles()"
+                class="cursor-pointer"
+                :width="width"
+                :height="height"
+                fit="fill"
             >
                 <template v-slot:error>
                     <div
@@ -47,33 +55,48 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
-import { error } from "../../../../helpers/notifications";
-import QBtnComponent from "../../../base/QBtnComponent.vue";
-import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
+import { onMounted, ref } from "vue";
+import QBtnComponent from "../../base/QBtnComponent.vue";
+import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
+import { error } from "../../../helpers/notifications";
 import { usePage } from "@inertiajs/vue3";
+import { Dark } from "quasar";
 
 defineOptions({
-    name: "CoverImageComponent",
+    name: "ImageField",
 });
 
 const props = defineProps({
-    src: String,
+    modelValue: String,
+    name: {
+        type: String,
+        required: true,
+    },
+    width: {
+        type: String,
+        default: "150px",
+    },
+    height: {
+        type: String,
+        default: "150px",
+    },
 });
 
 const emits = defineEmits(["change"]);
 
-const image = ref(props.src);
+const image = ref(null);
 const file = ref(null);
 const fileRef = ref(null);
 const hasDefaultImage = ref(false);
 const defaultImage = ref(
-    `${usePage().props.public_path}images/icon/img-upload-black.png`
+    `${usePage().props.public_path}images/icon/img-upload-${
+        Dark.isActive ? "white" : "black"
+    }.png`
 );
 
 onMounted(() => {
-    if (props.src !== null) {
-        image.value = props.src;
+    if (props.modelValue) {
+        image.value = props.modelValue;
         hasDefaultImage.value = false;
     } else {
         image.value = defaultImage.value;
@@ -84,14 +107,14 @@ onMounted(() => {
 const onChangeFile = (f) => {
     image.value = URL.createObjectURL(f);
     hasDefaultImage.value = false;
-    emits("change", f);
+    emits("change", props.name, f);
 };
 
 const resetImg = () => {
     image.value = defaultImage.value;
     hasDefaultImage.value = true;
     file.value = null;
-    emits("change", null);
+    emits("change", props.name, null);
 };
 
 const onRejected = (e) => {

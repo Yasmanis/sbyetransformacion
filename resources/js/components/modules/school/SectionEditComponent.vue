@@ -7,7 +7,9 @@
     <q-dialog v-model="showDialog" persistent full-width>
         <q-card>
             <dialog-header-component
-                :icon="`img:${page.props.public_path}images/icon/black-edit.png`"
+                :icon="`img:${page.props.public_path}images/icon/${
+                    Dark.isActive ? 'white' : 'black'
+                }-edit.png`"
                 title="modificar seccion y temas"
                 closable
             />
@@ -36,9 +38,8 @@
                                 "
                             />
                         </q-item-section>
-                        <q-item-section avatar>
-                            <q-btn-component
-                                icon="mdi-plus"
+                        <q-item-section avatar v-if="has_edit">
+                            <btn-add-component
                                 tooltips="adicionar tema"
                                 @click="
                                     () => {
@@ -48,7 +49,14 @@
                                 "
                             />
                         </q-item-section>
-                        <q-item-section avatar>
+                        <q-item-section avatar v-if="has_edit">
+                            <sort-elements-component
+                                tooltips="ordenar temas"
+                                :items="s.topics"
+                                url="/admin/life/sort-topics"
+                            />
+                        </q-item-section>
+                        <q-item-section avatar v-if="has_delete">
                             <btn-delete-component
                                 tooltips="eliminar seccion"
                                 @click="sectionRemove(s)"
@@ -99,7 +107,7 @@
                                 <q-icon name="mdi-video"></q-icon>
                             </q-item-label>
                         </q-item-section>
-                        <q-item-section avatar>
+                        <q-item-section avatar v-if="has_edit">
                             <btn-edit-component
                                 tooltips="editar tema"
                                 @click="
@@ -111,7 +119,7 @@
                                 "
                             />
                         </q-item-section>
-                        <q-item-section avatar>
+                        <q-item-section avatar v-if="has_edit">
                             <btn-delete-component
                                 tooltips="eliminar tema"
                                 @click="topicRemove(topic)"
@@ -137,7 +145,9 @@
             <dialog-header-component
                 :icon="
                     currentTopic
-                        ? `img:${$page.props.public_path}images/icon/black-edit.png`
+                        ? `img:${$page.props.public_path}images/icon/${
+                              Dark.isActive ? 'white' : 'black'
+                          }-edit.png`
                         : 'mdi-plus'
                 "
                 :title="currentTopic ? 'editar tema' : 'adicionar tema'"
@@ -193,7 +203,9 @@
     <q-dialog v-model="showDialogSection" persistent>
         <q-card style="width: 800px">
             <dialog-header-component
-                :icon="`img:${page.props.public_path}images/icon/black-edit.png`"
+                :icon="`img:${page.props.public_path}images/icon/${
+                    Dark.isActive ? 'white' : 'black'
+                }-edit.png`"
                 title="editar seccion"
                 closable
             />
@@ -232,14 +244,13 @@ import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import TopicComponent from "./topic/TopicComponent.vue";
 import SectionFormComponent from "./section/SectionFormComponent.vue";
 import BtnEditComponent from "../../btn/BtnEditComponent.vue";
+import SortElementsComponent from "../../others/SortElementsComponent.vue";
 import { usePage, useForm, router } from "@inertiajs/vue3";
-import { useQuasar, Loading } from "quasar";
+import { useQuasar, Loading, Dark } from "quasar";
 import {
     error,
-    error500,
     errorValidation,
     success,
-    warning,
 } from "../../../helpers/notifications";
 
 defineOptions({
@@ -247,12 +258,18 @@ defineOptions({
 });
 
 const props = defineProps({
-    url: String,
-    base: String,
-    imgbase: String,
-    roles: String,
-    icons: String,
-    btn_config: Object,
+    has_add: {
+        type: Boolean,
+        default: false,
+    },
+    has_edit: {
+        type: Boolean,
+        default: false,
+    },
+    has_delete: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const $q = useQuasar();
@@ -270,22 +287,11 @@ const currentSection = ref(null);
 const currentTopic = ref(null);
 const saveSection = ref(false);
 const index = ref(0);
+const topics = ref([]);
 
 const sections = computed(() => {
     return page.props.sections ? page.props.sections : [];
 });
-
-const prueba = ref([
-    {
-        name: "nombre 1",
-    },
-    {
-        name: "nombre 2",
-    },
-    {
-        name: "nombre 3",
-    },
-]);
 
 const newTopic = (reset) => {
     index.value++;

@@ -18,14 +18,15 @@
     />
     <div class="row q-mt-md q-ml-none">
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding: 0px">
-            <cover-image-component
-                :src="
+            <image-field
+                name="coverImage"
+                :modelValue="
                     formData.coverImage
                         ? `${$page.props.public_path}storage/${formData.coverImage}`
                         : null
                 "
                 @change="
-                    (img) => {
+                    (name, img) => {
                         formData.coverImage = img;
                         isOk();
                     }
@@ -210,9 +211,9 @@
 </template>
 
 <script setup>
-import { onBeforeMount, ref, watch, computed, onUpdated } from "vue";
+import { onBeforeMount, ref, watch, computed } from "vue";
 import NameComponent from "./NameComponent.vue";
-import CoverImageComponent from "./CoverImageComponent.vue";
+import ImageField from "../../../form/input/ImageField.vue";
 import CheckboxField from "../../../form/input/CheckboxField.vue";
 import EditorField from "../../../form/input/EditorField.vue";
 import UploaderField from "../../../form/input/UploaderField.vue";
@@ -220,7 +221,7 @@ import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
 import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
 import BtnAddComponent from "../../../btn/BtnAddComponent.vue";
 import axios from "axios";
-import { Loading, useQuasar, Notify } from "quasar";
+import { useQuasar } from "quasar";
 import { useForm } from "@inertiajs/vue3";
 
 defineOptions({
@@ -309,7 +310,9 @@ const screen = computed(() => {
 const isOk = () => {
     emits(
         "is-ok",
-        formData.value.principalVideo && formData.value.coverImage !== null
+        (formData.value.principalVideo ||
+            (ppalVideo.value !== null && ppalVideo.value !== undefined)) &&
+            formData.value.coverImage !== null
     );
 };
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class File extends Model
 {
@@ -14,6 +15,13 @@ class File extends Model
     protected $fillable = ['name', 'size', 'path', 'type', 'category_id'];
 
     protected $appends = ['category', 'size_str', 'date_for_human'];
+
+    protected static function booted()
+    {
+        static::deleting(function ($obj) {
+            $obj->deleteFileFromDisk();
+        });
+    }
 
     public function category()
     {
@@ -42,5 +50,20 @@ class File extends Model
     public function scopeTypeOfFile($query, $args)
     {
         return $query->where('type', 'like', $args[0] . '%');
+    }
+
+    public function deleteFileFromDisk()
+    {
+        if (isset($this->poster)) {
+            Storage::delete('public/' . $this->poster);
+        }
+        Storage::delete('public/' . $this->path);
+    }
+
+    public function deletePosterFromDisk()
+    {
+        if (isset($this->poster)) {
+            Storage::delete('public/' . $this->poster);
+        }
     }
 }

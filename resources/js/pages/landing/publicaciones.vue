@@ -13,15 +13,27 @@
                         <div
                             class="col-lg-3 col-md-3 col-sm-4 col-xs-12 q-pa-sm text-center"
                             :class="screen.xs || screen.sm ? 'q-mb-md' : ''"
-                            v-if="currentCategory.name === 'newsletters'"
+                            v-if="
+                                currentCategory.name.toLowerCase() ===
+                                    'newsletters' ||
+                                currentCategory.name.toLowerCase() ===
+                                    'newsletter'
+                            "
                         >
                             <div class="q-pa-none" style="height: 200px">
-                                <video
+                                <video-player
                                     :src="`${$page.props.public_path}storage/${f.path}`"
+                                    :poster="
+                                        f.poster
+                                            ? `${$page.props.public_path}storage/${f.poster}`
+                                            : null
+                                    "
                                     controls
+                                    responsive
+                                    :volume="0.6"
                                     class="full-width full-height"
                                     v-if="f.type.startsWith('video/')"
-                                ></video>
+                                />
                                 <q-img
                                     width="100%"
                                     height="100%"
@@ -49,15 +61,22 @@
                                 currentCategory.name === 'post'
                             "
                         >
-                            <video
+                            <video-player
                                 :src="`${$page.props.public_path}storage/${f.path}`"
+                                :poster="
+                                    f.poster
+                                        ? `${$page.props.public_path}storage/${f.poster}`
+                                        : null
+                                "
                                 controls
+                                responsive
+                                :volume="0.6"
                                 class="full-width full-height"
                                 v-if="
                                     f.type.startsWith('video/') ||
                                     f.type.startsWith('audio/')
                                 "
-                            ></video>
+                            />
                             <q-img
                                 fit="fill"
                                 width="100%"
@@ -80,11 +99,21 @@
                             v-else
                         >
                             <q-card class="my-card q-ma-sm rounded">
-                                <q-card-section class="q-pa-none">
-                                    <video
+                                <q-card-section
+                                    class="q-pa-sm q-pa-none bg-black"
+                                    style="background-color: #000 !important"
+                                >
+                                    <video-player
                                         :src="`${$page.props.public_path}storage/${f.path}`"
+                                        :poster="
+                                            f.poster
+                                                ? `${$page.props.public_path}storage/${f.poster}`
+                                                : null
+                                        "
                                         controls
-                                        class="full-width rounded-top header-card"
+                                        responsive
+                                        :volume="0.6"
+                                        class="full-width header-card"
                                         v-if="
                                             f.type.startsWith('video/') ||
                                             f.type.startsWith('audio/')
@@ -159,7 +188,7 @@
                                 siempre el video ya que llega a mas personas,
                                 ademas te ayuda a desprogramar miedos escenicos
                                 ligados a la aceptacion social. ya sabes que los
-                                miedos se deben enfrentar, peo si todavia no
+                                miedos se deben enfrentar, pero si todavia no
                                 estas preparado para ello, por favor escribe lo
                                 que sientas, pues ayudaras a muchas personas.
                                 <br />
@@ -396,6 +425,7 @@
                                     no-caps
                                     icon="mdi-upload"
                                     class="q-mt-md q-ml-xs"
+                                    @click="onSubmit"
                                 />
                                 <q-btn
                                     rounded
@@ -423,7 +453,7 @@
                 <div class="column items-center q-px-sm">
                     <list-category-component
                         :categories="categories"
-                        @change="(cat) => (currentCategory = cat)"
+                        :current="currentCategory"
                         :sticky="screen.xs || screen.sm"
                     />
                     <q-card
@@ -549,10 +579,14 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import Layout from "../../layouts/MainLayout.vue";
 import { usePage, useForm, router } from "@inertiajs/vue3";
 import ListCategoryComponent from "../../components/modules/category/ListCategoryComponent.vue";
+
+import { VideoPlayer } from "@videojs-player/vue";
+import "video.js/dist/video-js.css";
+
 import { useQuasar } from "quasar";
 import { errorValidation } from "../../helpers/notifications.js";
 
@@ -568,9 +602,9 @@ const screen = computed(() => {
 
 const page = usePage();
 
-const files = ref([]);
-
-const currentCategory = ref(null);
+const currentCategory = computed(() => {
+    return page.props.current_category;
+});
 
 const categories = computed(() => {
     return page.props.categories;
@@ -578,6 +612,10 @@ const categories = computed(() => {
 
 const recent_files = computed(() => {
     return page.props.recent_files;
+});
+
+const files = computed(() => {
+    return page.props.files;
 });
 
 const showForm = ref(false);
@@ -594,19 +632,6 @@ const form = useForm({
     msg_title: null,
     message: null,
     attachments: null,
-});
-
-onMounted(() => {
-    if (categories.value.length > 0) {
-        currentCategory.value = categories.value[0];
-    }
-});
-
-watch(currentCategory, (n, o) => {
-    files.value = n.files;
-    if (n.name === "testimonios") {
-        onCancel();
-    }
 });
 
 const onCancel = () => {
@@ -683,5 +708,16 @@ const onSubmit = () => {
 
 .header-card {
     height: 160px;
+}
+.vjs-big-play-button {
+    top: 50% !important;
+    left: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 20px !important;
+    border: none !important;
+    line-height: 1.4em !important;
+    margin-top: -20px !important;
+    margin-left: -20px !important;
 }
 </style>

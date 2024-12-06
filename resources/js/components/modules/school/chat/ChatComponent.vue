@@ -91,6 +91,7 @@ import HelpChatComponent from "./HelpChatComponent.vue";
 import FormChatComponent from "./FormChatComponent.vue";
 import ChatMessageComponent from "./ChatMessageComponent.vue";
 import BtnReloadComponent from "../../../btn/BtnReloadComponent.vue";
+import { Dark } from "quasar";
 import { router } from "@inertiajs/vue3";
 
 defineOptions({

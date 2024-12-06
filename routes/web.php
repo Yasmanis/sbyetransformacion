@@ -43,16 +43,22 @@ Route::get('/taller_online', function () {
     return Inertia('landing/taller_online');
 });
 
-Route::get('/publicaciones', function (Request $request) {
-    $categories = Category::with('files')->get();
+Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
+    $categories = Category::get();
     $recent_files = File::latest()->take(6)->get();
-    return Inertia('landing/publicaciones', ['categories' => $categories, 'recent_files' => $recent_files]);
-});
-
-Route::get('/publicaciones1', function (Request $request) {
-    $categories = Category::with('files')->get();
-    $recent_files = File::latest()->take(6)->get();
-    return Inertia('landing/publicaciones1', ['categories' => $categories, 'recent_files' => $recent_files]);
+    $files = [];
+    $category = null;
+    if (isset($id)) {
+        $category = Category::find($id);
+        $files = $category->files;
+    }
+    else {
+        if (count($categories) > 0) {
+            $category = $categories[0];
+            $files = $category->files;
+        }
+    }
+    return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'files' => $files, 'recent_files' => $recent_files]);
 });
 
 Route::get('/contactame', function () {
@@ -82,6 +88,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/life', LifeController::class);
+    Route::post('/admin/life/sort-topics', [SchoolTopicsController::class, 'sortTopics']);
     Route::resource('/admin/schooltopics', SchoolTopicsController::class);
     Route::post('/admin/schooltopics/addResources', [SchoolTopicsController::class, 'addResource']);
     Route::delete('/admin/schooltopics/deleteResource/{id}', [SchoolTopicsController::class, 'deleteResource']);
@@ -93,6 +100,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/schooltopics/add-attachment-message', [SchoolTopicsController::class, 'addAttachmentToMsg']);
     Route::post('/admin/categories/sort-files', [CategoryController::class, 'sortFiles']);
     Route::resource('/admin/files', FileController::class);
+    Route::post('/admin/files/poster/{id}', [FileController::class, 'poster']);
 
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);

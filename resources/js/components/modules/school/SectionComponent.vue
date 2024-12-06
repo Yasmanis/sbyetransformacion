@@ -118,11 +118,10 @@
                             avatar
                             style="min-width: 20px; padding-left: 5px"
                         >
-                            <q-btn-component
-                                tooltips="descargar"
+                            <btn-download-component
                                 :href="`${page.props.public_path}storage/${r.path}`"
+                                size="12px"
                                 target="_blank"
-                                icon="mdi-cloud-download-outline"
                             />
                         </q-item-section>
                     </q-item>
@@ -150,6 +149,7 @@ import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnLeftRightComponent from "../../btn/BtnLeftRightComponent.vue";
 import ChatComponent from "./chat/ChatComponent.vue";
 import VideoComponent from "./VideoComponent.vue";
+import BtnDownloadComponent from "../../btn/BtnDownloadComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 import { useQuasar, Dark } from "quasar";
 

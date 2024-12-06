@@ -14,20 +14,18 @@
                             v-for="(c, index) in categories"
                             :key="`category-${index}`"
                             :class="
-                                currentCategory?.id === c.id
-                                    ? 'text-bold text-primari'
+                                current?.id === c.id
+                                    ? 'text-bold text-primary'
                                     : ''
                             "
-                            @click="onChange(c)"
+                            @click="router.get(`/publicaciones/${c.id}`)"
                         >
                             <q-item-section>{{ c.name }}</q-item-section>
                         </q-item>
                     </q-list>
                 </q-menu>
             </q-btn>
-            <q-toolbar-title
-                >categorias > {{ currentCategory.name }}</q-toolbar-title
-            >
+            <q-toolbar-title>categorias > {{ current?.name }}</q-toolbar-title>
         </q-toolbar>
     </q-page-sticky>
     <q-card class="my-card rounded shadow-4 full-width" v-else>
@@ -45,20 +43,19 @@
                             : 'border-dashed-bottom-1'
                     "
                 >
-                    <a
-                        href="javascript:;"
-                        @click="onChange(c)"
+                    <Link
+                        :href="`/publicaciones/${c.id}`"
                         class="text-primary"
                         :style="{
-                            'font-weight':
-                                currentCategory?.id === c.id ? 'bold' : '',
+                            'font-weight': current?.id === c.id ? 'bold' : '',
                         }"
-                        ><i
+                    >
+                        <i
                             class="fa fa-check font-company q-mr-sm"
                             aria-hidden="true"
                         ></i
-                        >{{ c.name }}</a
-                    >
+                        >{{ c.name }}
+                    </Link>
                 </li>
             </ul>
         </q-card-section>
@@ -66,7 +63,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { Link, router } from "@inertiajs/vue3";
 defineOptions({
     name: "ListCategoryComponent",
 });
@@ -80,20 +77,9 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    current: {
+        type: Object,
+        required: true,
+    },
 });
-
-const emits = defineEmits(["change"]);
-
-const currentCategory = ref(null);
-
-onMounted(() => {
-    if (props.categories.length > 0) {
-        currentCategory.value = props.categories[0];
-    }
-});
-
-const onChange = (c) => {
-    currentCategory.value = c;
-    emits("change", c);
-};
 </script>
