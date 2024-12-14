@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\File;
 use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
@@ -15,7 +16,13 @@ class CategoryController extends Controller
             $repository = new CategoryRepository();
             $repository->search($request->search);
             $repository->filters($request->filters);
-            $repository->orderBy($request->sortBy, $request->sortDirection);
+            $sortBy = $request->sortBy;
+            $sortDirection = $request->sortDirection;
+            if (!isset($sortBy)) {
+                $sortBy = 'order';
+                $sortDirection = 'ASC';
+            }
+            $repository->orderBy($sortBy, $sortDirection);
             return $this->data_index($repository, $request);
         }
         return $this->deny_access($request);
@@ -74,6 +81,33 @@ class CategoryController extends Controller
                 }
             }
             return redirect()->back()->with('success', 'ficheros ordenados correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function sortCategories(Request $request)
+    {
+        if (auth()->user()->hasUpdate('category')) {
+            $categories = json_decode($request->ids);
+            foreach ($categories as $c) {
+                $category = Category::find($c->id);
+                if ($category != null) {
+                    $category->order = $c->order;
+                    $category->save();
+                }
+            }
+            return redirect()->back()->with('success', 'categorias ordenadas correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function publicAccess(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('category')) {
+            $category = Category::find($id);
+            $category->public_access = !$category->public_access;
+            $category->save();
+            return redirect()->back()->with('success', $category->public_access ? 'se ha pasado la categoria al acceso publico correctamente' : 'se ha quitado la categoria del acceso publico correctamente');
         }
         return $this->deny_access($request);
     }

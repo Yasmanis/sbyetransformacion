@@ -16,11 +16,16 @@
                 />
             </q-item-section>
             <q-item-section avatar>
-                <btn-delete-component flat />
+                <btn-delete-component
+                    flat
+                    tooltips="resetear chat, borrar todos los mensajes"
+                    @click="confirm = true"
+                    :disable="topic?.messages.length === 0"
+                />
             </q-item-section>
-            <q-item-section avatar>
+            <!-- <q-item-section avatar>
                 <btn-play-component flat tooltips="activar chat" />
-            </q-item-section>
+            </q-item-section> -->
             <q-item-section avatar>
                 <btn-left-right-component
                     title="tema anterior"
@@ -75,10 +80,24 @@
         <div class="messages" v-else>
             <chat-message-component :messages="topic?.messages" />
         </div>
-        <!-- <btn-reload-component @click="router.reload()" />
+        <btn-reload-component @click="router.reload()" />
         <form-chat-component :topic="props.topic" />
-        <help-chat-component /> -->
+        <!-- <help-chat-component :has_edit="has_edit" /> -->
     </div>
+
+    <confirm-component
+        :show="confirm"
+        @ok="
+            router.post(
+                `/admin/schooltopics/clear-chat/${topic?.id}`,
+                {},
+                { onSuccess: () => (confirm = false) }
+            )
+        "
+        @hide="confirm = false"
+        title="limpiar chat"
+        message="seguro que deseas limpiar el chat de este tema"
+    />
 </template>
 
 <script setup>
@@ -91,7 +110,7 @@ import HelpChatComponent from "./HelpChatComponent.vue";
 import FormChatComponent from "./FormChatComponent.vue";
 import ChatMessageComponent from "./ChatMessageComponent.vue";
 import BtnReloadComponent from "../../../btn/BtnReloadComponent.vue";
-import { Dark } from "quasar";
+import ConfirmComponent from "../../../base/ConfirmComponent.vue";
 import { router } from "@inertiajs/vue3";
 
 defineOptions({
@@ -109,11 +128,16 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    has_edit: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const showPanel = ref(false);
 const messages = [];
 const emits = defineEmits(["change-topic"]);
+const confirm = ref(false);
 
 const clearChat = async () => {
     showLoading.value = true;

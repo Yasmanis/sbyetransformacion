@@ -16,6 +16,7 @@ import {
     Meta,
 } from "quasar";
 import quasarIconSet from "quasar/icon-set/svg-mdi-v6";
+import lang from "quasar/lang/es";
 import { createApp, h } from "vue";
 import permissions from "./plugins/permissions";
 import VueGates from "vue-gates";
@@ -45,14 +46,12 @@ createInertiaApp({
                     Meta,
                 },
                 iconSet: quasarIconSet,
-                config: {
-                    lang: "es",
-                },
+                lang: lang,
             })
             .mount(el);
-            setTimeout(() => {
-                document.getElementById('app').removeAttribute('data-page');
-            }, 0);
+        setTimeout(() => {
+            document.getElementById("app").removeAttribute("data-page");
+        }, 0);
     },
 });
 

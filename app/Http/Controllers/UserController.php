@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -76,6 +77,17 @@ class UserController extends Controller
                 $repository->deleteMultipleById($ids);
             }
             return redirect()->back()->with('success', count($ids) == 1 ? 'usuario eliminado correctamente' : 'usuarios eliminados correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function lockUnlock(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('user')) {
+            $user = User::find($id);
+            $user->active = !$user->active;
+            $user->save();
+            return redirect()->back()->with('success', $user->active ? 'usuario dado de alta correctamente' : 'usuario dado de baja correctamente');
         }
         return $this->deny_access($request);
     }

@@ -199,10 +199,12 @@ class SchoolTopicsController extends Controller
     {
         $user = auth()->user();
         $users = [];
-        if ($request->to === 'todos') {
+        if (isset($request->replyTo)) {
+            $users[] = SchoolChat::find($request->replyTo)->from->id;
+        } else if ($request->to === 'todos') {
             $users = User::where('id', '!=', $user->id)->pluck('id');
         } else {
-            $users = User::where('id', '!=', $user->id)->personalSbyeDieta()->pluck('id');
+            $users = User::where('id', '!=', $user->id)/*->personalSbyeTransformacion()*/->pluck('id');
         }
         $msg = new SchoolChat();
         $msg->message = $request->message;
@@ -235,31 +237,17 @@ class SchoolTopicsController extends Controller
 
     public function deleteMsg($id)
     {
-        $user = auth()->user();
         $chat = SchoolChat::find($id);
-        if ($chat->from == $user) {
-            $chat->delete_by_from();
-        } else {
-            $chat->users()->detach($user);
-            $chat->delete_by_from();
-        }
+        $chat->deleteFromUser();
         return redirect()->back()->with('success', 'mensaje eliminado correctamente');
     }
 
-    public function clearChat($topicId)
+    public function clearChat($id)
     {
-        $user = auth()->user();
-        $messages = SchoolChat::fromUser($user->id)->fromTopic($topicId)->noFromDeleted()->get();
-        foreach ($messages as $m) {
-            $m->delete_by_from();
+        $topic = SchoolTopic::find($id);
+        foreach ($topic->messages as $m) {
+            $m->deleteFromUser();
         }
-        $messages = SchoolChat::fromTopic($topicId)->whereHas('users', function (Builder $query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->get();
-        foreach ($messages as $m) {
-            $m->users()->detach($user);
-            $m->delete_by_from();
-        }
-        return $this->getMsgFromUserAndTopic($topicId);
+        return redirect()->back()->with('success', 'chat limpiado correctamente');
     }
 }

@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class SchoolChat extends Model
 {
-    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible'];
+    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user'];
 
     protected $table = 'schoolchat';
 
@@ -40,13 +41,21 @@ class SchoolChat extends Model
         return (bool)$this->from_visible; // || auth()->user()->isPersonalSbyeDieta();
     }
 
-    public function delete_by_from()
+    public function getDeleteByUserAttribute()
     {
-        if (count($this->users) == 0) {
-            $this->delete();
-        } else {
+        return true;
+    }
+
+    public function deleteFromUser()
+    {
+        $user = auth()->user();
+        $this->users()->detach($user);
+        if ($this->from == $user) {
             $this->from_deleted = true;
             $this->save();
+        }
+        if (count($this->users) == 0 && $this->from_deleted) {
+            $this->delete();
         }
     }
 
@@ -58,6 +67,10 @@ class SchoolChat extends Model
     public function replyTo()
     {
         return $this->belongsTo(SchoolChat::class, 'reply_to');
+    }
+    public function messages()
+    {
+        return $this->hasMany(SchoolChat::class);
     }
     public function topic()
     {
@@ -85,9 +98,15 @@ class SchoolChat extends Model
     {
         return $query->where('from_deleted', false);
     }
-    public function scopeFromUser($query, $user)
+    public function scopeSend($query)
     {
-        return $query->where('from_id', $user);
+        return $query->where('from_id', auth()->user()->id)->where('from_deleted', false);
+    }
+    public function scopeReceived($query)
+    {
+        return $query->whereHas('users', function (Builder $query) {
+            $query->where('user_id', auth()->user()->id);
+        });
     }
     public function scopeFromTopic($query, $topic)
     {

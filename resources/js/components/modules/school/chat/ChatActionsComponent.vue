@@ -59,8 +59,15 @@
 
     <confirm-component
         :show="confirm"
-        @ok="reactHighligthDelete('delete')"
-        @cancel="confirm = false"
+        @ok="
+            router.delete(`/admin/schooltopics/delete-message/${message?.id}`, {
+                onSuccess: () => {
+                    confirm = false;
+                },
+            })
+        "
+        @hide="confirm = false"
+        title="confirmar eliminacion"
         message="seguro que deseas eliminar este mensaje"
     />
 </template>
@@ -69,7 +76,7 @@
 import { ref } from "vue";
 import FormChatComponent from "./FormChatComponent.vue";
 import ConfirmComponent from "../../../base/ConfirmComponent.vue";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, router } from "@inertiajs/vue3";
 
 defineOptions({
     name: "ChatActionsComponent",

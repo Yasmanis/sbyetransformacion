@@ -1,11 +1,23 @@
 <template>
-    <btn-delete-component @click="handleDelete" />
+    <btn-delete-component @click="confirm = true" />
+    <confirm-component
+        :show="confirm"
+        title="confirmar eliminacion"
+        :message="
+            objects.length > 1
+                ? 'confirma que deseas eliminar los objetos seleccionados'
+                : 'confirma que deseas eliminar este objeto'
+        "
+        @ok="handleDelete"
+        @hide="confirm = false"
+    />
 </template>
 
 <script setup>
+import { ref } from "vue";
 import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
+import ConfirmComponent from "../../base/ConfirmComponent.vue";
 import { useForm } from "@inertiajs/vue3";
-import { useQuasar } from "quasar";
 defineOptions({
     name: "DeleteComponent",
 });
@@ -25,37 +37,18 @@ const props = defineProps({
 
 const emit = defineEmits(["deleted"]);
 
-const $q = useQuasar();
+const confirm = ref(false);
 
-const handleDelete = async () => {
-    $q.dialog({
-        title: "confirmacion",
-        message:
-            props.objects.length === 1
-                ? "seguro que desea eliminar este registro"
-                : "seguro que desea eliminar los registros seleccionados",
-        cancel: {
-            label: "cancelar",
-            icon: "mdi-cancel",
-        },
-        ok: {
-            label: "si",
-            icon: "mdi-check",
-            color: "red",
-        },
-        persistent: true,
-    }).onOk(() => {
-        const send = useForm({ ids: props.objects.map((o) => o.id) });
-        send.delete(
-            `${props.module.base_url}/${props.objects
-                .map((o) => o.id)
-                .toString()}`,
-            {
-                onSuccess: () => {
-                    emit("deleted");
-                },
-            }
-        );
-    });
+const handleDelete = () => {
+    const send = useForm({ ids: props.objects.map((o) => o.id) });
+    send.delete(
+        `${props.module.base_url}/${props.objects.map((o) => o.id).toString()}`,
+        {
+            onSuccess: () => {
+                emit("deleted");
+                confirm.value = false;
+            },
+        }
+    );
 };
 </script>

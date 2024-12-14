@@ -15,7 +15,7 @@
 
 <script setup>
 import Layout from "../../layouts/AdminLayout.vue";
-import TableComponent from "../../components/table/TableComponent.vue";
+import TableComponent from "../../components/modules/user/TableComponent.vue";
 
 defineOptions({
     name: "ListPage",
@@ -94,7 +94,7 @@ const sa = {
 const active = {
     field: "active",
     name: "active",
-    label: "activo",
+    label: "alta",
     align: "center",
     type: "boolean",
     othersProps: {
@@ -139,7 +139,7 @@ const searchFields = [username, name, surname, email];
 const filterFields = [
     {
         name: "active",
-        label: "activo",
+        label: "alta",
         type: "boolean",
         value: null,
     },

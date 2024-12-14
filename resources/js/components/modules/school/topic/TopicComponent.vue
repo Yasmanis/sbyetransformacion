@@ -61,7 +61,12 @@
                         <q-item-section avatar>
                             <btn-delete-component
                                 tooltips="eliminar video principal"
-                                @click="onRemoveAttachment(ppalVideo)"
+                                @click="
+                                    () => {
+                                        currentAttachment = ppalVideo;
+                                        confirm = true;
+                                    }
+                                "
                             />
                         </q-item-section>
                     </q-item>
@@ -128,7 +133,12 @@
                         <q-item-section avatar>
                             <btn-delete-component
                                 tooltips="eliminar adjunto"
-                                @click="onRemoveAttachment(r)"
+                                @click="
+                                    () => {
+                                        currentAttachment = r;
+                                        confirm = true;
+                                    }
+                                "
                             />
                         </q-item-section>
                     </q-item>
@@ -208,6 +218,18 @@
         "
         v-if="addDescription"
     />
+
+    <confirm-component
+        :show="confirm"
+        @ok="removeAttachment"
+        title="confirmar eliminacion"
+        :message="
+            currentAttachment?.principal
+                ? 'seguro que deseas eliminar el video principal'
+                : 'seguro que deseas eliminar este adjunto'
+        "
+        @hide="confirm = false"
+    />
 </template>
 
 <script setup>
@@ -220,6 +242,7 @@ import UploaderField from "../../../form/input/UploaderField.vue";
 import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
 import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
 import BtnAddComponent from "../../../btn/BtnAddComponent.vue";
+import ConfirmComponent from "../../../base/ConfirmComponent.vue";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import { useForm } from "@inertiajs/vue3";
@@ -272,6 +295,8 @@ const formData = ref({});
 const ppalVideo = ref(null);
 const addDescription = ref(false);
 const attachments = ref([]);
+const confirm = ref(false);
+const currentAttachment = ref(null);
 
 onBeforeMount(() => {
     let { id, name, description, coverImage, section_id } = props.topic;
@@ -387,36 +412,22 @@ const onFinishUploaded = (info, principal) => {
     }
 };
 
-const onRemoveAttachment = (attachment) => {
-    $q.dialog({
-        title: "confirmacion",
-        html: true,
-        message: `seguro que deseas eliminar ${
-            attachment.principal ? "el video principal" : "este adjunto"
-        }`,
-        cancel: {
-            label: "cancelar",
-            icon: "mdi-cancel",
-        },
-        ok: {
-            label: "si",
-            icon: "mdi-check",
-            color: "red",
-        },
-        persistent: true,
-    }).onOk(() => {
-        const send = useForm({});
-        send.delete(`/admin/schooltopics/deleteResource/${attachment.id}`, {
+const removeAttachment = () => {
+    const send = useForm({});
+    send.delete(
+        `/admin/schooltopics/deleteResource/${currentAttachment.value.id}`,
+        {
             onSuccess: () => {
-                if (attachment.principal) {
+                if (currentAttachment.value.principal) {
                     ppalVideo.value = null;
                 } else {
                     attachments.value = attachments.value.filter(
-                        (r) => r.id !== attachment.id
+                        (r) => r.id !== currentAttachment.value.id
                     );
                 }
+                confirm.value = false;
             },
-        });
-    });
+        }
+    );
 };
 </script>

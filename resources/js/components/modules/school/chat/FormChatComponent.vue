@@ -21,14 +21,8 @@
         @click="showDialog = true"
         v-else
     />
-    <q-dialog
-        v-model="showDialog"
-        persistent
-        full-width
-        seamless
-        @hide="onHide"
-    >
-        <q-card>
+    <q-dialog v-model="showDialog" persistent @hide="onHide">
+        <q-card style="width: 400px">
             <dialog-header-component
                 icon="mdi-chat-processing-outline"
                 title="escribir en el chat "
@@ -46,11 +40,12 @@
                         :options="[
                             { label: 'todos', value: 'todos' },
                             {
-                                label: 'sbye dieta',
-                                value: 'sbye_dieta',
+                                label: 'sbye-transformacion',
+                                value: 'sbye_transformacion',
                             },
                         ]"
                         @update="onUpdateField"
+                        v-if="!props.message"
                     />
                     <select-field
                         :modelValue="formData.publish"
@@ -70,14 +65,14 @@
                         ]"
                         @update="onUpdateField"
                     />
-                    <editor-field
+                    <text-field
                         :modelValue="formData.message"
                         name="message"
                         label="mensaje"
+                        type="textarea"
                         :othersProps="{
                             required: true,
                         }"
-                        :rows="3"
                         @update="onUpdateField"
                     />
                     <uploader-field
@@ -91,7 +86,6 @@
                         :upload="upload"
                         :noThumbnails="true"
                         url="/admin/schooltopics/add-attachment-message"
-                        @uploaded="onUploaded"
                         @change-files="
                             (files) => {
                                 totalFiles = files;
@@ -103,7 +97,7 @@
             </q-card-section>
             <q-separator />
             <q-card-actions align="right">
-                <btn-save-component @click="save" />
+                <btn-send-component @click="save" />
                 <btn-cancel-component
                     :cancel="true"
                     @click="showDialog = false"
@@ -117,12 +111,13 @@
 import { ref, onBeforeMount } from "vue";
 import DialogHeaderComponent from "../../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../../base/QBtnComponent.vue";
-import BtnSaveComponent from "../../../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../../btn/BtnCancelComponent.vue";
 import SelectField from "../../../form/input/SelectField.vue";
+import TextField from "../../../form/input/TextField.vue";
 import EditorField from "../../../form/input/EditorField.vue";
 import UploaderField from "../../../form/input/UploaderField.vue";
-import { router } from "@inertiajs/vue3";
+import BtnSendComponent from "../../../btn/BtnSendComponent.vue";
+import { router, useForm } from "@inertiajs/vue3";
 import {
     error,
     errorValidation,
@@ -144,13 +139,10 @@ const emits = defineEmits(["hide-menu"]);
 
 const showDialog = ref(false);
 const help = ref(null);
-const formData = ref({
-    topic: null,
+const formData = useForm({
     to: "todos",
     publish: "oculto",
     message: null,
-    files: [],
-    replyTo: null,
 });
 const totalFiles = ref(0);
 const upload = ref(false);
@@ -167,14 +159,7 @@ onBeforeMount(() => {
 });
 
 const onUpdateField = (name, val) => {
-    formData.value[name] = val;
-};
-
-const onUploaded = (name, val) => {
-    // router.post("/admin/configuration/save", {
-    //     keyName: "help_chat",
-    //     keyValue: help.value,
-    // });
+    formData[name] = val;
 };
 
 const onFinishUploaded = (info) => {
@@ -187,42 +172,33 @@ const onFinishUploaded = (info) => {
 const save = async () => {
     form.value.validate().then(async (success) => {
         if (success) {
-            if (
-                formData.value["message"] === null ||
-                formData.value["message"].trim() === ""
-            ) {
-                error("debe especificar el mensaje");
-            } else {
-                Loading.show();
-                const { to, publish, message } = formData.value;
-                await axios
-                    .post(
-                        `/admin/schooltopics/add-message/${
-                            props.message
-                                ? props.message.topic_id
-                                : props.topic.id
-                        }`,
-                        {
-                            to,
-                            publish,
-                            message,
-                            replyTo: props.message?.id,
-                        }
-                    )
-                    .then((response) => {
-                        currentMessage.value = response.data;
-                        if (totalFiles.value === 0) {
-                            onFinishUploaded();
-                        } else {
-                            setTimeout(() => {
-                                upload.value = true;
-                            }, 1000);
-                        }
-                    })
-                    .catch(() => {
-                        Loading.hide();
-                    });
-            }
+            Loading.show();
+            const { to, publish, message } = formData;
+            await axios
+                .post(
+                    `/admin/schooltopics/add-message/${
+                        props.message ? props.message.topic_id : props.topic.id
+                    }`,
+                    {
+                        to,
+                        publish,
+                        message,
+                        replyTo: props.message?.id,
+                    }
+                )
+                .then((response) => {
+                    currentMessage.value = response.data;
+                    if (totalFiles.value === 0) {
+                        onFinishUploaded();
+                    } else {
+                        setTimeout(() => {
+                            upload.value = true;
+                        }, 1000);
+                    }
+                })
+                .catch(() => {
+                    Loading.hide();
+                });
         } else {
             errorValidation();
         }
@@ -230,6 +206,9 @@ const save = async () => {
 };
 
 const onHide = () => {
+    formData.to = "todos";
+    formData.publish = "oculto";
+    formData.message = null;
     if (props.message) {
         emits("hide-menu");
     }

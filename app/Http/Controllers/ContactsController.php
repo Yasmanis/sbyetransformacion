@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Attachment;
 use App\Repositories\ContactRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
+use Nette\Utils\Random;
 
 class ContactsController extends Controller
 {
@@ -26,7 +28,17 @@ class ContactsController extends Controller
             'email' => ['required', 'email'],
         ]);
         $repository = new ContactRepository();
+        $userRepository = new UserRepository();
+        $user = $userRepository->getByColumn($request->email, 'email');
+        if (!isset($user)) {
+            $data = $request->only('name', 'surname', 'email');
+            $data['username'] = $request->email;
+            $data['password'] = $request->email;
+            $data['active'] = false;
+            $user = $userRepository->create($data);
+        }
         $data = $request->only((new ($repository->model()))->getFillable());
+        $data['user_id'] = $user->id;
         if ($request->hasFile('ticket')) {
             $path = $request->file('ticket')->store('tickets', 'public');
             $data['ticket'] = $path;

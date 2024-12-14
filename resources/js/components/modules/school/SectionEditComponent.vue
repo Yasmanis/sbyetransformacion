@@ -59,7 +59,12 @@
                         <q-item-section avatar v-if="has_delete">
                             <btn-delete-component
                                 tooltips="eliminar seccion"
-                                @click="sectionRemove(s)"
+                                @click="
+                                    () => {
+                                        currentSection = s;
+                                        confirmSection = true;
+                                    }
+                                "
                             />
                         </q-item-section>
                     </q-item>
@@ -122,7 +127,12 @@
                         <q-item-section avatar v-if="has_edit">
                             <btn-delete-component
                                 tooltips="eliminar tema"
-                                @click="topicRemove(topic)"
+                                @click="
+                                    () => {
+                                        currentTopic = topic;
+                                        confirmTopic = true;
+                                    }
+                                "
                             />
                         </q-item-section>
                     </q-item>
@@ -231,6 +241,26 @@
             </q-card-actions>
         </q-card>
     </q-dialog>
+    <confirm-component
+        :show="confirmSection"
+        :message="`seguro que deseas eliminar la seccion <b>${currentSection?.name}</b>`"
+        @hide="confirmSection = false"
+        @ok="
+            router.delete(`/admin/life/${currentSection.id}`, {
+                onSuccess: () => (confirmSection = false),
+            })
+        "
+    />
+    <confirm-component
+        :show="confirmTopic"
+        :message="`seguro que deseas eliminar el tema <b>${currentTopic?.name}</b>`"
+        @hide="confirmTopic = false"
+        @ok="
+            router.delete(`/admin/schooltopics/${currentTopic.id}`, {
+                onSuccess: () => (confirmTopic = false),
+            })
+        "
+    />
 </template>
 
 <script setup>
@@ -245,7 +275,8 @@ import TopicComponent from "./topic/TopicComponent.vue";
 import SectionFormComponent from "./section/SectionFormComponent.vue";
 import BtnEditComponent from "../../btn/BtnEditComponent.vue";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
-import { usePage, useForm, router } from "@inertiajs/vue3";
+import ConfirmComponent from "../../base/ConfirmComponent.vue";
+import { usePage, router } from "@inertiajs/vue3";
 import { useQuasar, Loading, Dark } from "quasar";
 import {
     error,
@@ -287,7 +318,8 @@ const currentSection = ref(null);
 const currentTopic = ref(null);
 const saveSection = ref(false);
 const index = ref(0);
-const topics = ref([]);
+const confirmSection = ref(false);
+const confirmTopic = ref(false);
 
 const sections = computed(() => {
     return page.props.sections ? page.props.sections : [];
@@ -314,48 +346,6 @@ const newTopic = (reset) => {
     } else {
         itemsTopics.value.push(topic);
     }
-};
-
-const sectionRemove = (s) => {
-    $q.dialog({
-        title: "confirmacion",
-        html: true,
-        message: `seguro que deseas eliminar la seccion <b>${s.name}</b>`,
-        cancel: {
-            label: "cancelar",
-            icon: "mdi-cancel",
-        },
-        ok: {
-            label: "si",
-            icon: "mdi-check",
-            color: "red",
-        },
-        persistent: true,
-    }).onOk(() => {
-        const send = useForm({});
-        send.delete(`/admin/life/${s.id}`);
-    });
-};
-
-const topicRemove = (t) => {
-    $q.dialog({
-        title: "confirmacion",
-        html: true,
-        message: `seguro que deseas eliminar el tema <b>${t.name}</b>`,
-        cancel: {
-            label: "cancelar",
-            icon: "mdi-cancel",
-        },
-        ok: {
-            label: "si",
-            icon: "mdi-check",
-            color: "red",
-        },
-        persistent: true,
-    }).onOk(() => {
-        const send = useForm({});
-        send.delete(`/admin/schooltopics/${t.id}`);
-    });
 };
 
 const addTopic = () => {

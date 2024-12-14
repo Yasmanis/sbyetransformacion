@@ -51,6 +51,12 @@
                             size="sm"
                             v-if="createFields.length > 0 && has_add"
                         />
+                        <sort-elements-component
+                            :items="rows"
+                            :url="`${current_module.base_url}/sort-categories`"
+                            tooltips="ordenar categorias"
+                            v-if="has_edit"
+                        />
                         <btn-reload-component @click="onRequest" />
                         <visible-columns-component
                             :columns="columns"
@@ -199,6 +205,15 @@
                         :url="`${current_module.base_url}/sort-files`"
                         v-if="has_edit"
                     />
+                    <btn-public-component
+                        :public="props.row.public_access"
+                        @click="
+                            router.post(
+                                `${current_module.base_url}/public-access/${props.row.id}`
+                            )
+                        "
+                        v-if="has_edit"
+                    />
                     <delete-component
                         :objects="[props.row]"
                         :module="current_module"
@@ -314,6 +329,7 @@ import SearchComponent from "../../table/actions/SearchComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
+import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 
 defineOptions({
     name: "TableComponent",

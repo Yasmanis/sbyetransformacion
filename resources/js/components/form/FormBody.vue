@@ -80,12 +80,11 @@ import CheckboxField from "./input/CheckboxField.vue";
 import DateField from "./input/DateField.vue";
 import PasswordField from "./input/PasswordField.vue";
 import UploaderField from "./input/UploaderField.vue";
-import QBtnComponent from "../base/QBtnComponent.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
 import BtnSaveAndNewComponent from "../btn/BtnSaveAndNewComponent.vue";
 import { useForm } from "@inertiajs/vue3";
-import { errorException, errorValidation } from "../../helpers/notifications";
+import { errorValidation } from "../../helpers/notifications";
 
 const props = defineProps({
     module: {

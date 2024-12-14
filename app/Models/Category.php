@@ -13,6 +13,11 @@ class Category extends Model
 
     protected $fillable = ['name'];
 
+    protected $casts = [
+        'public_access' => 'boolean',
+        'private_area' => 'boolean'
+    ];
+
     protected static function booted()
     {
         static::deleting(function ($category) {

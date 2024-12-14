@@ -75,12 +75,20 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    cancelBtn: {
+        type: Boolean,
+        default: false,
+    },
     rows: {
         type: Number,
         default: 0,
     },
     othersProps: Object,
     readonly: {
+        type: Boolean,
+        default: false,
+    },
+    autoHeight: {
         type: Boolean,
         default: false,
     },
@@ -92,7 +100,7 @@ const screen = computed(() => {
     return $q.screen;
 });
 
-const emits = defineEmits(["update", "save"]);
+const emits = defineEmits(["update", "save", "cancel"]);
 
 const model = ref("");
 
@@ -110,9 +118,22 @@ class SaveBtn extends Plugin {
                 tooltip: true,
             });
             button.on("execute", () => {
-                emits("save");
+                emits("save", props.name, model.value);
             });
             return props.saveBtn ? button : null;
+        });
+
+        editor.ui.componentFactory.add("cancel-btn", () => {
+            const button = new ButtonView();
+            button.set({
+                label: "cancelar",
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM272 80v80H144V80h128zm122 352H54a6 6 0 0 1-6-6V86a6 6 0 0 1 6-6h42v104c0 13.255 10.745 24 24 24h176c13.255 0 24-10.745 24-24V83.882l78.243 78.243a6 6 0 0 1 1.757 4.243V426a6 6 0 0 1-6 6zM224 232c-48.523 0-88 39.477-88 88s39.477 88 88 88 88-39.477 88-88-39.477-88-88-88zm0 128c-22.056 0-40-17.944-40-40s17.944-40 40-40 40 17.944 40 40-17.944 40-40 40z"/></svg>',
+                tooltip: true,
+            });
+            button.on("execute", () => {
+                emits("cancel", props.name);
+            });
+            return props.cancelBtn ? button : null;
         });
     }
 }
@@ -185,6 +206,7 @@ const editorProps = ref({
             "horizontalLine",
             "|",
             "save-btn",
+            "cancel-btn",
         ],
         heading: {
             options: [
@@ -286,11 +308,15 @@ const onReady = (editor) => {
     editorInstance.value = editor;
 
     editor.editing.view.change((writer) => {
-        writer.setStyle(
-            "height",
-            `${props.rows > 0 ? props.rows * 45 : screen.value.height - 115}px`,
-            editor.editing.view.document.getRoot()
-        );
+        if (!props.autoHeight) {
+            writer.setStyle(
+                "height",
+                `${
+                    props.rows > 0 ? props.rows * 45 : screen.value.height - 115
+                }px`,
+                editor.editing.view.document.getRoot()
+            );
+        }
     });
 
     const toolbar = editor.ui.view.toolbar.element;
@@ -318,11 +344,7 @@ const onEditorInput = (editor) => {
     font-size: 11px;
     color: rgba(0, 0, 0, 0.54);
 }
-.ck.ck-dropdown {
-    z-index: 9999 !important;
-}
 :root {
-    --ck-z-default: 100;
-    --ck-z-panel: 9999 !important; /* Asegúrate de que este valor es mayor que el del modal */
+    --ck-z-default: 9999 !important;
 }
 </style>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder;
 
 class SchoolTopic extends Model
 {
@@ -71,7 +72,9 @@ class SchoolTopic extends Model
 
     public function messages()
     {
-        return $this->hasMany(SchoolChat::class, 'topic_id');
+        return $this->hasMany(SchoolChat::class, 'topic_id')->send()->orWhere(function (Builder $query) {
+            $query->received();
+        })->orderBy('id', 'ASC');
     }
 
     public function deleteResourceFromDisk()

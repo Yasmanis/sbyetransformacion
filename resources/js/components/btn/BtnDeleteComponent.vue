@@ -3,6 +3,7 @@
         :tooltips="tooltips"
         icon="mdi-trash-can-outline"
         :size="size"
+        :disable="disable"
         @click="onClick"
     />
 </template>
@@ -19,6 +20,10 @@ const props = defineProps({
         default: "eliminar",
     },
     flat: {
+        type: Boolean,
+        default: false,
+    },
+    disable: {
         type: Boolean,
         default: false,
     },

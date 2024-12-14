@@ -45,6 +45,7 @@
                                 :index="sIndex"
                                 :indexTopic="tIndex"
                                 :totalSections="sections.length"
+                                :has_edit="has_edit"
                                 @change-section="onChangeSection"
                                 @change-topic="
                                     (i) =>

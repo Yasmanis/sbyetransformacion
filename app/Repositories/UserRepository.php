@@ -15,4 +15,6 @@ class UserRepository extends BaseRepository
     {
         return 'users/list';
     }
+
+    protected $with = ['books', 'books.attachments'];
 }

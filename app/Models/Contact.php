@@ -10,5 +10,10 @@ class Contact extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'surname', 'email', 'book_number', 'book_date', 'msg_title', 'message', 'other_people', 'ticket'];
+    protected $fillable = ['book_number', 'book_date', 'msg_title', 'message', 'other_people', 'user_id', 'ticket'];
+
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class, 'contact_id');
+    }
 }

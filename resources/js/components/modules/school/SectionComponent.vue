@@ -133,6 +133,7 @@
         :topic="props.topic"
         :section="section"
         :index="indexTopic"
+        :has_edit="has_edit"
         @change-topic="(i) => emits('change-topic', i)"
     />
 
@@ -171,6 +172,10 @@ const props = defineProps({
     totalSections: {
         type: Number,
         default: 0,
+    },
+    has_edit: {
+        type: Boolean,
+        default: false,
     },
 });
 

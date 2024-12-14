@@ -1,7 +1,13 @@
 <template>
     <Layout>
         <div class="q-pa-md q-gutter-sm">
-            <editor-field name="legal" :model-value="legal" :saveBtn="true" @update="onUpdate" @save="onSave" />
+            <editor-field
+                name="legal"
+                :model-value="legal"
+                :saveBtn="true"
+                @update="onUpdate"
+                @save="onSave"
+            />
         </div>
     </Layout>
 </template>
@@ -17,24 +23,25 @@ defineOptions({
     name: "LegalPage",
 });
 
-const legal = ref('');
+const legal = ref("");
 
 const onUpdate = (name, val) => {
     legal.value = val;
-}
+};
 
 const onSave = (name, val) => {
-    router.post('/admin/configuration/save', {
-        keyName: 'legal',
-        keyValue: legal.value
+    router.post("/admin/configuration/save", {
+        keyName: "legal",
+        keyValue: legal.value,
     });
-}
+};
 
 onBeforeMount(() => {
-    axios.get('/admin/configuration/index/legal').then((data) => {
-        legal.value = data.data.value ?? '';
-    }).catch(() => {
-
-    });
+    axios
+        .get("/admin/configuration/index/legal")
+        .then((data) => {
+            legal.value = data.data.value ?? "";
+        })
+        .catch(() => {});
 });
 </script>

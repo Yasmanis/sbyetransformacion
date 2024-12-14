@@ -8,6 +8,8 @@
         :error-message="errorMsg"
         :dense="dense"
         :clearable="clearable"
+        :type="type"
+        :autogrow="autogrow"
         lazy-rules
         reactive-rules
         hide-bottom-space
@@ -57,9 +59,17 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    autogrow: {
+        type: Boolean,
+        default: true,
+    },
     othersProps: {
         type: Object,
         default: () => ({}),
+    },
+    type: {
+        type: String,
+        default: "text",
     },
 });
 

@@ -12,6 +12,7 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\SchoolTopicsController;
+use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
@@ -44,22 +45,25 @@ Route::get('/taller_online', function () {
 });
 
 Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
-    $categories = Category::get();
+    $categories = Category::where('public_access', true)->orderBy('order', 'ASC')->get();
     $recent_files = File::latest()->take(6)->get();
     $files = [];
     $category = null;
-    if (isset($id)) {
-        $category = Category::find($id);
+    if (count($categories) > 0) {
+        $category = $categories[0];
         $files = $category->files;
     }
-    else {
-        if (count($categories) > 0) {
-            $category = $categories[0];
+    if (isset($id)) {
+        $c = Category::find($id);
+        if ($c->public_access) {
+            $category = $c;
             $files = $category->files;
+        } else {
+            return to_route('publicaciones');
         }
     }
-    return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'files' => $files, 'recent_files' => $recent_files]);
-});
+    return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'files' => $files, 'recent_files' => $recent_files])->with('error', 'asasdasd');
+})->name('publicaciones');
 
 Route::get('/contactame', function () {
     return Inertia('landing/contactos');
@@ -85,8 +89,11 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         return Inertia('home');
     });
     Route::resource('/admin/users', UserController::class);
+    Route::post('/admin/users/lockUnlock/{id}', [UserController::class, 'lockUnlock']);
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
+    Route::resource('/admin/testimony', TestimonyController::class);
+    Route::post('/admin/testimony/publicated/{id}', [TestimonyController::class, 'publicated']);
     Route::resource('/admin/life', LifeController::class);
     Route::post('/admin/life/sort-topics', [SchoolTopicsController::class, 'sortTopics']);
     Route::resource('/admin/schooltopics', SchoolTopicsController::class);
@@ -95,10 +102,13 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/schooltopics/update-video-percentaje-to-user', [SchoolTopicsController::class, 'updateVideoPercentage']);
     Route::post('/admin/schooltopics/add-message/{id}', [SchoolTopicsController::class, 'addMessage']);
     Route::delete('/admin/schooltopics/delete-message/{id}', [SchoolTopicsController::class, 'deleteMsg']);
+    Route::post('/admin/schooltopics/clear-chat/{id}', [SchoolTopicsController::class, 'clearChat']);
     Route::post('/admin/schooltopics/react-message/{id}', [SchoolTopicsController::class, 'reactMsg']);
     Route::post('/admin/schooltopics/highligth-message/{id}', [SchoolTopicsController::class, 'highligthMsg']);
     Route::post('/admin/schooltopics/add-attachment-message', [SchoolTopicsController::class, 'addAttachmentToMsg']);
     Route::post('/admin/categories/sort-files', [CategoryController::class, 'sortFiles']);
+    Route::post('/admin/categories/sort-categories', [CategoryController::class, 'sortCategories']);
+    Route::post('/admin/categories/public-access/{id}', [CategoryController::class, 'publicAccess']);
     Route::resource('/admin/files', FileController::class);
     Route::post('/admin/files/poster/{id}', [FileController::class, 'poster']);
 

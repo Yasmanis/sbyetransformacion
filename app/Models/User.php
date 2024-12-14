@@ -63,6 +63,11 @@ class User extends Authenticatable
 
     protected $appends = ['permissions', 'roles', 'full_name'];
 
+    public function books()
+    {
+        return $this->hasMany(Contact::class);
+    }
+
     public function getPermissionsAttribute()
     {
         return $this->permissions()->get()->pluck('id');
@@ -76,6 +81,24 @@ class User extends Authenticatable
     public function getFullNameAttribute()
     {
         return $this->name . ' ' . $this->surname;
+    }
+
+    public function personalSbyeTransformacion($query)
+    {
+        return $query/*
+            ->WhereHas('roles', function ($query) {
+                $query->whereIn('name', $this->getRolesSbyeTranformacion());
+            })*/;
+    }
+
+    public function getRolesSbyeTranformacion()
+    {
+        return ['dietista'];
+    }
+
+    public function isPersonalSbyeDieta()
+    {
+        return $this->hasAnyRole($this->getRolesSbyeTranformacion());
     }
 
     public function getPermissions()
