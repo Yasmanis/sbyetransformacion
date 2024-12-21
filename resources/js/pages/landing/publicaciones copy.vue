@@ -5,7 +5,179 @@
             :style="{ 'padding-top': screen.xs || screen.sm ? '40px' : '' }"
         >
             <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                <files-category-component :category="currentCategory" />
+                <div class="row" v-if="files.length > 0">
+                    <template
+                        v-for="(f, indexFile) in files"
+                        :key="`file-${indexFile}`"
+                    >
+                        <div
+                            class="col-lg-3 col-md-3 col-sm-4 col-xs-12 q-pa-sm text-center"
+                            :class="screen.xs || screen.sm ? 'q-mb-md' : ''"
+                            v-if="
+                                currentCategory.name.toLowerCase() ===
+                                    'newsletters' ||
+                                currentCategory.name.toLowerCase() ===
+                                    'newsletter'
+                            "
+                        >
+                            <div class="q-pa-none" style="height: 200px">
+                                <video-player
+                                    :src="`${$page.props.public_path}storage/${f.path}`"
+                                    :poster="
+                                        f.poster
+                                            ? `${$page.props.public_path}storage/${f.poster}`
+                                            : null
+                                    "
+                                    controls
+                                    responsive
+                                    :volume="0.6"
+                                    class="full-width full-height"
+                                    v-if="f.type.startsWith('video/')"
+                                />
+                                <a
+                                    class="glightbox"
+                                    :href="`${$page.props.public_path}storage/${f.path}`"
+                                    v-else-if="f.type.startsWith('image/')"
+                                >
+                                    <q-img
+                                        :ratio="16 / 9"
+                                        fit="fill"
+                                        :src="`${$page.props.public_path}storage/${f.path}`"
+                                    />
+                                </a>
+                                <a
+                                    :href="`${$page.props.public_path}storage/${f.path}`"
+                                    target="_blank"
+                                    v-else
+                                >
+                                    <q-img
+                                        class="full-width full-height"
+                                        :src="`${$page.props.public_path}images/others/file.png`"
+                                    />
+                                </a>
+                            </div>
+                        </div>
+                        <file-category-component
+                            v-else-if="
+                                currentCategory.name === 'posts' ||
+                                currentCategory.name === 'post'
+                            "
+                        />
+                        <div
+                            class="col-lg-4 col-md-4 col-sm-6 col-xs-12 q-pa-sm"
+                            style="height: 250px !important"
+                            v-else-if="
+                                currentCategory.name === 'posts' ||
+                                currentCategory.name === 'post'
+                            "
+                        >
+                            <video-player
+                                :src="`${$page.props.public_path}storage/${f.path}`"
+                                :poster="
+                                    f.poster
+                                        ? `${$page.props.public_path}storage/${f.poster}`
+                                        : null
+                                "
+                                controls
+                                responsive
+                                :volume="0.6"
+                                class="full-width full-height"
+                                v-if="
+                                    f.type.startsWith('video/') ||
+                                    f.type.startsWith('audio/')
+                                "
+                            />
+                            <q-img
+                                fit="fill"
+                                width="100%"
+                                height="100%"
+                                :src="`${$page.props.public_path}storage/${f.path}`"
+                                v-else-if="f.type.startsWith('image/')"
+                            />
+                            <q-item
+                                v-else
+                                clickable
+                                target="_blank"
+                                :href="`${$page.props.public_path}storage/${f.path}`"
+                                ><q-img
+                                    class="full-width full-height"
+                                    :src="`${$page.props.public_path}images/others/file.png`"
+                            /></q-item>
+                        </div>
+                        <div
+                            class="col-lg-6 col-md-6 col-sm-6 col-xs-12"
+                            v-else
+                        >
+                            <q-card class="my-card q-ma-sm rounded">
+                                <q-card-section
+                                    class="q-pa-sm q-pa-none bg-black"
+                                    style="background-color: #000 !important"
+                                >
+                                    <video-player
+                                        :src="`${$page.props.public_path}storage/${f.path}`"
+                                        :poster="
+                                            f.poster
+                                                ? `${$page.props.public_path}storage/${f.poster}`
+                                                : null
+                                        "
+                                        controls
+                                        responsive
+                                        :volume="0.6"
+                                        class="full-width header-card"
+                                        v-if="
+                                            f.type.startsWith('video/') ||
+                                            f.type.startsWith('audio/')
+                                        "
+                                    />
+                                    <a
+                                        :href="`${$page.props.public_path}storage/${f.path}`"
+                                        target="_blank"
+                                        v-else
+                                    >
+                                        <q-img
+                                            :src="`${$page.props.public_path}images/group/6.jpg`"
+                                            class="rounded-top full-width header-card"
+                                        />
+                                        <div class="column items-center">
+                                            <i
+                                                class="fa fa-file fa-4x text-white"
+                                                style="margin-top: -120px"
+                                            ></i>
+                                        </div>
+                                    </a>
+                                </q-card-section>
+                                <q-card-section class="text-center">
+                                    <q-item-label lines="3">
+                                        {{
+                                            f.name.indexOf(".") >= 0
+                                                ? f.name.substring(
+                                                      0,
+                                                      f.name.lastIndexOf(".")
+                                                  )
+                                                : f.name
+                                        }}
+                                    </q-item-label>
+                                    <q-item-label
+                                        class="q-pt-sm cursor-pointer text-primary"
+                                    >
+                                        <a
+                                            class="text-uppercase text-primary"
+                                            :href="`${$page.props.public_path}storage/${f.path}`"
+                                            target="_blank"
+                                            ><small>ver</small></a
+                                        >
+                                    </q-item-label>
+                                </q-card-section>
+                            </q-card>
+                        </div>
+                    </template>
+                </div>
+                <div class="row text-center q-mb-md" v-else>
+                    <h3>
+                        lo sentimos, aun no se han hecho publicaciones en esta
+                        categoria
+                    </h3>
+                </div>
                 <div
                     class="row q-pa-md"
                     v-if="currentCategory?.name === 'testimonios'"
@@ -437,11 +609,18 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import Layout from "../../layouts/MainLayout.vue";
-import { usePage, useForm } from "@inertiajs/vue3";
+import { usePage, useForm, router } from "@inertiajs/vue3";
 import ListCategoryComponent from "../../components/landing/ListCategoryComponent.vue";
-import FilesCategoryComponent from "../../components/landing/FilesCategoryComponent.vue";
+
+import GLightbox from "glightbox";
+import "glightbox/dist/css/glightbox.min.css";
+import { VideoPlayer } from "@videojs-player/vue";
+import "video.js/dist/video-js.css";
+
+import FileCategoryComponent from "../../components/landing/FilesCategoryComponent.vue";
+
 import { useQuasar } from "quasar";
 import { errorValidation } from "../../helpers/notifications.js";
 
@@ -457,6 +636,10 @@ const screen = computed(() => {
 
 const page = usePage();
 
+onMounted(() => {
+    var lightbox = GLightbox();
+});
+
 const currentCategory = computed(() => {
     return page.props.current_category;
 });
@@ -467,6 +650,25 @@ const categories = computed(() => {
 
 const recent_files = computed(() => {
     return page.props.recent_files;
+});
+
+const files = computed(() => {
+    return page.props.files;
+});
+
+const cls = computed(() => {
+    let category = currentCategory.value;
+    if (category) {
+        category = category.toLowerCase();
+        if (category === "post" || category === "posts") {
+            return "col-lg-4 col-md-4 col-sm-6 col-xs-12 q-pa-sm";
+        } else if (category === "newsletter" || category === "newsletters") {
+            return "col-lg-3 col-md-3 col-sm-4 col-xs-12 q-pa-sm text-center";
+        } else {
+            return "col-lg-6 col-md-6 col-sm-6 col-xs-12";
+        }
+    }
+    return null;
 });
 
 const showForm = ref(false);

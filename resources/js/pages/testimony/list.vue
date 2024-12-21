@@ -1,13 +1,12 @@
 <template>
     <Layout>
         <q-page padding>
-            testimonios
-            <!-- <table-component
+            <table-component
                 :searchFields="searchFields"
                 :filterFields="filterFields"
                 :updateFields="fields"
                 :has_delete="false"
-            ></table-component> -->
+            ></table-component>
         </q-page>
     </Layout>
 </template>

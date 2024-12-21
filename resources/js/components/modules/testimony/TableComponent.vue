@@ -319,6 +319,10 @@ const page = usePage();
 
 const loading = ref(false);
 
+const sa = computed(() => {
+    return page.props.auth.user.sa;
+});
+
 const columns = ref([
     {
         field: "title",
@@ -345,7 +349,7 @@ const columns = ref([
     },
 ]);
 
-if (page.props.auth.user.sa) {
+if (sa.value) {
     columns.value.push({
         field: "user",
         name: "user",

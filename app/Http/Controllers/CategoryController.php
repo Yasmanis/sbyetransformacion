@@ -111,4 +111,15 @@ class CategoryController extends Controller
         }
         return $this->deny_access($request);
     }
+
+    public function privateArea(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('category')) {
+            $category = Category::find($id);
+            $category->private_area = !$category->private_area;
+            $category->save();
+            return redirect()->back()->with('success', $category->private_area ? 'se ha pasado la categoria al area privada correctamente' : 'se ha quitado la categoria del area privada correctamente');
+        }
+        return $this->deny_access($request);
+    }
 }

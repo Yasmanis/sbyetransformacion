@@ -148,6 +148,7 @@
     <q-dialog
         v-model="showDialogTopic"
         persistent
+        allow-focus-outside
         @before-show="onBeforeShow"
         @hide="currentTopic = null"
     >
@@ -210,7 +211,7 @@
         </q-card>
     </q-dialog>
 
-    <q-dialog v-model="showDialogSection" persistent>
+    <q-dialog v-model="showDialogSection" persistent allow-focus-outside>
         <q-card style="width: 800px">
             <dialog-header-component
                 :icon="`img:${page.props.public_path}images/icon/${

@@ -80,7 +80,7 @@ class User extends Authenticatable
 
     public function getFullNameAttribute()
     {
-        return $this->name . ' ' . $this->surname;
+        return isset($this->name) || isset($this->surname) ? ($this->name . ' ' . $this->surname) : $this->username;
     }
 
     public function personalSbyeTransformacion($query)

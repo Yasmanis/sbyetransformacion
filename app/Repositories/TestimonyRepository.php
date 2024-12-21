@@ -17,4 +17,10 @@ class TestimonyRepository extends BaseRepository
     }
 
     protected $with = ['user'];
+
+    protected $scopes = [
+        array(
+            'method' => 'owner',
+            'args' => null)
+    ];
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 
@@ -39,6 +40,21 @@ class SelectsController extends Controller
         return response()->json([
             'options' => DB::table('file')
                 ->select(DB::raw('SUBSTRING_INDEX(TYPE, "/", 1) as value, SUBSTRING_INDEX(TYPE, "/", 1) label'))->distinct()->get()
+        ]);
+    }
+
+    public function users()
+    {
+        $options = [];
+        $users = User::all();
+        foreach ($users as $u) {
+            $options[] = [
+                'value' => $u->id,
+                'label' => $u->full_name
+            ];
+        }
+        return response()->json([
+            'options' => $options
         ]);
     }
 }

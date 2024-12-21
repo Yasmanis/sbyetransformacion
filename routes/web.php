@@ -17,6 +17,7 @@ use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
 use App\Models\SchoolTopic;
+use App\Models\Testimony;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -47,22 +48,26 @@ Route::get('/taller_online', function () {
 Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
     $categories = Category::where('public_access', true)->orderBy('order', 'ASC')->get();
     $recent_files = File::latest()->take(6)->get();
-    $files = [];
     $category = null;
+    $testimonies = [];
     if (count($categories) > 0) {
         $category = $categories[0];
-        $files = $category->files;
     }
     if (isset($id)) {
         $c = Category::find($id);
         if ($c->public_access) {
             $category = $c;
-            $files = $category->files;
         } else {
             return to_route('publicaciones');
         }
     }
-    return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'files' => $files, 'recent_files' => $recent_files])->with('error', 'asasdasd');
+    if (isset($category)) {
+        $category->loadMissing('files');
+    }
+    if ($category->name == 'testimonios') {
+        $testimonies = Testimony::active()->with('user')->orderBy('type', 'DESC')->get();
+    }
+    return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'recent_files' => $recent_files, 'testimonies' => $testimonies])->with('error', 'asasdasd');
 })->name('publicaciones');
 
 Route::get('/contactame', function () {
@@ -109,11 +114,13 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/categories/sort-files', [CategoryController::class, 'sortFiles']);
     Route::post('/admin/categories/sort-categories', [CategoryController::class, 'sortCategories']);
     Route::post('/admin/categories/public-access/{id}', [CategoryController::class, 'publicAccess']);
+    Route::post('/admin/categories/private-area/{id}', [CategoryController::class, 'privateArea']);
     Route::resource('/admin/files', FileController::class);
     Route::post('/admin/files/poster/{id}', [FileController::class, 'poster']);
 
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);
+    Route::get('/users', [SelectsController::class, 'users']);
     Route::get('/admin/posts', [PostController::class, 'index']);
     Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
 

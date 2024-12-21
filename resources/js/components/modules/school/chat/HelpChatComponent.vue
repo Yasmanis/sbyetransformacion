@@ -5,7 +5,7 @@
         persistent
         width="400px"
         allow-focus-outside
-        @before-show="readonly = has_edit"
+        @hide="helpEdit = false"
     >
         <q-card>
             <dialog-header-component
@@ -13,33 +13,23 @@
                 title="ayuda del chat"
                 closable
             />
-            <q-card-section style="width: 500px">
-                <q-layout view="lHh Lpr lFf" container style="height: 56vh">
-                    <q-page-container>
-                        <q-page>
-                            <editor-field
-                                v-model="help"
-                                :saveBtn="true"
-                                :cancelBtn="true"
-                                name="help_chat"
-                                maxHeight="50vh"
-                                @save="save"
-                                @cancel="readonly = true"
-                            />
-                            <q-page-sticky
-                                position="top-right"
-                                :offset="[30, 50]"
-                                v-if="readonly && has_edit"
-                            >
-                                <btn-conf-component
-                                    size="lg"
-                                    @click="readonly = false"
-                                />
-                            </q-page-sticky>
-                        </q-page>
-                    </q-page-container>
-                </q-layout>
-            </q-card-section>
+             <q-card-section style="max-height: 50vh" class="scroll">
+                <btn-conf-component
+                    size="md"
+                    @click="helpEdit = true"
+                    class="absolute-top-right"
+                    style="z-index: 1; margin-top: 30px; margin-right: 30px"
+                />
+                <editor-field
+                    v-model="help"
+                    :saveBtn="true"
+                    :cancelBtn="true"
+                    :readonly="!helpEdit"
+                    name="help_chat"
+                    @save="saveHelp"
+                    @cancel="helpEdit = false"
+                />
+                </q-card-section>
             <q-separator />
             <q-card-actions align="right">
                 <btn-cancel-component @click="showDialog = false" />
@@ -55,7 +45,7 @@ import BtnHelpComponent from "../../../btn/BtnHelpComponent.vue";
 import BtnCancelComponent from "../../../btn/BtnCancelComponent.vue";
 import BtnConfComponent from "../../../btn/BtnConfComponent.vue";
 import EditorField from "../../../form/input/EditorField.vue";
-import { router } from "@inertiajs/vue3";
+import { useForm } from "@inertiajs/vue3";
 import axios from "axios";
 
 defineOptions({
@@ -71,7 +61,7 @@ const props = defineProps({
 
 const showDialog = ref(false);
 const help = ref(null);
-const readonly = ref(false);
+const helpEdit = ref(false);
 
 onBeforeMount(() => {
     axios
@@ -82,19 +72,15 @@ onBeforeMount(() => {
         .catch(() => {});
 });
 
-const save = (name, val) => {
-    router.post(
-        "/admin/configuration/save",
-        {
-            keyName: name,
-            keyValue: val,
-        },
-        {
+const saveHelp = async (keyName, keyValue) => {
+    const form = useForm({
+            keyName,
+            keyValue,
+        });
+        form.post("/admin/configuration/save", {
             onSuccess: () => {
-                readonly.value = true;
-                help.value = val;
-            },
-        }
-    );
+                helpEdit.value=false;
+            }
+        });
 };
 </script>

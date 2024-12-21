@@ -6,6 +6,10 @@
         v-model="model"
         :editor="editorProps.editor"
         :config="editorProps.config"
+        :style="{
+            height: height,
+            width: '100% !important',
+        }"
         @ready="onReady"
         @input="onEditorInput"
     />
@@ -64,6 +68,7 @@ defineOptions({
 const props = defineProps({
     label: String,
     modelValue: String,
+    height: String,
     name: {
         type: String,
         required: true,
@@ -176,38 +181,41 @@ const editorProps = ref({
             Alignment,
             HorizontalLine,
         ],
-        toolbar: [
-            "undo",
-            "redo",
-            "|",
-            "heading",
-            "|",
-            "bold",
-            "italic",
-            "underline",
-            "|",
-            "link",
-            "uploadImage",
-            "insertTable",
-            "blockQuote",
-            "mediaEmbed",
-            "|",
-            "bulletedList",
-            "numberedList",
-            "|",
-            "outdent",
-            "indent",
-            "|",
-            "fontSize",
-            "fontFamily",
-            "fontColor",
-            "fontBackgroundColor",
-            "alignment",
-            "horizontalLine",
-            "|",
-            "save-btn",
-            "cancel-btn",
-        ],
+        toolbar: {
+            items: [
+                "undo",
+                "redo",
+                "|",
+                "heading",
+                "|",
+                "bold",
+                "italic",
+                "underline",
+                "|",
+                "link",
+                "uploadImage",
+                "insertTable",
+                "blockQuote",
+                "mediaEmbed",
+                "|",
+                "bulletedList",
+                "numberedList",
+                "|",
+                "outdent",
+                "indent",
+                "|",
+                "fontSize",
+                "fontFamily",
+                "fontColor",
+                "fontBackgroundColor",
+                "alignment",
+                "horizontalLine",
+                "|",
+                "save-btn",
+                "cancel-btn",
+            ],
+            shouldNotGroupWhenFull: true,
+        },
         heading: {
             options: [
                 {
@@ -307,17 +315,17 @@ const setModelValue = async () => {
 const onReady = (editor) => {
     editorInstance.value = editor;
 
-    editor.editing.view.change((writer) => {
-        if (!props.autoHeight) {
-            writer.setStyle(
-                "height",
-                `${
-                    props.rows > 0 ? props.rows * 45 : screen.value.height - 115
-                }px`,
-                editor.editing.view.document.getRoot()
-            );
-        }
-    });
+    // editor.editing.view.change((writer) => {
+    //     if (!props.autoHeight) {
+    //         writer.setStyle(
+    //             "height",
+    //             `${
+    //                 props.rows > 0 ? props.rows * 45 : screen.value.height - 115
+    //             }px`,
+    //             editor.editing.view.document.getRoot()
+    //         );
+    //     }
+    // });
 
     const toolbar = editor.ui.view.toolbar.element;
 

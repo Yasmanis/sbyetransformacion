@@ -8,6 +8,7 @@
     <q-dialog
         v-model="showDialog"
         persistent
+        allow-focus-outside
         @before-show="onBeforeShowDialog"
         @hide="onHide"
     >

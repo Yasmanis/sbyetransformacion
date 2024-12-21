@@ -23,6 +23,7 @@
         "ckeditor5-line-height-latest": "^0.1.0",
         "cropperjs": "^1.6.2",
         "fabric": "^6.5.3",
+        "glightbox": "^3.3.0",
         "nprogress": "^0.2.0",
         "quasar": "^2.16.11",
         "video.js": "^7.21.6",

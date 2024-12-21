@@ -15,7 +15,7 @@ export const notify = (
         progress: progress,
         closeBtn: close,
         type: type,
-        textColor: type !== "info" ? "black" : "white",
+        textColor: "black",
         classes: "bg-custom-blue",
     };
     if (icon) {

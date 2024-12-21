@@ -6,7 +6,7 @@ use App\Models\Attachment;
 use App\Repositories\ContactRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
-use Nette\Utils\Random;
+use Spatie\Permission\Models\Permission;
 
 class ContactsController extends Controller
 {
@@ -36,6 +36,11 @@ class ContactsController extends Controller
             $data['password'] = $request->email;
             $data['active'] = false;
             $user = $userRepository->create($data);
+            $p = Permission::firstWhere('name', 'add_testimony');
+            if ($p) {
+                $user->givePermissionTo($p);
+                $user->save();
+            }
         }
         $data = $request->only((new ($repository->model()))->getFillable());
         $data['user_id'] = $user->id;

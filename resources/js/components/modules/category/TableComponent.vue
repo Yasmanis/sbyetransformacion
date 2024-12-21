@@ -214,6 +214,17 @@
                         "
                         v-if="has_edit"
                     />
+                    <btn-lock-unlock-component
+                        :lock="props.row.private_area"
+                        titleLock="area privada"
+                        titleUnlock="publico"
+                        @click="
+                            router.post(
+                                `${current_module.base_url}/private-area/${props.row.id}`
+                            )
+                        "
+                        v-if="has_edit"
+                    />
                     <delete-component
                         :objects="[props.row]"
                         :module="current_module"
@@ -330,6 +341,7 @@ import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
 import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
+import BtnLockUnlockComponent from "../../btn/BtnLockUnlockComponent.vue";
 
 defineOptions({
     name: "TableComponent",

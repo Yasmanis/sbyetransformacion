@@ -35,6 +35,7 @@
                                     :has_delete="has_delete"
                                     v-if="has_edit"
                                 />
+                                <!-- <notification-component/> -->
                             </q-toolbar>
                         </q-card-section>
                         <q-separator />
@@ -81,6 +82,7 @@ import SectionAddComponent from "../../components/modules/school/SectionAddCompo
 import SectionEditComponent from "../../components/modules/school/SectionEditComponent.vue";
 import SectionComponent from "../../components/modules/school/SectionComponent.vue";
 import SectionItemComponent from "../../components/modules/school/SectionItemComponent.vue";
+import NotificationComponent from "../../components/modules/school/notification/NotificationComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 import { useQuasar } from "quasar";

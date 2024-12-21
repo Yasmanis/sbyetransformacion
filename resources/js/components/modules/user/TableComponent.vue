@@ -189,14 +189,14 @@
                         size="sm"
                         v-if="updateFields.length > 0 && has_edit"
                     />
-                    <!-- <book-info-component
+                    <book-info-component
                         :has_edit="has_edit"
                         :object="props.row"
                     />
                     <lock-unlock-component
                         :object="props.row"
                         v-if="has_edit"
-                    /> -->
+                    />
                     <delete-component
                         :objects="[props.row]"
                         :module="current_module"
@@ -277,14 +277,14 @@
                                                 has_edit
                                             "
                                         />
-                                        <!-- <book-info-component
+                                        <book-info-component
                                             :has_edit="has_edit"
                                             :object="props.row"
                                         />
                                         <lock-unlock-component
                                             :row="props.row"
                                             v-if="has_edit"
-                                        /> -->
+                                        />
                                         <delete-component
                                             :objects="[props.row]"
                                             :module="current_module"

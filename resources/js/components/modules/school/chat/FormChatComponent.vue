@@ -21,14 +21,38 @@
         @click="showDialog = true"
         v-else
     />
-    <q-dialog v-model="showDialog" persistent @hide="onHide">
-        <q-card style="width: 400px">
+    <q-dialog
+        v-model="showDialog"
+        persistent
+        allow-focus-outside
+        @hide="onHide"
+    >
+        <q-card>
             <dialog-header-component
                 icon="mdi-chat-processing-outline"
                 title="escribir en el chat "
                 closable
             />
-            <q-card-section>
+            <q-card-section style="max-height: 50vh" class="scroll">
+                <!-- <btn-conf-component
+                    size="md"
+                    @click="helpEdit = true"
+                    class="absolute-top-right"
+                    style="z-index: 1; margin-top: 30px; margin-right: 30px"
+                />
+                <editor-field
+                    v-model="help"
+                    :saveBtn="true"
+                    :cancelBtn="true"
+                    :readonly="!helpEdit"
+                    :name="
+                        formData.to === 'todos'
+                            ? 'help_chat_everybody'
+                            : 'help_chat_sbyedieta'
+                    "
+                    @save="saveHelp"
+                    @cancel="helpEdit = false"
+                /> -->
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
                     <select-field
                         :modelValue="formData.to"
@@ -44,7 +68,7 @@
                                 value: 'sbye_transformacion',
                             },
                         ]"
-                        @update="onUpdateField"
+                        @update="onUpdateTo"
                         v-if="!props.message"
                     />
                     <select-field
@@ -95,7 +119,9 @@
                     />
                 </q-form>
             </q-card-section>
+
             <q-separator />
+
             <q-card-actions align="right">
                 <btn-send-component @click="save" />
                 <btn-cancel-component
@@ -108,7 +134,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, watch } from "vue";
 import DialogHeaderComponent from "../../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../../base/QBtnComponent.vue";
 import BtnCancelComponent from "../../../btn/BtnCancelComponent.vue";
@@ -117,6 +143,7 @@ import TextField from "../../../form/input/TextField.vue";
 import EditorField from "../../../form/input/EditorField.vue";
 import UploaderField from "../../../form/input/UploaderField.vue";
 import BtnSendComponent from "../../../btn/BtnSendComponent.vue";
+import BtnConfComponent from "../../../btn/BtnConfComponent.vue";
 import { router, useForm } from "@inertiajs/vue3";
 import {
     error,
@@ -139,6 +166,7 @@ const emits = defineEmits(["hide-menu"]);
 
 const showDialog = ref(false);
 const help = ref(null);
+const helpEdit = ref(false);
 const formData = useForm({
     to: "todos",
     publish: "oculto",
@@ -150,16 +178,37 @@ const form = ref(null);
 const currentMessage = ref(null);
 
 onBeforeMount(() => {
-    axios
-        .get("/admin/configuration/index/help_chat")
+    getHelp("help_chat_everybody");
+});
+
+const getHelp = async (h) => {
+    await axios
+        .get(`/admin/configuration/index/${h}`)
         .then((data) => {
             help.value = data.data.value ?? "";
         })
         .catch(() => {});
-});
+};
+
+const saveHelp = async (keyName, keyValue) => {
+    const form = useForm({
+            keyName,
+            keyValue,
+        });
+        form.post("/admin/configuration/save", {
+            onSuccess: () => {
+                helpEdit.value=false;
+            }
+        });
+};
 
 const onUpdateField = (name, val) => {
     formData[name] = val;
+};
+
+const onUpdateTo = (name, val) => {
+    formData[name] = val;
+    getHelp(val === "todos" ? "help_chat_everybody" : "help_chat_sbyedieta");
 };
 
 const onFinishUploaded = (info) => {
@@ -209,6 +258,8 @@ const onHide = () => {
     formData.to = "todos";
     formData.publish = "oculto";
     formData.message = null;
+    helpEdit.value = false;
+    getHelp('help_chat_everybody');
     if (props.message) {
         emits("hide-menu");
     }
