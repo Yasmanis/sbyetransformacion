@@ -16,11 +16,9 @@ use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
-use App\Models\SchoolTopic;
 use App\Models\Testimony;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
