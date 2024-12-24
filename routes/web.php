@@ -55,7 +55,7 @@ Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
     }
     if (isset($id)) {
         $c = Category::find($id);
-        if ($c->public_access) {
+        if ($c && $c->public_access) {
             $category = $c;
         } else {
             return to_route('publicaciones');
