@@ -14,19 +14,8 @@
                                 : null
                         "
                         controls
-                        responsive
                         :volume="0.6"
-                        aspectRatio="16:9"
-                        class="full-width full-height"
-                        :style="{
-                            border: '1px solid #70707057',
-                            padding: '0px',
-                            'border-style': 'dotted',
-                            background: '#fff !important',
-                            height: $q.screen.xs
-                                ? `${($q.screen.width - 6) / 1.77}px !important`
-                                : null,
-                        }"
+                        aspectRatio="1:1"
                         v-if="
                             file.type.startsWith('video/') ||
                             file.type.startsWith('audio/')
@@ -47,7 +36,7 @@
                     >
                         <q-img
                             fit="fill"
-                            :ratio="16 / 9"
+                            :ratio="1"
                             :src="`${$page.props.public_path}storage/${file.path}`"
                         />
                     </q-item>
@@ -63,14 +52,14 @@
                         v-else
                         ><q-img
                             fit="fill"
-                            :ratio="16 / 9"
+                            :ratio="1"
                             :src="`${$page.props.public_path}images/others/file.png`"
                     /></q-item>
                 </template>
                 <template v-else>
                     <q-card class="my-card q-ma-sm rounded">
                         <q-card-section
-                            class="q-pa-sm q-pa-none bg-black"
+                            class="q-pa-sm q-pa-none bg-black rounded-top"
                             style="background-color: #000 !important"
                         >
                             <video-player
@@ -81,29 +70,19 @@
                                         : null
                                 "
                                 controls
-                                responsive
+                                aspectRatio="16:9"
                                 :volume="0.6"
-                                class="full-width header-card"
                                 v-if="
                                     file.type.startsWith('video/') ||
                                     file.type.startsWith('audio/')
                                 "
                             />
-                            <a
-                                :href="`${$page.props.public_path}storage/${file.path}`"
-                                target="_blank"
+                            <q-img
+                                :src="`${$page.props.public_path}images/icon/white-file.png`"
+                                fit="fill"
+                                :ratio="16 / 9"
                                 v-else
-                            >
-                                <div
-                                    class="rounded-top full-width header-card"
-                                ></div>
-                                <div class="column items-center">
-                                    <i
-                                        class="fa fa-file fa-4x text-white"
-                                        style="margin-top: -120px"
-                                    ></i>
-                                </div>
-                            </a>
+                            />
                         </q-card-section>
                         <q-card-section class="text-center">
                             <q-item-label lines="3">
@@ -140,15 +119,14 @@
                     v-if="t.type === 'video'"
                 >
                     <q-card-section
-                        class="q-pa-sm q-pa-none bg-black"
+                        class="q-pa-sm q-pa-none bg-black rounded-top"
                         style="background-color: #000 !important"
                     >
                         <video-player
                             :src="`${$page.props.public_path}storage/${t.message}`"
                             controls
-                            responsive
+                            aspectRatio="16:9"
                             :volume="0.6"
-                            class="full-width header-card"
                         />
                     </q-card-section>
                     <q-card-section class="text-center">
@@ -167,7 +145,13 @@
                         </q-item-label>
                     </q-card-section>
                 </q-card>
-                <q-card flat bordered class="my-card q-ma-sm" style="border: 1px solid rgb(64, 116, 146)" v-else>
+                <q-card
+                    flat
+                    bordered
+                    class="my-card q-ma-sm"
+                    style="border: 1px solid rgb(64, 116, 146)"
+                    v-else
+                >
                     <q-card-section class="q-pa-sm q-pa-none text-center">
                         <q-img
                             :src="`${$page.props.public_path}images/icon/heart.png`"
@@ -238,3 +222,25 @@ const testimonies = computed(() => {
     return usePage().props.testimonies;
 });
 </script>
+<style>
+.rounded-top {
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+}
+
+.vjs-big-play-button {
+    top: 50% !important;
+    left: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 20px !important;
+    border: none !important;
+    line-height: 1.4em !important;
+    margin-top: -20px !important;
+    margin-left: -20px !important;
+}
+.q-card.rounded .vjs-poster {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+</style>

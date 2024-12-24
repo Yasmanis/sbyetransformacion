@@ -20,7 +20,7 @@
                 closable
             />
             <q-card-section class="col q-pt-none">
-                <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
+                <q-form class="q-gutter-sm q-mt-sm" greedy>
                     <image-field
                         name="poster"
                         :modelValue="
@@ -53,7 +53,6 @@ import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import ImageField from "../../form/input/ImageField.vue";
 import { usePage, useForm } from "@inertiajs/vue3";
-import { success, errorValidation } from "../../../helpers/notifications";
 
 const props = defineProps({
     size: {
@@ -84,7 +83,6 @@ const props = defineProps({
 
 const emits = defineEmits(["save"]);
 
-const upload = ref(false);
 const showDialog = ref(false);
 const setDefault = ref(false);
 

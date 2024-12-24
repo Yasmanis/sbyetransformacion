@@ -38,7 +38,14 @@
                             >
                                 <q-item-section>{{ l.title }}</q-item-section>
                             </q-item>
-                            <q-item clickable @click="router.get('/login')">
+                            <q-item
+                                clickable
+                                @click="
+                                    router.get(
+                                        authenticated ? '/login' : '/login'
+                                    )
+                                "
+                            >
                                 <q-item-section> area privada </q-item-section>
                             </q-item>
                         </q-list>
@@ -49,7 +56,7 @@
                     color="black"
                     rounded
                     label="area privada"
-                    href="/login"
+                    :href="authenticated ? '/login' : '/login'"
                     v-else
                 >
                     <q-icon
@@ -141,7 +148,7 @@
 import QBtnComponent from "../components/base/QBtnComponent.vue";
 import { router } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 
 defineOptions({
@@ -156,6 +163,10 @@ const $q = useQuasar();
 
 const screen = computed(() => {
     return $q.screen;
+});
+
+const authenticated = computed(() => {
+    return usePage().props.auth;
 });
 
 const links = ref([
