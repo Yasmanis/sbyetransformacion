@@ -1,7 +1,7 @@
 <template>
     <q-btn-component
         :tooltips="public ? titleHide : titlePublic"
-        :icon="public ? 'mdi-backspace-outline' : 'mdi-location-enter'"
+        :icon="public ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
         flat
         @click="onClick"
     />
@@ -10,7 +10,7 @@
 <script setup>
 import QBtnComponent from "../base/QBtnComponent.vue";
 defineOptions({
-    name: "BtnPublicComponent",
+    name: "BtnShowHideComponent",
 });
 
 const props = defineProps({
@@ -20,11 +20,11 @@ const props = defineProps({
     },
     titlePublic: {
         type: String,
-        default: "publicar",
+        default: "mostrar",
     },
     titleHide: {
         type: String,
-        default: "despublicar",
+        default: "ocultar",
     },
 });
 

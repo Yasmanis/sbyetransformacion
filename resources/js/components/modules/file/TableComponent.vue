@@ -64,7 +64,7 @@
                         />
                         <delete-component
                             :objects="selected"
-                            :module="current_module"
+                            :url="current_module.base_url"
                             @deleted="selected = []"
                             v-if="selected.length > 0 && has_delete"
                         />
@@ -202,7 +202,7 @@
                     <form-poster :object="props.row" v-if="has_edit" />
                     <delete-component
                         :objects="[props.row]"
-                        :module="current_module"
+                        :url="current_module.base_url"
                         size="sm"
                         v-if="has_delete"
                     />
@@ -283,7 +283,7 @@
                                         />
                                         <delete-component
                                             :objects="[props.row]"
-                                            :module="current_module"
+                                            :url="current_module.base_url"
                                             size="sm"
                                             v-if="has_delete"
                                         />

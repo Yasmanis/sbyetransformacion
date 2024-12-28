@@ -12,6 +12,11 @@ class Contact extends Model
 
     protected $fillable = ['book_number', 'book_date', 'msg_title', 'message', 'other_people', 'user_id', 'ticket'];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function attachments()
     {
         return $this->hasMany(Attachment::class, 'contact_id');

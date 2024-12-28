@@ -63,7 +63,7 @@
                         />
                         <delete-component
                             :objects="selected"
-                            :module="current_module"
+                            :url="current_module.base_url"
                             @deleted="selected = []"
                             v-if="selected.length > 0 && has_delete"
                         />
@@ -145,8 +145,8 @@
                             dense
                             size="sm"
                             style="max-width: min-content"
-                            :color="props.value ? 'primary' : 'negative'"
-                            text-color="white"
+                            :color="props.value ? 'black' : 'blue-2'"
+                            :text-color="props.value ? 'white' : 'black'"
                             :icon="props.value ? 'check' : 'error'"
                             :label="props.value ? 'Si' : 'No'"
                         />
@@ -197,9 +197,13 @@
                         :object="props.row"
                         v-if="has_edit"
                     />
+                    <change-password-component
+                        :object="props.row"
+                        v-if="has_edit"
+                    />
                     <delete-component
                         :objects="[props.row]"
-                        :module="current_module"
+                        :url="current_module.base_url"
                         size="sm"
                         v-if="has_delete"
                     />
@@ -244,11 +248,11 @@
                                             size="sm"
                                             style="max-width: min-content"
                                             :color="
-                                                col.value
-                                                    ? 'primary'
-                                                    : 'negative'
+                                                col.value ? 'black' : 'blue-2'
                                             "
-                                            text-color="white"
+                                            :text-color="
+                                                col.value ? 'white' : 'black'
+                                            "
                                             :icon="
                                                 col.value ? 'check' : 'error'
                                             "
@@ -282,12 +286,16 @@
                                             :object="props.row"
                                         />
                                         <lock-unlock-component
-                                            :row="props.row"
+                                            :object="props.row"
+                                            v-if="has_edit"
+                                        />
+                                        <change-password-component
+                                            :object="props.row"
                                             v-if="has_edit"
                                         />
                                         <delete-component
                                             :objects="[props.row]"
-                                            :module="current_module"
+                                            :url="current_module.base_url"
                                             size="sm"
                                             v-if="has_delete"
                                         />
@@ -314,6 +322,7 @@ import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent
 import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";
 import LockUnlockComponent from "./LockUnlockComponent.vue";
+import ChangePasswordComponent from "./ChangePasswordComponent.vue";
 import BookInfoComponent from "./BookInfoComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";

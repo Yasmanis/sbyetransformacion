@@ -13,7 +13,7 @@
                 title="ayuda del chat"
                 closable
             />
-             <q-card-section style="max-height: 50vh" class="scroll">
+            <q-card-section style="max-height: 50vh" class="scroll">
                 <btn-conf-component
                     size="md"
                     @click="helpEdit = true"
@@ -22,14 +22,20 @@
                 />
                 <editor-field
                     v-model="help"
+                    :modelValue="help"
                     :saveBtn="true"
                     :cancelBtn="true"
                     :readonly="!helpEdit"
                     name="help_chat"
                     @save="saveHelp"
-                    @cancel="helpEdit = false"
+                    @cancel="
+                        (name, val) => {
+                            helpEdit = false;
+                            help = val;
+                        }
+                    "
                 />
-                </q-card-section>
+            </q-card-section>
             <q-separator />
             <q-card-actions align="right">
                 <btn-cancel-component @click="showDialog = false" />
@@ -62,25 +68,27 @@ const props = defineProps({
 const showDialog = ref(false);
 const help = ref(null);
 const helpEdit = ref(false);
+const defaultHelp = ref(null);
 
 onBeforeMount(() => {
     axios
         .get("/admin/configuration/index/help_chat")
         .then((data) => {
             help.value = data.data.value ?? "";
+            defaultHelp.value = data.data.value ?? "";
         })
         .catch(() => {});
 });
 
 const saveHelp = async (keyName, keyValue) => {
     const form = useForm({
-            keyName,
-            keyValue,
-        });
-        form.post("/admin/configuration/save", {
-            onSuccess: () => {
-                helpEdit.value=false;
-            }
-        });
+        keyName,
+        keyValue,
+    });
+    form.post("/admin/configuration/save", {
+        onSuccess: () => {
+            helpEdit.value = false;
+        },
+    });
 };
 </script>

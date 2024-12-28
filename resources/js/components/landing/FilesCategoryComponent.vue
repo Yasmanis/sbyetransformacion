@@ -56,7 +56,9 @@
                             :src="`${$page.props.public_path}images/others/file.png`"
                     /></q-item>
                 </template>
-                <template v-else>
+                <template
+                    v-else-if="category.name.toLowerCase() !== 'testimonios'"
+                >
                     <q-card class="my-card q-ma-sm rounded">
                         <q-card-section
                             class="q-pa-sm q-pa-none bg-black rounded-top"
@@ -111,7 +113,62 @@
             </div>
         </template>
     </div>
-    <div class="row" v-else-if="testimonies.length > 0">
+    <div
+        class="row"
+        v-if="
+            category.name.toLowerCase() === 'testimonios' ||
+            testimonies.length > 0
+        "
+    >
+        <template v-if="category.name.toLowerCase() === 'testimonios'">
+            <template
+                v-for="(file, indexTestimonyFile) in category.files"
+                :key="`file-testimony-${indexTestimonyFile}`"
+            >
+                <div :class="cls" v-if="file.type.startsWith('video/')">
+                    <q-card class="my-card q-ma-sm rounded">
+                        <q-card-section
+                            class="q-pa-sm q-pa-none bg-black rounded-top"
+                            style="background-color: #000 !important"
+                        >
+                            <video-player
+                                :src="`${$page.props.public_path}storage/${file.path}`"
+                                :poster="
+                                    file.poster
+                                        ? `${$page.props.public_path}storage/${file.poster}`
+                                        : null
+                                "
+                                controls
+                                aspectRatio="16:9"
+                                :volume="0.6"
+                            />
+                        </q-card-section>
+                        <q-card-section class="text-center">
+                            <q-item-label lines="3">
+                                {{
+                                    file.name.indexOf(".") >= 0
+                                        ? file.name.substring(
+                                              0,
+                                              file.name.lastIndexOf(".")
+                                          )
+                                        : file.name
+                                }}
+                            </q-item-label>
+                            <q-item-label
+                                class="q-pt-sm cursor-pointer text-primary"
+                            >
+                                <a
+                                    class="text-uppercase text-primary"
+                                    :href="`${$page.props.public_path}storage/${file.path}`"
+                                    target="_blank"
+                                    ><small>ver</small></a
+                                >
+                            </q-item-label>
+                        </q-card-section>
+                    </q-card>
+                </div>
+            </template>
+        </template>
         <template v-for="(t, index) in testimonies" :key="`testimony-${index}`">
             <div :class="cls">
                 <q-card
@@ -146,9 +203,8 @@
                     </q-card-section>
                 </q-card>
                 <q-card
-                    flat
                     bordered
-                    class="my-card q-ma-sm"
+                    class="my-card q-ma-sm rounded"
                     style="border: 1px solid rgb(64, 116, 146)"
                     v-else
                 >
@@ -171,7 +227,10 @@
             </div>
         </template>
     </div>
-    <div class="row text-center q-mb-md" v-else>
+    <div
+        class="row text-center q-mb-md"
+        v-if="category.files.length === 0 && testimonies.length === 0"
+    >
         <h3>
             lo sentimos, aun no se han hecho publicaciones en esta categoria
         </h3>

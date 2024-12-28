@@ -35,7 +35,7 @@
                                     :has_delete="has_delete"
                                     v-if="has_edit"
                                 />
-                                <!-- <notification-component/> -->
+                                <!-- <notification-component /> -->
                             </q-toolbar>
                         </q-card-section>
                         <q-separator />

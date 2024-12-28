@@ -64,7 +64,7 @@
                         />
                         <delete-component
                             :objects="selected"
-                            :module="current_module"
+                            :url="current_module.base_url"
                             @deleted="selected = []"
                             v-if="selected.length > 0 && has_delete"
                         />
@@ -205,7 +205,9 @@
                         :url="`${current_module.base_url}/sort-files`"
                         v-if="has_edit"
                     />
-                    <btn-public-component
+                    <btn-show-hide-component
+                        titlePublic="mostrar al publico"
+                        titleHide="ocultar al publico"
                         :public="props.row.public_access"
                         @click="
                             router.post(
@@ -227,7 +229,7 @@
                     />
                     <delete-component
                         :objects="[props.row]"
-                        :module="current_module"
+                        :url="current_module.base_url"
                         size="sm"
                         v-if="has_delete"
                     />
@@ -311,9 +313,31 @@
                                             :url="`${current_module.base_url}/sort-files`"
                                             v-if="has_edit"
                                         />
+                                        <btn-show-hide-component
+                                            titlePublic="mostrar al publico"
+                                            titleHide="ocultar al publico"
+                                            :public="props.row.public_access"
+                                            @click="
+                                                router.post(
+                                                    `${current_module.base_url}/public-access/${props.row.id}`
+                                                )
+                                            "
+                                            v-if="has_edit"
+                                        />
+                                        <btn-lock-unlock-component
+                                            :lock="props.row.private_area"
+                                            titleLock="area privada"
+                                            titleUnlock="publico"
+                                            @click="
+                                                router.post(
+                                                    `${current_module.base_url}/private-area/${props.row.id}`
+                                                )
+                                            "
+                                            v-if="has_edit"
+                                        />
                                         <delete-component
                                             :objects="[props.row]"
-                                            :module="current_module"
+                                            :url="current_module.base_url"
                                             size="sm"
                                             v-if="has_delete"
                                         />
@@ -340,7 +364,7 @@ import SearchComponent from "../../table/actions/SearchComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
-import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
+import BtnShowHideComponent from "../../btn/BtnShowHideComponent.vue";
 import BtnLockUnlockComponent from "../../btn/BtnLockUnlockComponent.vue";
 
 defineOptions({

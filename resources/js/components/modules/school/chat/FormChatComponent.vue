@@ -34,25 +34,40 @@
                 closable
             />
             <q-card-section style="max-height: 50vh" class="scroll">
-                <!-- <btn-conf-component
-                    size="md"
-                    @click="helpEdit = true"
-                    class="absolute-top-right"
-                    style="z-index: 1; margin-top: 30px; margin-right: 30px"
-                />
-                <editor-field
-                    v-model="help"
-                    :saveBtn="true"
-                    :cancelBtn="true"
-                    :readonly="!helpEdit"
-                    :name="
-                        formData.to === 'todos'
-                            ? 'help_chat_everybody'
-                            : 'help_chat_sbyedieta'
-                    "
-                    @save="saveHelp"
-                    @cancel="helpEdit = false"
-                /> -->
+                <div>
+                    <q-inner-loading
+                        :showing="showInnerLoading"
+                        label-class="text-primary"
+                        color="primary"
+                        size="xs"
+                        style="z-index: 99999"
+                    ></q-inner-loading>
+
+                    <btn-conf-component
+                        size="md"
+                        @click="helpEdit = true"
+                        class="absolute-top-right"
+                        style="z-index: 1; margin-top: 30px; margin-right: 30px"
+                    />
+                    <editor-field
+                        v-model="help"
+                        :saveBtn="true"
+                        :cancelBtn="true"
+                        :readonly="!helpEdit"
+                        :name="
+                            formData.to === 'todos'
+                                ? 'help_chat_everybody'
+                                : 'help_chat_sbyedieta'
+                        "
+                        @save="saveHelp"
+                        @cancel="
+                            (name, val) => {
+                                helpEdit = false;
+                                help = val;
+                            }
+                        "
+                    />
+                </div>
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
                     <select-field
                         :modelValue="formData.to"
@@ -176,30 +191,35 @@ const totalFiles = ref(0);
 const upload = ref(false);
 const form = ref(null);
 const currentMessage = ref(null);
+const showInnerLoading = ref(false);
 
 onBeforeMount(() => {
     getHelp("help_chat_everybody");
 });
 
 const getHelp = async (h) => {
+    showInnerLoading.value = true;
     await axios
         .get(`/admin/configuration/index/${h}`)
         .then((data) => {
             help.value = data.data.value ?? "";
         })
-        .catch(() => {});
+        .catch(() => {})
+        .finally(() => {
+            showInnerLoading.value = false;
+        });
 };
 
 const saveHelp = async (keyName, keyValue) => {
     const form = useForm({
-            keyName,
-            keyValue,
-        });
-        form.post("/admin/configuration/save", {
-            onSuccess: () => {
-                helpEdit.value=false;
-            }
-        });
+        keyName,
+        keyValue,
+    });
+    form.post("/admin/configuration/save", {
+        onSuccess: () => {
+            helpEdit.value = false;
+        },
+    });
 };
 
 const onUpdateField = (name, val) => {
@@ -259,7 +279,7 @@ const onHide = () => {
     formData.publish = "oculto";
     formData.message = null;
     helpEdit.value = false;
-    getHelp('help_chat_everybody');
+    getHelp("help_chat_everybody");
     if (props.message) {
         emits("hide-menu");
     }

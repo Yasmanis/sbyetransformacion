@@ -23,109 +23,78 @@
                 </p>
                 <q-form ref="formRef" greedy v-if="showForm">
                     <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <i
-                                class="mdi mdi-asterisk text-red"
-                                style="margin-left: 75px"
-                                v-if="!form.name"
-                            />
+                        <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
+                        >
                             <q-input
                                 v-model="form.name"
                                 name="name"
-                                placeholder="nombre"
+                                placeholder="nombre que quieres que salga en el testimonio"
                                 required
                                 dense
                                 rounded
                                 outlined
                                 bg-color="white"
-                                :class="!screen.xs ? 'q-mr-xs' : ''"
-                                :rules="[(val) => !!val || 'requerido']"
                                 hide-bottom-space
                             />
                         </div>
                         <div
-                            class="col-lg-6 col-md-6 col-sm-6 col-xs-12"
-                            :class="screen.xs ? 'q-mt-md' : ''"
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md text-white"
                         >
-                            <i
-                                class="mdi mdi-asterisk text-red"
-                                style="margin-left: 88px"
-                                v-if="!form.surname"
+                            <q-checkbox
+                                v-model="form.anonimous"
+                                color="white"
+                                checked-icon="mdi-circle"
+                                dense
+                                label="marca esta casilla si quieres hacer un testimonio anonimo, aunque es preferible que utilices un pseudonimo o solo tu nombre o diminutivo"
                             />
+                        </div>
+                        <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
+                        >
                             <q-input
-                                v-model="form.surname"
-                                type="text"
-                                name="surname"
-                                placeholder="apellidos"
-                                required
+                                v-model="form.title"
+                                name="title"
+                                placeholder="titulo del testimonio"
                                 dense
                                 rounded
                                 outlined
                                 bg-color="white"
-                                :class="!screen.xs ? 'q-ml-xs' : ''"
-                                :rules="[(val) => !!val || 'requerido']"
                                 hide-bottom-space
                             />
                         </div>
                         <div
                             class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
                         >
-                            <i
-                                class="mdi mdi-asterisk text-red"
-                                style="margin-left: 58px"
-                                v-if="!form.email"
-                            />
-                            <q-input
-                                v-model="form.email"
-                                name="email"
-                                placeholder="email"
-                                required
+                            <span class="text-white"
+                                >aqui tienes dos formas no excluyentes para
+                                subir tu testimonio</span
+                            >
+                        </div>
+                        <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md text-white"
+                        >
+                            <q-checkbox
+                                v-model="form.testimonyTextCheck"
+                                color="white"
+                                checked-icon="mdi-circle"
                                 dense
-                                rounded
-                                outlined
-                                bg-color="white"
-                                :rules="[
-                                    (val) => !!val || 'requerido',
-                                    (val, rules) =>
-                                        !!rules.email(val) || 'email no valido',
-                                ]"
-                                hide-bottom-space
+                                label="escribir el testimonio"
                             />
                         </div>
                         <div
                             class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
+                            v-if="form.testimonyTextCheck"
                         >
                             <i
-                                class="mdi mdi-asterisk text-red"
-                                style="margin-left: 158px"
-                                v-if="!form.msg_title"
-                            />
-                            <q-input
-                                v-model="form.msg_title"
-                                type="text"
-                                name="msg_title"
-                                placeholder="titulo del mensaje"
-                                required
-                                dense
-                                rounded
-                                outlined
-                                bg-color="white"
-                                :rules="[(val) => !!val || 'requerido']"
-                                hide-bottom-space
-                            />
-                        </div>
-                        <div
-                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
-                        >
-                            <i
-                                class="mdi mdi-asterisk text-red img-aster-msg"
-                                v-if="!form.message"
+                                class="mdi mdi-asterisk text-red img-aster-testimony"
+                                v-if="!form.testimonyText"
                             />
                             <q-input
                                 type="textarea"
-                                v-model="form.message"
-                                placeholder="mensaje"
-                                name="message"
+                                v-model="form.testimonyText"
+                                placeholder="testimonio"
+                                name="testimonyText"
                                 required
                                 dense
                                 rounded
@@ -135,83 +104,104 @@
                                 hide-bottom-space
                             >
                             </q-input>
-                            <div class="column items-end">
-                                <q-btn
-                                    :icon="`img:${$page.props.public_path}images/icon/clipper.png`"
-                                    dense
-                                    flat
-                                    @click="fileRef.pickFiles()"
-                                    style="
-                                        margin-top: -52px;
-                                        margin-right: 10px;
-                                    "
-                                />
-                            </div>
                         </div>
-                    </div>
-                    <div
-                        class="row q-pt-md"
-                        v-if="form.attachments?.length > 0"
-                    >
-                        <q-list dense>
-                            <q-item class="q-ma-none" style="padding: 0">
-                                <q-item-section
-                                    avatar
-                                    class="q-pa-none"
-                                    style="min-width: 30px"
-                                    v-if="form.attachments?.length > 1"
-                                >
-                                    <q-btn
-                                        flat
-                                        icon="fa fa-times-circle"
-                                        color="red"
-                                        padding="0"
-                                        @click="form.attachments = null"
-                                    >
-                                        <q-tooltip
-                                            >quitar todos los
-                                            adjuntos</q-tooltip
-                                        >
-                                    </q-btn>
-                                </q-item-section>
-                                <q-item-section class="text-white">
-                                    <q-item-label>adjuntos</q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-separator color="white"></q-separator>
+                        <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md text-white"
+                        >
+                            <q-checkbox
+                                v-model="form.testimonyVideoCheck"
+                                color="white"
+                                checked-icon="mdi-circle"
+                                dense
+                                label="subir testimonio en forma de video"
+                                @update:model-value="onChangeTestimonyType"
+                            />
+                            <br />
+                            <q-btn
+                                icon="logout"
+                                class="rotate-270"
+                                flat
+                                size="xl"
+                                rounded
+                                padding="5px"
+                                @click="fileRef.pickFiles()"
+                                v-if="
+                                    form.testimonyVideoCheck &&
+                                    !form.testimonyVideo
+                                "
+                            />
+                            <q-file
+                                style="display: none"
+                                v-model="form.testimonyVideo"
+                                accept="video/*"
+                                ref="fileRef"
+                                @rejected="onRejected"
+                            ></q-file>
                             <q-item
-                                v-for="(f, index) in form.attachments"
-                                :key="`attachment_${index}`"
                                 class="q-ma-none"
                                 style="padding: 0"
+                                v-if="form.testimonyVideo"
                             >
                                 <q-item-section
                                     avatar
                                     class="q-pa-none"
                                     style="min-width: 30px"
                                 >
-                                    <q-btn
-                                        flat
-                                        icon="fa fa-times-circle"
-                                        color="red"
-                                        padding="0"
-                                        @click="fileRef.removeAtIndex(index)"
-                                    >
-                                        <q-tooltip>quitar adjunto</q-tooltip>
-                                    </q-btn>
+                                    <btn-delete-component
+                                        color="white"
+                                        @click="form.testimonyVideo = null"
+                                    />
                                 </q-item-section>
                                 <q-item-section class="text-white">
-                                    <q-item-label>{{ f.name }}</q-item-label>
+                                    <q-item-label>{{
+                                        form.testimonyVideo.name
+                                    }}</q-item-label>
                                 </q-item-section>
                             </q-item>
-                        </q-list>
+                        </div>
+                        <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
+                        >
+                            <span class="text-white"
+                                >necesitas aclararnos algo o hablar con nosotros
+                                para ayudarte?</span
+                            >
+                        </div>
+                        <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md text-white"
+                        >
+                            <q-checkbox
+                                v-model="form.sendAdmMsg"
+                                color="white"
+                                checked-icon="mdi-circle"
+                                dense
+                                label="hablar con el administrador del sitio web"
+                            />
+                        </div>
+                        <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
+                            v-if="form.sendAdmMsg"
+                        >
+                            <i
+                                class="mdi mdi-asterisk text-red img-aster-adm-msg"
+                                v-if="!form.admMsg"
+                            />
+                            <q-input
+                                type="textarea"
+                                v-model="form.admMsg"
+                                placeholder="mensaje"
+                                name="admMsg"
+                                required
+                                dense
+                                rounded
+                                outlined
+                                bg-color="white"
+                                :rules="[(val) => !!val || 'requerido']"
+                                hide-bottom-space
+                            >
+                            </q-input>
+                        </div>
                     </div>
-                    <q-file
-                        ref="fileRef"
-                        v-model="form.attachments"
-                        multiple
-                        class="hidden"
-                    />
                     <q-btn
                         rounded
                         color="black"
@@ -248,8 +238,9 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { useForm, usePage } from "@inertiajs/vue3";
-import { errorValidation } from "../../helpers/notifications";
+import { useForm } from "@inertiajs/vue3";
+import { errorValidation, error } from "../../helpers/notifications";
+import BtnDeleteComponent from "../btn/BtnDeleteComponent.vue";
 import { useQuasar } from "quasar";
 
 defineOptions({
@@ -273,16 +264,32 @@ const formRef = ref(null);
 
 const form = useForm({
     name: null,
-    surname: null,
-    email: null,
+    anonimous: false,
+    title: null,
+    testimonyTextCheck: false,
+    testimonyVideoCheck: false,
+    testimonyText: null,
+    testimonyVideo: null,
+    sendAdmMsg: false,
+    admMsg: null,
     msg_title: null,
     message: null,
     attachments: null,
 });
 
+const onChangeTestimonyType = (val) => {
+    if (!val) {
+        form.testimonyVideo = null;
+    }
+};
+
 const onCancel = () => {
     form.reset();
     showForm.value = false;
+};
+
+const onRejected = () => {
+    error("archivo no admitido. solo se permiten videos");
 };
 
 const checkAuth = () => {
@@ -339,3 +346,29 @@ const onSubmit = () => {
     });
 };
 </script>
+<style>
+.q-checkbox__bg {
+    border-radius: 10px;
+    border-color: #fff;
+}
+
+.q-checkbox__icon-container i {
+    font-size: 0.6em;
+}
+
+.q-checkbox__label {
+    width: 100%;
+}
+
+.img-aster-testimony {
+    margin-top: 5px !important;
+    margin-left: 98px;
+    z-index: 9;
+}
+
+.img-aster-adm-msg {
+    margin-top: 5px !important;
+    margin-left: 82px;
+    z-index: 9;
+}
+</style>

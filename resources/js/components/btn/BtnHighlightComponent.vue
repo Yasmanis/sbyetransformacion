@@ -1,30 +1,30 @@
 <template>
     <q-btn-component
-        :tooltips="public ? titleHide : titlePublic"
-        :icon="public ? 'mdi-backspace-outline' : 'mdi-location-enter'"
-        flat
+        :tooltips="tooltips"
+        :icon="`img:${$page.props.public_path}images/icon/${
+            Dark.isActive ? 'white' : 'black'
+        }-highlight.png`"
+        :size="size"
         @click="onClick"
     />
 </template>
 
 <script setup>
 import QBtnComponent from "../base/QBtnComponent.vue";
+import { Dark } from "quasar";
+
 defineOptions({
-    name: "BtnPublicComponent",
+    name: "BtnHighlightComponent",
 });
 
 const props = defineProps({
-    public: {
-        type: Boolean,
-        default: true,
-    },
-    titlePublic: {
+    tooltips: {
         type: String,
-        default: "publicar",
+        default: "resaltar",
     },
-    titleHide: {
+    size: {
         type: String,
-        default: "despublicar",
+        default: "10px",
     },
 });
 

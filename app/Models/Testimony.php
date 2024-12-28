@@ -20,15 +20,14 @@ class Testimony extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function scopeOwner($query){
+    public function scopeOwner($query)
+    {
         $user = auth()->user();
         return $user->sa ? $query : $query->where('user_id', $user->id);
     }
 
     public function scopeActive($query)
     {
-        return $query->where('publicated', true)->whereHas('user', function ($query) {
-            $query->where('active', true);
-        });
+        return $query->where('publicated', true);
     }
 }

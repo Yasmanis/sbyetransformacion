@@ -1,5 +1,5 @@
 <template>
-    <btn-delete-component @click="confirm = true" />
+    <btn-delete-component @click="confirm = true" :disable="disable" />
     <confirm-component
         :show="confirm"
         title="confirmar eliminacion"
@@ -23,7 +23,10 @@ defineOptions({
 });
 
 const props = defineProps({
-    module: Object,
+    url: {
+        type: String,
+        required: true,
+    },
     objects: {
         type: Array,
         required: true,
@@ -33,6 +36,10 @@ const props = defineProps({
         type: String,
         default: "sm",
     },
+    disable: {
+        type: Boolean,
+        defaul: false,
+    },
 });
 
 const emit = defineEmits(["deleted"]);
@@ -41,14 +48,11 @@ const confirm = ref(false);
 
 const handleDelete = () => {
     const send = useForm({ ids: props.objects.map((o) => o.id) });
-    send.delete(
-        `${props.module.base_url}/${props.objects.map((o) => o.id).toString()}`,
-        {
-            onSuccess: () => {
-                emit("deleted");
-                confirm.value = false;
-            },
-        }
-    );
+    send.delete(`${props.url}/${props.objects.map((o) => o.id).toString()}`, {
+        onSuccess: () => {
+            emit("deleted");
+            confirm.value = false;
+        },
+    });
 };
 </script>

@@ -82,7 +82,7 @@
         </div>
         <btn-reload-component @click="router.reload()" />
         <form-chat-component :topic="props.topic" />
-        <!-- <help-chat-component :has_edit="has_edit" /> -->
+        <help-chat-component :has_edit="has_edit" />
     </div>
 
     <confirm-component

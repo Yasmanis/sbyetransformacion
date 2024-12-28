@@ -42,7 +42,7 @@
                                 clickable
                                 @click="
                                     router.get(
-                                        authenticated ? '/login' : '/login'
+                                        authenticated ? '/admin' : '/login'
                                     )
                                 "
                             >
@@ -56,7 +56,7 @@
                     color="black"
                     rounded
                     label="area privada"
-                    :href="authenticated ? '/login' : '/login'"
+                    :href="authenticated ? '/admin' : '/login'"
                     v-else
                 >
                     <q-icon

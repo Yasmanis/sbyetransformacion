@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -88,6 +89,18 @@ class UserController extends Controller
             $user->active = !$user->active;
             $user->save();
             return redirect()->back()->with('success', $user->active ? 'usuario dado de alta correctamente' : 'usuario dado de baja correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function changePassword(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('user')) {
+            $user = User::find($id);
+            $user->password = Hash::make($request->password);
+            $user->save();
+            $request->session()->regenerate();
+            return redirect()->back()->with('success', 'contraseña cambiada correctamente');
         }
         return $this->deny_access($request);
     }

@@ -63,7 +63,7 @@
                         />
                         <delete-component
                             :objects="selected"
-                            :module="current_module"
+                            :url="current_module.base_url"
                             @deleted="selected = []"
                             v-if="selected.length > 0 && has_delete"
                         />
@@ -134,8 +134,8 @@
                             dense
                             size="sm"
                             style="max-width: min-content"
-                            :color="props.value ? 'primary' : 'negative'"
-                            text-color="white"
+                            :color="props.value ? 'black' : 'blue-2'"
+                            :text-color="props.value ? 'white' : 'black'"
                             :icon="props.value ? 'check' : 'error'"
                             :label="props.value ? 'Si' : 'No'"
                         />
@@ -179,10 +179,18 @@
                         size="sm"
                         v-if="has_edit"
                     />
-                    <publicated-component :object="props.row" v-if="has_edit" />
+                    <btn-public-component
+                        :public="props.row.publicated"
+                        @click="
+                            router.post(
+                                `/admin/testimony/publicated/${props.row.id}`
+                            )
+                        "
+                        v-if="has_edit"
+                    />
                     <delete-component
                         :objects="[props.row]"
-                        :module="current_module"
+                        :url="current_module.base_url"
                         size="sm"
                         v-if="has_delete"
                     />
@@ -227,11 +235,11 @@
                                             size="sm"
                                             style="max-width: min-content"
                                             :color="
-                                                col.value
-                                                    ? 'primary'
-                                                    : 'negative'
+                                                col.value ? 'black' : 'blue-2'
                                             "
-                                            text-color="white"
+                                            :text-color="
+                                                col.value ? 'white' : 'black'
+                                            "
                                             :icon="
                                                 col.value ? 'check' : 'error'
                                             "
@@ -257,13 +265,18 @@
                                             size="sm"
                                             v-if="has_edit"
                                         />
-                                        <publicated-component
-                                            :object="props.row"
+                                        <btn-public-component
+                                            :public="props.row.publicated"
+                                            @click="
+                                                router.post(
+                                                    `/admin/testimony/publicated/${props.row.id}`
+                                                )
+                                            "
                                             v-if="has_edit"
                                         />
                                         <delete-component
                                             :objects="[props.row]"
-                                            :module="current_module"
+                                            :url="current_module.base_url"
                                             size="sm"
                                             v-if="has_delete"
                                         />
@@ -289,7 +302,7 @@ import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";
 import BtnFullScreenComponent from "../../btn/BtnFullScreenComponent.vue";
 import BtnClearComponent from "../../btn/BtnClearComponent.vue";
-import PublicatedComponent from "./PublicatedComponent.vue";
+import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";

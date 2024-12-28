@@ -64,7 +64,7 @@
                         />
                         <delete-component
                             :objects="selected"
-                            :module="current_module"
+                            :url="current_module.base_url"
                             @deleted="selected = []"
                             v-if="selected.length > 0 && has_delete"
                         />
@@ -155,8 +155,8 @@
                             dense
                             size="sm"
                             style="max-width: min-content"
-                            :color="props.value ? 'primary' : 'negative'"
-                            text-color="white"
+                            :color="props.value ? 'black' : 'blue-2'"
+                            :text-color="props.value ? 'white' : 'black'"
                             :icon="props.value ? 'check' : 'error'"
                             :label="props.value ? 'Si' : 'No'"
                         />
@@ -201,7 +201,7 @@
                     />
                     <delete-component
                         :objects="[props.row]"
-                        :module="current_module"
+                        :url="current_module.base_url"
                         size="sm"
                         v-if="has_delete"
                     />
@@ -246,11 +246,11 @@
                                             size="sm"
                                             style="max-width: min-content"
                                             :color="
-                                                col.value
-                                                    ? 'primary'
-                                                    : 'negative'
+                                                col.value ? 'black' : 'blue-2'
                                             "
-                                            text-color="white"
+                                            :text-color="
+                                                col.value ? 'white' : 'black'
+                                            "
                                             :icon="
                                                 col.value ? 'check' : 'error'
                                             "
@@ -281,7 +281,7 @@
                                         />
                                         <delete-component
                                             :objects="[props.row]"
-                                            :module="current_module"
+                                            :url="current_module.base_url"
                                             size="sm"
                                             v-if="has_delete"
                                         />

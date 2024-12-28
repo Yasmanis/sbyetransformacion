@@ -93,6 +93,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     });
     Route::resource('/admin/users', UserController::class);
     Route::post('/admin/users/lockUnlock/{id}', [UserController::class, 'lockUnlock']);
+    Route::post('/admin/users/change-password/{id}', [UserController::class, 'changePassword']);
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/testimony', TestimonyController::class);

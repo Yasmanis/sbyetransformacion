@@ -20,7 +20,7 @@
                 />
                 <q-toolbar-title />
 
-                <!-- <q-btn-component
+                <q-btn-component
                     icon="reply_all"
                     tooltips="volver a"
                     color="white"
@@ -38,7 +38,7 @@
                             </q-item>
                         </q-list>
                     </q-menu>
-                </q-btn-component> -->
+                </q-btn-component>
 
                 <DarkSwitcher
                     class="z-max"
