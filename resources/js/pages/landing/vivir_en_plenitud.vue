@@ -558,9 +558,7 @@
             </div>
             <div class="col-md-6">
                 <iframe
-                    width="540"
-                    height="305"
-                    src="https://fa479f52.sibforms.com/serve/MUIFAByQgnpgnI0dUcpdRlAFkcRJX3QAlJRK8S8rn7h84jAimy5s1VXmD5hXoVDHnou6_jQMGi7nebX5e4syae4E4bzKW867b65Y75AUdfMj0ZojDxjbokIeCyUW-Z9MHuP1A4BGDEed51XpiJvWAnZt86mmb4TEgIoOLsf_LpqSc9lVGeJURaX3aW2_KuAkvhikvDqzUtvR1e"
+                    src="https://fa479f52.sibforms.com/serve/MUIFAOQ-uk0Xiu3xqyoC2onXPMQOkM6fJioTdRUKeVBvCXn5pT1XEpfF2eNRj-6yo1D1SyktllOlDPnT0JdOLq9x0a-zeXwhx5QcC395GGXNObgePLhWEpyI9FzmHUcAQdVq2dqh-M2WAXmsxFicH-aLYcJzXqSlzYsGXoAXChf8pk8eQmcHNX1hg1AzEt5U7CCt4lcH3dJEn3xy"
                     frameborder="0"
                     scrolling="auto"
                     allowfullscreen
@@ -569,6 +567,8 @@
                         margin-left: auto;
                         margin-right: auto;
                         max-width: 100%;
+                        width: 100%;
+                        height: 100%;
                     "
                 ></iframe>
             </div>
