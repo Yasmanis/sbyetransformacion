@@ -14,8 +14,7 @@
                 :src="image"
                 @click="fileRef.pickFiles()"
                 class="cursor-pointer"
-                :width="width"
-                :height="height"
+                :ratio="hasDefaultImage ? 1 / 1 : ratio"
                 fit="fill"
             >
                 <template v-slot:error>
@@ -68,6 +67,7 @@ defineOptions({
 
 const props = defineProps({
     modelValue: String,
+    ratio: Number,
     name: {
         type: String,
         required: true,
@@ -105,7 +105,9 @@ onMounted(() => {
 });
 
 const onChangeFile = (f) => {
+    console.log(f);
     image.value = URL.createObjectURL(f);
+    console.log(image.value);
     hasDefaultImage.value = false;
     emits("change", props.name, f);
 };

@@ -61,8 +61,11 @@
                 >
                     <q-card class="my-card q-ma-sm rounded">
                         <q-card-section
-                            class="q-pa-sm q-pa-none bg-black rounded-top"
-                            style="background-color: #000 !important"
+                            class="q-pa-none"
+                            style="
+                                border-bottom: 1px solid #70707057;
+                                padding: 2px;
+                            "
                         >
                             <video-player
                                 :src="`${$page.props.public_path}storage/${file.path}`"
@@ -74,13 +77,14 @@
                                 controls
                                 aspectRatio="16:9"
                                 :volume="0.6"
+                                class="rounded-top"
                                 v-if="
                                     file.type.startsWith('video/') ||
                                     file.type.startsWith('audio/')
                                 "
                             />
                             <q-img
-                                :src="`${$page.props.public_path}images/icon/white-file.png`"
+                                :src="`${$page.props.public_path}images/icon/black-file.png`"
                                 fit="fill"
                                 :ratio="16 / 9"
                                 v-else
@@ -128,8 +132,11 @@
                 <div :class="cls" v-if="file.type.startsWith('video/')">
                     <q-card class="my-card q-ma-sm rounded">
                         <q-card-section
-                            class="q-pa-sm q-pa-none bg-black rounded-top"
-                            style="background-color: #000 !important"
+                            class="q-pa-none"
+                            style="
+                                border-bottom: 1px solid #70707057;
+                                padding: 2px;
+                            "
                         >
                             <video-player
                                 :src="`${$page.props.public_path}storage/${file.path}`"
@@ -141,6 +148,7 @@
                                 controls
                                 aspectRatio="16:9"
                                 :volume="0.6"
+                                class="rounded-top"
                             />
                         </q-card-section>
                         <q-card-section class="text-center">
@@ -176,18 +184,25 @@
                     v-if="t.type === 'video'"
                 >
                     <q-card-section
-                        class="q-pa-sm q-pa-none bg-black rounded-top"
-                        style="background-color: #000 !important"
+                        class="q-pa-none"
+                        style="border-bottom: 1px solid #70707057; padding: 2px"
                     >
                         <video-player
                             :src="`${$page.props.public_path}storage/${t.message}`"
                             controls
                             aspectRatio="16:9"
                             :volume="0.6"
+                            class="rounded-top"
                         />
                     </q-card-section>
                     <q-card-section class="text-center">
-                        <q-item-label>
+                        <q-item-label v-if="t.anonimous">
+                            <i>publicado como anonimo</i>
+                        </q-item-label>
+                        <q-item-label v-else-if="t.name_to_show">
+                            {{ t.name_to_show }}
+                        </q-item-label>
+                        <q-item-label v-else>
                             {{ t.user.full_name }}
                         </q-item-label>
                         <q-item-label
@@ -219,7 +234,13 @@
                         {{ t.message }}
                     </q-card-section>
                     <q-card-section class="text-center">
-                        <q-item-label>
+                        <q-item-label v-if="t.anonimous">
+                            <i>publicado como anonimo</i>
+                        </q-item-label>
+                        <q-item-label v-else-if="t.name_to_show">
+                            {{ t.name_to_show }}
+                        </q-item-label>
+                        <q-item-label v-else>
                             {{ t.user.full_name }}
                         </q-item-label>
                     </q-card-section>
@@ -281,25 +302,3 @@ const testimonies = computed(() => {
     return usePage().props.testimonies;
 });
 </script>
-<style>
-.rounded-top {
-    border-top-left-radius: 20px !important;
-    border-top-right-radius: 20px !important;
-}
-
-.vjs-big-play-button {
-    top: 50% !important;
-    left: 50% !important;
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 20px !important;
-    border: none !important;
-    line-height: 1.4em !important;
-    margin-top: -20px !important;
-    margin-left: -20px !important;
-}
-.q-card.rounded .vjs-poster {
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-}
-</style>

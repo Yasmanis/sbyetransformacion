@@ -50,6 +50,7 @@
                                             'la contraseña es requerido',
                                     ]"
                                     @keydown.enter.prevent="authenticate"
+                                    v-if="!lostPassword"
                                 >
                                     <template v-slot:append>
                                         <q-icon
@@ -69,18 +70,36 @@
                                 <q-checkbox
                                     v-model="form.rememberme"
                                     label="recordarme"
+                                    v-if="!lostPassword"
                                 ></q-checkbox>
                             </q-form>
                         </q-card-section>
-                        <q-card-actions class="q-px-lg">
+                        <q-card-section class="q-px-lg q-pt-none">
                             <q-btn
                                 size="md"
                                 color="primary"
                                 class="full-width text-white"
-                                label="acceder"
+                                :label="
+                                    lostPassword
+                                        ? 'cambio de contraseña'
+                                        : 'acceder'
+                                "
                                 @click="authenticate"
                             />
-                        </q-card-actions>
+                        </q-card-section>
+                        <q-card-section
+                            class="text-center q-pt-none cursor-pointer"
+                        >
+                            <q-item-label
+                                class="text-primary"
+                                @click="lostPassword = !lostPassword"
+                                >{{
+                                    lostPassword
+                                        ? "volver al login"
+                                        : "he olvidado mi contraseña"
+                                }}</q-item-label
+                            >
+                        </q-card-section>
                         <q-card-section align="center">
                             <q-btn-component
                                 size="sm"
@@ -150,7 +169,7 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { usePage } from "@inertiajs/vue3";
-import { login } from "../../services/auth";
+import { login, getPassword } from "../../services/auth";
 import { errorValidation, error } from "../../helpers/notifications";
 import QBtnComponent from "../../components/base/QBtnComponent.vue";
 defineOptions({
@@ -166,16 +185,29 @@ const form = ref({
 const formRef = ref(null);
 
 const isPwd = ref(true);
+const lostPassword = ref(false);
+
+watch(lostPassword, (n) => {
+    form.value = {
+        email: null,
+        password: null,
+        rememberme: false,
+    };
+});
 
 const errors = computed(() => {
     return usePage().props.errors;
 });
 
-const authenticate = () => {
-    formRef.value.validate().then((success) => {
+const authenticate = async () => {
+    formRef.value.validate().then(async (success) => {
         if (success) {
             let { email, password, rememberme } = form.value;
-            login(email, password, rememberme);
+            if (lostPassword.value) {
+                getPassword(email);
+            } else {
+                login(email, password, rememberme);
+            }
         } else {
             errorValidation();
         }

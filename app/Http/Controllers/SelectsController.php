@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 
@@ -43,10 +44,17 @@ class SelectsController extends Controller
         ]);
     }
 
-    public function users()
+    public function users(Request $request)
     {
         $options = [];
-        $users = User::all();
+        $users = User::query();
+        if (isset($request->role)) {
+            $users = $users->filterByRole($request->role);
+        }
+        if (isset($request->regex)) {
+            $users = $users->filterByRegex($request->regex);
+        }
+        $users = $users->get();
         foreach ($users as $u) {
             $options[] = [
                 'value' => $u->id,

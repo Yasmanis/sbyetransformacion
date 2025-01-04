@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\PasswordChangeNotification;
 use App\Models\User;
+use App\Notifications\StandardNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Foundation\Auth\Access;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 
 class AuthController extends Controller
@@ -43,5 +46,21 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
+    }
+
+    public function getPassword(Request $request)
+    {
+        $user = User::firstWhere('email', $request->email);
+        if ($user != null) {
+            $users = User::where('sa', true)->get();
+            $pass = new PasswordChangeNotification();
+            $pass->title = 'cambio de contraseña';
+            $pass->priority = 'Alta';
+            $pass->user_id = $user->id;
+            $pass->description = 'el usuario con correo <b>' . $request->email . '</b> ha solicitado el cambio de contraseña';
+            $pass->save();
+            Notification::send($users, new StandardNotification($pass));
+        }
+        return back()->with(['success' => 'se ha solicitado el cambio de su contraseña. espere un correo con los detalles', 'ok' => true]);
     }
 }

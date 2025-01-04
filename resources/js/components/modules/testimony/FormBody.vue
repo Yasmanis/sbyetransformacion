@@ -3,6 +3,20 @@
         <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
             <div class="form-field">
                 <text-field
+                    v-model="formData['name_to_show']"
+                    label="nombre a mostrar"
+                    name="name_to_show"
+                    :modelValue="formData['name_to_show']"
+                    @update="onUpdateField"
+                />
+                <checkbox-field
+                    label="marca esta casilla si quieres hacer un testimonio anonimo, aunque es preferible que utilices un pseudonimo o solo tu nombre o diminutivo"
+                    name="anonimous"
+                    class="q-mt-sm"
+                    :modelValue="formData['anonimous']"
+                    @update="onUpdateField"
+                />
+                <text-field
                     v-model="formData['title']"
                     label="titulo"
                     name="title"
@@ -37,6 +51,7 @@
                     v-model="formData['message']"
                     label="mensaje"
                     name="message"
+                    type="textarea"
                     :autogrow="true"
                     :othersProps="{
                         required: true,
@@ -61,6 +76,15 @@
                     @update="onUpdateField"
                     v-if="formData['type'] === 'video'"
                 />
+                <text-field
+                    v-model="formData['msg_to_admin']"
+                    label="mensaje al admin"
+                    name="msg_to_admin"
+                    type="textarea"
+                    :autogrow="true"
+                    :modelValue="formData['msg_to_admin']"
+                    @update="onUpdateField"
+                />
             </div>
         </q-form>
     </q-card-section>
@@ -78,11 +102,11 @@ defineOptions({
 
 import { ref, onBeforeMount } from "vue";
 import TextField from "../../form/input/TextField.vue";
+import CheckboxField from "../../form/input/CheckboxField.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import FileField from "../../form/input/FileField.vue";
 import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
-import BtnSaveAndNewComponent from "../../btn/BtnSaveAndNewComponent.vue";
 import { useForm } from "@inertiajs/vue3";
 import { errorValidation } from "../../../helpers/notifications";
 

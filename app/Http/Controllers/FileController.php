@@ -103,8 +103,7 @@ class FileController extends Controller
                 }
                 $path = $request->file('poster')->store('files/poster', 'public');
                 $file->poster = $path;
-            }
-            else {
+            } else {
                 if ($has_poster) {
                     $file->poster = null;
                     $file->deletePosterFromDisk();
@@ -113,6 +112,17 @@ class FileController extends Controller
             }
             $file->save();
             return redirect()->back()->with('success', $msg);
+        }
+        return $this->deny_access($request);
+    }
+
+    public function publicAccess(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('file')) {
+            $file = File::find($id);
+            $file->public_access = !$file->public_access;
+            $file->save();
+            return redirect()->back()->with('success', $file->public_access ? 'se ha pasado el archivo al acceso publico correctamente' : 'se ha quitado el archivo del acceso publico correctamente');
         }
         return $this->deny_access($request);
     }

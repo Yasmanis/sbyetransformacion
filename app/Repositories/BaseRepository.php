@@ -106,7 +106,7 @@ abstract class BaseRepository implements BaseInterface
     {
         $model = app()->make($this->model());
 
-        if (! $model instanceof Model) {
+        if (!$model instanceof Model) {
             throw new Exception("Class {$this->model()} must be an instance of " . Model::class);
         }
 
@@ -524,7 +524,7 @@ abstract class BaseRepository implements BaseInterface
             $this->query->orderBy($orders['column'], $orders['direction']);
         }
 
-        if (isset($this->take) and ! is_null($this->take)) {
+        if (isset($this->take) and !is_null($this->take)) {
             $this->query->take($this->take);
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -15,6 +16,10 @@ class File extends Model
     protected $fillable = ['name', 'size', 'path', 'type', 'category_id'];
 
     protected $appends = ['category', 'size_str', 'date_for_human'];
+
+    protected $casts = [
+        'public_access' => 'boolean',
+    ];
 
     protected static function booted()
     {
@@ -50,6 +55,13 @@ class File extends Model
     public function scopeTypeOfFile($query, $args)
     {
         return $query->where('type', 'like', $args[0] . '%');
+    }
+
+    public function scopePublicAccess($query)
+    {
+        return $query->where('public_access', true)->whereHas('category', function (Builder $query) {
+            $query->where('public_access', true);
+        });
     }
 
     public function deleteFileFromDisk()

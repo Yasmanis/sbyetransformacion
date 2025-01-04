@@ -2,18 +2,20 @@
     <q-btn-component
         icon="mdi-image-outline"
         tooltips="portada"
-        :disable="!object.type.startsWith('video/')"
+        :disable="
+            !object.type.startsWith('video/') &&
+            !object.type.startsWith('audio/')
+        "
         @click="showDialog = true"
     />
     <q-dialog
         v-model="showDialog"
         persistent
         :position="position"
-        :full-hight="fullHeight"
         @show="setDefault = !setDefault"
         @hide="onHide"
     >
-        <q-card>
+        <q-card style="width: 350px">
             <dialog-header-component
                 icon="mdi-image-outline"
                 title="portada"
@@ -23,6 +25,7 @@
                 <q-form class="q-gutter-sm q-mt-sm" greedy>
                     <image-field
                         name="poster"
+                        :ratio="16 / 9"
                         :modelValue="
                             object.poster
                                 ? `${page.props.public_path}storage/${object.poster}`
@@ -74,10 +77,6 @@ const props = defineProps({
     position: {
         type: String,
         default: "right",
-    },
-    fullHeight: {
-        type: Boolean,
-        default: true,
     },
 });
 

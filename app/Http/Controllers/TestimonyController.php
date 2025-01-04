@@ -6,6 +6,7 @@ use App\Models\File;
 use App\Models\Testimony;
 use App\Repositories\TestimonyRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class TestimonyController extends Controller
@@ -44,6 +45,30 @@ class TestimonyController extends Controller
             return redirect()->back()->with('success', 'testimonio adicionado correctamente');
         }
         return $this->deny_access($request);
+    }
+
+    public function storeFromPublications(Request $request)
+    {
+        if (auth()->check()) {
+            $user = auth()->user();
+            $repository = new TestimonyRepository();
+            $data = $request->only((new ($repository->model()))->getFillable());
+            $data['user_id'] = $user->id;
+            if ($request->hasFile('testimonyVideo')) {
+                $path = $request->file('testimonyVideo')->store('testimonies', 'public');
+                $data['message'] = $path;
+                $data['type'] = 'video';
+                $repository->create($data);
+            }
+            if (isset($request->testimonyText)) {
+                $repository = new TestimonyRepository();
+                $data['message'] = $request->testimonyText;
+                $data['type'] = 'text';
+                $repository->create($data);
+            }
+            return redirect()->back()->with('success', 'revisaremos que tu testimonio cumple con la etica general y tras ello se publicara');
+        }
+        return redirect()->back()->with('error', 'para agregar el testimonio debe ser usuario autenticado');
     }
 
     public function update(Request $request, $id)

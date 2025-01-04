@@ -8,6 +8,5 @@
 </template>
 <script setup>
 import Layout from "../layouts/AdminLayout.vue";
-import { ref, watch } from "vue";
 import { Head } from "@inertiajs/vue3";
 </script>

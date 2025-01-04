@@ -6,6 +6,12 @@
                     class="col-md-4 col-lg-4 col-sm-4 col-xs-12 q-sm-pr-md"
                     :class="screen.xs ? 'q-mb-md' : 'q-pr-md'"
                 >
+                    <!-- <q-card>
+                        <q-card-section class="text-center q-pb-sm">
+                            <mgr-private-msg-component />
+                        </q-card-section>
+                    </q-card> -->
+
                     <q-card>
                         <q-card-section class="text-center q-pb-sm">
                             <p class="q-mb-none">
@@ -18,8 +24,8 @@
                         </q-card-section>
                     </q-card>
 
-                    <q-card>
-                        <q-card-section class="text-bold q-mt-md">
+                    <q-card class="q-mt-md">
+                        <q-card-section class="text-bold">
                             <p class="text-bold">avisos</p>
                         </q-card-section>
                     </q-card>
@@ -82,7 +88,7 @@ import SectionAddComponent from "../../components/modules/school/SectionAddCompo
 import SectionEditComponent from "../../components/modules/school/SectionEditComponent.vue";
 import SectionComponent from "../../components/modules/school/SectionComponent.vue";
 import SectionItemComponent from "../../components/modules/school/SectionItemComponent.vue";
-import NotificationComponent from "../../components/modules/school/notification/NotificationComponent.vue";
+import MgrPrivateMsgComponent from "../../components/modules/privatemsg/MgrPrivateMsgComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 import { useQuasar } from "quasar";

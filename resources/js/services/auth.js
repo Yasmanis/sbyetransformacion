@@ -8,6 +8,16 @@ export const login = (email, password, rememberme) => {
     });
     form.post("authenticate");
 };
+export const getPassword = (email) => {
+    const form = useForm({
+        email: email,
+    });
+    form.post("getPassword", {
+        onSuccess: () => {
+            return true;
+        },
+    });
+};
 export const logout = () => {
     Loading.show();
     location.href = "/logout";

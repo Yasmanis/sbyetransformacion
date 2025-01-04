@@ -38,9 +38,46 @@ const message = {
     type: "text",
 };
 
-const searchFields = [title];
+const message_to_admin = {
+    field: "msg_to_admin",
+    name: "msg_to_admin",
+    label: "mensaje admin",
+    align: "left",
+    type: "text",
+};
 
-const fields = [title, message];
+const name_to_show = {
+    field: "name_to_show",
+    name: "name_to_show",
+    label: "nombre a mostrar",
+    align: "left",
+    type: "text",
+};
+
+const anonimous = {
+    field: "anonimous",
+    name: "anonimous",
+    label: "anonimo",
+    align: "center",
+    type: "boolean",
+    othersProps: {
+        help: [
+            "indica que el usuario es super-administrador, incluso sin tener rol o permiso asociado tiene acceso a todas las funcionalidades del sistema",
+        ],
+    },
+};
+
+const searchFields = [
+    title,
+    {
+        field: "name_to_show",
+        name: "name_to_show",
+        label: "nombre a mostrar",
+        type: "text",
+    },
+];
+
+const fields = [name_to_show, title, message, message_to_admin, anonimous];
 
 const filterFields = [
     {
@@ -61,6 +98,11 @@ const filterFields = [
     {
         name: "publicated",
         label: "publicado",
+        type: "boolean",
+    },
+    {
+        name: "anonimous",
+        label: "anonimo",
         type: "boolean",
     },
 ];

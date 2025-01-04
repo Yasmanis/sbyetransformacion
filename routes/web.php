@@ -16,9 +16,14 @@ use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
+use App\Models\PasswordChangeNotification;
 use App\Models\Testimony;
+use App\Models\User;
+use App\Notifications\StandardNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +50,7 @@ Route::get('/taller_online', function () {
 
 Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
     $categories = Category::where('public_access', true)->orderBy('order', 'ASC')->get();
-    $recent_files = File::latest()->take(6)->get();
+    $recent_files = File::publicAccess()->latest()->take(6)->get();
     $category = null;
     $testimonies = [];
     if (count($categories) > 0) {
@@ -60,7 +65,8 @@ Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
         }
     }
     if (isset($category)) {
-        $category->loadMissing('files');
+        $files = File::where('category_id', $category->id)->publicAccess()->orderBy('order', 'ASC')->get();
+        $category->files = $files;
     }
     if ($category->name == 'testimonios') {
         $testimonies = Testimony::active()->with('user')->orderBy('type', 'DESC')->get();
@@ -70,6 +76,10 @@ Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
 
 Route::get('/contactame', function () {
     return Inertia('landing/contactos');
+});
+
+Route::get('/brevo', function () {
+    return view('brevo');
 });
 
 Route::get('/legal', function () {
@@ -86,6 +96,22 @@ Route::post('/contacts/store', [ContactsController::class, 'store']);
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/authenticate', [AuthController::class, 'authenticate']);
+Route::post('/getPassword', [AuthController::class, 'getPassword']);
+
+Route::get('/shared-file/${id}', function ($id) {
+    $id = base64_decode($id);
+    $file = File::find($id);
+    if ($file != null) {
+        return Inertia('shared/file', [
+            'file' => $file
+        ]);
+    }
+    return redirect('not-found');
+})->name('shared-file');
+
+Route::get('/not-found', function () {
+    return Inertia('errors/notFound');
+})->name('not-found');
 
 Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/admin', function () {
@@ -98,6 +124,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/testimony', TestimonyController::class);
     Route::post('/admin/testimony/publicated/{id}', [TestimonyController::class, 'publicated']);
+    Route::post('/admin/testimony/store-from-publications', [TestimonyController::class, 'storeFromPublications']);
     Route::resource('/admin/life', LifeController::class);
     Route::post('/admin/life/sort-topics', [SchoolTopicsController::class, 'sortTopics']);
     Route::resource('/admin/schooltopics', SchoolTopicsController::class);
@@ -116,10 +143,12 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/categories/private-area/{id}', [CategoryController::class, 'privateArea']);
     Route::resource('/admin/files', FileController::class);
     Route::post('/admin/files/poster/{id}', [FileController::class, 'poster']);
+    Route::post('/admin/files/public-access/{id}', [FileController::class, 'publicAccess']);
 
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);
     Route::get('/users', [SelectsController::class, 'users']);
+    Route::post('/users', [SelectsController::class, 'users']);
     Route::get('/admin/posts', [PostController::class, 'index']);
     Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
 

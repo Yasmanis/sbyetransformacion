@@ -40,6 +40,21 @@
                     </q-menu>
                 </q-btn-component>
 
+                <q-btn-component
+                    icon="mdi-bell-outline"
+                    tooltips="notificationes"
+                    color="white"
+                    class="q-mr-sm fa-beat"
+                    v-if="notifications.length > 0"
+                >
+                    <q-badge color="black" floating>{{
+                        notifications.length
+                    }}</q-badge>
+                    <q-menu style="min-width: 300px">
+                        <notifications-component :messages="notifications" />
+                    </q-menu>
+                </q-btn-component>
+
                 <DarkSwitcher
                     class="z-max"
                     size="md"
@@ -78,11 +93,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import MenuComponent from "../components/navigation/MenuComponent.vue";
 import DarkSwitcher from "../components/profile/DarkSwitcher.vue";
 import QBtnComponent from "../components/base/QBtnComponent.vue";
+import NotificationsComponent from "../components/others/NotificationsComponent.vue";
 import { Dark } from "quasar";
+import { usePage } from "@inertiajs/vue3";
 
 defineOptions({
     name: "AdminLayout",
@@ -120,5 +137,7 @@ const links = ref([
     },
 ]);
 
-onMounted(() => {});
+const notifications = computed(() => {
+    return usePage().props.auth.user.notifications;
+});
 </script>

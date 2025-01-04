@@ -3,13 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -61,7 +62,7 @@ class User extends Authenticatable
         'active' => 'boolean'
     ];
 
-    protected $appends = ['permissions', 'roles', 'full_name'];
+    protected $appends = ['permissions', 'roles', 'full_name', 'notifications'];
 
     public function books()
     {
@@ -73,6 +74,15 @@ class User extends Authenticatable
         return $this->permissions()->get()->pluck('id');
     }
 
+    public function getNotificationsAttribute()
+    {
+        $notifications = $this->unreadNotifications;
+        foreach ($notifications as $n) {
+            $n['time'] = Carbon::parse($n['created_at'])->diffForHumans();
+        }
+        return $notifications;
+    }
+
     public function getRolesAttribute()
     {
         return $this->roles()->get()->pluck('id');
@@ -81,6 +91,20 @@ class User extends Authenticatable
     public function getFullNameAttribute()
     {
         return isset($this->name) || isset($this->surname) ? ($this->name . ' ' . $this->surname) : $this->username;
+    }
+
+    public function scopeFilterByRegex($query, $regex)
+    {
+        return $query
+            ->where('name', 'like', '%' . $regex . '%')
+            ->orWhere('surname', 'like', '%' . $regex . '%');
+    }
+
+    public function scopeFilterByRole($query, $value)
+    {
+        return $query->whereHas('roles', function ($query) use ($value) {
+            $query->where('id', $value);
+        });
     }
 
     public function personalSbyeTransformacion($query)

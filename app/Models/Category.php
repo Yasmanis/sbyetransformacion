@@ -31,4 +31,9 @@ class Category extends Model
     {
         return $this->hasMany(File::class)->orderBy('order', 'ASC');
     }
+
+    public function scopePublicAccess($query)
+    {
+        return $query->where('public_access', true);
+    }
 }

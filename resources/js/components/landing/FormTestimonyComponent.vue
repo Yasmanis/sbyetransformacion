@@ -27,8 +27,8 @@
                             class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
                         >
                             <q-input
-                                v-model="form.name"
-                                name="name"
+                                v-model="form.name_to_show"
+                                name="name_to_show"
                                 placeholder="nombre que quieres que salga en el testimonio"
                                 required
                                 dense
@@ -52,6 +52,11 @@
                         <div
                             class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
                         >
+                            <i
+                                class="mdi mdi-asterisk text-red"
+                                style="margin-left: 173px"
+                                v-if="!form.title"
+                            />
                             <q-input
                                 v-model="form.title"
                                 name="title"
@@ -59,6 +64,7 @@
                                 dense
                                 rounded
                                 outlined
+                                :rules="[(val) => !!val || 'requerido']"
                                 bg-color="white"
                                 hide-bottom-space
                             />
@@ -184,13 +190,13 @@
                         >
                             <i
                                 class="mdi mdi-asterisk text-red img-aster-adm-msg"
-                                v-if="!form.admMsg"
+                                v-if="!form.msg_to_admin"
                             />
                             <q-input
                                 type="textarea"
-                                v-model="form.admMsg"
+                                v-model="form.msg_to_admin"
                                 placeholder="mensaje"
-                                name="admMsg"
+                                name="msg_to_admin"
                                 required
                                 dense
                                 rounded
@@ -234,13 +240,29 @@
             />
         </q-card>
     </div>
+
+    <confirm-component
+        :show="confirm"
+        title=""
+        iconHeader=""
+        question="estas
+    seguro de publicar tu testimonio de forma anonima?"
+        :message="`las personas
+    que todavia no conocen sbye transformacion preferiran ver tu nombre si no
+    quieres ser identificado simplemente usa tu nombre o incluso un diminutivo o
+    un pseudonimo
+    <img src='${$page.props.public_path}images/icon/smile-2.png' width='20px' style='position: absolute; margin-top: 2px' />`"
+        @ok="submit"
+        @hide="confirm = false"
+    />
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 import { errorValidation, error } from "../../helpers/notifications";
 import BtnDeleteComponent from "../btn/BtnDeleteComponent.vue";
+import ConfirmComponent from "../base/ConfirmComponent.vue";
 import { useQuasar } from "quasar";
 
 defineOptions({
@@ -257,13 +279,14 @@ const screen = computed(() => {
 });
 
 const showForm = ref(false);
+const confirm = ref(false);
 
 const fileRef = ref(null);
 
 const formRef = ref(null);
 
 const form = useForm({
-    name: null,
+    name_to_show: null,
     anonimous: false,
     title: null,
     testimonyTextCheck: false,
@@ -271,10 +294,7 @@ const form = useForm({
     testimonyText: null,
     testimonyVideo: null,
     sendAdmMsg: false,
-    admMsg: null,
-    msg_title: null,
-    message: null,
-    attachments: null,
+    msg_to_admin: null,
 });
 
 const onChangeTestimonyType = (val) => {
@@ -293,56 +313,62 @@ const onRejected = () => {
 };
 
 const checkAuth = () => {
-    showForm.value = true;
-    // if (usePage().props.auth) {
-    //     showForm.value = true;
-    // } else {
-    //     $q.notify({
-    //         progress: true,
-    //         position: "top-right",
-    //         timeout: 20000,
-    //         multiLine: true,
-    //         textColor: "black",
-    //         color: "white",
-    //         badgeClass: "bg-custom-blue",
-    //         badgeTextColor: "dark",
-    //         type: "info",
-    //         message: `para subir tu testimonio debes ser usuario registrado. inicia sesion en el <a href="/login">area privada</a> o registrate en <a href="/contactame">contactame</a>`,
-    //         html: true,
-    //         actions: [
-    //             {
-    //                 icon: "mdi-close-circle-outline",
-    //                 color: "black",
-    //                 handler: () => {
-    //                     /* ... */
-    //                 },
-    //             },
-    //         ],
-    //     });
-    // }
+    if (usePage().props.auth) {
+        showForm.value = true;
+    } else {
+        $q.notify({
+            progress: true,
+            position: "top-right",
+            timeout: 20000,
+            multiLine: true,
+            textColor: "black",
+            color: "white",
+            badgeClass: "bg-custom-blue",
+            badgeTextColor: "dark",
+            type: "info",
+            message: `para subir tu testimonio debes ser usuario registrado. inicia sesion en el <a href="/login">area privada</a> o registrate en <a href="/contactame">contactame</a>`,
+            html: true,
+            actions: [
+                {
+                    icon: "mdi-close-circle-outline",
+                    color: "black",
+                    handler: () => {
+                        /* ... */
+                    },
+                },
+            ],
+        });
+    }
 };
 
 const onSubmit = () => {
     formRef.value.validate().then((success) => {
         if (success) {
-            // sending.value = true;
-            // form.post("/contacts/store", {
-            //     preserveScroll: true,
-            //     onSuccess: () => {
-            //         sending.value = false;
-            //         iAmNot.value = false;
-            //         contactPrivateArea.value = false;
-            //         book_date.value = "text";
-            //         form.reset();
-            //         formRef.value.reset();
-            //     },
-            //     onError: () => {
-            //         sending.value = false;
-            //     },
-            // });
+            if (
+                !form.testimonyVideo &&
+                (form.testimonyText === null ||
+                    form.testimonyText.trim() === "")
+            ) {
+                error(
+                    "debe al menos especificar un tipo de testimonio; escrito o video"
+                );
+            } else if (form.anonimous) {
+                confirm.value = true;
+            } else {
+                submit();
+            }
         } else {
             errorValidation();
         }
+    });
+};
+
+const submit = () => {
+    form.post("/admin/testimony/store-from-publications", {
+        onSuccess: () => {
+            form.reset();
+            confirm.value = false;
+        },
     });
 };
 </script>

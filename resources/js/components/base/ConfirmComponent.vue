@@ -14,8 +14,10 @@
                     size="160px"
                     style=""
                 />
-                <p style="font-size: 20px">estas seguro?</p>
-                <span v-html="message"></span>
+                <p style="font-size: 20px" class="text-center">
+                    {{ question }}
+                </p>
+                <span v-html="message" class="text-center"></span>
             </q-card-section>
             <q-card-actions align="center">
                 <btn-confirm-component @click="emits('ok')" />
@@ -37,6 +39,10 @@ const props = defineProps({
     show: {
         type: Boolean,
         default: false,
+    },
+    question: {
+        type: String,
+        default: "estas seguro?",
     },
     message: {
         type: String,

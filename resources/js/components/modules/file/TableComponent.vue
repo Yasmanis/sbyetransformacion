@@ -200,6 +200,25 @@
                         v-if="has_edit"
                     />
                     <form-poster :object="props.row" v-if="has_edit" />
+                    <shared-link-component
+                        tooltips="link para compartir"
+                        url="shared-file"
+                        :params="{
+                            id: props.row.id,
+                        }"
+                        v-if="has_edit"
+                    />
+                    <btn-show-hide-component
+                        titlePublic="mostrar al publico"
+                        titleHide="ocultar al publico"
+                        :public="props.row.public_access"
+                        @click="
+                            router.post(
+                                `${current_module.base_url}/public-access/${props.row.id}`
+                            )
+                        "
+                        v-if="has_edit"
+                    />
                     <delete-component
                         :objects="[props.row]"
                         :url="current_module.base_url"
@@ -281,6 +300,25 @@
                                             :object="props.row"
                                             v-if="has_edit"
                                         />
+                                        <shared-link-component
+                                            tooltips="link para compartir"
+                                            url="shared-file"
+                                            :params="{
+                                                id: props.row.id,
+                                            }"
+                                            v-if="has_edit"
+                                        />
+                                        <btn-show-hide-component
+                                            titlePublic="mostrar al publico"
+                                            titleHide="ocultar al publico"
+                                            :public="props.row.public_access"
+                                            @click="
+                                                router.post(
+                                                    `${current_module.base_url}/public-access/${props.row.id}`
+                                                )
+                                            "
+                                            v-if="has_edit"
+                                        />
                                         <delete-component
                                             :objects="[props.row]"
                                             :url="current_module.base_url"
@@ -304,10 +342,12 @@ import { useQuasar } from "quasar";
 import FormFile from "./FormComponent.vue";
 import FormPoster from "./FormPoster.vue";
 import FormComponent from "../../form/FormComponent.vue";
+import BtnShowHideComponent from "../../btn/BtnShowHideComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
+import SharedLinkComponent from "../../others/SharedLinkComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";

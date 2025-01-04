@@ -1,0 +1,228 @@
+<template>
+    <q-list dense class="q-pa-none q-ma-none">
+        <q-item style="padding: 0px" v-if="default_selected.length > 0">
+            <q-item-section>
+                <q-item-label>{{ label }} </q-item-label>
+            </q-item-section>
+        </q-item>
+        <q-item style="padding: 0px">
+            <q-item-section v-if="default_selected.length === 0">
+                <q-input dense readonly :label="label" hint="requerido" />
+                <q-item-label
+                    v-if="
+                        field !== null && errors !== null && errors.has(field)
+                    "
+                >
+                    <span class="text-danger text-lowercase">
+                        {{ errors.get(field) }}
+                    </span>
+                </q-item-label>
+            </q-item-section>
+
+            <users-selected-component
+                :imgbase="imgbase"
+                :list="default_selected"
+                @clear="onClear"
+                @remove-item="onRemove"
+                v-else
+            />
+
+            <q-item-section avatar style="min-width: 30px; height: 40px">
+                <q-btn-component
+                    tooltips="seleccionar usuarios"
+                    icon="mdi-account-circle"
+                    v-if="multiple"
+                >
+                    <q-menu ref="menuRef">
+                        <q-list dense>
+                            <q-item
+                                clickable
+                                v-close-popup
+                                @click="showDialog = true"
+                                style="padding-left: 0"
+                            >
+                                <q-item-section
+                                    avatar
+                                    style="padding-right: 0; min-width: 40px"
+                                >
+                                    <q-avatar
+                                        icon="mdi-account-check-outline"
+                                    />
+                                </q-item-section>
+                                <q-item-section>
+                                    <q-item-label
+                                        >seleccionar usuarios</q-item-label
+                                    >
+                                </q-item-section>
+                            </q-item>
+
+                            <q-item
+                                clickable
+                                v-close-popup
+                                @click="allUsers"
+                                style="padding-left: 0"
+                            >
+                                <q-item-section
+                                    avatar
+                                    style="padding-right: 0; min-width: 40px"
+                                >
+                                    <q-avatar
+                                        icon="mdi-account-multiple-check-outline"
+                                    />
+                                </q-item-section>
+                                <q-item-section>
+                                    <q-item-label
+                                        >todos los usuarios</q-item-label
+                                    >
+                                </q-item-section>
+                            </q-item>
+                        </q-list>
+                    </q-menu>
+                </q-btn-component>
+                <q-btn-component
+                    tooltips="seleccionar usuarios"
+                    icon="mdi-account-circle"
+                    @click="showDialog = true"
+                    v-else
+                />
+            </q-item-section>
+        </q-item>
+    </q-list>
+
+    <q-dialog v-model="showDialog" persistent position="right">
+        <q-card>
+            <dialog-header-component
+                icon="mdi-account-circle"
+                :title="
+                    multiple ? 'seleccionar usuarios' : 'seleccionar usuario'
+                "
+                closable
+            />
+            <q-card-section>
+                <users-select-component
+                    :imgbase="imgbase"
+                    :url="url"
+                    @change="onChange"
+                    :default_users="current_selected"
+                    :multiple="multiple"
+                />
+            </q-card-section>
+            <q-separator />
+            <q-card-actions align="right">
+                <btn-confirm-component @click="onSave" />
+                <btn-cancel-component
+                    :cancel="true"
+                    @click="showDialog = false"
+                />
+            </q-card-actions>
+        </q-card>
+    </q-dialog>
+</template>
+
+<script setup>
+import { ref, watch, onMounted } from "vue";
+import QBtnComponent from "../../base/QBtnComponent.vue";
+import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
+import BtnConfirmComponent from "../../btn/BtnConfirmComponent.vue";
+import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
+import UsersSelectComponent from "./UsersSelectComponent.vue";
+import UsersSelectedComponent from "./UsersSelectedComponent.vue";
+import { Loading } from "quasar";
+import axios from "axios";
+import { error, error500 } from "../../../helpers/notifications";
+
+defineOptions({
+    name: "UsersSelectDialogComponent",
+});
+
+const props = defineProps({
+    label: String,
+    field: String,
+    errors: {
+        type: Object,
+        default: null,
+    },
+    required: {
+        type: Boolean,
+        default: true,
+    },
+    multiple: {
+        type: Boolean,
+        default: true,
+    },
+    url: String,
+    imgbase: String,
+    default_users: {
+        type: Array,
+        default: [],
+    },
+});
+
+const emits = defineEmits(["change"]);
+
+const showDialog = ref(false);
+const menuRef = ref(null);
+const default_selected = ref([]);
+const current_selected = ref([]);
+onMounted(() => {
+    default_selected.value = props.default_users;
+});
+
+watch(
+    () => props.default_users,
+    (n, o) => {
+        default_selected.value = n;
+    }
+);
+
+watch(default_selected, () => {
+    setDefaults(current_selected, default_selected);
+    emits("change", default_selected.value);
+});
+
+const onChange = (users) => {
+    current_selected.value = users;
+};
+
+const onRemove = (usr) => {
+    default_selected.value = default_selected.value.filter(
+        (u) => u.value !== usr.value
+    );
+};
+
+const onClear = () => {
+    default_selected.value = [];
+};
+
+const allUsers = async () => {
+    Loading.show();
+    await axios
+        .get("/users")
+        .then((response) => {
+            default_selected.value = response.data.options;
+        })
+        .catch((error) => {
+            error500();
+        })
+        .finally(() => {
+            Loading.hide();
+        });
+};
+
+const setDefaults = (arr, items) => {
+    let selected = [];
+    for (let i = 0; i < items.value.length; i++) {
+        selected.push(items.value[i]);
+    }
+    arr.value = selected;
+};
+
+const onSave = () => {
+    let selected = [];
+    for (let i = 0; i < current_selected.value.length; i++) {
+        selected.push(current_selected.value[i]);
+    }
+    default_selected.value = selected;
+    showDialog.value = false;
+};
+</script>

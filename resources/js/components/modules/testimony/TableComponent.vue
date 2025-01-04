@@ -360,6 +360,27 @@ const columns = ref([
         type: "boolean",
         align: "center",
     },
+    {
+        field: "anonimous",
+        name: "anonimous",
+        label: "anonimo",
+        type: "boolean",
+        align: "center",
+    },
+    {
+        field: "name_to_show",
+        name: "name_to_show",
+        label: "nombre mostrar",
+        align: "left",
+        type: "text",
+    },
+    {
+        field: "msg_to_admin",
+        name: "msg_to_admin",
+        label: "mensaje admin",
+        align: "left",
+        type: "text",
+    },
 ]);
 
 if (sa.value) {
