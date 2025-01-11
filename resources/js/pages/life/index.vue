@@ -32,14 +32,17 @@
                 </div>
                 <div class="col-md-8 col-lg-8 col-sm-8 col-xs-12">
                     <q-card>
-                        <q-card-section class="q-pa-none">
+                        <q-card-section
+                            class="q-pa-none"
+                            v-if="has_add || (has_edit && sections.length > 0)"
+                        >
                             <q-toolbar class="q-gutter-x-sm">
                                 <section-add-component v-if="has_add" />
                                 <section-edit-component
                                     :has_add="has_add"
                                     :has_edit="has_edit"
                                     :has_delete="has_delete"
-                                    v-if="has_edit"
+                                    v-if="has_edit && sections.length > 0"
                                 />
                                 <!-- <notification-component /> -->
                             </q-toolbar>

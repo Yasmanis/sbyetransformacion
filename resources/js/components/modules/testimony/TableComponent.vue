@@ -156,7 +156,7 @@
                                 props.col.name === 'message'
                             "
                         />
-                        <span v-else>{{ props.value }}</span>
+                        <span v-html="props.value" v-else></span>
                     </template>
                 </q-td>
             </template>
@@ -401,7 +401,7 @@ columns.value.push({
     name: "actions",
     label: "Acciones",
     type: "actions",
-    width: 200,
+    width: 130,
 });
 
 const current_module = ref(null);

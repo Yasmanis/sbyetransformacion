@@ -159,7 +159,7 @@ class SchoolTopicsController extends Controller
     {
         $user = auth()->user();
         $id = $request->id;
-        $video = SchoolUserVideo::where('resource_id', $id)->first();
+        $video = SchoolUserVideo::where('resource_id', $id)->where('user_id', $user->id)->first();
         $resource = SchoolResource::find($id);
         $percent = $request->last_time == 0 ? 0 : (int)(($request->last_time / $request->total_time) * 100);
         if ($percent > 95) {

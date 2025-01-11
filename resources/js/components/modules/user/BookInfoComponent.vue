@@ -78,7 +78,30 @@
                                         height="50px"
                                         fit="fill"
                                         v-else
-                                    />
+                                    /> </template
+                                ><template
+                                    v-else-if="col.name === 'book_volume'"
+                                >
+                                    <q-btn-toggle
+                                        v-model="bookVolumes[props.row.id]"
+                                        toggle-color="primary"
+                                        clearable
+                                        :options="[
+                                            { label: 'I', value: 'tomo_1' },
+                                            { label: 'II', value: 'tomo_2' },
+                                            { label: 'III', value: 'tomo_3' },
+                                        ]"
+                                        @update:model-value="
+                                            (val) =>
+                                                onUpdateTomo(val, props.row)
+                                        "
+                                    >
+                                        <q-tooltip-component
+                                            title="asignar/desasignar
+                                            tomo"
+                                            class="bg-black"
+                                        />
+                                    </q-btn-toggle>
                                 </template>
 
                                 <template v-else>
@@ -135,7 +158,9 @@ import BtnBookComponent from "../../btn/BtnBookComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import LockUnlockComponent from "./LockUnlockComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
+import QTooltipComponent from "../../base/QTooltipComponent.vue";
 import { date } from "quasar";
+import { useForm } from "@inertiajs/vue3";
 defineOptions({
     name: "BookInfoComponent",
 });
@@ -198,9 +223,26 @@ const columns = ref([
         align: "left",
         sortable: true,
     },
+    {
+        field: "book_volume",
+        name: "book_volume",
+        label: "tomo",
+        align: "center",
+    },
 ]);
 
+const bookVolumes = ref({});
+
 const books = computed(() => {
+    props.object.books.forEach((b) => {
+        bookVolumes.value[b.id] = b.book_volume;
+    });
     return props.object.books ?? [];
 });
+
+const onUpdateTomo = (val, row) => {
+    useForm({
+        book_volume: val,
+    }).post(`/contacts/change-book-volume/${row.id}`);
+};
 </script>

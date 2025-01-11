@@ -52,6 +52,7 @@ class FileController extends Controller
                 $data['path'] = $properties['path'];
                 $data['type'] = $properties['type'];
                 $data['size'] = $properties['size'];
+                $data['public_access'] = $request->public_access == 'true' ? true : false;
                 $repository->create($data);
             }
             return redirect()->back()->with('success', 'archivo adicionado correctamente');
@@ -63,7 +64,12 @@ class FileController extends Controller
     {
         if (auth()->user()->hasUpdate('file')) {
             $repository = new FileRepository();
-            $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+            $public_access = $repository->getById($id)->public_access;
+            $file = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+            if ($file->public_access != $public_access) {
+                $file->public_date = $file->public_access ? $file->updated_at : null;
+                $file->save();
+            }
             return redirect()->back()->with('success', 'archivo modificado correctamente');
         }
         return $this->deny_access($request);
@@ -121,6 +127,8 @@ class FileController extends Controller
         if (auth()->user()->hasUpdate('file')) {
             $file = File::find($id);
             $file->public_access = !$file->public_access;
+            $file->save();
+            $file->public_date = $file->public_access ? $file->updated_at : null;
             $file->save();
             return redirect()->back()->with('success', $file->public_access ? 'se ha pasado el archivo al acceso publico correctamente' : 'se ha quitado el archivo del acceso publico correctamente');
         }

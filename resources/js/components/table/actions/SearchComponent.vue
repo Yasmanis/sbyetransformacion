@@ -1,45 +1,141 @@
 <template>
     <div class="q-gutter-md flex" v-if="$q.screen.gt.sm">
-        <q-select v-model="column" dense options-dense :options="fields" label="columna" emit-value map-options
-            option-value="name" hide-bottom-space :class="fields.length == 1 ? 'hidden' : ''"
-            @update:model-value="onChangeSelect" />
-        <q-select v-model="condition" dense options-dense :options="conditions"
-            :label="fields.length == 1 ? fields[0].label : 'condicion'" emit-value map-options hide-bottom-space
-            style="min-width: 80px" @update:model-value="onChangeSelect" />
-        <q-input bottom-slots v-model="query" :error="querySearchError" :error-message="querySearchMsg" label="frase" dense
-            hide-bottom-space @keyup.enter="search" @update:model-value="onChangeQuery">
+        <q-select
+            v-model="currentColumn"
+            dense
+            options-dense
+            :options="columns"
+            label="columna"
+            emit-value
+            map-options
+            option-value="name"
+            hide-bottom-space
+            :class="columns.length == 1 ? 'hidden' : ''"
+            @update:model-value="onChangeSelect"
+        />
+        <q-select
+            v-model="currentCondition"
+            dense
+            options-dense
+            :options="conditions"
+            :label="columns.length == 1 ? columns[0].label : 'condicion'"
+            emit-value
+            map-options
+            hide-bottom-space
+            style="min-width: 80px"
+            @update:model-value="onChangeSelect"
+        />
+        <q-input
+            bottom-slots
+            v-model="currentQuery"
+            :error="querySearchError"
+            :error-message="querySearchMsg"
+            label="frase"
+            dense
+            hide-bottom-space
+            @keyup.enter="search"
+            @update:model-value="onChangeQuery"
+        >
             <template v-slot:append>
-                <q-icon v-if="$page.props.search" name="close" class="cursor-pointer" @click="reset">
+                <q-icon
+                    v-if="$page.props.search"
+                    name="close"
+                    class="cursor-pointer"
+                    @click="reset"
+                >
                     <q-tooltip class="bg-brown">limpiar</q-tooltip>
                 </q-icon>
             </template>
             <template v-slot:after>
-                <q-btn-component :round="false" tooltips="buscar" flat dense size="md" icon="search" @click="search" />
+                <q-btn-component
+                    :round="false"
+                    tooltips="buscar"
+                    flat
+                    dense
+                    size="md"
+                    icon="search"
+                    @click="search"
+                />
             </template>
         </q-input>
     </div>
     <q-btn-group v-else outline>
-        <q-btn-component :round="false" tooltips="buscar" outline icon="search" size="md" @click="showDialog = true" />
-        <q-btn color="brown" icon="close" v-if="$page.props.search" @click="reset">
+        <q-btn-component
+            :round="false"
+            tooltips="buscar"
+            outline
+            icon="search"
+            size="md"
+            @click="showDialog = true"
+        />
+        <q-btn
+            color="brown"
+            icon="close"
+            v-if="$page.props.search"
+            @click="reset"
+        >
             <q-tooltip class="bg-brown">limpiar</q-tooltip>
         </q-btn>
     </q-btn-group>
 
     <q-dialog v-model="showDialog" @before-show="querySearchError = false">
         <q-card>
-            <dialog-header-component icon="search" title="configuracion de busqueda" closable />
+            <dialog-header-component
+                icon="search"
+                title="configuracion de busqueda"
+                closable
+            />
             <q-card-section class="q-gutter-md">
-                <q-select v-model="column" dense options-dense :options="fields" label="columna" emit-value map-options
-                    style="min-width: 150px" :class="fields.length == 1 ? 'hidden' : ''" />
-                <q-select v-model="condition" dense options-dense :options="conditions"
-                    :label="fields.length == 1 ? fields[0].label : 'condicion'" emit-value map-options
-                    style="min-width: 150px" />
-                <q-input v-model="query" label="frase" dense style="min-width: 150px" :error="querySearchError"
-                    :error-message="querySearchMsg" @keyup.enter="search" @update:model-value="onChangeQuery" />
+                <q-select
+                    v-model="currentColumn"
+                    dense
+                    options-dense
+                    :options="columns"
+                    label="columna"
+                    emit-value
+                    map-options
+                    style="min-width: 150px"
+                    :class="columns.length == 1 ? 'hidden' : ''"
+                    @update:model-value="onChangeSelect"
+                />
+                <q-select
+                    v-model="currentCondition"
+                    dense
+                    options-dense
+                    :options="conditions"
+                    :label="
+                        columns.length == 1 ? columns[0].label : 'condicion'
+                    "
+                    emit-value
+                    map-options
+                    style="min-width: 150px"
+                    @update:model-value="onChangeSelect"
+                />
+                <q-input
+                    v-model="currentQuery"
+                    label="frase"
+                    dense
+                    style="min-width: 150px"
+                    :error="querySearchError"
+                    :error-message="querySearchMsg"
+                    @keyup.enter="search"
+                    @update:model-value="onChangeQuery"
+                />
             </q-card-section>
             <q-card-actions align="right">
-                <q-btn flat color="secondary" label="buscar" @click="search()" />
-                <q-btn flat label="limpiar" color="brown" @click="reset" v-if="searched" />
+                <q-btn
+                    flat
+                    color="secondary"
+                    label="buscar"
+                    @click="search()"
+                />
+                <q-btn
+                    flat
+                    label="limpiar"
+                    color="brown"
+                    @click="reset"
+                    v-if="searched"
+                />
                 <q-btn flat label="cerrar" color="red" v-close-popup />
             </q-card-actions>
         </q-card>
@@ -47,7 +143,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, computed, watch } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import { useQuasar } from "quasar";
@@ -101,47 +197,77 @@ const conditions = [
         value: "not like",
     },
 ];
-const column = ref(null);
-const condition = ref({
+const columns = ref([]);
+const currentColumn = ref(null);
+const currentCondition = ref({
     label: "contiene",
     value: "like",
 });
-
-const query = ref(null);
+const currentQuery = ref(null);
 
 const querySearchError = ref(false);
 const querySearchMsg = ref("requerido");
 
-onBeforeMount(() => {
-    let search = page.props.search;
-    if (search) {
-        column.value = search.column;
-        query.value = search.query.replaceAll("%", "");
-        condition.value = search.fullCondition;
-    } else {
-        column.value = props.fields[0];
-        condition.value = {
-            label: "contiene",
-            value: "like",
-        };
-        query.value = "";
-    }
+const searchProps = computed(() => {
+    return page.props.search;
 });
+
+watch(searchProps, (n) => {
+    setValuesOnLoad();
+});
+
+onBeforeMount(() => {
+    columns.value = props.fields.map((f) => {
+        return {
+            label: f.label,
+            value: f.name,
+        };
+    });
+    setValuesOnLoad();
+});
+
+const initDefaultValue = () => {
+    currentColumn.value = columns.value[0];
+    currentQuery.value = null;
+    querySearchError.value = false;
+    currentCondition.value = {
+        label: "contiene",
+        value: "like",
+    };
+};
+
+const setValuesOnLoad = () => {
+    if (page.props.search) {
+        const { column, condition, query } = page.props.search;
+        currentColumn.value = columns.value.find((c) => c.value === column);
+        console.log(query);
+        currentQuery.value = query.toString().replaceAll("%", "");
+        currentCondition.value = conditions.find((c) => c.value === condition);
+    } else {
+        initDefaultValue();
+    }
+};
 
 const onChangeQuery = () => {
     querySearchError.value = false;
 };
 
 const onChangeSelect = () => {
-    if (page.props.search) {
+    if (
+        page.props.search &&
+        currentQuery.value &&
+        currentQuery.value.trim() !== ""
+    ) {
         search();
     }
 };
 
 function search() {
-    if (query.value && query.value.trim() !== "") {
-        let c = condition.value.value ? condition.value.value : condition.value;
-        let q = query.value;
+    if (currentQuery.value && currentQuery.value.trim() !== "") {
+        let c = currentCondition.value.value
+            ? currentCondition.value.value
+            : currentCondition.value;
+        let q = currentQuery.value;
         if (c === "start") {
             c = "like";
             q = `${q}%`;
@@ -152,9 +278,11 @@ function search() {
             q = `%${q}%`;
         }
         emit("refresh-data", "search", {
-            column: column.value.name,
+            column: currentColumn.value.value
+                ? currentColumn.value.value
+                : currentColumn.value,
             condition: c,
-            fullCondition: condition.value,
+            fullCondition: currentCondition.value,
             query: `${q}`,
         });
         searched.value = true;
@@ -164,12 +292,7 @@ function search() {
     }
 }
 function reset() {
-    query.value = null;
-    querySearchError.value = false;
-    condition.value = {
-        label: "contiene",
-        value: "like",
-    };
+    initDefaultValue();
     emit("refresh-data", "search");
 }
 </script>

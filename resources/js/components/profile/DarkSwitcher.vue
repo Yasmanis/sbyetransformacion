@@ -9,7 +9,7 @@
         tooltipsAnchor="center left"
         tooltipsSelf="center right"
         flat
-        @click="darkMode = !darkMode"
+        @click="changeTheme"
     />
 </template>
 
@@ -17,6 +17,7 @@
 import { watch, ref } from "vue";
 import QBtnComponent from "../base/QBtnComponent.vue";
 import { Dark } from "quasar";
+import { useForm } from "@inertiajs/vue3";
 
 defineOptions({
     name: "DarkSwitcher",
@@ -30,7 +31,15 @@ const props = defineProps({
 
 const darkMode = ref(Dark.isActive);
 
-watch(darkMode, (value) => {
-    Dark.set(value);
-});
+const changeTheme = () => {
+    const dark = !darkMode.value;
+    useForm({
+        dark: dark,
+    }).post("/admin/users/change-theme", {
+        onSuccess: () => {
+            Dark.set(dark);
+            darkMode.value = dark;
+        },
+    });
+};
 </script>

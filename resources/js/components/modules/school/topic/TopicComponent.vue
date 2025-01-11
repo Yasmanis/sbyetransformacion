@@ -189,6 +189,15 @@
             </div>
         </div>
     </div>
+    <book-volume-component
+        :othersProps="{ required: true }"
+        :modelValue="formData.book_volume"
+        @update="
+            (name, val) => {
+                formData[name] = val;
+            }
+        "
+    />
     <checkbox-field
         v-model="addDescription"
         label="añadir descripcion"
@@ -243,6 +252,7 @@ import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
 import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
 import BtnAddComponent from "../../../btn/BtnAddComponent.vue";
 import ConfirmComponent from "../../../base/ConfirmComponent.vue";
+import BookVolumeComponent from "../../../others/BookVolumeComponent.vue";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import { useForm } from "@inertiajs/vue3";
@@ -299,7 +309,8 @@ const confirm = ref(false);
 const currentAttachment = ref(null);
 
 onBeforeMount(() => {
-    let { id, name, description, coverImage, section_id } = props.topic;
+    let { id, name, description, coverImage, section_id, book_volume } =
+        props.topic;
     let resources = props.topic.resources;
     ppalVideo.value = resources.find((r) => r.principal);
     formData.value = {
@@ -308,6 +319,7 @@ onBeforeMount(() => {
         description,
         coverImage,
         section_id,
+        book_volume,
         principalVideo: false,
     };
     addDescription.value =
@@ -373,11 +385,12 @@ const store = async () => {
 };
 
 const update = async () => {
-    let { name, description, coverImage } = formData.value;
+    let { name, description, coverImage, book_volume } = formData.value;
     const send = useForm({
         name,
         description,
         coverImage,
+        book_volume,
         _method: "put",
         excludeFlash: totalFiles.value > 0 || formData.value.principalVideo,
     });

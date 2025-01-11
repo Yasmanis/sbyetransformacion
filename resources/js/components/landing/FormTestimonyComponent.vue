@@ -243,14 +243,13 @@
 
     <confirm-component
         :show="confirm"
+        width="500px"
         title=""
         iconHeader=""
         question="estas
-    seguro de publicar tu testimonio de forma anonima?"
-        :message="`las personas
-    que todavia no conocen sbye transformacion preferiran ver tu nombre si no
-    quieres ser identificado simplemente usa tu nombre o incluso un diminutivo o
-    un pseudonimo
+    seguro de publicar</br>tu testimonio de forma anonima?"
+        :message="`las personas que todavia no conocen</br>sbye transformacion preferiran ver tu nombre</br>si no
+    quieres ser identificado simplemente usa tu nombre</br>o incluso un diminutivo o un pseudonimo
     <img src='${$page.props.public_path}images/icon/smile-2.png' width='20px' style='position: absolute; margin-top: 2px' />`"
         @ok="submit"
         @hide="confirm = false"
@@ -323,8 +322,8 @@ const checkAuth = () => {
             multiLine: true,
             textColor: "black",
             color: "white",
-            badgeClass: "bg-custom-blue",
             badgeTextColor: "dark",
+            classes: "bg-custom-blue",
             type: "info",
             message: `para subir tu testimonio debes ser usuario registrado. inicia sesion en el <a href="/login">area privada</a> o registrate en <a href="/contactame">contactame</a>`,
             html: true,
@@ -368,6 +367,14 @@ const submit = () => {
         onSuccess: () => {
             form.reset();
             confirm.value = false;
+            $q.dialog({
+                title: "info",
+                message:
+                    "revisaremos que tu testimonio cumple con la etica general y tras ello se publicara",
+                ok: {
+                    flat: true,
+                },
+            });
         },
     });
 };

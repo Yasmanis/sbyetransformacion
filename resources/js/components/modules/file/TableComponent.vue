@@ -155,8 +155,8 @@
                             dense
                             size="sm"
                             style="max-width: min-content"
-                            :color="props.value ? 'primary' : 'negative'"
-                            text-color="white"
+                            :color="props.value ? 'black' : 'blue-2'"
+                            :text-color="props.value ? 'white' : 'black'"
                             :icon="props.value ? 'check' : 'error'"
                             :label="props.value ? 'Si' : 'No'"
                         />
@@ -208,9 +208,8 @@
                         }"
                         v-if="has_edit"
                     />
-                    <btn-show-hide-component
-                        titlePublic="mostrar al publico"
-                        titleHide="ocultar al publico"
+
+                    <btn-public-component
                         :public="props.row.public_access"
                         @click="
                             router.post(
@@ -266,11 +265,11 @@
                                             size="sm"
                                             style="max-width: min-content"
                                             :color="
-                                                col.value
-                                                    ? 'primary'
-                                                    : 'negative'
+                                                col.value ? 'black' : 'blue-2'
                                             "
-                                            text-color="white"
+                                            :text-color="
+                                                col.value ? 'white' : 'black'
+                                            "
                                             :icon="
                                                 col.value ? 'check' : 'error'
                                             "
@@ -308,9 +307,7 @@
                                             }"
                                             v-if="has_edit"
                                         />
-                                        <btn-show-hide-component
-                                            titlePublic="mostrar al publico"
-                                            titleHide="ocultar al publico"
+                                        <btn-public-component
                                             :public="props.row.public_access"
                                             @click="
                                                 router.post(
@@ -342,7 +339,7 @@ import { useQuasar } from "quasar";
 import FormFile from "./FormComponent.vue";
 import FormPoster from "./FormPoster.vue";
 import FormComponent from "../../form/FormComponent.vue";
-import BtnShowHideComponent from "../../btn/BtnShowHideComponent.vue";
+import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attachment;
+use App\Models\Contact;
 use App\Repositories\ContactRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class ContactsController extends Controller
@@ -60,5 +62,26 @@ class ContactsController extends Controller
             }
         }
         return redirect()->back()->with('success', 'su informacion ha sido registrada correctamente');
+    }
+
+    public function changeBookVolume(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('user')) {
+            $word = 'asignado';
+            $contact = Contact::find($id);
+            if (isset($contact->book_volume) && isset($request->book_volume)) {
+                $word = 'cambiado';
+            } else if (isset($contact->book_volume) && !isset($request->book_volume)) {
+                $word = 'desasignado';
+            }
+            $contact->book_volume = $request->book_volume;
+            $contact->save();
+            $book_volumes = DB::table('contacts')->whereNotNull('book_volume')->select('book_volume')->distinct()->get()->pluck('book_volume');
+            $user = $contact->user;
+            $user->book_volumes = count($book_volumes) ? $book_volumes : null;
+            $user->save();
+            return redirect()->back()->with('success', 'tomo ' . $word . ' correctamente');
+        }
+        return $this->deny_access($request);
     }
 }

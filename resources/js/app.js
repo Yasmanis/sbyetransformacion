@@ -69,12 +69,12 @@ router.on("error", (event) => {
 
 router.on("start", (event) => {
     const routes = [
-        "/",
-        "/consulta_individual",
-        "/taller_online",
-        "/publicaciones",
-        "/contactame",
-        "/contacts/store",
+        // "/",
+        // "/consulta_individual",
+        // "/taller_online",
+        // "/publicaciones",
+        // "/contactame",
+        //"/contacts/store",
         "/admin/schooltopics/update-video-percentaje-to-user",
     ];
     if (!routes.includes(event.detail.visit.url.pathname)) {
@@ -85,9 +85,7 @@ router.on("start", (event) => {
 router.on("progress", (event) => {});
 
 router.on("finish", (event) => {
-    if (!router.page.props.exclude_flash) {
-        Loading.hide();
-    }
+    Loading.hide();
 });
 
 const setMessages = () => {

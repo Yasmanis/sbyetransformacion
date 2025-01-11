@@ -162,12 +162,18 @@
 .q-img__content .bg-negative {
     background: rgb(172, 206, 214) !important;
 }
+
 .text-custom-blue {
     color: rgb(172, 206, 214) !important;
 }
 
 .text-negative {
     color: #000 !important;
+}
+
+.body--dark .text-negative {
+    color: rgb(172, 206, 214) !important;
+    opacity: 0.6;
 }
 
 .q-icon.text-negative {
@@ -178,7 +184,7 @@
     display: none;
 }
 
-.rounded-top {
+.rounded-top, .rounded-top .vjs-tech {
     border-top-left-radius: 25px !important;
     border-top-right-radius: 25px !important;
 }

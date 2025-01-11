@@ -63,6 +63,13 @@
                         @update="onUpdate"
                         v-if="f.type === 'range_size'"
                     />
+                    <date-range-component
+                        :name="f.name"
+                        :label="f.label"
+                        :modelValue="f.value"
+                        @update="onUpdate"
+                        v-if="f.type === 'date'"
+                    />
                 </div>
             </q-card-section>
             <q-card-actions align="right">
@@ -86,6 +93,7 @@ import QBtnComponent from "../../base/QBtnComponent.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import BooleanSelectField from "../../form/input/BooleanSelectField.vue";
 import RangeSize from "../../form/input/RangeSize.vue";
+import DateRangeComponent from "../../form/input/DateRangeComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 
 defineOptions({
@@ -135,7 +143,8 @@ function clear() {
 
 const onUpdate = (name, val, full) => {
     let current = filters.value.find((f) => f.name === name);
-    current.value = val
+    console.log(current);
+    current["value"] = val
         ? current.type === "select"
             ? Array.isArray(val)
                 ? val

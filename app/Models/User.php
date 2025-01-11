@@ -59,7 +59,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'sa' => 'boolean',
-        'active' => 'boolean'
+        'active' => 'boolean',
+        'configuration' => 'json',
+        'book_volumes' => 'json'
     ];
 
     protected $appends = ['permissions', 'roles', 'full_name', 'notifications'];
@@ -127,7 +129,7 @@ class User extends Authenticatable
 
     public function getPermissions()
     {
-        return $this->sa ? Permission::all() : Permission::whereIn('id', $this->getAllPermissions())->get();
+        return $this->sa ? Permission::all() : Permission::whereIn('id', $this->permissions)->get();
     }
 
     public function getApps()
@@ -219,9 +221,13 @@ class User extends Authenticatable
             ->distinct()->count();
         $percentage = 0;
         if ($videos_views > 0) {
+            $book_volumes = $this->book_volumes ? $this->book_volumes : [];
             $all_videos = DB::table('school_resources')
-                ->join('school_topics', function ($join) {
+                ->join('school_topics', function ($join) use ($book_volumes) {
                     $join->on('school_resources.topic_id', '=', 'school_topics.id');
+                    if (!$this->sa) {
+                        $join->whereIn('school_topics.book_volume', $book_volumes);
+                    }
                 })
                 ->where('school_resources.principal', true)
                 //->where('type', 'like', 'video/%')
@@ -232,5 +238,36 @@ class User extends Authenticatable
             }
         }
         return (int)$percentage;
+    }
+
+    public function getSections()
+    {
+        $sections = SchoolSection::all();
+        if (!$this->sa) {
+            $topics = [];
+            $sections1 = [];
+            $volumes = $this->book_volumes ? $this->book_volumes : [];
+            foreach ($sections as $s) {
+                foreach ($s->topics as $t) {
+                    if (in_array($t->book_volume, $volumes)) {
+                        $topics[] = $t;
+                    }
+                }
+                if (count($topics) > 0) {
+                    $ss = $s;
+                    $ss['topics'] = $topics;
+                    $sections1[] = [
+                        'id' => $s->id,
+                        'name' => $s->name,
+                        'description' => $s->desription,
+                        'order' => $s->order,
+                        'topics' => $topics
+                    ];
+                    $topics = [];
+                }
+            }
+            return $sections1;
+        }
+        return $sections;
     }
 }

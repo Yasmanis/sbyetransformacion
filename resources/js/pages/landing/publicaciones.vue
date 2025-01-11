@@ -54,18 +54,13 @@
                                         <q-item-label
                                             lines="3"
                                             class="text-lowercase text-primary text-weight-bold"
-                                            >{{
-                                                f.name.substring(
-                                                    0,
-                                                    f.name.lastIndexOf(".")
-                                                )
-                                            }}</q-item-label
+                                            >{{ f.name }}</q-item-label
                                         >
                                         <q-item-label
-                                            ><small>{{
-                                                f.date_for_human
-                                            }}</small></q-item-label
-                                        >
+                                            ><small class="text-lowercase">{{
+                                                getDate(f.public_date)
+                                            }}</small>
+                                        </q-item-label>
                                     </q-item-section>
                                 </q-item>
                             </q-list>
@@ -149,7 +144,7 @@ import { usePage } from "@inertiajs/vue3";
 import ListCategoryComponent from "../../components/landing/ListCategoryComponent.vue";
 import FilesCategoryComponent from "../../components/landing/FilesCategoryComponent.vue";
 import FormTestimonyComponent from "../../components/landing/FormTestimonyComponent.vue";
-import { useQuasar } from "quasar";
+import { useQuasar, date } from "quasar";
 
 defineOptions({
     name: "Publicaciones",
@@ -174,6 +169,11 @@ const categories = computed(() => {
 const recent_files = computed(() => {
     return page.props.recent_files;
 });
+
+const getDate = (dd) => {
+    let d = date.extractDate(dd, "DD/MM/YYYY");
+    return date.formatDate(d, "MMMM D, YYYY");
+};
 </script>
 
 <style scope>

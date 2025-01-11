@@ -1,6 +1,10 @@
 <template>
     <q-dialog v-model="showDialog" persistent @hide="emits('hide')">
-        <q-card style="width: 400px">
+        <q-card
+            :style="{
+                width: width,
+            }"
+        >
             <dialog-header-component
                 :icon="iconHeader"
                 :title="title"
@@ -14,9 +18,11 @@
                     size="160px"
                     style=""
                 />
-                <p style="font-size: 20px" class="text-center">
-                    {{ question }}
-                </p>
+                <p
+                    style="font-size: 20px"
+                    class="text-center"
+                    v-html="question"
+                ></p>
                 <span v-html="message" class="text-center"></span>
             </q-card-section>
             <q-card-actions align="center">
@@ -55,6 +61,10 @@ const props = defineProps({
     title: {
         type: String,
         default: "confirmar accion",
+    },
+    width: {
+        type: String,
+        default: "400px",
     },
 });
 

@@ -26,7 +26,11 @@
                     color="white"
                     class="q-mr-sm"
                 >
-                    <q-menu style="min-width: 300px">
+                    <q-menu
+                        style="min-width: 300px"
+                        transition-show="scale"
+                        transition-hide="scale"
+                    >
                         <q-list separator>
                             <q-item
                                 clickable
@@ -42,25 +46,100 @@
 
                 <q-btn-component
                     icon="mdi-bell-outline"
-                    tooltips="notificationes"
                     color="white"
-                    class="q-mr-sm fa-beat"
+                    class="q-mr-sm"
                     v-if="notifications.length > 0"
                 >
-                    <q-badge color="black" floating>{{
-                        notifications.length
-                    }}</q-badge>
-                    <q-menu style="min-width: 300px">
+                    <q-badge
+                        :color="Dark.isActive ? 'primary' : 'black'"
+                        floating
+                        class="fa-beat"
+                        >{{ notifications.length }}</q-badge
+                    >
+                    <q-menu
+                        style="min-width: 300px"
+                        transition-show="scale"
+                        transition-hide="scale"
+                    >
                         <notifications-component :messages="notifications" />
                     </q-menu>
                 </q-btn-component>
 
-                <DarkSwitcher
-                    class="z-max"
-                    size="md"
-                    colorDark="black"
-                    colorLight="white"
-                />
+                <q-btn-component
+                    icon="mdi-account-circle"
+                    color="white"
+                    class="q-mr-sm"
+                >
+                    <q-menu
+                        style="width: 240px"
+                        transition-show="scale"
+                        transition-hide="scale"
+                    >
+                        <q-card>
+                            <q-card-section class="q-pa-none">
+                                <q-list dense>
+                                    <q-item>
+                                        <q-item-section avatar>
+                                            <q-icon
+                                                name="mdi-account-circle"
+                                                size="lg"
+                                            />
+                                        </q-item-section>
+                                        <q-item-section class="q-py-sm">
+                                            <q-item-label lines="1">
+                                                {{
+                                                    $page.props.auth.user
+                                                        .full_name
+                                                }}
+                                            </q-item-label>
+                                            <q-item-label caption lines="1">
+                                                {{
+                                                    $page.props.auth.user.email
+                                                }}
+                                            </q-item-label>
+                                        </q-item-section>
+                                        <q-item-section avatar side>
+                                            <DarkSwitcher
+                                                class="z-max"
+                                                size="md"
+                                                colorDark="black"
+                                                colorLight="white"
+                                            />
+                                        </q-item-section>
+                                    </q-item>
+                                    <q-separator />
+                                    <q-item clickable>
+                                        <q-item-section avatar>
+                                            <q-icon
+                                                name="mdi-account-outline"
+                                            /> </q-item-section
+                                        ><q-item-section>
+                                            <q-item-label>
+                                                perfil
+                                            </q-item-label>
+                                        </q-item-section>
+                                    </q-item>
+                                    <q-item
+                                        clickable
+                                        @click="showPasswordDialog = true"
+                                    >
+                                        <q-item-section avatar>
+                                            <q-icon
+                                                name="mdi-key-outline"
+                                            /> </q-item-section
+                                        ><q-item-section>
+                                            <q-item-label>
+                                                cambiar contraseña
+                                            </q-item-label>
+                                        </q-item-section>
+                                    </q-item>
+                                    <q-separator />
+                                    <session-close-component />
+                                </q-list>
+                            </q-card-section>
+                        </q-card>
+                    </q-menu>
+                </q-btn-component>
             </q-toolbar>
         </q-header>
 
@@ -90,6 +169,37 @@
             <slot />
         </q-page-container>
     </q-layout>
+
+    <q-dialog v-model="showPasswordDialog" persistent>
+        <q-card class="scroll">
+            <dialog-header-component
+                icon="mdi-account-key-outline"
+                title="cambiar mi contraseña"
+                closable
+            />
+            <q-card-section class="col q-pt-none">
+                <q-form class="q-gutter-sm q-mt-sm" ref="formPassword" greedy>
+                    <password-field
+                        label="nueva contraseña"
+                        name="password"
+                        :othersProps="{ required: true }"
+                        oldPassword
+                        @update="onUpdateField"
+                        @confirm="onUpdateField"
+                        @old-password="onUpdateField"
+                    />
+                </q-form>
+            </q-card-section>
+            <q-separator />
+            <q-card-actions align="right">
+                <btn-save-component @click="changePassword" />
+                <btn-cancel-component
+                    :cancel="true"
+                    @click="showPasswordDialog = false"
+                />
+            </q-card-actions>
+        </q-card>
+    </q-dialog>
 </template>
 
 <script setup>
@@ -98,8 +208,14 @@ import MenuComponent from "../components/navigation/MenuComponent.vue";
 import DarkSwitcher from "../components/profile/DarkSwitcher.vue";
 import QBtnComponent from "../components/base/QBtnComponent.vue";
 import NotificationsComponent from "../components/others/NotificationsComponent.vue";
+import SessionCloseComponent from "../components/base/SessionCloseComponent.vue";
+import DialogHeaderComponent from "../components/base/DialogHeaderComponent.vue";
+import PasswordField from "../components/form/input/PasswordField.vue";
+import BtnSaveComponent from "../components/btn/BtnSaveComponent.vue";
+import BtnCancelComponent from "../components/btn/BtnCancelComponent.vue";
 import { Dark } from "quasar";
-import { usePage } from "@inertiajs/vue3";
+import { usePage, useForm, router } from "@inertiajs/vue3";
+import { errorValidation } from "../helpers/notifications";
 
 defineOptions({
     name: "AdminLayout",
@@ -108,6 +224,12 @@ defineOptions({
 const currentNav = ref(null);
 const mini = ref(false);
 const leftDrawerOpen = ref(false);
+const showPasswordDialog = ref(false);
+const formDataPassword = useForm({
+    password: null,
+    old_password: null,
+});
+const formPassword = ref(null);
 
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -137,7 +259,34 @@ const links = ref([
     },
 ]);
 
+onMounted(() => {
+    const config = usePage().props.auth.user.configuration;
+    Dark.set(
+        config ? (config["dark"] !== undefined ? config["dark"] : false) : false
+    );
+});
+
 const notifications = computed(() => {
     return usePage().props.auth.user.notifications;
 });
+
+const onUpdateField = (name, val) => {
+    formDataPassword[name] = val;
+};
+
+const changePassword = () => {
+    formPassword.value.validate().then((success) => {
+        if (success) {
+            formDataPassword.post(`/admin/users/change-my-password`, {
+                onSuccess: (data) => {
+                    if (data.props.flash_success) {
+                        showPasswordDialog.value = false;
+                    }
+                },
+            });
+        } else {
+            errorValidation();
+        }
+    });
+};
 </script>

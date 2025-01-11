@@ -84,8 +84,20 @@
                                 "
                             />
                             <q-img
-                                :src="`${$page.props.public_path}images/icon/black-file.png`"
+                                :src="`${$page.props.public_path}${
+                                    file.poster
+                                        ? `storage/${file.poster}`
+                                        : file.type.startsWith('image/')
+                                        ? `storage/${file.path}`
+                                        : 'images/icon/black-file.png'
+                                }`"
                                 fit="fill"
+                                :img-class="
+                                    file.poster ||
+                                    file.type.startsWith('image/')
+                                        ? 'glightbox'
+                                        : ''
+                                "
                                 :ratio="16 / 9"
                                 v-else
                             />
@@ -231,7 +243,7 @@
                         />
                     </q-card-section>
                     <q-card-section class="q-pa-sm q-pa-none text-center">
-                        {{ t.message }}
+                        <span v-html="t.message"></span>
                     </q-card-section>
                     <q-card-section class="text-center">
                         <q-item-label v-if="t.anonimous">

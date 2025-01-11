@@ -77,7 +77,7 @@ const onHide = async () => {
             last_time: currentTime.value,
             total_time: totalTime.value,
         });
-        await send.post(`/admin/schooltopics/update-video-percentaje-to-user`);
+        send.post(`/admin/schooltopics/update-video-percentaje-to-user`);
     }
     emits("close");
 };

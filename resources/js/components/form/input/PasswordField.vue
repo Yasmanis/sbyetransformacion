@@ -1,5 +1,34 @@
 <template>
     <q-input
+        name="old_password"
+        label="contraseña actual"
+        :rules="[(val) => !!val || 'requerido']"
+        :error="oldPwd !== null"
+        :error-message="oldPwd"
+        :dense="dense"
+        :clearable="clearable"
+        hide-bottom-space
+        bottom-slots
+        v-model="oldPass"
+        :type="isOldPwd ? 'password' : 'text'"
+        class="full-width"
+        @update:model-value="onChangeOldPassword"
+        v-if="oldPassword"
+    >
+        <template #hint>
+            <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
+                <li style="list-style: none">requerido</li>
+            </ul>
+        </template>
+        <template v-slot:append>
+            <q-icon
+                :name="isOldPwd ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isOldPwd = !isOldPwd"
+            />
+        </template>
+    </q-input>
+    <q-input
         :name="props.name"
         :label="props.label"
         :rules="fieldRules"
@@ -47,7 +76,7 @@
         :clearable="clearable"
         hide-bottom-space
         bottom-slots
-        :type="isPwd ? 'password' : 'text'"
+        :type="isPwdConfirm ? 'password' : 'text'"
         class="full-width"
         @update:model-value="onChangeConfirm"
     >
@@ -59,9 +88,9 @@
         </template>
         <template v-slot:append>
             <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
+                :name="isPwdConfirm ? 'visibility_off' : 'visibility'"
                 class="cursor-pointer"
-                @click="isPwd = !isPwd"
+                @click="isPwdConfirm = !isPwdConfirm"
             />
         </template>
     </q-input>
@@ -97,15 +126,22 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    oldPassword: {
+        type: Boolean,
+        default: false,
+    },
 });
 
-const emits = defineEmits(["update", "confirm"]);
+const emits = defineEmits(["update", "confirm", "old-password"]);
 const page = usePage();
 const model = ref(null);
 const modelConfirm = ref(null);
+const oldPass = ref(null);
 const fieldRules = ref([]);
 const fieldHelp = ref([]);
 const isPwd = ref(true);
+const isPwdConfirm = ref(true);
+const isOldPwd = ref(true);
 
 onBeforeMount(() => {
     const { rules, help } = validations.getRules(props.othersProps);
@@ -130,6 +166,24 @@ const errorConfirm = computed(() => {
         : null;
 });
 
+const oldPwd = computed(() => {
+    return page.props.errors
+        ? page.props.errors["old_password"]
+            ? page.props.errors["old_password"]
+            : null
+        : null;
+});
+
+const reset = () => {
+    model.value = null;
+    modelConfirm.value = null;
+    oldPass.value = null;
+    isPwd.value = true;
+    isPwdConfirm.value = true;
+    isOldPwd.value = true;
+    delete page.props.errors["old_password"];
+};
+
 const onChangePassword = (val) => {
     emits("update", props.name, val);
 };
@@ -137,4 +191,10 @@ const onChangePassword = (val) => {
 const onChangeConfirm = (val) => {
     emits("confirm", `${props.name ? props.name : "password"}_confirmed`, val);
 };
+
+const onChangeOldPassword = (val) => {
+    emits("old-password", "old_password", val);
+};
+
+defineExpose({ reset });
 </script>

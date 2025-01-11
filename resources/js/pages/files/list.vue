@@ -40,6 +40,9 @@ const name = {
     sortable: true,
     type: "text",
     required: true,
+    othersProps: {
+        required: true,
+    },
 };
 
 const type = {
@@ -68,6 +71,21 @@ const files = {
     type: "uploader",
 };
 
+const public_access = {
+    field: "public_access",
+    name: "public_access",
+    label: "publico",
+    align: "center",
+    type: "boolean",
+};
+const public_date = {
+    field: "public_date",
+    name: "public_date",
+    label: "publicacion",
+    type: "date",
+    sortable: true,
+    align: "left",
+};
 const searchFields = [name];
 
 const columns = [
@@ -75,6 +93,8 @@ const columns = [
     type,
     size,
     category,
+    public_access,
+    public_date,
     {
         field: "actions",
         name: "actions",
@@ -93,6 +113,19 @@ const fields = [
         type: "select",
         othersProps: {
             url_to_options: "/categories",
+            required: true,
+        },
+    },
+    {
+        field: "public_access",
+        name: "public_access",
+        label: "acceso publico",
+        align: "center",
+        type: "boolean",
+        othersProps: {
+            help: [
+                "marque esta casilla si desea que el/los fichero(s) tengan acceso publico",
+            ],
         },
     },
 ];
@@ -123,5 +156,7 @@ const filterFields = [
         label: "tamaño",
         type: "range_size",
     },
+    public_access,
+    public_date,
 ];
 </script>

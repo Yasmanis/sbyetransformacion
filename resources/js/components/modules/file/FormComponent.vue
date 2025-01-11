@@ -31,7 +31,19 @@
                                 url_to_options: '/categories',
                             }"
                             :filterable="true"
-                            @update="onUpdateCategory"
+                            @update="onUpdateField"
+                        />
+                    </div>
+                    <div class="form-field">
+                        <checkbox-field
+                            label="acceso publico"
+                            name="public_access"
+                            :othersProps="{
+                                help: [
+                                    'marque esta casilla si desea que el/los fichero(s) tengan acceso publico',
+                                ],
+                            }"
+                            @update="onUpdateField"
                         />
                     </div>
                     <div class="form-field">
@@ -70,6 +82,7 @@ import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import UploaderField from "../../form/input/UploaderField.vue";
+import CheckboxField from "../../form/input/CheckboxField.vue";
 import { usePage } from "@inertiajs/vue3";
 import { success, errorValidation } from "../../../helpers/notifications";
 
@@ -111,7 +124,16 @@ const fullTitle = ref(null);
 const icon = ref(null);
 const showDialog = ref(false);
 const setDefault = ref(false);
-const formFields = ref(null);
+const formFields = ref([
+    {
+        name: "category_id",
+        value: null,
+    },
+    {
+        name: "public_access",
+        value: false,
+    },
+]);
 
 const form = ref(null);
 
@@ -132,13 +154,9 @@ const onHide = () => {
     usePage().props.errors = {};
 };
 
-const onUpdateCategory = (field, val, full) => {
-    formFields.value = [
-        {
-            name: "category_id",
-            value: val,
-        },
-    ];
+const onUpdateField = (field, val, full) => {
+    const f = formFields.value.find((ff) => ff.name === field);
+    f.value = val;
 };
 
 const save = async () => {
@@ -155,5 +173,15 @@ const onUploaded = () => {
     emits("save");
     success("fichero(s) adicionado(s) correctamente");
     showDialog.value = false;
+    formFields.value = [
+        {
+            name: "category_id",
+            value: null,
+        },
+        {
+            name: "public_access",
+            value: false,
+        },
+    ];
 };
 </script>

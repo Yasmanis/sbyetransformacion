@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Contact;
 use App\Models\PasswordChangeNotification;
 use App\Models\User;
 use App\Notifications\StandardNotification;
@@ -62,5 +63,13 @@ class AuthController extends Controller
             Notification::send($users, new StandardNotification($pass));
         }
         return back()->with(['success' => 'se ha solicitado el cambio de su contraseña. espere un correo con los detalles', 'ok' => true]);
+    }
+
+    public function profile()
+    {
+        $books = Contact::where('user_id', auth()->user()->id)->orderBy('book_volume', 'ASC')->get();
+        return Inertia('auth/profile', [
+            'books' => $books
+        ]);
     }
 }

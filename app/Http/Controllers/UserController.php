@@ -104,4 +104,31 @@ class UserController extends Controller
         }
         return $this->deny_access($request);
     }
+
+    public function changeMyPassword(Request $request)
+    {
+        $user = auth()->user();
+        $request->validate([
+            'password' => 'required',
+            'old_password' => ['required', function ($attribute, $value, $fail) use ($user) {
+                if (!Hash::check($value, $user->password)) {
+                    return $fail('contraseña actual incorrecta');
+                }
+            }]
+        ]);
+        $user->password = Hash::make($request->password);
+        $user->save();
+        $request->session()->regenerate();
+        return redirect()->back()->with('success', 'contraseña cambiada correctamente');
+    }
+
+    public function changeTheme(Request $request)
+    {
+        $user = auth()->user();
+        $config = $user->configuration;
+        $config['dark'] = $request->dark;
+        $user->configuration = $config;
+        $user->save();
+        return redirect()->back()->with('success', 'se ha ' . ($request->dark ? 'activado' : 'desactivado') . ' el modo oscuro correctamente');
+    }
 }

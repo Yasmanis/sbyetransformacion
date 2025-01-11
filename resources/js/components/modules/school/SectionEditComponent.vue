@@ -341,6 +341,7 @@ const newTopic = (reset) => {
         isOk: false,
         visible: true,
         index: index.value,
+        book_volume: null,
     };
     if (reset) {
         itemsTopics.value = [topic];

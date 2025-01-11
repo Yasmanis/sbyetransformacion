@@ -205,9 +205,7 @@
                         :url="`${current_module.base_url}/sort-files`"
                         v-if="has_edit"
                     />
-                    <btn-show-hide-component
-                        titlePublic="mostrar al publico"
-                        titleHide="ocultar al publico"
+                    <btn-public-component
                         :public="props.row.public_access"
                         @click="
                             router.post(
@@ -313,9 +311,7 @@
                                             :url="`${current_module.base_url}/sort-files`"
                                             v-if="has_edit"
                                         />
-                                        <btn-show-hide-component
-                                            titlePublic="mostrar al publico"
-                                            titleHide="ocultar al publico"
+                                        <btn-public-component
                                             :public="props.row.public_access"
                                             @click="
                                                 router.post(
@@ -364,7 +360,7 @@ import SearchComponent from "../../table/actions/SearchComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
-import BtnShowHideComponent from "../../btn/BtnShowHideComponent.vue";
+import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import BtnLockUnlockComponent from "../../btn/BtnLockUnlockComponent.vue";
 
 defineOptions({

@@ -8,6 +8,14 @@
         }-show-hide-columns.png`"
         v-if="fullVisibleColums.length > 0"
     >
+        <q-badge
+            floating
+            transparent
+            style="margin-top: -4px"
+            v-if="fullVisibleColums.length > visibleColumns.length"
+        >
+            {{ fullVisibleColums.length - visibleColumns.length }}
+        </q-badge>
         <q-menu
             transition-show="scale"
             transition-hide="scale"

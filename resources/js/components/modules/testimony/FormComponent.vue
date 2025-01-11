@@ -7,6 +7,7 @@
         persistent
         :position="position"
         :full-hight="fullHeight"
+        allow-focus-outside
         @show="setDefault = !setDefault"
         @hide="onHide"
     >

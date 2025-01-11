@@ -47,16 +47,13 @@
                     @update="onUpdateType"
                     v-if="object === null"
                 />
-                <text-field
+                <editor-field
                     v-model="formData['message']"
                     label="mensaje"
                     name="message"
-                    type="textarea"
-                    :autogrow="true"
                     :othersProps="{
                         required: true,
                     }"
-                    :modelValue="formData['message']"
                     @update="onUpdateField"
                     v-if="
                         formData['type'] === 'text' ||
@@ -105,10 +102,11 @@ import TextField from "../../form/input/TextField.vue";
 import CheckboxField from "../../form/input/CheckboxField.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import FileField from "../../form/input/FileField.vue";
+import EditorField from "../../form/input/EditorField.vue";
 import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import { useForm } from "@inertiajs/vue3";
-import { errorValidation } from "../../../helpers/notifications";
+import { error, errorValidation } from "../../../helpers/notifications";
 
 const props = defineProps({
     module: {
@@ -162,10 +160,14 @@ const onUpdateType = (name, val) => {
 const save = async (hide) => {
     form.value.validate().then((success) => {
         if (success) {
-            if (props.object) {
-                update();
+            if (formData.value.type === "text" && !formData.value.message) {
+                error("debe especificar el mensaje");
             } else {
-                store(hide);
+                if (props.object) {
+                    update();
+                } else {
+                    store(hide);
+                }
             }
         } else {
             errorValidation();

@@ -15,7 +15,7 @@ class LifeController extends Controller
         if ($user->hasView('schoolsection')) {
             $repository = new SchoolSectionsRepository();
             return Inertia::render($repository->component(), [
-                'sections' => $repository->all(),
+                'sections' => $user->getSections(),
                 'course_percentage' => $user->getCoursePercentage()
             ]);
         }

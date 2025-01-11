@@ -2,10 +2,7 @@
     <q-btn-component
         icon="mdi-image-outline"
         tooltips="portada"
-        :disable="
-            !object.type.startsWith('video/') &&
-            !object.type.startsWith('audio/')
-        "
+        :disable="object.type.startsWith('image/')"
         @click="showDialog = true"
     />
     <q-dialog

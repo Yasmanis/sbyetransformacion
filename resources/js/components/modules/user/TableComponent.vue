@@ -440,6 +440,7 @@ const onRequest = async (attrs) => {
         ? attrs.pagination
         : pagination.value;
     const sortDirection = descending ? "DESC" : "ASC";
+    console.log(search);
     router.get(
         "",
         { page, rowsPerPage, search, filters, sortBy, sortDirection },

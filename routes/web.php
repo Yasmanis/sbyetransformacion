@@ -50,7 +50,7 @@ Route::get('/taller_online', function () {
 
 Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
     $categories = Category::where('public_access', true)->orderBy('order', 'ASC')->get();
-    $recent_files = File::publicAccess()->latest()->take(6)->get();
+    $recent_files = File::publicAccess()->orderBy('public_date', 'DESC')->take(6)->get();
     $category = null;
     $testimonies = [];
     if (count($categories) > 0) {
@@ -114,12 +114,15 @@ Route::get('/not-found', function () {
 })->name('not-found');
 
 Route::middleware(['auth', 'auth.session'])->group(function () {
+    Route::get('/auth/profile', [AuthController::class, 'profile'])->name('profile');
     Route::get('/admin', function () {
         return Inertia('home');
     });
     Route::resource('/admin/users', UserController::class);
     Route::post('/admin/users/lockUnlock/{id}', [UserController::class, 'lockUnlock']);
     Route::post('/admin/users/change-password/{id}', [UserController::class, 'changePassword']);
+    Route::post('/admin/users/change-my-password', [UserController::class, 'changeMyPassword']);
+    Route::post('/admin/users/change-theme', [UserController::class, 'changeTheme']);
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/testimony', TestimonyController::class);
@@ -158,6 +161,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/admin/configuration/private', [ConfigurationController::class, 'private']);
     Route::get('/admin/configuration/index/{keyName}', [ConfigurationController::class, 'index']);
     Route::post('/admin/configuration/save', [ConfigurationController::class, 'save']);
+
+    Route::post('/contacts/change-book-volume/{id}', [ContactsController::class, 'changeBookVolume']);
 });
 
 Route::get('/categories', [SelectsController::class, 'categories']);

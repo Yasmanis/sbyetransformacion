@@ -66,7 +66,7 @@ class TestimonyController extends Controller
                 $data['type'] = 'text';
                 $repository->create($data);
             }
-            return redirect()->back()->with('success', 'revisaremos que tu testimonio cumple con la etica general y tras ello se publicara');
+            return redirect()->back()->with(['success' => 'revisaremos que tu testimonio cumple con la etica general y tras ello se publicara', 'exclude_flash' => true]);
         }
         return redirect()->back()->with('error', 'para agregar el testimonio debe ser usuario autenticado');
     }

@@ -16,6 +16,7 @@
             :key="msg.id"
             clickable
             v-ripple
+            @click="onItemClick(msg.data[0])"
         >
             <q-item-section avatar>
                 <q-avatar>
@@ -38,6 +39,7 @@
 </template>
 
 <script setup>
+import { router } from "@inertiajs/vue3";
 defineOptions({
     name: "NotificationsComponent",
 });
@@ -48,4 +50,13 @@ const props = defineProps({
         default: [],
     },
 });
+
+const onItemClick = (d) => {
+    // const filters = JSON.stringify({
+    //     column: "id",
+    //     condition: "=",
+    //     query: d.user_id,
+    // });
+    // router.get("/admin/users", { filters });
+};
 </script>

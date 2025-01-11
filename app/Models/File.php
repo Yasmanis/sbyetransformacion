@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,9 +14,9 @@ class File extends Model
 
     protected $table = 'file';
 
-    protected $fillable = ['name', 'size', 'path', 'type', 'category_id'];
+    protected $fillable = ['name', 'size', 'path', 'type', 'category_id', 'public_access'];
 
-    protected $appends = ['category', 'size_str', 'date_for_human'];
+    protected $appends = ['category', 'size_str'];
 
     protected $casts = [
         'public_access' => 'boolean',
@@ -25,6 +26,12 @@ class File extends Model
     {
         static::deleting(function ($obj) {
             $obj->deleteFileFromDisk();
+        });
+        static::created(function ($obj) {
+            if ($obj->public_access) {
+                $obj->public_date = $obj->created_at;
+                $obj->save();
+            }
         });
     }
 
@@ -47,9 +54,9 @@ class File extends Model
         return round($bytes, 2) . ' ' . $units[$i];
     }
 
-    public function getDateForHumanAttribute()
+    public function getPublicDateAttribute($v)
     {
-        return $this->created_at->locale('es')->isoFormat(('MMMM D, Y'));
+        return isset($v) ? Carbon::parse($v)->format('d/m/Y') : null;
     }
 
     public function scopeTypeOfFile($query, $args)

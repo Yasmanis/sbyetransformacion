@@ -23,7 +23,6 @@
                     :key="`help-field-${index}`"
                     :style="{
                         'list-style': 'none',
-                        color: color === 'red' ? 'red' : '',
                     }"
                 >
                     {{ h }}
