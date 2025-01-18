@@ -53,7 +53,11 @@
                         ><q-img
                             fit="fill"
                             :ratio="1"
-                            :src="`${$page.props.public_path}images/others/file.png`"
+                            :src="`${$page.props.public_path}${
+                                file.poster
+                                    ? `storage/${file.poster}`
+                                    : 'images/icon/black-file.png'
+                            }`"
                     /></q-item>
                 </template>
                 <template
@@ -83,22 +87,47 @@
                                     file.type.startsWith('audio/')
                                 "
                             />
+                            <!-- <q-media-player
+                                type="video"
+                                dense
+                                :sources="[
+                                    {
+                                        src: `${$page.props.public_path}storage/${file.path}`,
+                                        type: file.type,
+                                    },
+                                ]"
+                                :poster="
+                                    file.poster
+                                        ? `${$page.props.public_path}storage/${file.poster}`
+                                        : null
+                                "
+                                v-if="
+                                    file.type.startsWith('video/') ||
+                                    file.type.startsWith('audio/')
+                                "
+                            /> -->
+                            <q-img
+                                :src="`${$page.props.public_path}storage/${file.path}`"
+                                fit="fill"
+                                class="rounded-top cursor-pointer"
+                                img-class="glightbox"
+                                :ratio="16 / 9"
+                                v-else-if="file.type.startsWith('image/')"
+                            />
                             <q-img
                                 :src="`${$page.props.public_path}${
                                     file.poster
                                         ? `storage/${file.poster}`
-                                        : file.type.startsWith('image/')
-                                        ? `storage/${file.path}`
                                         : 'images/icon/black-file.png'
                                 }`"
                                 fit="fill"
-                                :img-class="
-                                    file.poster ||
-                                    file.type.startsWith('image/')
-                                        ? 'glightbox'
-                                        : ''
-                                "
+                                class="rounded-top cursor-pointer"
                                 :ratio="16 / 9"
+                                @click="
+                                    open(
+                                        `${$page.props.public_path}storage/${file.path}`
+                                    )
+                                "
                                 v-else
                             />
                         </q-card-section>
@@ -272,12 +301,14 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useQuasar } from "quasar";
+import { useQuasar, openURL } from "quasar";
 import { usePage } from "@inertiajs/vue3";
 import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
 import GLightbox from "glightbox";
 import "glightbox/dist/css/glightbox.min.css";
+import { QMediaPlayer } from "@quasar/quasar-ui-qmediaplayer";
+import "@quasar/quasar-ui-qmediaplayer/dist/index.css";
 
 defineOptions({
     name: "FilesCategoryComponent",
@@ -313,4 +344,8 @@ const cls = computed(() => {
 const testimonies = computed(() => {
     return usePage().props.testimonies;
 });
+
+const open = (url) => {
+    openURL(url, undefined);
+};
 </script>

@@ -58,6 +58,13 @@
                             @uploaded="onUploaded"
                         />
                     </div>
+                    <div class="form-field">
+                        <date-field
+                            label="publicacion"
+                            name="public_date"
+                            @update="onUpdateField"
+                        />
+                    </div>
                 </q-form>
             </q-card-section>
             <q-separator />
@@ -81,10 +88,12 @@ import BtnEditComponent from "../../btn/BtnEditComponent.vue";
 import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import SelectField from "../../form/input/SelectField.vue";
+import DateField from "../../form/input/DateField.vue";
 import UploaderField from "../../form/input/UploaderField.vue";
 import CheckboxField from "../../form/input/CheckboxField.vue";
 import { usePage } from "@inertiajs/vue3";
 import { success, errorValidation } from "../../../helpers/notifications";
+import { Dark } from "quasar";
 
 const props = defineProps({
     module: {
@@ -133,6 +142,10 @@ const formFields = ref([
         name: "public_access",
         value: false,
     },
+    {
+        name: "public_date",
+        value: null,
+    },
 ]);
 
 const form = ref(null);
@@ -142,7 +155,9 @@ const page = usePage();
 onMounted(() => {
     if (props.object != null) {
         fullTitle.value = `Editar ${props.title}`;
-        icon.value = `img:${page.props.public_path}images/icon/black-edit.png`;
+        icon.value = `img:${page.props.public_path}images/icon/${
+            Dark.isActive ? "white" : "black"
+        }-edit.png`;
     } else {
         fullTitle.value = `Adicionar ${props.title}`;
         icon.value = "mdi-plus";
@@ -181,6 +196,10 @@ const onUploaded = () => {
         {
             name: "public_access",
             value: false,
+        },
+        {
+            name: "public_date",
+            value: null,
         },
     ];
 };

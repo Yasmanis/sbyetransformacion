@@ -1,14 +1,8 @@
 <template>
     <Layout>
         <q-page padding>
-            <table-component
-                :columns="columns"
-                :searchFields="searchFields"
-                :filterFields="filterFields"
-                :createFields="createFields"
-                :updateFields="updateFields"
-                :has_delete="false"
-            ></table-component>
+            <table-component :columns="columns" :searchFields="searchFields" :filterFields="filterFields"
+                :createFields="createFields" :updateFields="updateFields" :has_delete="false"></table-component>
         </q-page>
     </Layout>
 </template>
@@ -151,7 +145,12 @@ const filterFields = [
     },
 ];
 
-const columns = [username, name, surname, email, sa, active, actions];
+const columns = [{
+    field: "avatar",
+    name: "avatar",
+    align: "center",
+    type: "avatar",
+}, username, name, surname, email, sa, active, actions];
 
 const createFields = [
     username,

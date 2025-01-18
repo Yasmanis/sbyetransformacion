@@ -199,6 +199,19 @@
         "
     />
     <checkbox-field
+        v-model="formData.visible_after_testimony"
+        label="tema visible tras testimonio"
+        name="visible_after_testimony"
+        class="q-ml-none q-mt-sm"
+        :modelValue="formData.visible_after_testimony"
+        @update="
+            (name, val) => {
+                formData[name] = val;
+            }
+        "
+    />
+    <br />
+    <checkbox-field
         v-model="addDescription"
         label="añadir descripcion"
         name="add_description"
@@ -309,8 +322,15 @@ const confirm = ref(false);
 const currentAttachment = ref(null);
 
 onBeforeMount(() => {
-    let { id, name, description, coverImage, section_id, book_volume } =
-        props.topic;
+    let {
+        id,
+        name,
+        description,
+        coverImage,
+        section_id,
+        book_volume,
+        visible_after_testimony,
+    } = props.topic;
     let resources = props.topic.resources;
     ppalVideo.value = resources.find((r) => r.principal);
     formData.value = {
@@ -320,6 +340,7 @@ onBeforeMount(() => {
         coverImage,
         section_id,
         book_volume,
+        visible_after_testimony,
         principalVideo: false,
     };
     addDescription.value =
@@ -385,12 +406,19 @@ const store = async () => {
 };
 
 const update = async () => {
-    let { name, description, coverImage, book_volume } = formData.value;
+    let {
+        name,
+        description,
+        coverImage,
+        book_volume,
+        visible_after_testimony,
+    } = formData.value;
     const send = useForm({
         name,
         description,
         coverImage,
         book_volume,
+        visible_after_testimony,
         _method: "put",
         excludeFlash: totalFiles.value > 0 || formData.value.principalVideo,
     });

@@ -32,7 +32,7 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeMount } from "vue";
+import { ref, onMounted, onBeforeMount, watch } from "vue";
 import { validations } from "../../../helpers/validations";
 
 defineOptions({
@@ -82,6 +82,13 @@ onBeforeMount(() => {
 onMounted(() => {
     model.value = props.modelValue;
 });
+
+watch(
+    () => props.modelValue,
+    (n, o) => {
+        model.value = props.modelValue;
+    }
+);
 
 const onUpdate = (val) => {
     emits("update", props.name, val);

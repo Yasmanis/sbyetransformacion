@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use App\Repositories\FileRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -47,6 +48,9 @@ class FileController extends Controller
             if ($request->hasFile('file')) {
                 $repository = new FileRepository();
                 $data = $request->only((new ($repository->model()))->getFillable());
+                if (isset($request->public_date)) {
+                    $data['public_date'] = Carbon::createFromFormat('d/m/Y', $request->public_date);
+                }
                 $properties = $this->getPropertiesFromFile($request->file('file'));
                 $data['name'] = $properties['originalName'];
                 $data['path'] = $properties['path'];
@@ -65,8 +69,15 @@ class FileController extends Controller
         if (auth()->user()->hasUpdate('file')) {
             $repository = new FileRepository();
             $public_access = $repository->getById($id)->public_access;
-            $file = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
-            if ($file->public_access != $public_access) {
+            $data = $request->only((new ($repository->model()))->getFillable());
+            if (isset($request->public_date)) {
+                $data['public_date'] = Carbon::createFromFormat('d/m/Y', $request->public_date);
+            }
+            $file = $repository->updateById($id, $data);
+            if (isset($request->public_date) && $file->public_date != $request->public_date) {
+                $file->public_access = true;
+                $file->save();
+            } else if ($file->public_access != $public_access) {
                 $file->public_date = $file->public_access ? $file->updated_at : null;
                 $file->save();
             }

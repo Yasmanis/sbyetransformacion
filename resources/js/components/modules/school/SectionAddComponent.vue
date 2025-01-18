@@ -127,6 +127,7 @@ const newTopic = (reset) => {
         visible: true,
         index: index.value,
         book_volume: null,
+        visible_after_testimony: false,
     };
     if (reset) {
         itemsTopics.value = [topic];

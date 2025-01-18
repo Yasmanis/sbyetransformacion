@@ -80,28 +80,12 @@
                                         v-else
                                     /> </template
                                 ><template
-                                    v-else-if="col.name === 'book_volume'"
+                                    v-else-if="col.name === 'book_volumes'"
                                 >
-                                    <q-btn-toggle
-                                        v-model="bookVolumes[props.row.id]"
-                                        toggle-color="primary"
-                                        clearable
-                                        :options="[
-                                            { label: 'I', value: 'tomo_1' },
-                                            { label: 'II', value: 'tomo_2' },
-                                            { label: 'III', value: 'tomo_3' },
-                                        ]"
-                                        @update:model-value="
-                                            (val) =>
-                                                onUpdateTomo(val, props.row)
-                                        "
-                                    >
-                                        <q-tooltip-component
-                                            title="asignar/desasignar
-                                            tomo"
-                                            class="bg-black"
-                                        />
-                                    </q-btn-toggle>
+                                    <book-volumes-component
+                                        :object="props.row"
+                                        :label="col.value"
+                                    />
                                 </template>
 
                                 <template v-else>
@@ -158,8 +142,10 @@ import BtnBookComponent from "../../btn/BtnBookComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import LockUnlockComponent from "./LockUnlockComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
+import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import QTooltipComponent from "../../base/QTooltipComponent.vue";
-import { date } from "quasar";
+import CheckboxField from "../../form/input/CheckboxField.vue";
+import BookVolumesComponent from "./BookVolumesComponent.vue";
 import { useForm } from "@inertiajs/vue3";
 defineOptions({
     name: "BookInfoComponent",
@@ -212,9 +198,6 @@ const columns = ref([
         label: "fecha de compra",
         align: "left",
         sortable: true,
-        format: (val) => {
-            return val ? date.formatDate(val, "DD/MM/YYYY") : null;
-        },
     },
     {
         field: "other_people",
@@ -224,25 +207,38 @@ const columns = ref([
         sortable: true,
     },
     {
-        field: "book_volume",
-        name: "book_volume",
+        field: "book_volumes",
+        name: "book_volumes",
         label: "tomo",
         align: "center",
+        format: (val) => {
+            if (!val) {
+                return "...";
+            }
+            let v = "";
+            val.forEach((vol) => {
+                v += `${bookVolumes.value[vol]}, `;
+            });
+            return v.substring(0, v.lastIndexOf(","));
+        },
     },
 ]);
 
-const bookVolumes = ref({});
+const bookVolumes = ref({
+    tomo_1: "I",
+    tomo_2: "II",
+    tomo_3: "III",
+});
+const bookVolume_1 = ref(false);
+const bookVolume_2 = ref(false);
+const bookVolume_3 = ref(false);
 
 const books = computed(() => {
     props.object.books.forEach((b) => {
-        bookVolumes.value[b.id] = b.book_volume;
+        bookVolume_1.value = b.book_volumes?.includes("tomo_1") ? true : false;
+        bookVolume_2.value = b.book_volumes?.includes("tomo_2") ? true : false;
+        bookVolume_3.value = b.book_volumes?.includes("tomo_3") ? true : false;
     });
     return props.object.books ?? [];
 });
-
-const onUpdateTomo = (val, row) => {
-    useForm({
-        book_volume: val,
-    }).post(`/contacts/change-book-volume/${row.id}`);
-};
 </script>

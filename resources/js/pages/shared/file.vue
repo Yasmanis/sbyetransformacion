@@ -53,7 +53,11 @@
                                 ><q-img
                                     fit="fill"
                                     :ratio="1"
-                                    :src="`${$page.props.public_path}images/others/file.png`"
+                                    :src="`${$page.props.public_path}${
+                                        file.poster
+                                            ? `storage/${file.poster}`
+                                            : 'images/icon/black-file.png'
+                                    }`"
                             /></q-item>
                         </q-card-section>
                     </q-card>

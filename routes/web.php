@@ -115,6 +115,8 @@ Route::get('/not-found', function () {
 
 Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/auth/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::post('/auth/profile', [AuthController::class, 'saveProfile']);
+    Route::post('/auth/store-new-book', [AuthController::class, 'storeNewBook']);
     Route::get('/admin', function () {
         return Inertia('home');
     });

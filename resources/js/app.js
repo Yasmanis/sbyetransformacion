@@ -14,6 +14,7 @@ import {
     QSpinnerFacebook,
     Dialog,
     Meta,
+    AppFullscreen,
 } from "quasar";
 import quasarIconSet from "quasar/icon-set/svg-mdi-v6";
 import lang from "quasar/lang/es";
@@ -44,6 +45,7 @@ createInertiaApp({
                     Notify,
                     Dialog,
                     Meta,
+                    AppFullscreen,
                 },
                 iconSet: quasarIconSet,
                 lang: lang,

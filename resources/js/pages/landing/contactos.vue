@@ -251,7 +251,7 @@
                             >
                                 <i
                                     class="mdi mdi-asterisk text-red"
-                                    style="margin-left: 110px"
+                                    style="margin-left: 124px"
                                     v-if="!form.ticket"
                                 />
                                 <q-file

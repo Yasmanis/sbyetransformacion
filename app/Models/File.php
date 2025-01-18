@@ -14,7 +14,7 @@ class File extends Model
 
     protected $table = 'file';
 
-    protected $fillable = ['name', 'size', 'path', 'type', 'category_id', 'public_access'];
+    protected $fillable = ['name', 'size', 'path', 'type', 'category_id', 'public_access', 'public_date'];
 
     protected $appends = ['category', 'size_str'];
 
@@ -28,7 +28,10 @@ class File extends Model
             $obj->deleteFileFromDisk();
         });
         static::created(function ($obj) {
-            if ($obj->public_access) {
+            if ($obj->public_date) {
+                $obj->public_access = true;
+                $obj->save();
+            } else if ($obj->public_access) {
                 $obj->public_date = $obj->created_at;
                 $obj->save();
             }

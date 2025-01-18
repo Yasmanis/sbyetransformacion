@@ -128,6 +128,7 @@ const fields = [
             ],
         },
     },
+    public_date,
 ];
 
 const filterFields = [

@@ -8,6 +8,7 @@ use App\Repositories\ContactRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Nette\Utils\Arrays;
 use Spatie\Permission\Models\Permission;
 
 class ContactsController extends Controller
@@ -67,20 +68,28 @@ class ContactsController extends Controller
     public function changeBookVolume(Request $request, $id)
     {
         if (auth()->user()->hasUpdate('user')) {
-            $word = 'asignado';
+            $word = 'cambiado(s)';
             $contact = Contact::find($id);
-            if (isset($contact->book_volume) && isset($request->book_volume)) {
-                $word = 'cambiado';
-            } else if (isset($contact->book_volume) && !isset($request->book_volume)) {
-                $word = 'desasignado';
+            if (isset($contact->book_volumes) && !isset($request->book_volumes)) {
+                $word = 'desasignado(s)';
+            } else if (!isset($contact->book_volumes) && isset($request->book_volumes)) {
+                $word = 'asignado(s)';
             }
-            $contact->book_volume = $request->book_volume;
+            $contact->book_volumes = $request->book_volumes;
             $contact->save();
-            $book_volumes = DB::table('contacts')->whereNotNull('book_volume')->select('book_volume')->distinct()->get()->pluck('book_volume');
+            $book_volumes = DB::table('contacts')->where('user_id', $contact->user_id)->whereNotNull('book_volumes')->select('book_volumes')->distinct()->get()->pluck('book_volumes');
+            $volumes = [];
+            foreach ($book_volumes as $bv) {
+                foreach (json_decode($bv) as $b) {
+                    if (!Arrays::contains($volumes, $b)) {
+                        $volumes[] = $b;
+                    }
+                }
+            }
             $user = $contact->user;
-            $user->book_volumes = count($book_volumes) ? $book_volumes : null;
+            $user->book_volumes = count($volumes) ? $volumes : null;
             $user->save();
-            return redirect()->back()->with('success', 'tomo ' . $word . ' correctamente');
+            return redirect()->back()->with('success', 'tomo(s) ' . $word . ' correctamente');
         }
         return $this->deny_access($request);
     }

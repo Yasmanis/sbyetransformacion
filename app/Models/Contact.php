@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Nette\Utils\Arrays;
 
 class Contact extends Model
 {
@@ -14,6 +15,10 @@ class Contact extends Model
     protected $fillable = ['book_number', 'book_date', 'msg_title', 'message', 'other_people', 'user_id', 'ticket'];
 
     protected $appends = ['book_volume_img'];
+
+    protected $casts = [
+        'book_volumes' => 'json'
+    ];
 
     public function user()
     {
@@ -27,9 +32,10 @@ class Contact extends Model
 
     public function getBookVolumeImgAttribute()
     {
-        if ($this->book_volume) {
-            if ($this->book_volume == 'tomo_1') return 'images/books/book-1.png';
-            else if ($this->book_volume == 'tomo_1') return 'images/books/book-2.png';
+        $book_volumes = $this->book_volumes;
+        if ($book_volumes) {
+            if (Arrays::contains($book_volumes, 'tomo_1')) return 'images/books/book-1.png';
+            else if (Arrays::contains($book_volumes, 'tomo_2')) return 'images/books/book-2.png';
             else return 'images/books/book-3.png';
         }
         return 'images/icon/emoji-duda.jpg';

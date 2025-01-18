@@ -1,5 +1,5 @@
 <template>
-    <div class="row items-center">
+    <div class="row items-center q-pa-none q-mx-none">
         <div
             class="column full-width full-height items-center q-pa-xs"
             :style="{
@@ -10,11 +10,15 @@
                 }`,
             }"
         >
+            <label v-if="label" @click="fileRef.pickFiles()">{{ label }}</label>
             <q-img
                 :src="image"
                 @click="fileRef.pickFiles()"
                 class="cursor-pointer"
                 :ratio="hasDefaultImage ? 1 / 1 : ratio"
+                :rules="fieldRules"
+                :error="errorMsg !== null"
+                :error-message="errorMsg"
                 fit="fill"
             >
                 <template v-slot:error>
@@ -40,6 +44,18 @@
                 />
             </div>
         </div>
+        <!-- <ul
+            style="padding: 0; margin-top: 0px; margin-bottom: 0px"
+            v-if="fieldHelp?.length > 0"
+        >
+            <li
+                v-for="(h, index) in fieldHelp"
+                :key="`help-${index}`"
+                style="list-style: none"
+            >
+                {{ h }}
+            </li>
+        </ul> -->
         <br />
         <div class="col-sm-12 col-md-12" style="padding-left: 35px"></div>
         <q-file
@@ -54,12 +70,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onBeforeMount, onMounted, computed, watch, ref } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
 import { error } from "../../../helpers/notifications";
 import { usePage } from "@inertiajs/vue3";
 import { Dark } from "quasar";
+import { validations } from "../../../helpers/validations";
 
 defineOptions({
     name: "ImageField",
@@ -68,6 +85,7 @@ defineOptions({
 const props = defineProps({
     modelValue: String,
     ratio: Number,
+    label: String,
     name: {
         type: String,
         required: true,
@@ -80,19 +98,35 @@ const props = defineProps({
         type: String,
         default: "150px",
     },
+    othersProps: {
+        type: Object,
+        default: () => ({}),
+    },
+    reset: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const emits = defineEmits(["change"]);
-
+const page = usePage();
+const fieldRules = ref([]);
+const fieldHelp = ref([]);
 const image = ref(null);
 const file = ref(null);
 const fileRef = ref(null);
 const hasDefaultImage = ref(false);
 const defaultImage = ref(
-    `${usePage().props.public_path}images/icon/img-upload-${
+    `${page.props.public_path}images/icon/img-upload-${
         Dark.isActive ? "white" : "black"
     }.png`
 );
+
+onBeforeMount(() => {
+    const { rules, help } = validations.getRules(props.othersProps);
+    fieldRules.value = rules;
+    fieldHelp.value = help;
+});
 
 onMounted(() => {
     if (props.modelValue) {
@@ -104,10 +138,15 @@ onMounted(() => {
     }
 });
 
+watch(
+    () => props.reset,
+    (n, o) => {
+        if (n) resetImg();
+    }
+);
+
 const onChangeFile = (f) => {
-    console.log(f);
     image.value = URL.createObjectURL(f);
-    console.log(image.value);
     hasDefaultImage.value = false;
     emits("change", props.name, f);
 };
@@ -122,4 +161,12 @@ const resetImg = () => {
 const onRejected = (e) => {
     error("el fichero seleccionado no es una imagen");
 };
+
+const errorMsg = computed(() => {
+    return page.props.errors
+        ? page.props.errors[props.name]
+            ? page.props.errors[props.name]
+            : null
+        : null;
+});
 </script>
