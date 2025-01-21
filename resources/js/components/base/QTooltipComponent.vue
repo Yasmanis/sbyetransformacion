@@ -21,7 +21,7 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    class: { type: String, default: "bg-primary" },
+    class: { type: String, default: "bg-dark" },
     anchor: {
         type: String,
         defaul: "bottom middle",

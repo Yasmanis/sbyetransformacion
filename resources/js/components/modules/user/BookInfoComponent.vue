@@ -71,14 +71,28 @@
                                                         1
                                                 )
                                                 .toLowerCase() === 'pdf'
-                                                ? `${$page.props.public_path}images/icon/black-file.png`
+                                                ? `${
+                                                      $page.props.public_path
+                                                  }images/icon/${
+                                                      Dark.isActive
+                                                          ? 'white'
+                                                          : 'black'
+                                                  }-file.png`
                                                 : `${$page.props.public_path}storage/${col.value}`
                                         "
+                                        img-class="cursor-pointer"
                                         width="50px"
                                         height="50px"
                                         fit="fill"
+                                        @click="
+                                            openTicket(
+                                                `${$page.props.public_path}storage/${col.value}`
+                                            )
+                                        "
                                         v-else
-                                    /> </template
+                                        ><q-tooltip-component
+                                            title="click para ampliar"
+                                    /></q-img> </template
                                 ><template
                                     v-else-if="col.name === 'book_volumes'"
                                 >
@@ -136,17 +150,15 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import BtnBookComponent from "../../btn/BtnBookComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import LockUnlockComponent from "./LockUnlockComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
-import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
-import QTooltipComponent from "../../base/QTooltipComponent.vue";
-import CheckboxField from "../../form/input/CheckboxField.vue";
 import BookVolumesComponent from "./BookVolumesComponent.vue";
-import { useForm } from "@inertiajs/vue3";
+import { openURL, Dark } from "quasar";
+import QTooltipComponent from "../../base/QTooltipComponent.vue";
 defineOptions({
     name: "BookInfoComponent",
 });
@@ -241,4 +253,8 @@ const books = computed(() => {
     });
     return props.object.books ?? [];
 });
+
+const openTicket = (url) => {
+    openURL(url, undefined);
+};
 </script>
