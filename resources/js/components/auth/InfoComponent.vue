@@ -2,11 +2,18 @@
     <div class="row">
         <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12 self-center">
             <div class="column items-center">
-                <q-avatar size="120px" class="shadow-10 cursor-pointer" @click="openCropper">
+                <q-avatar
+                    size="120px"
+                    class="shadow-10 cursor-pointer"
+                    @click="openCropper"
+                >
                     <img :src="image" />
                 </q-avatar>
-                <btn-delete-component tooltips="quitar avatar" @click="onFinishCropper('avatar', null)"
-                    v-if="user.avatar" />
+                <btn-delete-component
+                    tooltips="quitar avatar"
+                    @click="onFinishCropper('avatar', null)"
+                    v-if="user.avatar"
+                />
             </div>
         </div>
         <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
@@ -17,19 +24,22 @@
                         <q-item-label caption>
                             {{ user.username }}
                         </q-item-label>
-                    </q-item-section> </q-item><q-item>
+                    </q-item-section> </q-item
+                ><q-item>
                     <q-item-section>
                         <q-item-label> nombre(s) </q-item-label>
                         <q-item-label caption>
                             {{ user.name }}
                         </q-item-label>
-                    </q-item-section> </q-item><q-item>
+                    </q-item-section> </q-item
+                ><q-item>
                     <q-item-section>
                         <q-item-label> apellidos </q-item-label>
                         <q-item-label caption>
                             {{ user.surname }}
                         </q-item-label>
-                    </q-item-section> </q-item><q-item>
+                    </q-item-section> </q-item
+                ><q-item>
                     <q-item-section>
                         <q-item-label> correo </q-item-label>
                         <q-item-label caption>
@@ -42,15 +52,26 @@
     </div>
 
     <q-dialog v-model="showDialog" @hide="file = null">
-        <q-card style="width: 600px;">
+        <q-card style="width: 600px">
             <q-card-section>
-                <cropper-field name="avatar" :image="copperImage" avatar @cancel="showDialog = false"
-                    @finish="onFinishCropper" />
+                <cropper-field
+                    name="avatar"
+                    :image="copperImage"
+                    avatar
+                    @cancel="showDialog = false"
+                    @finish="onFinishCropper"
+                />
             </q-card-section>
         </q-card>
     </q-dialog>
 
-    <q-file v-model="file" ref="fileRef" class="hidden" accept=".jpg, image/*" @update:model-value="handleFile" />
+    <q-file
+        v-model="file"
+        ref="fileRef"
+        class="hidden"
+        accept=".jpg, image/*"
+        @update:model-value="handleFile"
+    />
 </template>
 
 <script setup>
@@ -70,7 +91,9 @@ const image = ref(null);
 const copperImage = ref(null);
 
 onMounted(() => {
-    image.value = page.props.auth.user.avatar ?? `${page.props.public_path}images/icon/profile.svg`
+    image.value =
+        page.props.auth.user.avatar ??
+        `${page.props.public_path}images/icon/profile.svg`;
 });
 
 const user = computed(() => {
@@ -81,8 +104,7 @@ const openCropper = () => {
     if (user.value.avatar) {
         copperImage.value = user.value.avatar;
         showDialog.value = true;
-    }
-    else {
+    } else {
         fileRef.value.pickFiles();
     }
 };
@@ -94,13 +116,14 @@ const handleFile = (file) => {
 
 const onFinishCropper = (name, img) => {
     const form = useForm({
-        'avatar': img
-    }).post('/auth/profile', {
+        avatar: img,
+    }).post("/auth/profile", {
         onSuccess: () => {
-            image.value = img ? img : `${page.props.public_path}images/icon/profile.svg`;
+            image.value = img
+                ? img
+                : `${page.props.public_path}images/icon/profile.svg`;
             showDialog.value = false;
-        }
+        },
     });
-
 };
 </script>

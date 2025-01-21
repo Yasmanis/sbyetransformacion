@@ -385,14 +385,11 @@ const columns = ref([
 
 if (sa.value) {
     columns.value.push({
-        field: "user",
-        name: "user",
+        field: "user_name",
+        name: "user_name",
         label: "usuario",
         align: "left",
         type: "text",
-        format: (val) => {
-            return `${val.name} ${val.surname ? val.surname : ""}`;
-        },
     });
 }
 

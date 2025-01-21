@@ -238,11 +238,16 @@ const initDefaultValue = () => {
 
 const setValuesOnLoad = () => {
     if (page.props.search) {
-        const { column, condition, query } = page.props.search;
+        const { column, condition, query, fullCondition } = page.props.search;
         currentColumn.value = columns.value.find((c) => c.value === column);
-        console.log(query);
         currentQuery.value = query.toString().replaceAll("%", "");
-        currentCondition.value = conditions.find((c) => c.value === condition);
+        currentCondition.value = conditions.find(
+            (c) =>
+                c.value ===
+                (fullCondition["value"]
+                    ? fullCondition["value"]
+                    : fullCondition)
+        );
     } else {
         initDefaultValue();
     }

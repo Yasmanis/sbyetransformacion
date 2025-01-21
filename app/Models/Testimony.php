@@ -16,6 +16,10 @@ class Testimony extends Model
         'anonimous' => 'boolean'
     ];
 
+    protected $appends = [
+        'user_name'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -30,5 +34,10 @@ class Testimony extends Model
     public function scopeActive($query)
     {
         return $query->where('publicated', true);
+    }
+
+    public function getUserNameAttribute()
+    {
+        return $this->user->full_name;
     }
 }

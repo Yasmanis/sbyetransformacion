@@ -16,11 +16,12 @@ class TestimonyRepository extends BaseRepository
         return 'testimony/list';
     }
 
-    protected $with = ['user'];
+    //protected $with = ['user'];
 
     protected $scopes = [
         array(
             'method' => 'owner',
-            'args' => null)
+            'args' => null
+        )
     ];
 }

@@ -65,11 +65,16 @@ class User extends Authenticatable
         'book_volumes' => 'json'
     ];
 
-    protected $appends = ['permissions', 'roles', 'full_name', 'notifications'];
+    protected $appends = ['permissions', 'roles', 'full_name', 'notifications', 'has_testimony'];
 
     public function books()
     {
         return $this->hasMany(Contact::class);
+    }
+
+    public function getHasTestimonyAttribute()
+    {
+        return Testimony::active()->where('user_id', $this->id)->count() > 0;
     }
 
     public function getPermissionsAttribute()
@@ -128,14 +133,22 @@ class User extends Authenticatable
         return $this->hasAnyRole($this->getRolesSbyeTranformacion());
     }
 
-    public function getPermissions()
+    public function getAllPermissions()
     {
-        return $this->sa ? Permission::all() : Permission::whereIn('id', $this->permissions)->get();
+        if ($this->sa) return  Permission::all();
+        $user_id = $this->id;
+        $direct_permissions = Permission::whereIn('id', $this->permissions)->select('id', 'name', 'label', 'module_id');
+        $via_roles_permissions = DB::table('permissions')->join('role_has_permissions', function ($join) {
+            $join->on('permissions.id', '=', 'role_has_permissions.permission_id');
+        })->join('user_has_roles', function ($join) use ($user_id) {
+            $join->on('role_has_permissions.role_id', '=', 'user_has_roles.role_id')->where('user_has_roles.user_id', $user_id);
+        })->select('permissions.id', 'permissions.name', 'permissions.label', 'permissions.module_id');
+        return $direct_permissions->union($via_roles_permissions)->distinct()->get();
     }
 
     public function getApps()
     {
-        $modules = $this->getPermissions()->pluck('module_id');
+        $modules = $this->getAllPermissions()->pluck('module_id');
         return Application::whereHas('modules', function ($query) use ($modules) {
             $query->whereIn('id',  $modules);
         })->select('id', 'name', 'ico')->get();
@@ -143,7 +156,7 @@ class User extends Authenticatable
 
     public function getModulesFromApp($app)
     {
-        $modules_id = $this->getPermissions()->pluck('module_id');
+        $modules_id = $this->getAllPermissions()->pluck('module_id');
         $modules = Module::whereIn('id', $modules_id)->where('application_id', $app->id)->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str')->get();
         foreach ($modules as $m) {
             $m->permissions = $this->getPermissionsFromModule($m);
@@ -153,7 +166,7 @@ class User extends Authenticatable
 
     public function getModulesDoesntHaveApp()
     {
-        $permissions = $this->getPermissions()->pluck('id');
+        $permissions = $this->getAllPermissions()->pluck('id');
         $modules = Module::whereNull('application_id')->whereHas('permissions', function ($query) use ($permissions) {
             $query->whereIn('id',  $permissions);
         })->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str')->get();
@@ -165,7 +178,7 @@ class User extends Authenticatable
 
     public function getPermissionsFromModule($module)
     {
-        $permissions = $this->getPermissions()->pluck('id');
+        $permissions = $this->getAllPermissions()->pluck('id');
         return Permission::whereIn('id', $permissions)->where('module_id', $module->id)->select('name', 'label')->get();
     }
 
@@ -183,13 +196,13 @@ class User extends Authenticatable
 
     public function hasPerm($name)
     {
-        return $this->getPermissions()->where('name', $name)->first() != null;
+        return $this->getAllPermissions()->where('name', $name)->first() != null;
     }
 
     public function hasView($model)
     {
         $permissions = ['view_' . $model, 'edit_' . $model, 'delete_' . $model, 'add_' . $model];
-        return ($this->sa || $this->getPermissions()->whereIn('name', $permissions)->first() != null) && $this->active;
+        return ($this->sa || $this->getAllPermissions()->whereIn('name', $permissions)->first() != null) && $this->active;
     }
 
     public function hasCreate($model)
@@ -245,12 +258,13 @@ class User extends Authenticatable
     {
         $sections = SchoolSection::all();
         if (!$this->sa) {
+            $has_testimony = $this->has_testimony;
             $topics = [];
             $sections1 = [];
             $volumes = $this->book_volumes ? $this->book_volumes : [];
             foreach ($sections as $s) {
                 foreach ($s->topics as $t) {
-                    if (in_array($t->book_volume, $volumes)) {
+                    if (in_array($t->book_volume, $volumes) && ($has_testimony || !$t->visible_after_testimony)) {
                         $topics[] = $t;
                     }
                 }

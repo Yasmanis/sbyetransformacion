@@ -143,7 +143,6 @@ function clear() {
 
 const onUpdate = (name, val, full) => {
     let current = filters.value.find((f) => f.name === name);
-    console.log(current);
     current["value"] = val
         ? current.type === "select"
             ? Array.isArray(val)

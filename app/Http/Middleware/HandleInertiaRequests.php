@@ -45,7 +45,7 @@ class HandleInertiaRequests extends Middleware
                 return $user ? [
                     'menu' => $user->menu(),
                     'user' => $user,
-                    'permissions' => $user->getPermissions()->pluck('name')
+                    'permissions' => $user->getAllPermissions()->pluck('name'),
                 ] : null;
             },
             'public_path' => asset(''),
