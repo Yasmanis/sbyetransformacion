@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\PushMessage;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FileController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\LifeController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ConfigurationController;
+use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\SchoolTopicsController;
 use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
@@ -35,6 +37,14 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/event', function () {
+    event(new PushMessage('Send from server to Pusher!'));
+});
+
+Route::get('/listen', function () {
+    return Inertia::render('pushmessages/notification');
+});
 
 Route::get('/', function () {
     return Inertia('landing/vivir_en_plenitud');
@@ -128,6 +138,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/testimony', TestimonyController::class);
+    Route::resource('/admin/push-messages', PushMessageController::class);
     Route::post('/admin/testimony/publicated/{id}', [TestimonyController::class, 'publicated']);
     Route::post('/admin/testimony/store-from-publications', [TestimonyController::class, 'storeFromPublications']);
     Route::resource('/admin/life', LifeController::class);

@@ -48,8 +48,10 @@ class FileController extends Controller
             if ($request->hasFile('file')) {
                 $repository = new FileRepository();
                 $data = $request->only((new ($repository->model()))->getFillable());
-                if (isset($request->public_date)) {
+                try {
                     $data['public_date'] = Carbon::createFromFormat('d/m/Y', $request->public_date);
+                } catch (\Throwable $th) {
+                    $data['public_date'] = null;
                 }
                 $properties = $this->getPropertiesFromFile($request->file('file'));
                 $data['name'] = $properties['originalName'];

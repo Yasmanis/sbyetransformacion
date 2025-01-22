@@ -67,6 +67,8 @@
                     </q-menu>
                 </q-btn-component>
 
+                <contact-component />
+
                 <q-btn-component color="white" class="q-mr-sm">
                     <q-avatar size="md" class="shadow-10"
                         ><img
@@ -266,6 +268,7 @@ import MenuComponent from "../components/navigation/MenuComponent.vue";
 import DarkSwitcher from "../components/profile/DarkSwitcher.vue";
 import QBtnComponent from "../components/base/QBtnComponent.vue";
 import NotificationsComponent from "../components/others/NotificationsComponent.vue";
+import ContactComponent from "../components/others/ContactComponent.vue";
 import SessionCloseComponent from "../components/base/SessionCloseComponent.vue";
 import DialogHeaderComponent from "../components/base/DialogHeaderComponent.vue";
 import PasswordField from "../components/form/input/PasswordField.vue";
