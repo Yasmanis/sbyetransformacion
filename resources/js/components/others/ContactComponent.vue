@@ -6,7 +6,7 @@
         class="q-mr-sm"
         @click="showDialog = true"
     />
-    <q-dialog v-model="showDialog" persistent position="right">
+    <q-dialog v-model="showDialog" persistent position="right" @hide="onHide">
         <q-card class="scroll">
             <dialog-header-component
                 icon="mdi-message-question-outline"
@@ -17,9 +17,9 @@
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
                     <text-field
                         label="nombre"
-                        name="name"
-                        v-model="formData.name"
-                        :model-value="formData.name"
+                        name="subject"
+                        v-model="formData.subject"
+                        :model-value="formData.subject"
                         :others-props="{
                             required: true,
                         }"
@@ -27,9 +27,9 @@
                     />
                     <editor-field
                         label="en que podemos ayudarte"
-                        name="message"
-                        v-model="formData.message"
-                        :model-value="formData.message"
+                        name="description"
+                        v-model="formData.description"
+                        :model-value="formData.description"
                         :others-props="{
                             required: true,
                         }"
@@ -68,8 +68,8 @@ defineOptions({
 const showDialog = ref(false);
 const form = ref(null);
 const formData = useForm({
-    name: null,
-    message: null,
+    subject: null,
+    description: null,
 });
 
 const onUpdateField = (name, val) => {
@@ -79,16 +79,26 @@ const onUpdateField = (name, val) => {
 const save = () => {
     form.value.validate().then((success) => {
         if (success) {
-            if (formData.message === null || formData.message.trim() === "") {
+            if (
+                formData.description === null ||
+                formData.description.trim() === ""
+            ) {
                 error("especifique en que desea que lo/la ayudemos");
             } else {
-                formData.post("", {
-                    onSuccess: () => {},
+                formData.post("/admin/contact-admin/store", {
+                    onSuccess: () => {
+                        showDialog.value = false;
+                    },
                 });
             }
         } else {
             errorValidation();
         }
     });
+};
+
+const onHide = () => {
+    formData.reset();
+    form.value.resetValidation();
 };
 </script>

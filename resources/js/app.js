@@ -15,6 +15,7 @@ import {
     Dialog,
     Meta,
     AppFullscreen,
+    date,
 } from "quasar";
 import quasarIconSet from "quasar/icon-set/svg-mdi-v6";
 import lang from "quasar/lang/es";
@@ -23,6 +24,10 @@ import permissions from "./plugins/permissions";
 import VueGates from "vue-gates";
 import { ZiggyVue } from "ziggy-js";
 import { success, error, errorValidation } from "./helpers/notifications";
+import * as PusherPushNotifications from "@pusher/push-notifications-web";
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
+import Swal from "sweetalert2";
 createInertiaApp({
     title: (title) => "SBYE-transformacion",
     progress: false,
@@ -98,4 +103,106 @@ const setMessages = () => {
     } else if (Object.keys(page.props.errors).length > 0) {
         errorValidation();
     }
+};
+
+var pusher = new Pusher("e63f90f776ecf0234b4e", {
+    cluster: "us2",
+    channelAuthorization: {
+        endpoint: "/pusher/auth",
+    },
+    // userAuthentication: {
+    //     endpoint: "/pusher/user-auth",
+    // },
+});
+
+var channel = pusher.subscribe("my-channel");
+
+channel.bind("pusher:subscription_succeeded", () => {
+    console.log("subscription_succeeded");
+});
+
+channel.bind("pusher:subscription_error", (error) => {
+    console.log("subscription_error", error);
+});
+
+channel.bind("my-event", function (data) {
+    let auth = page.props.auth;
+    if (auth) {
+        showPush(data);
+    }
+});
+
+const showPush = (data) => {
+    if (!("Notification" in window)) {
+        Notify.create({
+            message: "este navegador no soporta notificaciones",
+            position: "top-right",
+            color: "negative",
+            timeout: 0,
+            actions: [
+                {
+                    label: "cerrar",
+                    color: "white",
+                    handler: () => {
+                        // Acción al cerrar la notificación
+                    },
+                },
+            ],
+        });
+    } else if (Notification.permission === "granted") {
+        showAlert(data);
+    } else if (Notification.permission !== "denied") {
+        Notification.requestPermission(function (permission) {
+            if (permission === "granted") {
+                showAlert(data);
+            }
+        });
+    }
+};
+
+const showAlert = (data) => {
+    // Swal.fire({
+    //     title: data.title,
+    //     text: data.text,
+    //     icon: data.icon,
+    //     confirmButtonText: "ok",
+    //     position: "top-end",
+    // });
+
+    Notify.create({
+        message: `${data.title} <br> ${data.text}`,
+        position: "top-right",
+        color: "negative",
+        html: true,
+        timeout: 0,
+        caption: date.formatDate(new Date(data.sent_at), "MMMM DD, YYYY"),
+        avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
+        actions: [
+            {
+                icon: "close",
+                color: "white",
+                handler: () => {
+                    // Acción al cerrar la notificación
+                },
+            },
+        ],
+    });
+
+    Notify.create({
+        message: `${data.title} <br> ${data.text}`,
+        position: "top-right",
+        html: true,
+        timeout: 0,
+        caption: "hace 2 minutos",
+        avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
+        actions: [
+            {
+                icon: "close",
+                color: "white",
+                handler: () => {
+                    // Acción al cerrar la notificación
+                },
+            },
+        ],
+    });
 };

@@ -121,7 +121,9 @@ const showDialog = ref(false);
 const filters = ref([]);
 
 const currentFilters = computed(() => {
-    return page.props.filters ? page.props.filters : [];
+    return page.props.filters
+        ? page.props.filters.filter((f) => f.name !== "id")
+        : [];
 });
 
 const onBeforeShow = () => {

@@ -44,28 +44,7 @@
                     </q-menu>
                 </q-btn-component>
 
-                <q-btn-component
-                    icon="mdi-bell-outline"
-                    color="white"
-                    class="q-mr-sm"
-                    v-if="user.notifications.length > 0"
-                >
-                    <q-badge
-                        :color="Dark.isActive ? 'primary' : 'black'"
-                        floating
-                        class="fa-beat"
-                        >{{ user.notifications.length }}</q-badge
-                    >
-                    <q-menu
-                        style="min-width: 300px"
-                        transition-show="scale"
-                        transition-hide="scale"
-                    >
-                        <notifications-component
-                            :messages="user.notifications"
-                        />
-                    </q-menu>
-                </q-btn-component>
+                <notifications-list-component />
 
                 <contact-component />
 
@@ -267,7 +246,7 @@ import { ref, onMounted, computed } from "vue";
 import MenuComponent from "../components/navigation/MenuComponent.vue";
 import DarkSwitcher from "../components/profile/DarkSwitcher.vue";
 import QBtnComponent from "../components/base/QBtnComponent.vue";
-import NotificationsComponent from "../components/others/NotificationsComponent.vue";
+import NotificationsListComponent from "../components/notification/NotificationsListComponent.vue";
 import ContactComponent from "../components/others/ContactComponent.vue";
 import SessionCloseComponent from "../components/base/SessionCloseComponent.vue";
 import DialogHeaderComponent from "../components/base/DialogHeaderComponent.vue";

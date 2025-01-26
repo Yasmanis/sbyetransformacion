@@ -16,12 +16,22 @@ return new class extends Migration
         Schema::create('contact_admins', function (Blueprint $table) {
             $table->id();
             $table->string('subject');
-            $table->text('description');
+            $table->longText('description');
             $table->unsignedBigInteger('created_by');
-            $table->foreign('created_by')->references('id')->on('users')->cascadeOnUpdate();
-            $table->enum('status', ['New', 'Close']);
+            $table->foreign('created_by')->references('id')->on('users')->cascadeOnDelete();
+            $table->enum('status', ['new', 'close'])->default('new');
             $table->unsignedBigInteger('revised_by')->nullable();
-            $table->foreign('revised_by')->references('id')->on('users')->cascadeOnUpdate();
+            $table->foreign('revised_by')->references('id')->on('users')->cascadeOnDelete();
+            $table->timestamps();
+        });
+
+        Schema::create('contact_admins_attachments', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->integer('size');
+            $table->string('path');
+            $table->unsignedBigInteger('contact_id');
+            $table->foreign('contact_id')->references('id')->on('contact_admins')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -33,6 +43,7 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('contact_admins_attachments');
         Schema::dropIfExists('contact_admins');
     }
 };

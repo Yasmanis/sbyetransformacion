@@ -12,6 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
+        '/pusher/auth',
         '/admin/files',
         '/admin/schooltopics/addResources',
         '/admin/schooltopics/add-attachment-message'

@@ -368,7 +368,7 @@ abstract class BaseRepository implements BaseInterface
                 } else {
                     if ($f->type === 'select') {
                         $this->whereIn($f->name, $f->value);
-                    } else if ($f->type === 'boolean') {
+                    } else if ($f->type === 'boolean' || $f->type === 'number') {
                         $this->where($f->name, '=', $f->value);
                     } else if ($f->type === 'date') {
                         $from = date('Y-m-d 00:00:00', strtotime($f->value[0]));

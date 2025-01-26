@@ -64,11 +64,8 @@
                     v-model="formData['file']"
                     label="mensaje"
                     name="file"
-                    accept="video/*"
                     :autogrow="true"
-                    :othersProps="{
-                        required: true,
-                    }"
+                    :othersProps="{ required: true, accept: 'video/*' }"
                     :modelValue="formData['file']"
                     @update="onUpdateField"
                     v-if="formData['type'] === 'video'"

@@ -26,7 +26,7 @@
                 </li>
             </ul>
         </template>
-        <template v-slot:append>
+        <template v-slot:prepend v-if="time && model">
             <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
                     cover
@@ -34,7 +34,11 @@
                     transition-hide="scale"
                     @before-show="onBeforeShowProxy"
                 >
-                    <q-date v-model="proxy" mask="DD/MM/YYYY">
+                    <q-date
+                        v-model="proxy"
+                        :mask="time ? 'DD/MM/YYYY hh:mm a' : 'DD/MM/YYYY'"
+                        :options="options"
+                    >
                         <div class="row items-center justify-end q-gutter-sm">
                             <q-btn-component
                                 icon="check"
@@ -63,6 +67,66 @@
                 </q-popup-proxy>
             </q-icon>
         </template>
+        <template v-slot:append v-else>
+            <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                    @before-show="onBeforeShowProxy"
+                >
+                    <q-date
+                        v-model="proxy"
+                        mask="DD/MM/YYYY"
+                        :options="options"
+                    >
+                        <div class="row items-center justify-end q-gutter-sm">
+                            <q-btn-component
+                                icon="check"
+                                v-close-popup
+                                :tooltips="$q.lang.label.ok"
+                                @click="ok(proxy)"
+                                v-if="proxy"
+                            />
+                            <q-btn-component
+                                icon="mdi-cancel"
+                                color="brown-5"
+                                :tooltips="$q.lang.label.cancel"
+                                v-close-popup
+                            />
+
+                            <q-btn-component
+                                icon="mdi-eraser"
+                                color="red"
+                                :tooltips="$q.lang.label.clear"
+                                v-close-popup
+                                @click="clear"
+                                v-if="proxy"
+                            />
+                        </div>
+                    </q-date>
+                </q-popup-proxy>
+            </q-icon>
+        </template>
+        <template v-slot:append v-if="time && model">
+            <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                >
+                    <q-time
+                        v-model="model"
+                        mask="DD/MM/YYYY hh:mm a"
+                        :format24h="false"
+                    >
+                        <div class="row items-center justify-end">
+                            <q-btn v-close-popup icon="check" flat />
+                        </div>
+                    </q-time>
+                </q-popup-proxy>
+            </q-icon>
+        </template>
     </q-input>
 </template>
 
@@ -78,6 +142,12 @@ defineOptions({
 
 const props = defineProps({
     modelValue: String,
+    startDate: String,
+    endDate: String,
+    time: {
+        type: Boolean,
+        default: false,
+    },
     name: {
         type: String,
         required: true,
@@ -116,9 +186,17 @@ watch(
     }
 );
 
-function onUpdate(val) {
+const options = (date) => {
+    if (props.startDate && props.endDate)
+        return date >= props.startDate && date <= props.endDate;
+    if (props.startDate) return date >= props.startDate;
+    if (props.endDate) return date <= props.endDate;
+    return true;
+};
+
+const onUpdate = (val) => {
     emits("update", props.name, val);
-}
+};
 
 const onBeforeShowProxy = () => {
     proxy.value = model.value;

@@ -4,18 +4,17 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
-use App\Models\PasswordChangeNotification;
 use App\Models\User;
+use App\Models\UserNotifications;
 use App\Notifications\StandardNotification;
 use App\Repositories\ContactRepository;
 use App\Repositories\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Foundation\Auth\Access;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
+use Pusher\PushNotifications\PushNotifications;
 
 class AuthController extends Controller
 {
@@ -34,6 +33,7 @@ class AuthController extends Controller
             $user = auth()->user();
             if ($user->active) {
                 $request->session()->regenerate();
+                auth()->login($user);
                 return redirect()->intended('admin')->with('success', 'bienvenido ' . $user->username);
             }
             Auth::logout();
@@ -57,10 +57,13 @@ class AuthController extends Controller
         $user = User::firstWhere('email', $request->email);
         if ($user != null) {
             $users = User::where('sa', true)->get();
-            $pass = new PasswordChangeNotification();
+            $pass = new UserNotifications();
             $pass->title = 'cambio de contraseña';
             $pass->priority = 'Alta';
             $pass->user_id = $user->id;
+            $pass->code = 'password_change';
+            $pass->model = 'User';
+            $pass->model_id = $user->id;
             $pass->description = 'el usuario con correo <b>' . $request->email . '</b> ha solicitado el cambio de contraseña';
             $pass->save();
             Notification::send($users, new StandardNotification($pass));
@@ -96,5 +99,46 @@ class AuthController extends Controller
         }
         $contact = $repository->create($data);
         return redirect()->back()->with('success', 'su nueva compra ha sido registrada correctamente. espere a que el administrador la confirme');
+    }
+
+    public function deleteNotification($ids)
+    {
+        $ids = explode(',', $ids);
+        auth()->user()->notifications()->whereIn('id', $ids)->delete();
+        return redirect()->back()->with('success', count($ids) == 1 ? 'notificacion eliminada correctamente' : 'notificaciones eliminadas correctamente');
+    }
+
+    public function readUnreadNotification($id)
+    {
+        $notification = auth()->user()->notifications()->firstWhere('id', $id);
+        if ($notification->read()) $notification->markAsUnread();
+        else $notification->markAsRead();
+        return redirect()->back()->with('success', $notification->read() ? 'notificacion marcada como leida correctamente' : 'notificacion marcada como no leida correctamente');
+    }
+
+    public function markNotificationsAs(Request $request)
+    {
+        if ($request->read) auth()->user()->notifications()->get()->markAsRead();
+        else auth()->user()->notifications()->get()->markAsUnread();
+        return redirect()->back()->with('success', $request->read ? 'notificaciones marcadas como leidas correctamente' : 'notificaciones marcadas como no leidas correctamente');
+    }
+
+    public function sendNotification(Request $request)
+    {
+        $beamsClient = new PushNotifications(array(
+            "instanceId" => "556c8ed1-ac33-4910-883f-16287ddf1ab8",
+            "secretKey" => "E59B83DE274A8D03C12890A8B34599000CD80406A6963FB0E8D76D845AD443E6",
+        ));
+
+        $publishResponse = $beamsClient->publishToInterests(
+            array("hello"),
+            array(
+                "web" => array("notification" => array(
+                    "title" => "Hello",
+                    "body" => "Hello, World!",
+                    "deep_link" => "https://www.pusher.com",
+                )),
+            )
+        );
     }
 }

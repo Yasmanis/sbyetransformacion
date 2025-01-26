@@ -17,6 +17,6 @@ use Illuminate\Support\Facades\Broadcast;
 //     return (int) $user->id === (int) $id;
 // });
 
-Broadcast::channel('push-message', function () {
+Broadcast::channel('private-new-notification.1', function () {
     return true;
 });

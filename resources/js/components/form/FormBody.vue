@@ -15,6 +15,28 @@
                     @update="onUpdateField"
                     v-if="f.type === 'text'"
                 />
+                <editor-field
+                    v-model="formData[f.name]"
+                    :label="f.label"
+                    :name="f.name"
+                    :othersProps="f.othersProps"
+                    :modelValue="formData[f.name]"
+                    @update="onUpdateField"
+                    v-if="f.type === 'editor'"
+                />
+                <file-field
+                    v-model="formData[f.name]"
+                    :label="f.label"
+                    :name="f.name"
+                    :othersProps="f.othersProps"
+                    :modelValue="formData[f.name]"
+                    @update="onUpdateField"
+                    v-if="f.type === 'file'"
+                />
+                <periodicity-field
+                    @update="onUpdateField"
+                    v-if="f.type === 'periodicity'"
+                />
                 <checkbox-field
                     :label="f.label"
                     :name="f.name"
@@ -80,6 +102,9 @@ import CheckboxField from "./input/CheckboxField.vue";
 import DateField from "./input/DateField.vue";
 import PasswordField from "./input/PasswordField.vue";
 import UploaderField from "./input/UploaderField.vue";
+import EditorField from "./input/EditorField.vue";
+import FileField from "./input/FileField.vue";
+import PeriodicityField from "./input/PeriodicityField.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
 import BtnSaveAndNewComponent from "../btn/BtnSaveAndNewComponent.vue";
@@ -117,6 +142,8 @@ const setDefaultData = () => {
             formData.value[f.name] = props.object
                 ? props.object[f.name]
                 : false;
+        } else if (f.type === "periodicity") {
+            console.log("periodicity");
         } else if (f.type === "select") {
             formData.value[f.name] = props.object ? props.object[f.name] : null;
         } else {

@@ -1,6 +1,6 @@
 <template>
     <q-file
-        :ref="modelRef"
+        ref="modelRef"
         :name="props.name"
         :label="props.label"
         :rules="fieldRules"
@@ -9,7 +9,7 @@
         :dense="dense"
         :clearable="clearable"
         :multiple="multiple"
-        :accept="accept"
+        :accept="othersProps?.accept"
         lazy-rules
         reactive-rules
         hide-bottom-space
@@ -18,11 +18,20 @@
         class="full-width"
         @rejected="onRejected"
         @update:model-value="(val) => update(val)"
-    />
+    >
+        <template #append v-if="othersProps?.icon">
+            <q-btn-component
+                :icon="othersProps.icon"
+                :tooltips="othersProps.titleIcon"
+                @click="modelRef.pickFiles()"
+            />
+        </template>
+    </q-file>
 </template>
 
 <script setup>
 import { onBeforeMount, onMounted, ref, watch, computed } from "vue";
+import QBtnComponent from "../../base/QBtnComponent.vue";
 import { validations } from "../../../helpers/validations";
 import { usePage } from "@inertiajs/vue3";
 import { error } from "../../../helpers/notifications";
@@ -51,7 +60,7 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    accept: String,
+    icon: String,
     othersProps: {
         type: Object,
         default: () => ({}),

@@ -209,3 +209,7 @@
 .q-field--dense .q-field__label {
     font-size: 16px;
 }
+
+.swal2-container {
+    z-index: 9999;
+}

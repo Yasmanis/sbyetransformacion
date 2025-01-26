@@ -84,7 +84,7 @@ class User extends Authenticatable
 
     public function getNotificationsAttribute()
     {
-        $notifications = $this->unreadNotifications;
+        $notifications = $this->notifications()->get();
         foreach ($notifications as $n) {
             $n['time'] = Carbon::parse($n['created_at'])->diffForHumans();
         }
@@ -115,12 +115,14 @@ class User extends Authenticatable
         });
     }
 
+    public function scopeIsAdmin($query)
+    {
+        return $query->where('sa', true)->where('active', true);
+    }
+
     public function personalSbyeTransformacion($query)
     {
-        return $query/*
-            ->WhereHas('roles', function ($query) {
-                $query->whereIn('name', $this->getRolesSbyeTranformacion());
-            })*/;
+        return $query->where('sa', true)->where('active', true);
     }
 
     public function getRolesSbyeTranformacion()

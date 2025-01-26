@@ -12,6 +12,7 @@ use App\Http\Controllers\LifeController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ConfigurationController;
+use App\Http\Controllers\ContactAdminController;
 use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\SchoolTopicsController;
 use App\Http\Controllers\TestimonyController;
@@ -23,9 +24,12 @@ use App\Models\Testimony;
 use App\Models\User;
 use App\Notifications\StandardNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Pusher\Pusher;
+use Pusher\PushNotifications\PushNotifications;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,8 +43,23 @@ use Inertia\Inertia;
 */
 
 Route::get('/event', function () {
-    event(new PushMessage('Send from server to Pusher!'));
+    //broadcast(new PushMessage('hola'));
+
+    //event(new PushMessage('hola'));
+
+    //event(new PushMessage('hello world'));
+
+    $pusher = new Pusher('e63f90f776ecf0234b4e', '09a25e84a2a310ad02a2', '1930615', array('cluster' => 'us2'));
+    $pusher->trigger('my-channel', 'my-event', [
+        'title' => 'titulo',
+        'text' => 'ejemplo de texto a mostrar',
+        'icon' => 'mdi-account',
+        'sent_at' => now(),
+        'user' => auth()->user()->id
+    ]);
 });
+
+
 
 Route::get('/listen', function () {
     return Inertia::render('pushmessages/notification');
@@ -124,9 +143,22 @@ Route::get('/not-found', function () {
 })->name('not-found');
 
 Route::middleware(['auth', 'auth.session'])->group(function () {
+
+    Route::post('/pusher/auth', function (Request $request) {
+        $beamsClient = new PushNotifications(array(
+            "instanceId" => "556c8ed1-ac33-4910-883f-16287ddf1ab8",
+            "secretKey" => "E59B83DE274A8D03C12890A8B34599000CD80406A6963FB0E8D76D845AD443E6",
+        ));
+        $token = $beamsClient->generateToken(auth()->user()->id);
+        return $token;
+    });
+
     Route::get('/auth/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/auth/profile', [AuthController::class, 'saveProfile']);
     Route::post('/auth/store-new-book', [AuthController::class, 'storeNewBook']);
+    Route::delete('/auth/delete-notification/{ids}', [AuthController::class, 'deleteNotification']);
+    Route::post('/auth/read-unread-notification/{id}', [AuthController::class, 'readUnreadNotification']);
+    Route::post('/auth/mark-notifications-as', [AuthController::class, 'markNotificationsAs']);
     Route::get('/admin', function () {
         return Inertia('home');
     });
@@ -168,14 +200,15 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/admin/posts', [PostController::class, 'index']);
     Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
 
-    Route::get('/logout', [AuthController::class, 'logout']);
-
     Route::get('/admin/configuration/legal', [ConfigurationController::class, 'legal']);
     Route::get('/admin/configuration/private', [ConfigurationController::class, 'private']);
     Route::get('/admin/configuration/index/{keyName}', [ConfigurationController::class, 'index']);
     Route::post('/admin/configuration/save', [ConfigurationController::class, 'save']);
+    Route::post('/admin/contact-admin/store', [ContactAdminController::class, 'store']);
 
     Route::post('/contacts/change-book-volume/{id}', [ContactsController::class, 'changeBookVolume']);
+
+    Route::get('/logout', [AuthController::class, 'logout']);
 });
 
 Route::get('/categories', [SelectsController::class, 'categories']);
