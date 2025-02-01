@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campaign;
 use App\Models\Category;
+use App\Models\CategoryNomenclature;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,6 +17,20 @@ class SelectsController extends Controller
     {
         return response()->json([
             'options' => Role::select('id as value', 'name as label')->get()
+        ]);
+    }
+
+    public function campaigns()
+    {
+        return response()->json([
+            'options' => Campaign::select('id as value', 'title as label')->get()
+        ]);
+    }
+
+    public function sections($key)
+    {
+        return response()->json([
+            'options' => CategoryNomenclature::where('key', $key)->select('id as value', 'value as label')->get()
         ]);
     }
 

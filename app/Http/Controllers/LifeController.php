@@ -9,14 +9,24 @@ use Illuminate\Validation\Rule;
 
 class LifeController extends Controller
 {
+    public function segment()
+    {
+        $segment = last(request()->segments());
+        if ($segment == 'life') {
+            $segment = 'school';
+        }
+        return $segment;
+    }
+
     public function index(Request $request)
     {
         $user = auth()->user();
-        if ($user->hasView('schoolsection')) {
+        if ($user->hasView('schoolsection') || $user->hasView('conference')) {
             $repository = new SchoolSectionsRepository();
             return Inertia::render($repository->component(), [
-                'sections' => $user->getSections(),
-                'course_percentage' => $user->getCoursePercentage()
+                'sections' => $user->getSections($this->segment()),
+                'course_percentage' => $user->getCoursePercentage(),
+                'private_messages' => $user->getPrivateMessages($request, 'received')
             ]);
         }
         return $this->deny_access($request);
@@ -24,12 +34,14 @@ class LifeController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->hasCreate('schoolsection')) {
+        if (auth()->user()->hasCreate('schoolsection') || $user->hasView('conference')) {
             $request->validate([
                 'name' => ['required', 'unique:school_sections'],
             ]);
             $repository = new SchoolSectionsRepository();
-            $section = $repository->create($request->only((new ($repository->model()))->getFillable()));
+            $data = $request->only((new ($repository->model()))->getFillable());
+            $data['category'] = $this->segment();
+            $section = $repository->create($data);
             return $section;
         }
         return $this->deny_access($request);
@@ -37,7 +49,7 @@ class LifeController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('schoolsection')) {
+        if (auth()->user()->hasUpdate('schoolsection') || $user->hasView('conference')) {
             $request->validate([
                 'name' => ['required', Rule::unique('school_sections', 'name')->ignore($id)],
             ]);
@@ -50,7 +62,7 @@ class LifeController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        if (auth()->user()->hasDelete('schoolsection')) {
+        if (auth()->user()->hasDelete('schoolsection') || $user->hasView('conference')) {
             $repository = new SchoolSectionsRepository();
             $repository->deleteById($id);
             return redirect()->back()->with('success', 'seccion eliminada correctamente');

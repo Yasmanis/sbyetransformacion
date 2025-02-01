@@ -13,9 +13,24 @@
         @ready="onReady"
         @input="onEditorInput"
     />
-    <div class="column help-editor q-ml-none" v-if="othersProps?.required">
+    <div
+        class="column help-editor q-ml-none"
+        v-if="othersProps?.required && !errorMsg"
+    >
         <span>requerido</span>
     </div>
+
+    <q-item-label
+        class="q-field--error"
+        v-if="errorMsg"
+        style="margin-left: -12px; margin-top: 0px"
+    >
+        <div class="q-field__bottom row items-start q-field__bottom--stale">
+            <div class="q-field__messages col">
+                <div role="alert">{{ errorMsg }}</div>
+            </div>
+        </div>
+    </q-item-label>
 
     <emojis-menu-component
         :target="targetEmojis"
@@ -26,7 +41,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import {
     ClassicEditor,
     Autoformat,
@@ -67,6 +82,7 @@ import {
 import "ckeditor5/ckeditor5.css";
 import coreTranslations from "ckeditor5/translations/es.js";
 import EmojisMenuComponent from "./editor/EmojisMenuComponent.vue";
+import { usePage } from "@inertiajs/vue3";
 
 defineOptions({
     name: "EditorField",
@@ -107,7 +123,7 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["update", "save", "cancel"]);
-
+const page = usePage();
 const model = ref("");
 const defaultValue = ref(null);
 const targetEmojis = ref(null);
@@ -370,6 +386,14 @@ const inserText = (e) => {
 const onEditorInput = (editor) => {
     emits("update", props.name, editor);
 };
+
+const errorMsg = computed(() => {
+    return page.props.errors
+        ? page.props.errors[props.name]
+            ? page.props.errors[props.name]
+            : null
+        : null;
+});
 </script>
 <style>
 .ck-powered-by {

@@ -251,7 +251,7 @@
                             >
                                 <i
                                     class="mdi mdi-asterisk text-red"
-                                    style="margin-left: 124px"
+                                    style="margin-left: 58px"
                                     v-if="!form.ticket"
                                 />
                                 <q-file
@@ -261,9 +261,7 @@
                                     dense
                                     rounded
                                     outlined
-                                    :label="
-                                        form.ticket ? null : 'foto del ticket'
-                                    "
+                                    :label="form.ticket ? null : 'ticket'"
                                     bg-color="white"
                                     :input-style="{ 'margin-top': '-10px' }"
                                     required

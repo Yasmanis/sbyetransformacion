@@ -79,6 +79,18 @@
                     :modelValue="formData['msg_to_admin']"
                     @update="onUpdateField"
                 />
+                <file-field
+                    v-model="formData['amazon_image']"
+                    label="imagen del testimonio de amazon"
+                    name="amazon_image"
+                    :othersProps="{
+                        accept: 'image/*',
+                        icon: 'mdi-image-outline',
+                    }"
+                    :modelValue="formData['amazon_image']"
+                    @update="onUpdateField"
+                    v-if="!object"
+                />
             </div>
         </q-form>
     </q-card-section>

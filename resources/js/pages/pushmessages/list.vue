@@ -20,6 +20,17 @@ defineOptions({
     name: "ListPage",
 });
 
+const campaigns = {
+    field: "campaign_id",
+    name: "campaign_id",
+    label: "campaña",
+    type: "campaign",
+    othersProps: {
+        url_to_options: "/selects/campaigns",
+        required: true,
+    },
+};
+
 const title = {
     field: "title",
     name: "title",
@@ -110,6 +121,18 @@ const state = {
     },
 };
 
+const sections = {
+    field: "section_id",
+    name: "section_id",
+    label: "secciones",
+    type: "select",
+    othersProps: {
+        url_to_options: "/category-nomenclatures/section",
+        multiple: true,
+        required: true,
+    },
+};
+
 const searchFields = [title];
 
 const columns = [
@@ -125,6 +148,8 @@ const columns = [
 ];
 
 const fields = [
+    //campaigns,
+    sections,
     title,
     message,
     image,

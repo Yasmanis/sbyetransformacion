@@ -4,41 +4,54 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\File;
+use App\Models\PrivateMsg;
+use App\Models\PrivateMsgReceived;
+use App\Models\PrivateMsgUserNote;
 use App\Repositories\CategoryRepository;
+use App\Repositories\PrivateMsgRepository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class PrivateMsgController extends Controller
 {
-    public function index(Request $request)
-    {
-        if (auth()->user()->hasView('private_msg')) {
-            $repository = new CategoryRepository();
-            $repository->search($request->search);
-            $repository->filters($request->filters);
-            $sortBy = $request->sortBy;
-            $sortDirection = $request->sortDirection;
-            if (!isset($sortBy)) {
-                $sortBy = 'order';
-                $sortDirection = 'ASC';
-            }
-            $repository->orderBy($sortBy, $sortDirection);
-            return $this->data_index($repository, $request);
-        }
-        return $this->deny_access($request);
-    }
-
     public function store(Request $request)
     {
-        if (auth()->user()->hasCreate('private_msg')) {
-            $request->validate([
-                'name' => ['required', 'unique:category'],
-            ]);
-            $repository = new CategoryRepository();
-            $repository->create($request->only((new ($repository->model()))->getFillable()));
-            return redirect()->back()->with('success', 'categoria adicionado correctamente');
+        $user = auth()->user();
+        $request->validate([
+            'title' => ['required'],
+            'msg' => ['required'],
+            'users' => ['required', 'array'],
+        ]);
+        $repository = new PrivateMsgRepository();
+        $data = $request->only((new ($repository->model()))->getFillable());
+        if (isset($request->parent_id)) {
+            $data['parent_id'] = $request->parent_id;
+            $data['to_id'] = $request->to_id;
+            $data[''] = 'Re: ' . PrivateMsg::find($request->parent_id)->title;
+            $highlight = PrivateMsg::where('to_id', $request->to_id)->where('parent_id', $request->parent_id)->orderBy('id', 'desc')->first();
+            if ($highlight == null) {
+                $highlight = PrivateMsg::whereHas('users', function (Builder $query) use ($request) {
+                    $query->where('user_id', $request->to_id)->where('message_id', $request->parent_id)->where('highlight', true);
+                })->first();
+                $data['highlight_by_to'] = $highlight == null ? false : true;
+            } else {
+                $data['highlight_by_to'] = $highlight->highlight_by_to;
+            }
+        } else {
+            $data['title'] = $request->title;
         }
-        return $this->deny_access($request);
+        $msg = $repository->create($data);
+        foreach ($request->users as $u) {
+            if ($u != $user->id) {
+                $received = new PrivateMsgReceived();
+                $received->user_id = $u;
+                $received->message()->associate($msg);
+                $received->parent_id = isset($request->parent_id) ? $request->parent_id : null;
+                $received->save();
+            }
+        }
+        return redirect()->back()->with('success', 'mensaje enviado correctamente');
     }
 
     public function update(Request $request, $id)
@@ -47,7 +60,7 @@ class PrivateMsgController extends Controller
             $request->validate([
                 'name' => ['required', Rule::unique('category', 'name')->ignore($id)],
             ]);
-            $repository = new CategoryRepository();
+            $repository = new PrivateMsgRepository();
             $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
             return redirect()->back()->with('success', 'categoria modificada correctamente');
         }
@@ -57,7 +70,7 @@ class PrivateMsgController extends Controller
     public function destroy(Request $request, $ids)
     {
         if (auth()->user()->hasDelete('private_msg')) {
-            $repository = new CategoryRepository();
+            $repository = new PrivateMsgRepository();
             $ids = explode(',', $ids);
             if (count($ids) == 1) {
                 $repository->deleteById($ids[0]);
@@ -69,57 +82,111 @@ class PrivateMsgController extends Controller
         return $this->deny_access($request);
     }
 
-    public function sortFiles(Request $request)
+    public function highlight($id)
     {
-        if (auth()->user()->hasUpdate('private_msg')) {
-            $files = json_decode($request->ids);
-            foreach ($files as $f) {
-                $file = File::find($f->id);
-                if ($file != null) {
-                    $file->order = $f->order;
-                    $file->save();
-                }
+        $message = PrivateMsg::find($id);
+        $highlight = false;
+        if ($message->parent == null) {
+            $pmr = PrivateMsgReceived::where('message_id', $id)->where('user_id', auth()->user()->id)->first();
+            $pmr->highlight = !$pmr->highlight;
+            $pmr->save();
+            $highlight = $pmr->highlight;
+        } else {
+            $message->highlight_by_to = !$message->highlight_by_to;
+            $message->save();
+            $highlight = $message->highlight_by_to;
+        }
+        return redirect()->back()->with('success', $highlight ? 'mensaje resaltado correctamente' : 'se ha dejado de resltar el mensaje correctamente');
+    }
+
+    public function read($id)
+    {
+        $message = PrivateMsg::find($id);
+        if ($message->parent == null) {
+            $pmr = PrivateMsgReceived::where('message_id', $id)->where('user_id', auth()->user()->id)->first();
+            $pmr->read = true;
+            $pmr->save();
+        } else {
+            $message->read_by_to = true;
+            $message->save();
+        }
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function storeNote(Request $request)
+    {
+        $user_id = auth()->user()->id;
+        $n = [
+            'text' => $request->text,
+            'tcolor' => $request->tcolor,
+            'bgcolor' => $request->bgcolor,
+            'object_id' => 0
+        ];
+        $notes = [];
+        foreach ($request->ids as $id) {
+            $note = PrivateMsgUserNote::where('user_id', $user_id)->where('message_id', $id)->first();
+            if ($note == null) {
+                $note = new PrivateMsgUserNote();
+                $note->user_id = $user_id;
+                $note->message_id = $id;
             }
-            return redirect()->back()->with('success', 'ficheros ordenados correctamente');
+            $n['object_id'] = $id;
+            $note->note = json_encode($n);
+            $note->save();
+            $notes[] = $n;
         }
-        return $this->deny_access($request);
+        return response()->json([
+            'success' => true,
+            'note' => $n
+        ]);
     }
 
-    public function sortCategories(Request $request)
+    public function updateNote(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('private_msg')) {
-            $categories = json_decode($request->ids);
-            foreach ($categories as $c) {
-                $category = Category::find($c->id);
-                if ($category != null) {
-                    $category->order = $c->order;
-                    $category->save();
-                }
+        $n = [
+            'text' => $request->text,
+            'tcolor' => $request->tcolor,
+            'bgcolor' => $request->bgcolor,
+            'object_id' => (int)$id
+        ];
+        $note = PrivateMsgUserNote::where('user_id', auth()->user()->id)->where('message_id', $id)->first();
+        $note->note = json_encode($n);
+        $note->save();
+        return response()->json([
+            'success' => true,
+            'note' => $n
+        ]);
+    }
+
+    public function deleteNote(Request $request, $id)
+    {
+        $note = PrivateMsgUserNote::where('user_id', auth()->user()->id)->where('message_id', $id)->first();
+        $note->delete();
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function archive(Request $request)
+    {
+        $user = auth()->user();
+        foreach ($request->messages as $m) {
+            if ($request->archive) {
+                $user->archived_private_msg()->attach($m);
+            } else {
+                $user->archived_private_msg()->detach($m);
             }
-            return redirect()->back()->with('success', 'categorias ordenadas correctamente');
         }
-        return $this->deny_access($request);
+        return response()->json([
+            'success' => true
+        ]);
     }
 
-    public function publicAccess(Request $request, $id)
+    public function download($attachmentId)
     {
-        if (auth()->user()->hasUpdate('private_msg')) {
-            $category = Category::find($id);
-            $category->public_access = !$category->public_access;
-            $category->save();
-            return redirect()->back()->with('success', $category->public_access ? 'se ha pasado la categoria al acceso publico correctamente' : 'se ha quitado la categoria del acceso publico correctamente');
-        }
-        return $this->deny_access($request);
-    }
-
-    public function privateArea(Request $request, $id)
-    {
-        if (auth()->user()->hasUpdate('private_msg')) {
-            $category = Category::find($id);
-            $category->private_area = !$category->private_area;
-            $category->save();
-            return redirect()->back()->with('success', $category->private_area ? 'se ha pasado la categoria al area privada correctamente' : 'se ha quitado la categoria del area privada correctamente');
-        }
-        return $this->deny_access($request);
+        $attachment = PrivateMsgAttachments::find($attachmentId);
+        return Storage::download('public/' . $attachment->path, $attachment->name);
     }
 }

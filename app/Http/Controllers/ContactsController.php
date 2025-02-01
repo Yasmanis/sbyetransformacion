@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attachment;
 use App\Models\Contact;
+use App\Models\Role;
 use App\Repositories\ContactRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
@@ -61,6 +62,10 @@ class ContactsController extends Controller
                     'path' => $properties['path'],
                 ]);
             }
+        }
+        $r = Role::firstWhere('name', 'like', 'Usuario');
+        if ($r != null) {
+            $user->roles()->syncWithoutDetaching([$r->id]);
         }
         return redirect()->back()->with('success', 'su informacion ha sido registrada correctamente');
     }

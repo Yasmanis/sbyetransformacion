@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Builder;
 class PrivateMsg extends Model
 {
     use HasFactory;
-    protected $table = 'private_msg';
+    protected $table = 'private_msg_send';
+
+    protected $fillable = ['title', 'msg', 'parent_id', 'to_id'];
 
     protected $casts = [
         'read_by_to' => 'boolean',
@@ -21,6 +23,13 @@ class PrivateMsg extends Model
     protected $with = ['parent', 'from', 'users', 'users.user', 'attachments'];
 
     protected $appends = ['to', 'read', 'highlight', 'note', 'owner'];
+
+    protected static function booted()
+    {
+        static::creating(function ($obj) {
+            $obj->from()->associate(auth()->user());
+        });
+    }
 
     public function from()
     {

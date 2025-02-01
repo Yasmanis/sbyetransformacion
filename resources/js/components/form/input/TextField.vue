@@ -61,7 +61,7 @@ const props = defineProps({
     },
     autogrow: {
         type: Boolean,
-        default: true,
+        default: false,
     },
     othersProps: {
         type: Object,

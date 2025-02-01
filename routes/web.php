@@ -2,7 +2,9 @@
 
 use App\Events\PushMessage;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ConferenceController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
@@ -13,8 +15,10 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\ContactAdminController;
+use App\Http\Controllers\PrivateMsgController;
 use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\SchoolTopicsController;
+use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
 use App\Models\Configuration;
@@ -171,9 +175,11 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/testimony', TestimonyController::class);
     Route::resource('/admin/push-messages', PushMessageController::class);
+    Route::resource('/admin/campaigns', CampaignController::class);
     Route::post('/admin/testimony/publicated/{id}', [TestimonyController::class, 'publicated']);
     Route::post('/admin/testimony/store-from-publications', [TestimonyController::class, 'storeFromPublications']);
     Route::resource('/admin/life', LifeController::class);
+    Route::resource('/admin/conference', ConferenceController::class);
     Route::post('/admin/life/sort-topics', [SchoolTopicsController::class, 'sortTopics']);
     Route::resource('/admin/schooltopics', SchoolTopicsController::class);
     Route::post('/admin/schooltopics/addResources', [SchoolTopicsController::class, 'addResource']);
@@ -192,11 +198,17 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/files', FileController::class);
     Route::post('/admin/files/poster/{id}', [FileController::class, 'poster']);
     Route::post('/admin/files/public-access/{id}', [FileController::class, 'publicAccess']);
+    Route::resource('/admin/private-message', PrivateMsgController::class)->except(['index']);
+    Route::resource('/admin/sections', SectionsController::class);
+    Route::post('/admin/private-message/highlight/{id}', [PrivateMsgController::class, 'highlight']);
+    Route::put('/admin/private-message/read/{id}', [PrivateMsgController::class, 'read']);
 
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);
     Route::get('/users', [SelectsController::class, 'users']);
     Route::post('/users', [SelectsController::class, 'users']);
+    Route::get('/category-nomenclatures/{key}', [SelectsController::class, 'sections']);
+    Route::get('/selects/campaigns', [SelectsController::class, 'campaigns']);
     Route::get('/admin/posts', [PostController::class, 'index']);
     Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
 

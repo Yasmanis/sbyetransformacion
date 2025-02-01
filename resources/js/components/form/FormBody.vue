@@ -33,6 +33,28 @@
                     @update="onUpdateField"
                     v-if="f.type === 'file'"
                 />
+                <hidden-field
+                    :name="f.name"
+                    :modelValue="formData[f.name]"
+                    v-if="f.type === 'hidden'"
+                />
+                <users-select-dialog-component
+                    :name="f.name"
+                    :modelValue="formData[f.name]"
+                    :label="f.label"
+                    v-if="f.type === 'users'"
+                />
+                <campaign-field
+                    :label="f.label"
+                    :name="f.name"
+                    :modelValue="formData[f.name]"
+                    :options="f.options"
+                    :othersProps="f.othersProps"
+                    :filterable="f.filterable"
+                    :multiple="f?.othersProps?.multiple ?? false"
+                    @update="onUpdateField"
+                    v-else-if="f.type === 'campaign'"
+                />
                 <periodicity-field
                     @update="onUpdateField"
                     v-if="f.type === 'periodicity'"
@@ -104,7 +126,10 @@ import PasswordField from "./input/PasswordField.vue";
 import UploaderField from "./input/UploaderField.vue";
 import EditorField from "./input/EditorField.vue";
 import FileField from "./input/FileField.vue";
+import HiddenField from "./input/HiddenField.vue";
+import CampaignField from "./input/CampaignField.vue";
 import PeriodicityField from "./input/PeriodicityField.vue";
+import UsersSelectDialogComponent from "../modules/user/UsersSelectDialogComponent.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
 import BtnSaveAndNewComponent from "../btn/BtnSaveAndNewComponent.vue";
@@ -147,7 +172,11 @@ const setDefaultData = () => {
         } else if (f.type === "select") {
             formData.value[f.name] = props.object ? props.object[f.name] : null;
         } else {
-            formData.value[f.name] = props.object ? props.object[f.name] : null;
+            formData.value[f.name] = props.object
+                ? props.object[f.name]
+                : f.othersProps && f.othersProps.defaultValue
+                ? f.othersProps.defaultValue
+                : null;
         }
     });
 };

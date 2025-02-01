@@ -17,37 +17,90 @@
             </div>
         </div>
         <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
-            <q-list>
-                <q-item>
-                    <q-item-section>
-                        <q-item-label> usuario </q-item-label>
-                        <q-item-label caption>
-                            {{ user.username }}
-                        </q-item-label>
-                    </q-item-section> </q-item
-                ><q-item>
-                    <q-item-section>
-                        <q-item-label> nombre(s) </q-item-label>
-                        <q-item-label caption>
-                            {{ user.name }}
-                        </q-item-label>
-                    </q-item-section> </q-item
-                ><q-item>
-                    <q-item-section>
-                        <q-item-label> apellidos </q-item-label>
-                        <q-item-label caption>
-                            {{ user.surname }}
-                        </q-item-label>
-                    </q-item-section> </q-item
-                ><q-item>
-                    <q-item-section>
-                        <q-item-label> correo </q-item-label>
-                        <q-item-label caption>
-                            {{ user.email }}
-                        </q-item-label>
-                    </q-item-section>
-                </q-item>
-            </q-list>
+            <q-card flat>
+                <q-card-section v-if="edit">
+                    <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
+                        <text-field
+                            v-model="formData.username"
+                            :modelValue="user.username"
+                            name="username"
+                            label="usuario"
+                            :othersProps="{
+                                required: true,
+                                help: ['unico'],
+                            }"
+                        />
+                        <text-field
+                            v-model="formData.name"
+                            name="name"
+                            label="nombre"
+                            :othersProps="{
+                                required: true,
+                            }"
+                        />
+                        <text-field
+                            v-model="formData.surname"
+                            name="surname"
+                            label="apellidos"
+                            :othersProps="{
+                                required: true,
+                            }"
+                        />
+                        <text-field
+                            v-model="formData.email"
+                            :modelValue="user.email"
+                            name="email"
+                            label="correo"
+                            :othersProps="{
+                                required: true,
+                                help: ['unico'],
+                            }"
+                        />
+                    </q-form>
+                </q-card-section>
+                <q-card-section v-else>
+                    <q-list>
+                        <q-item>
+                            <q-item-section>
+                                <q-item-label> usuario </q-item-label>
+                                <q-item-label caption>
+                                    {{ user.username }}
+                                </q-item-label>
+                            </q-item-section> </q-item
+                        ><q-item>
+                            <q-item-section>
+                                <q-item-label> nombre(s) </q-item-label>
+                                <q-item-label caption>
+                                    {{ user.name }}
+                                </q-item-label>
+                            </q-item-section> </q-item
+                        ><q-item>
+                            <q-item-section>
+                                <q-item-label> apellidos </q-item-label>
+                                <q-item-label caption>
+                                    {{ user.surname }}
+                                </q-item-label>
+                            </q-item-section> </q-item
+                        ><q-item>
+                            <q-item-section>
+                                <q-item-label> correo </q-item-label>
+                                <q-item-label caption>
+                                    {{ user.email }}
+                                </q-item-label>
+                            </q-item-section>
+                        </q-item>
+                    </q-list>
+                </q-card-section>
+                <q-card-actions align="right">
+                    <btn-edit-component @click="edit = true" v-if="!edit" />
+                    <btn-save-component v-if="edit" @click="save" />
+                    <btn-cancel-component
+                        cancel
+                        @click="edit = false"
+                        v-if="edit"
+                    />
+                </q-card-actions>
+            </q-card>
         </div>
     </div>
 
@@ -79,6 +132,11 @@ import { onMounted, computed, ref } from "vue";
 import BtnDeleteComponent from "../btn/BtnDeleteComponent.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import CropperField from "../form/input/CropperField.vue";
+import BtnEditComponent from "../btn/BtnEditComponent.vue";
+import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
+import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
+import TextField from "../form/input/TextField.vue";
+import { errorValidation } from "../../helpers/notifications";
 
 defineOptions({
     name: "InfoComponent",
@@ -89,6 +147,7 @@ const fileRef = ref(null);
 const showDialog = ref(false);
 const image = ref(null);
 const copperImage = ref(null);
+const edit = ref(false);
 
 onMounted(() => {
     image.value =
@@ -98,6 +157,12 @@ onMounted(() => {
 
 const user = computed(() => {
     return page.props.auth.user;
+});
+
+const form = ref(null);
+
+const formData = useForm({
+    username: user.username,
 });
 
 const openCropper = () => {
@@ -124,6 +189,15 @@ const onFinishCropper = (name, img) => {
                 : `${page.props.public_path}images/icon/profile.svg`;
             showDialog.value = false;
         },
+    });
+};
+
+const save = () => {
+    form.value.validate().then((success) => {
+        if (success) {
+        } else {
+            errorValidation();
+        }
     });
 };
 </script>

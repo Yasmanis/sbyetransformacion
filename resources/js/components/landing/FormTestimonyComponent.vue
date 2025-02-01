@@ -166,6 +166,56 @@
                             </q-item>
                         </div>
                         <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md text-white"
+                        >
+                            <q-checkbox
+                                v-model="form.amazonImgAttach"
+                                color="white"
+                                checked-icon="mdi-circle"
+                                dense
+                                label="adjuntar imagen del testimonio de amazon"
+                                @update:model-value="onChangeTestimonyType"
+                            />
+                            <br />
+                            <q-btn
+                                icon="mdi-image"
+                                flat
+                                size="xl"
+                                rounded
+                                padding="5px"
+                                @click="fileAmazonImg.pickFiles()"
+                                v-if="form.amazonImgAttach && !form.amazonImg"
+                            />
+                            <q-file
+                                style="display: none"
+                                v-model="form.amazonImg"
+                                accept="image/*"
+                                ref="fileAmazonImg"
+                                @rejected="onRejected"
+                            ></q-file>
+                            <q-item
+                                class="q-ma-none"
+                                style="padding: 0"
+                                v-if="form.amazonImg"
+                            >
+                                <q-item-section
+                                    avatar
+                                    class="q-pa-none"
+                                    style="min-width: 30px"
+                                >
+                                    <btn-delete-component
+                                        color="white"
+                                        @click="form.amazonImg = null"
+                                    />
+                                </q-item-section>
+                                <q-item-section class="text-white">
+                                    <q-item-label>{{
+                                        form.amazonImg.name
+                                    }}</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                        </div>
+                        <div
                             class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
                         >
                             <span class="text-white"
@@ -279,7 +329,7 @@ const screen = computed(() => {
 
 const showForm = ref(false);
 const confirm = ref(false);
-
+const fileAmazonImg = ref(null);
 const fileRef = ref(null);
 
 const formRef = ref(null);
@@ -290,6 +340,8 @@ const form = useForm({
     title: null,
     testimonyTextCheck: false,
     testimonyVideoCheck: false,
+    amazonImgAttach: false,
+    amazonImg: null,
     testimonyText: null,
     testimonyVideo: null,
     sendAdmMsg: false,
@@ -308,7 +360,7 @@ const onCancel = () => {
 };
 
 const onRejected = () => {
-    error("archivo no admitido. solo se permiten videos");
+    error("archivo no admitido");
 };
 
 const checkAuth = () => {
@@ -316,9 +368,8 @@ const checkAuth = () => {
         showForm.value = true;
     } else {
         $q.notify({
-            progress: true,
             position: "top-right",
-            timeout: 20000,
+            timeout: 0,
             multiLine: true,
             textColor: "black",
             color: "white",

@@ -9,7 +9,7 @@ class Testimony extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'message', 'type', 'user_id', 'publicated', 'name_to_show', 'anonimous', 'msg_to_admin'];
+    protected $fillable = ['title', 'message', 'type', 'user_id', 'publicated', 'name_to_show', 'anonimous', 'msg_to_admin', 'amazon_image'];
 
     protected $casts = [
         'publicated' => 'boolean',

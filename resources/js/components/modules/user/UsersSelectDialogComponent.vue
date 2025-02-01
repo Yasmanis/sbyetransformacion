@@ -7,15 +7,25 @@
         </q-item>
         <q-item style="padding: 0px">
             <q-item-section v-if="default_selected.length === 0">
-                <q-input dense readonly :label="label" hint="requerido" />
+                <q-input
+                    dense
+                    readonly
+                    hide-bottom-space
+                    :label="label"
+                    :hint="!errorMsg ? 'requerido' : ''"
+                />
                 <q-item-label
-                    v-if="
-                        field !== null && errors !== null && errors.has(field)
-                    "
+                    class="q-field--error"
+                    v-if="errorMsg"
+                    style="margin-left: -12px; margin-top: -20px"
                 >
-                    <span class="text-danger text-lowercase">
-                        {{ errors.get(field) }}
-                    </span>
+                    <div
+                        class="q-field__bottom row items-start q-field__bottom--stale"
+                    >
+                        <div class="q-field__messages col">
+                            <div role="alert">{{ errorMsg }}</div>
+                        </div>
+                    </div>
                 </q-item-label>
             </q-item-section>
 
@@ -120,7 +130,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import BtnConfirmComponent from "../../btn/BtnConfirmComponent.vue";
@@ -128,6 +138,7 @@ import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import UsersSelectComponent from "./UsersSelectComponent.vue";
 import UsersSelectedComponent from "./UsersSelectedComponent.vue";
 import { Loading } from "quasar";
+import { usePage } from "@inertiajs/vue3";
 import axios from "axios";
 import { error, error500 } from "../../../helpers/notifications";
 
@@ -137,7 +148,10 @@ defineOptions({
 
 const props = defineProps({
     label: String,
-    field: String,
+    name: {
+        type: String,
+        required: true,
+    },
     errors: {
         type: Object,
         default: null,
@@ -158,8 +172,8 @@ const props = defineProps({
     },
 });
 
-const emits = defineEmits(["change"]);
-
+const emits = defineEmits(["update"]);
+const page = usePage();
 const showDialog = ref(false);
 const menuRef = ref(null);
 const default_selected = ref([]);
@@ -177,7 +191,7 @@ watch(
 
 watch(default_selected, () => {
     setDefaults(current_selected, default_selected);
-    emits("change", default_selected.value);
+    emits("update", props.name, default_selected.value);
 });
 
 const onChange = (users) => {
@@ -225,4 +239,12 @@ const onSave = () => {
     default_selected.value = selected;
     showDialog.value = false;
 };
+
+const errorMsg = computed(() => {
+    return page.props.errors
+        ? page.props.errors[props.name]
+            ? page.props.errors[props.name]
+            : null
+        : null;
+});
 </script>

@@ -1,11 +1,10 @@
 <template>
-    <q-btn-component
-        tooltips="contacto"
-        icon="mdi-message-question-outline"
-        color="white"
-        class="q-mr-sm"
+    <q-item-label
+        class="cursor-pointer"
+        style="margin-right: 30px"
         @click="showDialog = true"
-    />
+        >contactar</q-item-label
+    >
     <q-dialog v-model="showDialog" persistent position="right" @hide="onHide">
         <q-card class="scroll">
             <dialog-header-component

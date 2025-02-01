@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
+use Pusher\Pusher;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +19,15 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('event', function () {
+    Log::info('inicializando conexxion');
+    $pusher = new Pusher('e63f90f776ecf0234b4e', '09a25e84a2a310ad02a2', '1930615', array('cluster' => 'us2'));
+    $pusher->trigger('my-channel', 'my-event', [
+        'title' => 'titulo',
+        'text' => 'ejemplo de texto a mostrar',
+        'icon' => 'mdi-account',
+        'sent_at' => now(),
+        'user' => auth()->user()->id
+    ]);
+})->purpose('Ejemplo de envio de notificaciones push');

@@ -211,9 +211,9 @@ const onFinishUploaded = (info) => {
 };
 
 const onShowDialog = () => {
-    formData.users = props.user ? [props.user] : null;
-    formData.parent_id = props.parent ? props.parent : null;
-    formData.to_id = props.user ? props.user : null;
+    // formData.users = props.user ? [props.user] : null;
+    // formData.parent_id = props.parent ? props.parent : null;
+    // formData.to_id = props.user ? props.user : null;
 };
 
 const save = async () => {

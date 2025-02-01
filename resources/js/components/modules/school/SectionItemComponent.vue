@@ -109,6 +109,19 @@
         :video="principalVideo"
         @close="showVideo = false"
     ></video-component>
+
+    <confirm-component
+        :show="showNoAccess"
+        :header="false"
+        :question="null"
+        :cancel="true"
+        icon-confirm="mdi-video-account"
+        icon-confirm-size="18px"
+        icon-confirm-tooltips="ir a testimonios"
+        :message="`para ver el contenido de este tema debes <br> cumplir el requisito de haber dado un testimonio. pulsa <a class='text-bold cursor-pointer' href='/admin/testimony'>aqui</a> para adjuntar tu testimonio o escribirlo`"
+        @hide="showNoAccess = false"
+        @ok="router.get('/admin/testimony')"
+    />
 </template>
 
 <script setup>
@@ -116,6 +129,8 @@ import { onMounted, ref, watch } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnDownUpComponent from "../../btn/BtnDownUpComponent.vue";
 import VideoComponent from "./VideoComponent.vue";
+import ConfirmComponent from "../../base/ConfirmComponent.vue";
+import { router } from "@inertiajs/vue3";
 import { Dark } from "quasar";
 
 defineOptions({
@@ -138,6 +153,7 @@ const expand = ref(props.expand);
 const courses_completed = ref(0);
 const showVideo = ref(false);
 const principalVideo = ref(null);
+const showNoAccess = ref(false);
 
 onMounted(() => {
     updateViewSection();
@@ -176,9 +192,13 @@ const changeTopic = (topic) => {
         section: props.section,
         sectionIndex: props.sectionIndex,
     });
-    principalVideo.value = topic.resources.find((r) => r.principal);
-    if (principalVideo.value) {
-        showVideo.value = true;
+    if (topic.has_access) {
+        principalVideo.value = topic.resources.find((r) => r.principal);
+        if (principalVideo.value) {
+            showVideo.value = true;
+        }
+    } else {
+        showNoAccess.value = true;
     }
 };
 </script>

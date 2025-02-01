@@ -10,6 +10,7 @@
                 :title="title"
                 :separator="false"
                 closable
+                v-if="header"
             />
             <q-card-section class="column items-center">
                 <q-icon
@@ -26,7 +27,17 @@
                 <span v-html="message" class="text-center"></span>
             </q-card-section>
             <q-card-actions align="center">
-                <btn-confirm-component @click="emits('ok')" />
+                <btn-confirm-component
+                    :icon="iconConfirm"
+                    :size="iconConfirmSize"
+                    :tooltips="iconConfirmTooltips"
+                    @click="emits('ok')"
+                />
+                <btn-cancel-component
+                    :cancel="true"
+                    @click="showDialog = false"
+                    v-if="cancel"
+                />
             </q-card-actions>
         </q-card>
     </q-dialog>
@@ -35,6 +46,7 @@
 <script setup>
 import DialogHeaderComponent from "./DialogHeaderComponent.vue";
 import BtnConfirmComponent from "../btn/BtnConfirmComponent.vue";
+import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import { watch, ref } from "vue";
 
 defineOptions({
@@ -43,6 +55,14 @@ defineOptions({
 
 const props = defineProps({
     show: {
+        type: Boolean,
+        default: false,
+    },
+    header: {
+        type: Boolean,
+        default: true,
+    },
+    cancel: {
         type: Boolean,
         default: false,
     },
@@ -66,6 +86,9 @@ const props = defineProps({
         type: String,
         default: "400px",
     },
+    iconConfirm: String,
+    iconConfirmSize: String,
+    iconConfirmTooltips: String,
 });
 
 const emits = defineEmits(["ok", "hide"]);

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SchoolSection extends Model
 {
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'category'];
 
     protected $with = ['topics', 'topics.resources', 'topics.messages', 'topics.messages.attachments', 'topics.messages.reacts', 'topics.messages.highligths'];
 
@@ -22,5 +22,10 @@ class SchoolSection extends Model
                 $t->deleteResourceFromDisk();
             }
         });
+    }
+
+    public function scopeType($query, $type)
+    {
+        return $query->where('category', $type);
     }
 }

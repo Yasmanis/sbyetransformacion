@@ -46,10 +46,8 @@
 
                 <notifications-list-component />
 
-                <contact-component />
-
                 <q-btn-component color="white" class="q-mr-sm">
-                    <q-avatar size="md" class="shadow-10"
+                    <q-avatar size="md" class="shadow-4"
                         ><img
                             :src="`${
                                 user.avatar
@@ -131,6 +129,16 @@
                         </q-card>
                     </q-menu>
                 </q-btn-component>
+            </q-toolbar>
+            <q-toolbar
+                :style="{
+                    background: Dark.isActive ? '#1d1d1d' : '#407492',
+                    'min-height': '30px !important',
+                    padding: '0px',
+                }"
+            >
+                <q-toolbar-title></q-toolbar-title>
+                <contact-component />
             </q-toolbar>
         </q-header>
 

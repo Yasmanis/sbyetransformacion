@@ -17,7 +17,9 @@
                             icon="fab fa-youtube"
                             color="primary"
                             @click="startVideo(principalVideo)"
-                            :disable="!principalVideo"
+                            :disable="
+                                !principalVideo || !principalVideo.has_access
+                            "
                             size="xl"
                         />
                     </div>
@@ -83,8 +85,13 @@
                                     >&nbsp;{{ r.name }}</span
                                 >
                                 <a
-                                    :href="`${page.props.public_path}storage/${r.path}`"
+                                    :href="
+                                        r.has_access
+                                            ? `${page.props.public_path}storage/${r.path}`
+                                            : null
+                                    "
                                     target="_blank"
+                                    class="cursor-pointer"
                                     :class="
                                         Dark.isActive
                                             ? 'text-white'
@@ -111,6 +118,7 @@
                             <q-btn-component
                                 tooltips="reproducir"
                                 icon="mdi-play-circle-outline"
+                                :disable="!r.has_access"
                                 @click="startVideo(r)"
                             />
                         </q-item-section>
@@ -122,6 +130,7 @@
                                 :href="`${page.props.public_path}storage/${r.path}`"
                                 size="12px"
                                 target="_blank"
+                                :disable="!r.has_access"
                             />
                         </q-item-section>
                     </q-item>
@@ -142,6 +151,19 @@
         :video="currentVideo"
         @close="showVideo = false"
     />
+
+    <confirm-component
+        :show="showNoAccess"
+        :header="false"
+        :question="null"
+        :cancel="true"
+        icon-confirm="mdi-video-account"
+        icon-confirm-size="18px"
+        icon-confirm-tooltips="ir a testimonios"
+        :message="`para ver el contenido de este tema debes <br> cumplir el requisito de haber dado un testimonio. pulsa <a class='text-bold cursor-pointer' href='/admin/testimony'>aqui</a> para adjuntar tu testimonio o escribirlo`"
+        @hide="showNoAccess = false"
+        @ok="router.get('/admin/testimony')"
+    />
 </template>
 
 <script setup>
@@ -151,6 +173,7 @@ import BtnLeftRightComponent from "../../btn/BtnLeftRightComponent.vue";
 import ChatComponent from "./chat/ChatComponent.vue";
 import VideoComponent from "./VideoComponent.vue";
 import BtnDownloadComponent from "../../btn/BtnDownloadComponent.vue";
+import ConfirmComponent from "../../base/ConfirmComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 import { useQuasar, Dark } from "quasar";
 
@@ -189,6 +212,7 @@ const emits = defineEmits(["change-section", "change-topic"]);
 
 const currentVideo = ref(null);
 const showVideo = ref(false);
+const showNoAccess = ref(false);
 const page = usePage();
 
 const principalVideo = computed(() => {
@@ -196,7 +220,11 @@ const principalVideo = computed(() => {
 });
 
 const startVideo = (video) => {
-    currentVideo.value = video;
-    showVideo.value = true;
+    if (video.has_access) {
+        currentVideo.value = video;
+        showVideo.value = true;
+    } else {
+        //showNoAccess.value = true;
+    }
 };
 </script>

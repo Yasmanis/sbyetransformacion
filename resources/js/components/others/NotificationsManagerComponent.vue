@@ -137,6 +137,7 @@ const notifications = computed(() => {
             priority: n.data[0].priority,
             description: n.data[0].description,
             time: n.time,
+            user: n.user,
             read: n.read_at !== null,
         });
     });
@@ -166,6 +167,12 @@ const columns = ref([
         field: "time",
         name: "time",
         label: "desde",
+        align: "left",
+    },
+    {
+        field: "user",
+        name: "user",
+        label: "usuario",
         align: "left",
     },
     {

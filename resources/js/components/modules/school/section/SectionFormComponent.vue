@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount, ref, watch } from "vue";
+import { computed, onBeforeMount, ref, watch } from "vue";
 import TextField from "../../../form/input/TextField.vue";
 import CheckboxField from "../../../form/input/CheckboxField.vue";
 import EditorField from "../../../form/input/EditorField.vue";
@@ -85,6 +85,11 @@ watch(
     }
 );
 
+const segment = computed(() => {
+    const pathSegments = window.location.pathname.split("/");
+    return pathSegments.pop() || pathSegments[pathSegments.length - 2];
+});
+
 const onUpdateField = (name, val) => {
     formData.value[name] = val;
 };
@@ -94,7 +99,7 @@ const store = async () => {
         message: "adicionando seccion",
     });
     await axios
-        .post("/admin/life", formData.value)
+        .post(`/admin/${segment.value}`, formData.value)
         .then((response) => {
             emits("store", response.data.id);
         })

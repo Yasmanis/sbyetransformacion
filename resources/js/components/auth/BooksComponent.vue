@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="row" v-if="$page.props.books.lenght > 0">
         <template
             v-for="(b, indexB) in $page.props.books"
             :key="`book-volume-${indexB}`"
@@ -58,6 +58,7 @@
             </div>
         </template>
     </div>
+    <div class="row" v-else>usted no posee ninguna compra</div>
     <q-dialog
         v-model="showDialog"
         persistent

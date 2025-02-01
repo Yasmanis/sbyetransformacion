@@ -37,6 +37,10 @@ class TestimonyController extends Controller
             $repository = new TestimonyRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
             $data['user_id'] = $user->id;
+            if ($request->hasFile('amazon_image')) {
+                $path = $request->file('amazon_image')->store('testimonies', 'public');
+                $data['amazon_image'] = $path;
+            }
             if ($request->hasFile('file')) {
                 $path = $request->file('file')->store('testimonies', 'public');
                 $data['message'] = $path;
@@ -54,6 +58,10 @@ class TestimonyController extends Controller
             $repository = new TestimonyRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
             $data['user_id'] = $user->id;
+            if ($request->hasFile('amazonImg')) {
+                $path = $request->file('amazonImg')->store('testimonies', 'public');
+                $data['amazon_image'] = $path;
+            }
             if ($request->hasFile('testimonyVideo')) {
                 $path = $request->file('testimonyVideo')->store('testimonies', 'public');
                 $data['message'] = $path;

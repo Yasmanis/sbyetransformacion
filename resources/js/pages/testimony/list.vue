@@ -20,6 +20,14 @@ defineOptions({
     name: "ListPage",
 });
 
+const amzonImage = {
+    field: "amazon_image",
+    name: "amazon_image",
+    label: "",
+    align: "center",
+    type: "file",
+};
+
 const title = {
     field: "title",
     name: "title",
@@ -77,7 +85,14 @@ const searchFields = [
     },
 ];
 
-const fields = [name_to_show, title, message, message_to_admin, anonimous];
+const fields = [
+    name_to_show,
+    title,
+    message,
+    message_to_admin,
+    anonimous,
+    amzonImage,
+];
 
 const filterFields = [
     {

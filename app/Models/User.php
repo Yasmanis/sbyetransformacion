@@ -87,6 +87,8 @@ class User extends Authenticatable
         $notifications = $this->notifications()->get();
         foreach ($notifications as $n) {
             $n['time'] = Carbon::parse($n['created_at'])->diffForHumans();
+            $user = User::find($n->notifiable_id);
+            $n['user'] = $user != null ? $user->full_name : '';
         }
         return $notifications;
     }
@@ -256,9 +258,9 @@ class User extends Authenticatable
         return (int)$percentage;
     }
 
-    public function getSections()
+    public function getSections($type)
     {
-        $sections = SchoolSection::all();
+        $sections = SchoolSection::type($type)->get();
         if (!$this->sa) {
             $has_testimony = $this->has_testimony;
             $topics = [];
@@ -266,7 +268,8 @@ class User extends Authenticatable
             $volumes = $this->book_volumes ? $this->book_volumes : [];
             foreach ($sections as $s) {
                 foreach ($s->topics as $t) {
-                    if (in_array($t->book_volume, $volumes) && ($has_testimony || !$t->visible_after_testimony)) {
+                    if (in_array($t->book_volume, $volumes)) {
+                        $t['has_access'] = $has_testimony || !$t->visible_after_testimony;
                         $topics[] = $t;
                     }
                 }
@@ -286,5 +289,79 @@ class User extends Authenticatable
             return $sections1;
         }
         return $sections;
+    }
+
+    public function applyFiltersMessage($query, $request, $exclude_search = false)
+    {
+        if (!$exclude_search) {
+            if (isset($request->query_str)) {
+                $query = $query->where('title', 'like', '%' . $request->query_str . '%');
+            }
+            if (isset($request->filters)) {
+                foreach ($request->filters as $f) {
+                    if (isset($f['scope'])) {
+                        $query = $query->{$f['scope']}($f['value']);
+                    } else {
+                        $query = $query->dinamicFilter($f);
+                    }
+                }
+            }
+        }
+        return $query;
+    }
+
+    public function getPrivateMessages($request, $type)
+    {
+        $messages = [];
+        $id = $this->id;
+        if ($type === 'send') {
+            $messages = PrivateMsg::where('from_id', $id)->whereHas('users')->notArchivedByUser()->notDeletedByUser();
+            $messages = $this->applyFiltersMessage($messages, $request)->get();
+        } else if ($type === 'received') {
+            $messages = $this->applyFiltersMessage(PrivateMsg::byUser(), $request)->get();
+            $first_interactions = $this->applyFiltersMessage(PrivateMsg::where('to_id', $id)->select('from_id', 'parent_id'), $request)->distinct()->get();
+            foreach ($first_interactions as $i) {
+                if ($messages->where('id', $i->parent_id)->first() == null) {
+                    $messages[] = $this->applyFiltersMessage(PrivateMsg::where('from_id', $i->from_id)->where('parent_id', $i->parent_id), $request)->orderBy('id', 'desc')->first();
+                }
+            }
+            $index = 0;
+            foreach ($messages as $m) {
+                $interaction = $this->applyFiltersMessage(PrivateMsg::where('parent_id', $m->id)->where('to_id', $id), $request)->orderBy('id', 'desc')->first();
+                if ($interaction != null) {
+                    $messages[$index] = $interaction;
+                }
+                $index++;
+            }
+            $archived = PrivateMsg::archivedByUser()->select('id');
+            $deleted = PrivateMsg::deletedByUser()->select('id');
+            $filtered = $archived->union($deleted)->distinct()->get()->pluck('id');
+            $messages = $messages->whereNotIn('id', $filtered);
+        } else {
+            $messages = $this->applyFiltersMessage(PrivateMsg::archivedByUser()->notDeletedByUser(), $request)->get();
+        }
+        $messages = collect($messages);
+        if (isset($request->sortBy)) {
+            $messages = $messages->sortBy([[$request->sortBy, (bool)$request->descending ? 'desc' : 'asc']]);
+        } else {
+            $messages = $messages->sortBy([
+                [
+                    'highlight',
+                    'desc'
+                ],
+                [
+                    'read',
+                    'asc'
+                ],
+                ['id', 'desc']
+            ]);
+        }
+        if (isset($request->rowsPerPage)) {
+            $messages = $messages->forPage($request->page, $request->rowsPerPage);
+        }
+        foreach ($messages as $m) {
+            $m->setInteractions();
+        }
+        return $messages->values()->all();
     }
 }

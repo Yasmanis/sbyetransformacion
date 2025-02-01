@@ -10,6 +10,7 @@ export const rules = {
     minValue: (val, min = 0) => val < min || `tamaño mininimo ${min}`,
     maxValue: (val, max = 0) => val > max || `tamaño maximo ${max}`,
     ipAddress: (val) => testPattern.ipv4(val) || "formato no valido",
+    url: (val) => testPattern.url(val) || "formato no valido",
     email: (val, rules) => rules.email(val) || "formato no valido",
     validDate: (val) => date.isValid(val) || "formato no valido",
 };
@@ -25,9 +26,18 @@ export const validations = {
             if (field.unique) {
                 help = [...help, "unico"];
             }
-            if (field.type && field.type === "email") {
-                result = [...result, rules.email];
-                help = [...help, "formato de correo ej: example@example.com"];
+            if (field.type) {
+                if (field.type === "email") {
+                    result = [...result, rules.email];
+                    help = [
+                        ...help,
+                        "formato de correo ej: example@example.com",
+                    ];
+                }
+                if (field.type === "url") {
+                    result = [...result, rules.url];
+                    help = [...help, "formato url ej: http://example.com"];
+                }
             }
             if (field.minLength) {
                 result = [

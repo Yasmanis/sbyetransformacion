@@ -129,7 +129,31 @@
                     :align="props.col.align"
                     v-if="props.col.type !== 'hidden'"
                 >
-                    <template v-if="props.col.type === 'boolean'">
+                    <template v-if="props.col.type === 'avatar'">
+                        <q-img
+                            :src="`${$page.props.public_path}storage/${props.row.amazon_image}`"
+                            loading="lazy"
+                            width="50px"
+                            height="50px"
+                            img-class="cursor-pointer"
+                            fit="fill"
+                            @click="
+                                openImage(
+                                    `${$page.props.public_path}storage/${props.row.amazon_image}`
+                                )
+                            "
+                            v-if="props.row.amazon_image"
+                            ><q-tooltip-component title="click para ampliar"
+                        /></q-img>
+                        <q-icon
+                            name="mdi-help-circle-outline"
+                            size="50px"
+                            v-else
+                            ><q-tooltip-component
+                                title="no existe imagen para este testimonio"
+                        /></q-icon>
+                    </template>
+                    <template v-else-if="props.col.type === 'boolean'">
                         <q-chip
                             dense
                             size="sm"
@@ -216,7 +240,7 @@
                                     >
                                         <q-avatar v-if="col.value">
                                             <q-img
-                                                :src="col.value"
+                                                :src="`${$page.props.public_path}${col.value}`"
                                                 loading="lazy"
                                             />
                                         </q-avatar>
@@ -293,7 +317,7 @@
 
 <script setup>
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
-import { useQuasar } from "quasar";
+import { useQuasar, openURL } from "quasar";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import FormComponent from "./FormComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
@@ -304,6 +328,7 @@ import BtnFullScreenComponent from "../../btn/BtnFullScreenComponent.vue";
 import BtnClearComponent from "../../btn/BtnClearComponent.vue";
 import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
+import QTooltipComponent from "../../base/QTooltipComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
 
@@ -337,6 +362,13 @@ const sa = computed(() => {
 });
 
 const columns = ref([
+    {
+        field: "amazon_image",
+        name: "amazon_image",
+        label: "",
+        align: "center",
+        type: "avatar",
+    },
     {
         field: "title",
         name: "title",
@@ -486,6 +518,10 @@ const onRequest = async (attrs) => {
             preserveState: true,
         }
     );
+};
+
+const openImage = (url) => {
+    openURL(url, undefined);
 };
 </script>
 <style>

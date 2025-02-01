@@ -45,9 +45,7 @@
                                                 :class="
                                                     !m.read ? 'text-danger' : ''
                                                 "
-                                                >{{
-                                                    getFormatDate(m.created_at)
-                                                }}</span
+                                                >{{ m.created_at }}</span
                                             >
                                         </q-item-label>
                                         <q-item-label
@@ -147,6 +145,7 @@
                 closable
             />
             <q-card-section class="col q-pt-none">
+                {{ messages }}
                 <q-list v-if="messages.length > 0">
                     <q-item
                         v-for="(m, indexMsg) in messages"
@@ -162,7 +161,7 @@
                                 >
                                 </q-icon>
                                 <span :class="!m.read ? 'text-danger' : ''">{{
-                                    getFormatDate(m.created_at)
+                                    m.created_at
                                 }}</span>
                             </q-item-label>
                             <q-item-label :class="!m.read ? 'text-bold' : ''">{{
@@ -271,7 +270,7 @@
                         <q-item-section>
                             <q-item-label caption class="text-right">
                                 <i class="mdi mdi-calendar-clock-outline"></i>
-                                {{ getFormatDate(firstMsg.created_at) }}
+                                {{ firstMsg.created_at }}
                             </q-item-label>
                         </q-item-section>
                     </q-item>
@@ -370,7 +369,7 @@
                         <q-item-section>
                             <q-item-label caption class="text-right">
                                 <i class="mdi mdi-calendar-clock-outline"></i>
-                                {{ getFormatDate(child.created_at) }}
+                                {{ child.created_at }}
                             </q-item-label>
                         </q-item-section>
                     </q-item>
@@ -513,7 +512,7 @@ const showDialog = ref(false);
 const showHistoryMenu = ref(false);
 const currentMsg = ref(null);
 const firstMsg = ref(null);
-//const messages = ref([]);
+const messages = ref([]);
 const unread = ref(0);
 const page = usePage();
 const form = useForm({
@@ -521,10 +520,10 @@ const form = useForm({
 });
 
 onMounted(() => {
-    //normalizeMessages();
+    normalizeMessages();
 });
 
-const messages = computed(() => {
+const private_messages = computed(() => {
     return page.props.private_messages;
 });
 
@@ -539,24 +538,9 @@ watch(currentMsg, () => {
     setRead();
 });
 
-watch(
-    messages,
-    (m) => {
-        if (currentMsg) {
-            let msg = m.find((mm) => mm.id === currentMsg.value.id);
-            if (msg) {
-                urrentMsg.value.interactions = msg.interactions;
-            }
-        }
-    },
-    {
-        deep: true,
-    }
-);
-
-const getFormatDate = (d) => {
-    return date.formatDate(d, "DD MMM YYYY hh:mm:ss A");
-};
+watch(private_messages, () => {
+    normalizeMessages();
+});
 
 const setRead = async () => {
     if (currentMsg.value !== null && !currentMsg.value.read) {
@@ -592,7 +576,6 @@ const normalizeMessages = () => {
                 "DD MMM YYYY hh:mm:ss A"
             );
         });
-        console.log(d.interactions);
         if (!d.read) {
             unread.value++;
         }
