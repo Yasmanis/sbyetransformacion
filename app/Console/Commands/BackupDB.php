@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Ifsnop\Mysqldump as IMysqldump;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use ZipArchive;
 
 class BackupDB extends Command
 {
@@ -35,32 +36,42 @@ class BackupDB extends Command
         $db = env('DB_DATABASE', 'forge');
         $user = env('DB_USERNAME', 'forge');
         $pass = env('DB_PASSWORD', '');
-
         $backupPath = storage_path('backup');
-
-        // Verifica si el directorio existe, si no, créalo
-        if (!file_exists($backupPath)) {
-            mkdir($backupPath, 0755, true);
-        }
+        $sqlFile = $backupPath . '/dump-' . $now . '.sql';
+        $zipFile = $backupPath . '/dump-' . $now . '.zip';
 
         try {
+            // Create SQL dump
             $dump = new IMysqldump\Mysqldump('mysql:host=localhost;dbname=' . $db, $user, $pass);
-            $dump->start($backupPath . '/dump-' . $now . '.sql');
+            $dump->start($sqlFile);
+
+            // Compress the SQL dump into a ZIP file
+            $zip = new ZipArchive();
+            if ($zip->open($zipFile, ZipArchive::CREATE) === true) {
+                $zip->addFile($sqlFile, basename($sqlFile));
+                $zip->setCompressionName(basename($sqlFile), ZipArchive::CM_DEFLATE);
+                $zip->close();
+
+                // Delete the original SQL file after zipping
+                unlink($sqlFile);
+            } else {
+                Log::error('Error al crear el archivo ZIP');
+            }
         } catch (\Exception $e) {
-            echo 'mysqldump-php error: ' . $e->getMessage();
+            Log::error('mysqldump-php error: ' . $e->getMessage());
             return;
         }
 
-        Log::info('Backup guardado correctamente.');
-
         $date = Carbon::now()->subDays(16)->toDateString();
-        $oldBackupFile = $backupPath . '/dump-' . $date . '.sql';
+        $oldBackupFile = $backupPath . '/dump-' . $date . '.zip';
 
         // Eliminar backups antiguos
         if (file_exists($oldBackupFile)) {
             unlink($oldBackupFile);
             Log::info('Backup antiguo eliminado: ' . $oldBackupFile);
         }
+
+        Log::info('Backup de base de datos guardado y comprimido.');
 
     }
 }
