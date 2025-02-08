@@ -26,25 +26,20 @@ export const notify = (
 
 export const success = (
     msg,
-    position = "top-right",
+    position = "top",
     progress = true,
     close = false
 ) => {
     notify("info", msg, position, progress, close);
 };
 
-export const info = (
-    msg,
-    position = "top-right",
-    progress = true,
-    close = false
-) => {
+export const info = (msg, position = "top", progress = true, close = false) => {
     notify("info", msg, position, progress, close);
 };
 
 export const warning = (
     msg,
-    position = "top-right",
+    position = "top",
     progress = true,
     close = false
 ) => {
@@ -53,7 +48,7 @@ export const warning = (
 
 export const error = (
     msg,
-    position = "top-right",
+    position = "top",
     progress = true,
     close = false
 ) => {

@@ -104,7 +104,7 @@ import BtnSaveComponent from "../../components/btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../components/btn/BtnCancelComponent.vue";
 import InfoComponent from "../../components/auth/InfoComponent.vue";
 import BooksComponent from "../../components/auth/BooksComponent.vue";
-import NotificationsManagerComponent from "../../components/others/NotificationsManagerComponent.vue";
+import NotificationsManagerComponent from "../../components/auth/NotificationsManagerComponent.vue";
 import { useForm } from "@inertiajs/vue3";
 import { Dark } from "quasar";
 import { errorValidation } from "../../helpers/notifications";

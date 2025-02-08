@@ -14,6 +14,7 @@ class SchoolTopic extends Model
         'percent',
         'has_resources',
         'has_principal_video',
+        'has_access'
     ];
 
     protected $casts = [
@@ -57,6 +58,12 @@ class SchoolTopic extends Model
     {
         $resources = $this->resources()->where('principal', false)->first();
         return $resources != null;
+    }
+
+    public function getHasAccessAttribute()
+    {
+        $user = auth()->user();
+        return $user->has_testimony || $user->sa || !$this->visible_after_testimony;
     }
 
     public function getHasPrincipalVideoAttribute()

@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        //dd($request);
         return array_merge(parent::share($request), [
             'csrf_token' => csrf_token(),
             'auth' => function () {
@@ -56,7 +57,8 @@ class HandleInertiaRequests extends Middleware
             'loading' => [
                 'exclude' => $request->session()->get('exclude_loading'),
                 'message' => $request->session()->get('loading_msg')
-            ]
+            ],
+            'object' => $request->session()->get('object')
         ]);
     }
 }

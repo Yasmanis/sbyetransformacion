@@ -107,6 +107,7 @@
     <video-component
         :show="showVideo"
         :video="principalVideo"
+        :topic="currentTopic"
         @close="showVideo = false"
     ></video-component>
 
@@ -154,6 +155,7 @@ const courses_completed = ref(0);
 const showVideo = ref(false);
 const principalVideo = ref(null);
 const showNoAccess = ref(false);
+const currentTopic = ref(null);
 
 onMounted(() => {
     updateViewSection();
@@ -194,6 +196,7 @@ const changeTopic = (topic) => {
     });
     if (topic.has_access) {
         principalVideo.value = topic.resources.find((r) => r.principal);
+        currentTopic.value = topic;
         if (principalVideo.value) {
             showVideo.value = true;
         }

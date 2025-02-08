@@ -82,30 +82,13 @@
                                 aspectRatio="16:9"
                                 :volume="0.6"
                                 class="rounded-top"
+                                :class="file.poster ? 'bg-white' : ''"
+                                @play="onPlayVideo"
                                 v-if="
                                     file.type.startsWith('video/') ||
                                     file.type.startsWith('audio/')
                                 "
                             />
-                            <!-- <q-media-player
-                                type="video"
-                                dense
-                                :sources="[
-                                    {
-                                        src: `${$page.props.public_path}storage/${file.path}`,
-                                        type: file.type,
-                                    },
-                                ]"
-                                :poster="
-                                    file.poster
-                                        ? `${$page.props.public_path}storage/${file.poster}`
-                                        : null
-                                "
-                                v-if="
-                                    file.type.startsWith('video/') ||
-                                    file.type.startsWith('audio/')
-                                "
-                            /> -->
                             <q-img
                                 :src="`${$page.props.public_path}storage/${file.path}`"
                                 fit="fill"
@@ -307,8 +290,6 @@ import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
 import GLightbox from "glightbox";
 import "glightbox/dist/css/glightbox.min.css";
-import { QMediaPlayer } from "@quasar/quasar-ui-qmediaplayer";
-import "@quasar/quasar-ui-qmediaplayer/dist/index.css";
 
 defineOptions({
     name: "FilesCategoryComponent",
@@ -347,5 +328,11 @@ const testimonies = computed(() => {
 
 const open = (url) => {
     openURL(url, undefined);
+};
+
+const onPlayVideo = (evt) => {
+    if (evt.target.classList.contains("bg-white")) {
+        evt.target.classList.remove("bg-white");
+    }
 };
 </script>

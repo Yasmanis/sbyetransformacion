@@ -23,7 +23,7 @@
         @filter="filterFn"
         @update:model-value="updateModel"
     >
-        <template #after><form-component /></template>
+        <template #after><form-component @created="onCreated" /></template>
         <template #hint v-if="fieldHelp?.length > 0">
             <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
                 <li
@@ -256,5 +256,14 @@ const updateModel = (val) => {
         }
     }
     emits("update", props.name, selected, full_option);
+};
+
+const onCreated = (object) => {
+    let opt = {
+        label: object.title,
+        value: object.id,
+    };
+    currentOptions.value.push(opt);
+    model.value = opt;
 };
 </script>

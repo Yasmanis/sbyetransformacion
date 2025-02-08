@@ -2,6 +2,7 @@
 
 use App\Events\PushMessage;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\BriefIdeasController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ConferenceController;
@@ -176,6 +177,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/testimony', TestimonyController::class);
     Route::resource('/admin/push-messages', PushMessageController::class);
     Route::resource('/admin/campaigns', CampaignController::class);
+    Route::resource('/admin/briefideas', BriefIdeasController::class);
     Route::post('/admin/testimony/publicated/{id}', [TestimonyController::class, 'publicated']);
     Route::post('/admin/testimony/store-from-publications', [TestimonyController::class, 'storeFromPublications']);
     Route::resource('/admin/life', LifeController::class);

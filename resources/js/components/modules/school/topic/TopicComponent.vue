@@ -197,6 +197,7 @@
                 formData[name] = val;
             }
         "
+        v-if="segment === 'life'"
     />
     <checkbox-field
         v-model="formData.visible_after_testimony"
@@ -209,6 +210,7 @@
                 formData[name] = val;
             }
         "
+        v-if="segment === 'life'"
     />
     <br />
     <checkbox-field
@@ -286,6 +288,10 @@ const props = defineProps({
     name: {
         type: String,
         default: "name",
+    },
+    segment: {
+        type: String,
+        required: true,
     },
     btnDelete: {
         type: Boolean,

@@ -22,10 +22,48 @@
                 "
                 closable
             />
+            <q-card-section class="col q-pt-none">
+                <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                            <text-field
+                                label="titulo"
+                                name="title"
+                                :othersProps="{
+                                    required: true,
+                                }"
+                            />
+                            <text-field
+                                label="url"
+                                name="url"
+                                :othersProps="{
+                                    required: true,
+                                    type: 'url',
+                                }"
+                            />
+                        </div>
+                        <div
+                            class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center"
+                            :class="
+                                !screen.xs ? 'q-pl-md' : 'q-mb-xs order-first'
+                            "
+                        >
+                            <image-field
+                                height="100px"
+                                width="100px"
+                                name="logo"
+                                label="logo"
+                            />
+                        </div>
+                    </div>
+                </q-form>
+            </q-card-section>
             <form-body
                 :fields="fields"
                 :module="module"
-                @close="showDialog = false"
+                @created="onCreated"
+                @updated="onUpdated"
+                @cancel="showDialog = false"
             />
         </q-card>
     </q-dialog>
@@ -36,12 +74,14 @@ defineOptions({
     name: "FormComponent",
 });
 
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
+import TextField from "../../form/input/TextField.vue";
+import ImageField from "../../form/input/ImageField.vue";
 import FormBody from "../../form/FormBody.vue";
 import { usePage } from "@inertiajs/vue3";
-import { Dark } from "quasar";
+import { Dark, useQuasar } from "quasar";
 
 const props = defineProps({
     fields: {
@@ -73,7 +113,9 @@ const props = defineProps({
         default: true,
     },
 });
-
+const emits = defineEmits(["created", "updated"]);
+const $q = useQuasar();
+const form = ref(null);
 const fullTitle = ref(null);
 const icon = ref(null);
 const showDialog = ref(false);
@@ -108,8 +150,8 @@ const fields = ref([
         },
     },
     {
-        field: "section_id",
-        name: "section_id",
+        field: "sections",
+        name: "sections",
         label: "secciones",
         type: "select",
         othersProps: {
@@ -144,8 +186,26 @@ onMounted(() => {
     }
 });
 
+const screen = computed(() => {
+    return $q.screen;
+});
+
 const onHide = () => {
     setDefault.value = !setDefault.value;
     page.props.errors = {};
+};
+
+const onCreated = (object, close) => {
+    if (close) {
+        showDialog.value = false;
+    }
+    emits("created", object);
+};
+
+const onUpdated = (object, close) => {
+    if (close) {
+        showDialog.value = false;
+    }
+    emits("updated", object);
 };
 </script>

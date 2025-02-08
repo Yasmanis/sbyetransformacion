@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Pusher\PushNotifications\PushNotifications;
 
@@ -81,8 +82,15 @@ class AuthController extends Controller
 
     public function saveProfile(Request $request)
     {
+        $id = auth()->user()->id;
+        $request->validate([
+            'name' => ['required'],
+            'surname' => ['required'],
+            'username' => ['required', Rule::unique('users', 'username')->ignore($id)],
+            'email' => ['required', Rule::unique('users', 'email')->ignore($id)],
+        ]);
         $repository = new UserRepository();
-        $repository->updateById(auth()->user()->id, $request->only((new ($repository->model()))->getFillable()));
+        $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
         return redirect()->back()->with('success', 'su información ha sido actualizada correctamente');
     }
 

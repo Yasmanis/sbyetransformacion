@@ -22,6 +22,7 @@
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
                     <section-form-component
                         :save="saveSection"
+                        :segment="segment"
                         @store="onStoreSection"
                         @error="saveSection = false"
                     />
@@ -31,6 +32,7 @@
                                 index === 0 ? 'tema' : `tema ${getIndex(item)}`
                             "
                             :name="`topic-${index}`"
+                            :segment="segment"
                             :btnDelete="index > 0"
                             :topic="item"
                             :save="item.save"
@@ -71,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import SectionFormComponent from "./section/SectionFormComponent.vue";
 import TopicComponent from "./topic/TopicComponent.vue";
@@ -87,15 +89,6 @@ import {
 
 defineOptions({
     name: "SectionAddComponent",
-});
-
-const props = defineProps({
-    url: String,
-    base: String,
-    imgbase: String,
-    roles: String,
-    icons: String,
-    btn_config: Object,
 });
 
 const $q = useQuasar();
@@ -135,6 +128,12 @@ const newTopic = (reset) => {
         itemsTopics.value.push(topic);
     }
 };
+
+const segment = computed(() => {
+    const pathSegments = window.location.pathname.split("/");
+    return pathSegments.pop() || pathSegments[pathSegments.length - 2];
+});
+
 const onBeforeShowDialog = () => {
     newTopic(true);
 };

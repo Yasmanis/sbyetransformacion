@@ -1,13 +1,14 @@
 <template>
     <Layout>
         <q-page padding>
-            <table-component
+            <!-- <table-component
                 :columns="columns"
                 :searchFields="searchFields"
+                :filterFields="filterFields"
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
-            ></table-component>
+            ></table-component> -->
         </q-page>
     </Layout>
 </template>
@@ -21,9 +22,9 @@ defineOptions({
 });
 
 const name = {
-    field: "value",
-    name: "value",
-    label: "nombre",
+    field: "title",
+    name: "title",
+    label: "titulo",
     align: "left",
     sortable: true,
     type: "text",
@@ -34,27 +35,41 @@ const name = {
     },
 };
 
-const key = {
-    field: "key",
-    name: "key",
-    type: "hidden",
+const message = {
+    field: "message",
+    name: "message",
+    label: "mensaje",
+    align: "left",
+    type: "editor",
+};
+
+const created = {
+    field: "created_by",
+    name: "created_by",
+    label: "creada por",
+    align: "left",
+    type: "select",
     othersProps: {
-        defaultValue: "section",
+        url_to_options: "/users",
     },
 };
 
 const searchFields = [name];
 
+const filterFields = [created];
+
 const columns = [
     name,
+    message,
+    created,
     {
         field: "actions",
         name: "actions",
         label: "Acciones",
         type: "actions",
-        width: "100px",
+        width: 100,
     },
 ];
 
-const fields = [name, key];
+const fields = [name, message];
 </script>

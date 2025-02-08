@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\CampaignRepository;
+use App\Repositories\BriefIdeaRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class CampaignController extends Controller
+class BriefIdeasController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->user()->hasView('campaign')) {
-            $repository = new CampaignRepository();
+        if (auth()->user()->hasView('briefidea')) {
+            $repository = new BriefIdeaRepository();
             $repository->search($request->search);
             $repository->filters($request->filters);
             $repository->orderBy($request->sortBy, $request->sortDirection);
@@ -23,11 +23,11 @@ class CampaignController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->hasCreate('campaign')) {
+        if (auth()->user()->hasCreate('briefidea')) {
             $request->validate([
-                'title' => ['required', 'unique:campaigns'],
+                'title' => ['required'],
             ]);
-            $repository = new CampaignRepository();
+            $repository = new BriefIdeaRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
             if (isset($request->start_date)) {
                 $data['start_date'] = Carbon::createFromFormat('d/m/Y', $request->start_date);
@@ -43,7 +43,7 @@ class CampaignController extends Controller
                 $object->assignedTo()->attach($request->users);
             }
             return redirect()->back()->with([
-                'success' => 'campaña adicionada correctamente',
+                'success' => 'idea breve adicionada correctamente',
                 'object' => $object->only('id', 'title')
             ]);
         }
@@ -52,28 +52,28 @@ class CampaignController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('campaign')) {
+        if (auth()->user()->hasUpdate('briefidea')) {
             $request->validate([
-                'title' => ['required', Rule::unique('category', 'name')->ignore($id)],
+                'title' => ['required'],
             ]);
-            $repository = new CampaignRepository();
+            $repository = new BriefIdeaRepository();
             $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
-            return redirect()->back()->with('success', 'campaña modificada correctamente');
+            return redirect()->back()->with('success', 'idea breve modificada correctamente');
         }
         return $this->deny_access($request);
     }
 
     public function destroy(Request $request, $ids)
     {
-        if (auth()->user()->hasDelete('campaign')) {
-            $repository = new CampaignRepository();
+        if (auth()->user()->hasDelete('briefidea')) {
+            $repository = new BriefIdeaRepository();
             $ids = explode(',', $ids);
             if (count($ids) == 1) {
                 $repository->deleteById($ids[0]);
             } else {
                 $repository->deleteMultipleById($ids);
             }
-            return redirect()->back()->with('success', count($ids) == 1 ? 'campaña eliminada correctamente' : 'campañas eliminadas correctamente');
+            return redirect()->back()->with('success', count($ids) == 1 ? 'idea breve eliminada correctamente' : 'ideas breves eliminadas correctamente');
         }
         return $this->deny_access($request);
     }

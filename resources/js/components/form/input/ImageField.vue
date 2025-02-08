@@ -1,72 +1,60 @@
 <template>
-    <div class="row items-center q-pa-none q-mx-none">
-        <div
-            class="column full-width full-height items-center q-pa-xs"
-            :style="{
-                border: `1px solid ${
-                    Dark.isActive
-                        ? 'rgba(255, 255, 255, 0.28)'
-                        : 'rgba(0, 0, 0, 0.12)'
-                }`,
-            }"
+    <div
+        class="col text-center"
+        :style="{
+            border: `1px solid ${
+                Dark.isActive
+                    ? 'rgba(255, 255, 255, 0.28)'
+                    : 'rgba(0, 0, 0, 0.12)'
+            }`,
+        }"
+    >
+        <q-item-label caption v-if="label" @click="fileRef.pickFiles()"
+            >{{ label }}
+        </q-item-label>
+        <q-img
+            :src="image"
+            @click="fileRef.pickFiles()"
+            class="cursor-pointer"
+            img-class="q-pa-xs"
+            :ratio="hasDefaultImage ? 1 / 1 : ratio"
+            :rules="fieldRules"
+            :error="errorMsg !== null"
+            :error-message="errorMsg"
+            fit="fill"
+            :width="width"
+            :height="height"
         >
-            <label v-if="label" @click="fileRef.pickFiles()">{{ label }}</label>
-            <q-img
-                :src="image"
-                @click="fileRef.pickFiles()"
-                class="cursor-pointer"
-                :ratio="hasDefaultImage ? 1 / 1 : ratio"
-                :rules="fieldRules"
-                :error="errorMsg !== null"
-                :error-message="errorMsg"
-                fit="fill"
-            >
-                <template v-slot:error>
-                    <div
-                        class="absolute-full flex flex-center bg-negative text-white"
-                    >
-                        error al tratar de obtener la imagen
-                    </div>
-                </template>
-            </q-img>
-            <div class="col self-center q-mt-sm">
-                <q-btn-component
-                    tooltips="reemplazar"
-                    icon="mdi-sync"
-                    class="q-mr-xs"
-                    @click="fileRef.pickFiles()"
-                />
-                <btn-delete-component
-                    :tooltips="hasDefaultImage ? '' : 'eliminar'"
-                    :disable="hasDefaultImage"
-                    class="q-ml-xs"
-                    @click="resetImg"
-                />
-            </div>
-        </div>
-        <!-- <ul
-            style="padding: 0; margin-top: 0px; margin-bottom: 0px"
-            v-if="fieldHelp?.length > 0"
-        >
-            <li
-                v-for="(h, index) in fieldHelp"
-                :key="`help-${index}`"
-                style="list-style: none"
-            >
-                {{ h }}
-            </li>
-        </ul> -->
+            <template v-slot:error>
+                <div
+                    class="absolute-full flex flex-center bg-negative text-white"
+                >
+                    error al tratar de obtener la imagen
+                </div>
+            </template>
+        </q-img>
         <br />
-        <div class="col-sm-12 col-md-12" style="padding-left: 35px"></div>
-        <q-file
-            v-model="file"
-            ref="fileRef"
-            @update:model-value="onChangeFile"
-            accept="image/*"
-            @rejected="onRejected"
-            style="display: none"
-        ></q-file>
+        <q-btn-component
+            tooltips="reemplazar"
+            icon="mdi-sync"
+            class="q-mr-xs"
+            @click="fileRef.pickFiles()"
+        />
+        <btn-delete-component
+            :tooltips="hasDefaultImage ? '' : 'eliminar'"
+            :disable="hasDefaultImage"
+            class="q-ml-xs"
+            @click="resetImg"
+        />
     </div>
+    <q-file
+        v-model="file"
+        ref="fileRef"
+        @update:model-value="onChangeFile"
+        accept="image/*"
+        @rejected="onRejected"
+        style="display: none"
+    ></q-file>
 </template>
 
 <script setup>
@@ -90,14 +78,8 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    width: {
-        type: String,
-        default: "150px",
-    },
-    height: {
-        type: String,
-        default: "150px",
-    },
+    width: String,
+    height: String,
     othersProps: {
         type: Object,
         default: () => ({}),

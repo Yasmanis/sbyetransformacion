@@ -144,7 +144,13 @@
         :class="Dark.isActive ? '' : 'text-white'"
     >
         <q-item-section avatar>
-            <q-icon :name="o.ico" />
+            <q-icon
+                :name="
+                    o.ico_from_path
+                        ? `img:${$page.props.public_path}${o.ico}`
+                        : o.ico
+                "
+            />
         </q-item-section>
         <q-item-section class="text-lowercase">{{
             o.plural_label

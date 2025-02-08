@@ -21,40 +21,42 @@
                 <q-card-section v-if="edit">
                     <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
                         <text-field
-                            v-model="formData.username"
-                            :modelValue="user.username"
+                            :modelValue="formData.username"
                             name="username"
                             label="usuario"
                             :othersProps="{
                                 required: true,
                                 help: ['unico'],
                             }"
+                            @update="onUpdateField"
                         />
                         <text-field
-                            v-model="formData.name"
+                            :modelValue="formData.name"
                             name="name"
                             label="nombre"
                             :othersProps="{
                                 required: true,
                             }"
+                            @update="onUpdateField"
                         />
                         <text-field
-                            v-model="formData.surname"
+                            :modelValue="formData.surname"
                             name="surname"
                             label="apellidos"
                             :othersProps="{
                                 required: true,
                             }"
+                            @update="onUpdateField"
                         />
                         <text-field
-                            v-model="formData.email"
-                            :modelValue="user.email"
+                            :modelValue="formData.email"
                             name="email"
                             label="correo"
                             :othersProps="{
                                 required: true,
                                 help: ['unico'],
                             }"
+                            @update="onUpdateField"
                         />
                     </q-form>
                 </q-card-section>
@@ -92,7 +94,7 @@
                     </q-list>
                 </q-card-section>
                 <q-card-actions align="right">
-                    <btn-edit-component @click="edit = true" v-if="!edit" />
+                    <btn-edit-component @click="setEditInfo" v-if="!edit" />
                     <btn-save-component v-if="edit" @click="save" />
                     <btn-cancel-component
                         cancel
@@ -148,11 +150,18 @@ const showDialog = ref(false);
 const image = ref(null);
 const copperImage = ref(null);
 const edit = ref(false);
+const formData = useForm({
+    username: null,
+    name: null,
+    surname: null,
+    email: null,
+});
 
 onMounted(() => {
     image.value =
         page.props.auth.user.avatar ??
         `${page.props.public_path}images/icon/profile.svg`;
+    formData.username = user.username;
 });
 
 const user = computed(() => {
@@ -160,10 +169,6 @@ const user = computed(() => {
 });
 
 const form = ref(null);
-
-const formData = useForm({
-    username: user.username,
-});
 
 const openCropper = () => {
     if (user.value.avatar) {
@@ -192,9 +197,27 @@ const onFinishCropper = (name, img) => {
     });
 };
 
+const onUpdateField = (name, value) => {
+    formData[name] = value;
+};
+
+const setEditInfo = () => {
+    const { username, name, surname, email } = user.value;
+    formData.username = username;
+    formData.name = name;
+    formData.surname = surname;
+    formData.email = email;
+    edit.value = true;
+};
+
 const save = () => {
     form.value.validate().then((success) => {
         if (success) {
+            formData.post("/auth/profile", {
+                onSuccess: () => {
+                    edit.value = false;
+                },
+            });
         } else {
             errorValidation();
         }

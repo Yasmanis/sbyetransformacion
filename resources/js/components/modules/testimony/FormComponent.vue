@@ -25,7 +25,9 @@
                 :object="object"
                 :fields="fields"
                 :module="module"
-                @close="showDialog = false"
+                @created="onCreated"
+                @updated="onUpdated"
+                @cancel="showDialog = false"
             />
         </q-card>
     </q-dialog>
@@ -104,5 +106,17 @@ onMounted(() => {
 const onHide = () => {
     setDefault.value = !setDefault.value;
     page.props.errors = {};
+};
+
+const onCreated = (object, close) => {
+    if (close) {
+        showDialog.value = true;
+    }
+};
+
+const onUpdated = (object, close) => {
+    if (close) {
+        showDialog.value = true;
+    }
 };
 </script>

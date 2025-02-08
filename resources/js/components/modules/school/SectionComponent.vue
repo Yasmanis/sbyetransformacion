@@ -17,9 +17,7 @@
                             icon="fab fa-youtube"
                             color="primary"
                             @click="startVideo(principalVideo)"
-                            :disable="
-                                !principalVideo || !principalVideo.has_access
-                            "
+                            :disable="!principalVideo || !topic.has_access"
                             size="xl"
                         />
                     </div>
@@ -86,7 +84,7 @@
                                 >
                                 <a
                                     :href="
-                                        r.has_access
+                                        topic.has_access
                                             ? `${page.props.public_path}storage/${r.path}`
                                             : null
                                     "
@@ -118,7 +116,7 @@
                             <q-btn-component
                                 tooltips="reproducir"
                                 icon="mdi-play-circle-outline"
-                                :disable="!r.has_access"
+                                :disable="!topic.has_access"
                                 @click="startVideo(r)"
                             />
                         </q-item-section>
@@ -130,7 +128,7 @@
                                 :href="`${page.props.public_path}storage/${r.path}`"
                                 size="12px"
                                 target="_blank"
-                                :disable="!r.has_access"
+                                :disable="!topic.has_access"
                             />
                         </q-item-section>
                     </q-item>
@@ -149,6 +147,7 @@
     <video-component
         :show="showVideo"
         :video="currentVideo"
+        :topic="topic"
         @close="showVideo = false"
     />
 
@@ -220,7 +219,7 @@ const principalVideo = computed(() => {
 });
 
 const startVideo = (video) => {
-    if (video.has_access) {
+    if (props.topic.has_access) {
         currentVideo.value = video;
         showVideo.value = true;
     } else {

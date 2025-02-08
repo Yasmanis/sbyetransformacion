@@ -40,8 +40,8 @@
                 />
                 <users-select-dialog-component
                     :name="f.name"
-                    :modelValue="formData[f.name]"
                     :label="f.label"
+                    @update="onUpdateUsers"
                     v-if="f.type === 'users'"
                 />
                 <campaign-field
@@ -108,7 +108,7 @@
     <q-card-actions align="right">
         <btn-save-component @click="save(true)" />
         <btn-save-and-new-component @click="save(false)" v-if="!object" />
-        <btn-cancel-component :cancel="true" @click="emits('close')" />
+        <btn-cancel-component :cancel="true" @click="emits('cancel')" />
     </q-card-actions>
 </template>
 
@@ -151,7 +151,7 @@ const props = defineProps({
     },
 });
 
-const emits = defineEmits(["close"]);
+const emits = defineEmits(["created", "updated", "cancel"]);
 
 const form = ref(null);
 
@@ -185,6 +185,11 @@ const onUpdateField = (name, val) => {
     formData.value[name] = val;
 };
 
+const onUpdateUsers = (name, val) => {
+    formData.value[name] = val.map((v) => v.value);
+    console.log(formData.value[name]);
+};
+
 const save = async (hide) => {
     form.value.validate().then((success) => {
         if (success) {
@@ -202,21 +207,19 @@ const save = async (hide) => {
 const store = async (hide) => {
     const send = useForm(formData.value);
     send.post(props.module.base_url, {
-        onSuccess: () => {
+        onSuccess: (data) => {
             setDefaultData();
-            if (hide) {
-                emits("close");
-            }
+            emits("created", data.props.object, hide);
         },
     });
 };
 
-const update = async (hide) => {
+const update = async () => {
     const send = useForm(formData.value);
     send.put(`${props.module.base_url}/${props.object.id}`, {
-        onSuccess: () => {
+        onSuccess: (data) => {
             setDefaultData();
-            emits("close");
+            emits("updated", data.props.object);
         },
     });
 };

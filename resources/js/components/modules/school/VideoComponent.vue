@@ -7,6 +7,12 @@
                 closable
             />
             <q-card-section class="col q-pt-none">
+                <div
+                    class="col-sm-12 col-md-12 text-center"
+                    v-if="topic?.description"
+                >
+                    <span v-html="topic.description"></span>
+                </div>
                 <div class="col-sm-12 col-md-12 text-center">
                     <video
                         width="320"
@@ -40,6 +46,7 @@ defineOptions({
 
 const props = defineProps({
     video: Object,
+    topic: Object,
     show: {
         type: Boolean,
         default: false,

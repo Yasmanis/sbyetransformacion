@@ -39,7 +39,15 @@
                         class="q-my-xs q-mr-sm cursor-pointer text-subtitle1"
                     >
                         <div class="doc-card-title bg-primary text-white">
-                            <q-icon :name="current_module?.ico" size="22px" />
+                            <q-icon
+                                :name="
+                                    current_module.ico_from_path
+                                        ? `img:${$page.props.public_path}${current_module.ico}`
+                                        : current_module.ico
+                                "
+                                size="22px"
+                                v-if="current_module"
+                            />
                             {{ current_module?.plural_label }}
                         </div>
                     </section>
@@ -139,16 +147,24 @@
                     :align="props.col.align"
                     v-if="props.col.type !== 'hidden'"
                 >
-                    <template v-if="props.col.type === 'avatar'">
-                        <q-avatar v-if="props.value">
-                            <q-img :src="props.value" loading="lazy" />
-                        </q-avatar>
-                        <q-avatar v-else>
+                    <template
+                        v-if="
+                            props.col.type === 'avatar' ||
+                            props.col.type === 'image'
+                        "
+                    >
+                        <q-avatar v-if="props.col.type === 'avatar'">
                             <q-img
-                                src="~assets/default-avatar.png"
+                                :src="`${$page.props.public_path}${props.value}`"
                                 loading="lazy"
                             />
                         </q-avatar>
+                        <q-img
+                            :src="`${$page.props.public_path}${props.value}`"
+                            loading="lazy"
+                            width="70px"
+                            v-else
+                        />
                     </template>
                     <template v-else-if="props.col.type === 'boolean'">
                         <q-chip
@@ -161,22 +177,8 @@
                             :label="props.value ? 'Si' : 'No'"
                         />
                     </template>
-                    <template v-else-if="props.col.type === 'textarea'">
-                        <span v-if="props.row[props.col.field].length <= 20">
-                            {{ props.row[props.col.field] }}
-                        </span>
-                        <span v-else
-                            >{{ props.row[props.col.field].substring(0, 17) }}
-                            <b>
-                                ...
-                                <q-tooltip class="bg-brown"
-                                    >Click para ver detalles</q-tooltip
-                                >
-                            </b>
-                        </span>
-                    </template>
                     <template v-else>
-                        {{ props.row[props.col.field] }}
+                        <span v-html="props.row[props.col.field]"> </span>
                     </template>
                 </q-td>
             </template>
@@ -222,21 +224,24 @@
                                         {{ col.label }}
                                     </q-item-label>
                                     <q-item-label
-                                        v-if="col.type === 'avatar'"
+                                        v-if="
+                                            col.type === 'avatar' ||
+                                            col.type === 'image'
+                                        "
                                         class="text-center"
                                     >
-                                        <q-avatar v-if="col.value">
+                                        <q-avatar v-if="col.type === 'avatar'">
                                             <q-img
-                                                :src="col.value"
+                                                :src="`${$page.props.public_path}${col.value}`"
                                                 loading="lazy"
                                             />
                                         </q-avatar>
-                                        <q-avatar v-else>
-                                            <q-img
-                                                src="~assets/default-avatar.png"
-                                                loading="lazy"
-                                            />
-                                        </q-avatar>
+                                        <q-img
+                                            :src="`${$page.props.public_path}${col.value}`"
+                                            loading="lazy"
+                                            width="100px"
+                                            v-else
+                                        />
                                     </q-item-label>
                                     <q-item-label
                                         v-else-if="col.type === 'boolean'"
@@ -257,9 +262,11 @@
                                             :label="col.value ? 'Si' : 'No'"
                                         />
                                     </q-item-label>
-                                    <q-item-label caption v-else>{{
-                                        col.value ? col.value : "..."
-                                    }}</q-item-label>
+                                    <q-item-label caption v-else>
+                                        <span
+                                            v-html="col.value ? col.value : ''"
+                                        ></span>
+                                    </q-item-label>
                                 </q-item-section>
                                 <q-item-section
                                     v-else-if="col.name === 'actions'"

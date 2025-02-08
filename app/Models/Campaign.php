@@ -12,7 +12,7 @@ class Campaign extends Model
 
     protected $table = 'campaigns';
     protected $fillable = ['title', 'start_date', 'end_date', 'url', 'logo'];
-    protected $appends = ['dir', 'assigned_to', 'assigned_to_ids', 'sections', 'sections_id', 'start_date', 'end_date', 'note'];
+    protected $appends = ['dir', 'assigned_to', 'assigned_to_ids', 'sections', 'sections_id'];
     protected $guarded = ['id'];
     protected $casts = [
         'notes' => 'json'
@@ -29,7 +29,7 @@ class Campaign extends Model
 
     public function assignedTo()
     {
-        return $this->belongsToMany(User::class, 'campaign_assigned_tos', 'campaign_id', 'assigned_to')->withTimestamps();
+        return $this->belongsToMany(User::class, 'campaign_assigned_to', 'campaign_id', 'user_id')->withTimestamps();
     }
 
     public function user()
@@ -39,12 +39,13 @@ class Campaign extends Model
 
     public function sections()
     {
-        return $this->belongsToMany(Section::class, 'campaigns_sections', 'campaign_id', 'section_id');
+        return $this->belongsToMany(CategoryNomenclature::class, 'campaigns_sections', 'campaign_id', 'section_id');
     }
 
     // mutator
     public function getAssignedToAttribute()
     {
+        return null;
         $dieticians = User::roleDietician()->orderBy('id', 'asc')->get()->pluck('id');
         $clients = User::roleUser()->orderBy('id', 'asc')->get()->pluck('id');
         $admins = User::roleAdmin()->orderBy('id', 'asc')->get()->pluck('id');
@@ -64,12 +65,14 @@ class Campaign extends Model
 
     public function getAssignedToIdsAttribute()
     {
+        return null;
         $ids = $this->assignedTo()->pluck('assigned_to')->toArray();
         return User::whereIn('id', $ids)->get();
     }
 
     public function verificaSiEstaEsCampaignSection($value)
     {
+        return null;
         $val = null;
         $campaignSections = CampaignSection::all()->pluck('id', 'name');
         foreach ($campaignSections as $key => $section) {
@@ -86,7 +89,7 @@ class Campaign extends Model
 
     public function getSectionsAttribute()
     {
-        return $this->sections()->get()->implode('name', ', ');
+        return $this->sections()->get()->implode('value', ', ');
     }
 
     public function getSectionsIdAttribute()
@@ -94,20 +97,25 @@ class Campaign extends Model
         return $this->sections()->get()->pluck('id');
     }
 
-    public function getStartDateAttribute()
+    public function getStartDateAttribute($val)
     {
-        if (isset($this->attributes['start_date'])) {
-            return DateTime::createFromFormat('Y-m-d', $this->attributes['start_date'])->format('d-m-Y');
-        }
-        return null;
+        return isset($val) ? DateTime::createFromFormat('Y-m-d', $val)->format('d/m/Y') : null;
     }
 
-    public function getEndDateAttribute()
+    public function getEndDateAttribute($val)
     {
-        if (isset($this->attributes['end_date'])) {
-            return DateTime::createFromFormat('Y-m-d', $this->attributes['end_date'])->format('d-m-Y');
-        }
-        return null;
+        return isset($val) ? DateTime::createFromFormat('Y-m-d', $val)->format('d/m/Y') : null;
+    }
+
+    public function getCreatedByAttribute($val)
+    {
+        $user = User::find($val);
+        return $user != null ? $user->full_name : null;
+    }
+
+    public function getLogoAttribute($val)
+    {
+        return isset($val) ? $val : 'images/logo/2.png';
     }
 
     // scope

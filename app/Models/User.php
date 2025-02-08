@@ -161,7 +161,7 @@ class User extends Authenticatable
     public function getModulesFromApp($app)
     {
         $modules_id = $this->getAllPermissions()->pluck('module_id');
-        $modules = Module::whereIn('id', $modules_id)->where('application_id', $app->id)->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str')->get();
+        $modules = Module::whereIn('id', $modules_id)->where('application_id', $app->id)->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'ico_from_path', 'ico_from_path', 'base_url', 'to_str')->get();
         foreach ($modules as $m) {
             $m->permissions = $this->getPermissionsFromModule($m);
         }
@@ -173,7 +173,7 @@ class User extends Authenticatable
         $permissions = $this->getAllPermissions()->pluck('id');
         $modules = Module::whereNull('application_id')->whereHas('permissions', function ($query) use ($permissions) {
             $query->whereIn('id',  $permissions);
-        })->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str')->get();
+        })->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'ico_from_path', 'base_url', 'to_str')->get();
         foreach ($modules as $m) {
             $m->permissions = $this->getPermissionsFromModule($m);
         }
@@ -261,15 +261,13 @@ class User extends Authenticatable
     public function getSections($type)
     {
         $sections = SchoolSection::type($type)->get();
-        if (!$this->sa) {
-            $has_testimony = $this->has_testimony;
+        if (!$this->sa && $type != 'conference') {
             $topics = [];
             $sections1 = [];
             $volumes = $this->book_volumes ? $this->book_volumes : [];
             foreach ($sections as $s) {
                 foreach ($s->topics as $t) {
                     if (in_array($t->book_volume, $volumes)) {
-                        $t['has_access'] = $has_testimony || !$t->visible_after_testimony;
                         $topics[] = $t;
                     }
                 }

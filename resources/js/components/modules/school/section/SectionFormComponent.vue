@@ -50,6 +50,10 @@ defineOptions({
 
 const props = defineProps({
     object: Object,
+    segment: {
+        type: String,
+        required: true,
+    },
     save: {
         type: Boolean,
         default: false,
@@ -85,11 +89,6 @@ watch(
     }
 );
 
-const segment = computed(() => {
-    const pathSegments = window.location.pathname.split("/");
-    return pathSegments.pop() || pathSegments[pathSegments.length - 2];
-});
-
 const onUpdateField = (name, val) => {
     formData.value[name] = val;
 };
@@ -99,7 +98,7 @@ const store = async () => {
         message: "adicionando seccion",
     });
     await axios
-        .post(`/admin/${segment.value}`, formData.value)
+        .post(`/admin/${props.segment}`, formData.value)
         .then((response) => {
             emits("store", response.data.id);
         })

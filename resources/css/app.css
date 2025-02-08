@@ -201,6 +201,15 @@
     margin-left: -20px !important;
 }
 
+.bg-white .vjs-tech,
+.bg-white .vjs-poster{
+    background-color: #fff !important;
+}
+
+.bg-white .vjs-tech {
+    display: none;
+}
+
 .q-card.rounded .vjs-poster {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
