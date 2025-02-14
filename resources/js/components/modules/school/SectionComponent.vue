@@ -135,6 +135,12 @@
                 </q-list>
             </div>
         </div>
+        <div class="row q-pa-sm" v-if="topic?.description">
+            <span
+                v-html="topic?.description"
+                style="margin-bottom: -30px"
+            ></span>
+        </div>
     </div>
     <chat-component
         :topic="props.topic"

@@ -23,7 +23,7 @@ class SelectsController extends Controller
     public function campaigns()
     {
         return response()->json([
-            'options' => Campaign::select('id as value', 'title as label')->get()
+            'options' => Campaign::select('id as value', 'title as label', 'id')->get()
         ]);
     }
 

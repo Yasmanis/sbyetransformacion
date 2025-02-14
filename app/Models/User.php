@@ -62,7 +62,8 @@ class User extends Authenticatable
         'sa' => 'boolean',
         'active' => 'boolean',
         'configuration' => 'json',
-        'book_volumes' => 'json'
+        'book_volumes' => 'json',
+        'subscripted'=> 'boolean',
     ];
 
     protected $appends = ['permissions', 'roles', 'full_name', 'notifications', 'has_testimony'];

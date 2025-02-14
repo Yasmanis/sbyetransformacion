@@ -135,6 +135,8 @@
             </div>
         </div>
     </Layout>
+
+    <publications-msg-component />
 </template>
 
 <script setup>
@@ -144,6 +146,7 @@ import { usePage } from "@inertiajs/vue3";
 import ListCategoryComponent from "../../components/landing/ListCategoryComponent.vue";
 import FilesCategoryComponent from "../../components/landing/FilesCategoryComponent.vue";
 import FormTestimonyComponent from "../../components/landing/FormTestimonyComponent.vue";
+import PublicationsMsgComponent from "../../components/modules/pushmessage/PublicationsMsgComponent.vue";
 import { useQuasar, date } from "quasar";
 
 defineOptions({

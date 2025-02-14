@@ -119,9 +119,9 @@
         icon-confirm="mdi-video-account"
         icon-confirm-size="18px"
         icon-confirm-tooltips="ir a testimonios"
-        :message="`para ver el contenido de este tema debes <br> cumplir el requisito de haber dado un testimonio. pulsa <a class='text-bold cursor-pointer' href='/admin/testimony'>aqui</a> para adjuntar tu testimonio o escribirlo`"
+        :message="`para ver el contenido de este tema debes <br> cumplir el requisito de haber dado un testimonio. pulsa <a class='text-bold cursor-pointer' href='/publicaciones/2'>aqui</a> para adjuntar tu testimonio o escribirlo`"
         @hide="showNoAccess = false"
-        @ok="router.get('/admin/testimony')"
+        @ok="router.get('/publicaciones/2')"
     />
 </template>
 

@@ -19,7 +19,7 @@ class PrivateMsgController extends Controller
     {
         $user = auth()->user();
         $request->validate([
-            'title' => ['required'],
+            'title' => ['required_if:parent_id,null'],
             'msg' => ['required'],
             'users' => ['required', 'array'],
         ]);
@@ -28,7 +28,7 @@ class PrivateMsgController extends Controller
         if (isset($request->parent_id)) {
             $data['parent_id'] = $request->parent_id;
             $data['to_id'] = $request->to_id;
-            $data[''] = 'Re: ' . PrivateMsg::find($request->parent_id)->title;
+            $data['title'] = 'Re: ' . PrivateMsg::find($request->parent_id)->title;
             $highlight = PrivateMsg::where('to_id', $request->to_id)->where('parent_id', $request->parent_id)->orderBy('id', 'desc')->first();
             if ($highlight == null) {
                 $highlight = PrivateMsg::whereHas('users', function (Builder $query) use ($request) {
@@ -46,8 +46,8 @@ class PrivateMsgController extends Controller
             if ($u != $user->id) {
                 $received = new PrivateMsgReceived();
                 $received->user_id = $u;
-                $received->message()->associate($msg);
-                $received->parent_id = isset($request->parent_id) ? $request->parent_id : null;
+                $received->message_id=$msg->id;
+                //$received->parent_id = isset($request->parent_id) ? $request->parent_id : null;
                 $received->save();
             }
         }

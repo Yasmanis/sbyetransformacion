@@ -158,9 +158,9 @@ const formData = useForm({
 });
 
 onMounted(() => {
-    image.value =
-        page.props.auth.user.avatar ??
-        `${page.props.public_path}images/icon/profile.svg`;
+    image.value = page.props.auth.user.avatar
+        ? `${page.props.public_path}storage/${page.props.auth.user.avatar}`
+        : `${page.props.public_path}images/icon/profile.svg`;
     formData.username = user.username;
 });
 
@@ -172,7 +172,7 @@ const form = ref(null);
 
 const openCropper = () => {
     if (user.value.avatar) {
-        copperImage.value = user.value.avatar;
+        copperImage.value = `${page.props.public_path}storage/${page.props.auth.user.avatar}`;
         showDialog.value = true;
     } else {
         fileRef.value.pickFiles();
@@ -187,7 +187,7 @@ const handleFile = (file) => {
 const onFinishCropper = (name, img) => {
     const form = useForm({
         avatar: img,
-    }).post("/auth/profile", {
+    }).post("/auth/change-avatar", {
         onSuccess: () => {
             image.value = img
                 ? img

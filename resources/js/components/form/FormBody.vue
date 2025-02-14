@@ -47,11 +47,8 @@
                 <campaign-field
                     :label="f.label"
                     :name="f.name"
-                    :modelValue="formData[f.name]"
-                    :options="f.options"
-                    :othersProps="f.othersProps"
-                    :filterable="f.filterable"
-                    :multiple="f?.othersProps?.multiple ?? false"
+                    :campaign="formData['campaign_id']"
+                    :sections="formData['sections_id']"
                     @update="onUpdateField"
                     v-else-if="f.type === 'campaign'"
                 />
@@ -171,6 +168,13 @@ const setDefaultData = () => {
             console.log("periodicity");
         } else if (f.type === "select") {
             formData.value[f.name] = props.object ? props.object[f.name] : null;
+        } else if (f.type === "campaign") {
+            formData.value["campaign_id"] = props.object
+                ? props.object["campaign_id"]
+                : null;
+            formData.value["sections_id"] = props.object
+                ? props.object["sections_id"]
+                : null;
         } else {
             formData.value[f.name] = props.object
                 ? props.object[f.name]

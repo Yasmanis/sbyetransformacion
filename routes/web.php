@@ -160,6 +160,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
     Route::get('/auth/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/auth/profile', [AuthController::class, 'saveProfile']);
+    Route::post('/auth/subscribe', [AuthController::class, 'subscribe']);
+    Route::post('/auth/change-avatar', [AuthController::class, 'changeAvatar']);
     Route::post('/auth/store-new-book', [AuthController::class, 'storeNewBook']);
     Route::delete('/auth/delete-notification/{ids}', [AuthController::class, 'deleteNotification']);
     Route::post('/auth/read-unread-notification/{id}', [AuthController::class, 'readUnreadNotification']);

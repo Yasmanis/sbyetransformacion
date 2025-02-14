@@ -49,10 +49,10 @@
                 <q-btn-component color="white" class="q-mr-sm">
                     <q-avatar size="md" class="shadow-4"
                         ><img
-                            :src="`${
+                            :src="`${$page.props.public_path}${
                                 user.avatar
-                                    ? user.avatar
-                                    : `${$page.props.public_path}images/icon/profile.svg`
+                                    ? `storage/${user.avatar}`
+                                    : `images/icon/profile.svg`
                             }`"
                     /></q-avatar>
                     <q-menu
@@ -70,9 +70,11 @@
                                                 class="shadow-10"
                                                 ><img
                                                     :src="`${
+                                                        $page.props.public_path
+                                                    }${
                                                         user.avatar
-                                                            ? user.avatar
-                                                            : `${$page.props.public_path}images/icon/profile.svg`
+                                                            ? `storage/${user.avatar}`
+                                                            : `images/icon/profile.svg`
                                                     }`"
                                             /></q-avatar>
                                         </q-item-section>
@@ -247,6 +249,8 @@
             </q-card-actions>
         </q-card>
     </q-dialog>
+
+    <private-area-msg-component />
 </template>
 
 <script setup>
@@ -261,6 +265,7 @@ import DialogHeaderComponent from "../components/base/DialogHeaderComponent.vue"
 import PasswordField from "../components/form/input/PasswordField.vue";
 import BtnSaveComponent from "../components/btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../components/btn/BtnCancelComponent.vue";
+import PrivateAreaMsgComponent from "../components/modules/pushmessage/PrivateAreaMsgComponent.vue";
 import { Dark } from "quasar";
 import { usePage, useForm, router } from "@inertiajs/vue3";
 import { errorValidation } from "../helpers/notifications";

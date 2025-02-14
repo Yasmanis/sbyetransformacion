@@ -1,6 +1,15 @@
 import { testPattern } from "./patterns";
 import { date } from "quasar";
 
+const isValidUrl = (url) => {
+    try {
+        new URL(url);
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+
 export const rules = {
     required: (val) => !!val || "requerido",
     numeric: (val) => testPattern.numeric(val) || "numerico",
@@ -10,7 +19,7 @@ export const rules = {
     minValue: (val, min = 0) => val < min || `tamaño mininimo ${min}`,
     maxValue: (val, max = 0) => val > max || `tamaño maximo ${max}`,
     ipAddress: (val) => testPattern.ipv4(val) || "formato no valido",
-    url: (val) => testPattern.url(val) || "formato no valido",
+    url: (val) => isValidUrl(val) || "formato no valido",
     email: (val, rules) => rules.email(val) || "formato no valido",
     validDate: (val) => date.isValid(val) || "formato no valido",
 };

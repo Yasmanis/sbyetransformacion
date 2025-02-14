@@ -417,52 +417,30 @@
             class="column bg-primary text-center text-white q-mt-xl"
             style="padding-left: 17%; padding-right: 17%"
         >
-            <h6
-                style="
-                    font-size: 18.2px;
-                    margin-top: 18px;
-                    margin-bottom: 15px !important;
-                "
-                class="q-py-none q-my-none text-white"
-            >
-                ACCEDE A TODO EL CONTENIDO DEL LIBRO LEIDO POR MI EN VIDEOS A
-                TRAVES DEL AREA PRIVADA
-            </h6>
-            <p class="text-justify">
-                con la compra de un libro o de toda la coleccion, tendras acceso
-                a muchos recursos que te facilitaran no solo la comprension y
-                aprendizaje del contenido del libro, sino tambien el poder
-                descargarte las plantillas y recursos para poder practicar,
-                ademas de los videos grabados por mi de todo el contenido del
-                libro para que sea mucho mas facil la comprension de todo lo que
-                digo. con el tiempo, seguiremos incorporando contenido y podras,
-                asi mismo, interactuar desde la app con la autora y su equipo o
-                con personas como tu que buscan vivir en plenitud en la mejor
-                version de si mismos
+            <p class="text-center text-bold q-pt-md">
+                tienes mi libro? <br />
+                accede a mas contenido exclusivo!
             </p>
-            <p>para acceder a la zona privada neesitas los siguientes datos</p>
-            <p>
-                tu nombre completo<br />
-                el nombre completo de la persona que compro el libro (si no es
-                el tuyo)<br />
-                fecha en que se compro<br />
-                el numero de pedido<br />
-                factura o ticket de compra
-            </p>
-            <p>
-                para acceder a todo el contenido <br />
-                llegado un momento del libro, voy a pedirte, ademas, que
-                escribas una reseña en amazon o testimonio
+            <p class="text-center">
+                disfruta de todo el libro en video, leido por mi, dentro del
+                area privada <br />descarga plantillas y recursos para practicar
                 <br />
-                para que con ello me ayudes a difundir esta publicacion
+                conectate con otras personas y accede a contenido nuevo con el
+                tiempo
             </p>
-            <p>
-                solo podra registrarse para el area privada una persona por
-                ticket <br />
-                si has comprado el libro de forma compartida ponte en contacto
-                con nosotros para conocer tu historia y <br />
-                valorar otro registro mas
+            <p class="text-center">
+                <span class="text-bold">para ingresar necesitas</span> <br />
+                nombre completo <br />email <br />datos de compra (nombre del
+                comprador, fecha, ticket/factura)
             </p>
+            <p class="text-center">
+                📢 mas adelante, te pedire una reseña para ayudar a expandir
+                este mensaje
+            </p>
+            <p class="text-center text-bold">
+                solo una persona por compra puede registrarse
+            </p>
+
             <div class="text-center q-pb-md">
                 <q-btn
                     no-caps

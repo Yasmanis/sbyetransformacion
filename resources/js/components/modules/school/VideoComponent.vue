@@ -6,18 +6,19 @@
                 :title="video.name"
                 closable
             />
-            <q-card-section class="col q-pt-none">
+            <q-card-section class="col q-pa-none">
                 <div
-                    class="col-sm-12 col-md-12 text-center"
-                    v-if="topic?.description"
+                    class="col-sm-12 col-md-12 text-center q-ma-md"
+                    v-if="topic?.description && video.principal"
                 >
                     <span v-html="topic.description"></span>
                 </div>
-                <div class="col-sm-12 col-md-12 text-center">
+                <div class="col-sm-12 col-md-12 text-center q-ma-md">
                     <video
                         width="320"
                         height="240"
                         autoplay
+                        style="background-color: black"
                         :src="`${$page.props.public_path}storage/${video.path}`"
                         controls
                         @timeupdate="onTimeUpdate"

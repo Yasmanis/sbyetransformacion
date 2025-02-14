@@ -15,7 +15,7 @@
 
 <script setup>
 import Layout from "../../layouts/AdminLayout.vue";
-import TableComponent from "../../components/table/TableComponent.vue";
+import TableComponent from "../../components/modules/campaign/TableComponent.vue";
 
 defineOptions({
     name: "ListPage",

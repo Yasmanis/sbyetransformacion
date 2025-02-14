@@ -13,7 +13,7 @@
                     :options="{
                         viewMode: 1,
                         dragMode: 'crop',
-                        aspectRatio: 16 / 9,
+                        aspectRatio: 1,
                     }"
                     @crop="imagePreview = cropper.getDataURL()"
                 />

@@ -32,7 +32,6 @@
                                 index === 0 ? 'tema' : `tema ${getIndex(item)}`
                             "
                             :name="`topic-${index}`"
-                            :segment="segment"
                             :btnDelete="index > 0"
                             :topic="item"
                             :save="item.save"

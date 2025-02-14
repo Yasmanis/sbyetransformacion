@@ -1,5 +1,5 @@
 <template>
-    <q-list dense class="q-pa-none q-ma-none">
+    <q-list dense class="q-pa-none q-ma-none full-width">
         <q-item style="padding: 0px" v-if="default_selected.length > 0">
             <q-item-section>
                 <q-item-label>{{ label }} </q-item-label>
@@ -13,6 +13,7 @@
                     hide-bottom-space
                     :label="label"
                     :hint="!errorMsg ? 'requerido' : ''"
+                    :rules="rules"
                 />
                 <q-item-label
                     class="q-field--error"
@@ -178,8 +179,13 @@ const showDialog = ref(false);
 const menuRef = ref(null);
 const default_selected = ref([]);
 const current_selected = ref([]);
+const rules = ref(null);
+
 onMounted(() => {
     default_selected.value = props.default_users;
+    if (props.required) {
+        rules.value = [(val) => !!val || "requerido"];
+    }
 });
 
 watch(
@@ -189,9 +195,9 @@ watch(
     }
 );
 
-watch(default_selected, () => {
-    setDefaults(current_selected, default_selected);
-    emits("update", props.name, default_selected.value);
+watch(default_selected, (n) => {
+    setDefaults(current_selected, n);
+    emits("update", props.name, n);
 });
 
 const onChange = (users) => {
@@ -225,8 +231,8 @@ const allUsers = async () => {
 
 const setDefaults = (arr, items) => {
     let selected = [];
-    for (let i = 0; i < items.value.length; i++) {
-        selected.push(items.value[i]);
+    for (let i = 0; i < items.length; i++) {
+        selected.push(items[i]);
     }
     arr.value = selected;
 };

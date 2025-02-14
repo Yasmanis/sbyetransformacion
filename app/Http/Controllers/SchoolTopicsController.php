@@ -93,8 +93,17 @@ class SchoolTopicsController extends Controller
         if (auth()->user()->hasUpdate('schoolsection')) {
             $resource = SchoolResource::find($id);
             $principal = $resource->principal;
-            Storage::delete('public/' . $resource->path);
+            $path = $resource->path;
+            $topic = $resource->topic_id;
             $resource->delete();
+            Storage::delete('public/' . $path);
+            if ($principal) {
+                $t = SchoolTopic::find($topic);
+                if ($t != null) {
+                    $t->description = null;
+                    $t->save();
+                }
+            }
             return redirect()->back()->with('success', $principal ? 'video principal eliminado correctamente' : 'adjunto eliminado correctamente');
         }
         return $this->deny_access($request);

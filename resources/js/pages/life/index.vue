@@ -6,11 +6,11 @@
                     class="col-md-4 col-lg-4 col-sm-4 col-xs-12 q-sm-pr-md"
                     :class="screen.xs ? 'q-mb-md' : 'q-pr-md'"
                 >
-                    <!-- <q-card class="q-mb-md">
+                    <q-card class="q-mb-md">
                         <q-card-section class="text-center">
                             <mgr-private-msg-component />
                         </q-card-section>
-                    </q-card> -->
+                    </q-card>
 
                     <q-card class="q-mb-md">
                         <q-card-section class="text-center">

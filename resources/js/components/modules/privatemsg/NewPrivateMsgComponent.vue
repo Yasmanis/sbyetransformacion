@@ -22,7 +22,6 @@
                 closable
             />
             <q-card-section style="max-height: 50vh" class="scroll">
-                {{ user }}
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
                     <users-select-dialog-component
                         label="destinatarios"
@@ -47,6 +46,7 @@
                             required: true,
                         }"
                         @update="onUpdateField"
+                        v-if="!parent"
                     />
                     <editor-field
                         label="mensaje"

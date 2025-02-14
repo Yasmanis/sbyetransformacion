@@ -1,5 +1,5 @@
 <template>
-    <div class="row" v-if="$page.props.books.lenght > 0">
+    <div class="row" v-if="$page.props.books.length > 0">
         <template
             v-for="(b, indexB) in $page.props.books"
             :key="`book-volume-${indexB}`"

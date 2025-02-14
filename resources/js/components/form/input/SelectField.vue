@@ -1,5 +1,6 @@
 <template>
     <q-select
+        ref="modelRef"
         v-model="model"
         :dense="dense"
         :options-dense="dense"
@@ -23,6 +24,9 @@
         @filter="filterFn"
         @update:model-value="updateModel"
     >
+        <template v-slot:after v-if="$slots.after">
+            <slot name="after"></slot>
+        </template>
         <template #hint v-if="fieldHelp?.length > 0">
             <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
                 <li
@@ -95,12 +99,14 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    newObject: Object,
 });
 
-const emits = defineEmits(["update", "error"]);
+const emits = defineEmits(["add", "update", "error"]);
 
 const page = usePage();
 const model = ref(null);
+const modelRef = ref(null);
 
 const currentOptions = ref([]);
 const allOptions = ref([]);
@@ -122,6 +128,16 @@ watch(
     () => props.modelValue,
     (n, o) => {
         setModelValue();
+    }
+);
+
+watch(
+    () => props.newObject,
+    (n, o) => {
+        if (n) {
+            currentOptions.value.push(n);
+            model.value = n;
+        }
     }
 );
 

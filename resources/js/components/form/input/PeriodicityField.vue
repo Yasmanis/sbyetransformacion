@@ -281,6 +281,7 @@ const props = defineProps({
         type: String,
         defaul: "periodicity",
     },
+    data: Object,
 });
 
 const emits = defineEmits(["update", "update-periodicity"]);
@@ -357,11 +358,22 @@ onMounted(() => {
         label: "ultimo",
         value: "last",
     });
+    setDefaultData();
 });
 
 const screen = computed(() => {
     return $q.screen;
 });
+
+const setDefaultData = () => {
+    if (props.data) {
+        startDate.value = props.data.start ?? null;
+        endDate.value = props.data.end ?? null;
+    } else {
+        startDate.value = null;
+        endDate.value = null;
+    }
+};
 
 const onUpdateField = (name, val) => {
     emits("update", name, val);
@@ -378,6 +390,16 @@ const initPeriodicity = (n) => {
           }
         : null;
 };
+
+watch(
+    () => props.data,
+    (n) => {
+        setDefaultData();
+    },
+    {
+        deep: true,
+    }
+);
 
 watch(repeatTo, (n) => {
     initPeriodicity(n);

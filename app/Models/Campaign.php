@@ -12,11 +12,12 @@ class Campaign extends Model
 
     protected $table = 'campaigns';
     protected $fillable = ['title', 'start_date', 'end_date', 'url', 'logo'];
-    protected $appends = ['dir', 'assigned_to', 'assigned_to_ids', 'sections', 'sections_id'];
+    protected $appends = ['dir', 'assigned_to_id', 'sections', 'sections_id'];
     protected $guarded = ['id'];
     protected $casts = [
         'notes' => 'json'
     ];
+
     public static function boot()
     {
         parent::boot();
@@ -63,11 +64,9 @@ class Campaign extends Model
         }
     }
 
-    public function getAssignedToIdsAttribute()
+    public function getAssignedToIdAttribute()
     {
-        return null;
-        $ids = $this->assignedTo()->pluck('assigned_to')->toArray();
-        return User::whereIn('id', $ids)->get();
+        return $this->assignedTo()->get();
     }
 
     public function verificaSiEstaEsCampaignSection($value)
@@ -111,11 +110,6 @@ class Campaign extends Model
     {
         $user = User::find($val);
         return $user != null ? $user->full_name : null;
-    }
-
-    public function getLogoAttribute($val)
-    {
-        return isset($val) ? $val : 'images/logo/2.png';
     }
 
     // scope

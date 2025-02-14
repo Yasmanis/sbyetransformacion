@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Pusher\PushNotifications\PushNotifications;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -92,6 +93,36 @@ class AuthController extends Controller
         $repository = new UserRepository();
         $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
         return redirect()->back()->with('success', 'su información ha sido actualizada correctamente');
+    }
+
+    public function changeAvatar(Request $request)
+    {
+        $user = auth()->user();
+        $avatar  = $request->input('avatar');
+        $path = null;
+        if (isset($avatar)) {
+            if (preg_match('/^data:image\/(\w+);base64,/', $avatar, $matches)) {
+                $imgType = $matches[1];
+                $imgData = substr($avatar, strpos($avatar, ',')+1);
+            }
+            $image = base64_decode($imgData);
+            if (!$image) {
+                return redirect()->back()->with('error', 'no se ha podido decodificar la imagen');
+            }
+            Storage::disk('public')->put('avatars/' . $user->id . '.' . $imgType, $image);
+            $path = 'avatars/'. $user->id . '.' . $imgType;
+        }
+        $user->avatar = $path;
+        $user->save();
+        return redirect()->back()->with('success', isset($avatar) ? 'avatar cambiado correctamente' : 'avatar eliminado correctamente');
+    }
+
+    public function subscribe(Request $request)
+    {
+        $user = auth()->user();
+        $user->subscripted = true;
+        $user->save();
+        return redirect()->back()->with('success', 'se ha subscrito a las notificaciones push correctamente');
     }
 
     public function storeNewBook(Request $request)

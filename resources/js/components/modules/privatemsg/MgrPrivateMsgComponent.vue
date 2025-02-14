@@ -542,10 +542,10 @@ watch(currentMsg, () => {
 watch(
     messages,
     (m) => {
-        if (currentMsg) {
+        if (currentMsg.value) {
             let msg = m.find((mm) => mm.id === currentMsg.value.id);
             if (msg) {
-                urrentMsg.value.interactions = msg.interactions;
+                currentMsg.value.interactions = msg.interactions;
             }
         }
     },

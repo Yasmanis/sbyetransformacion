@@ -82,8 +82,8 @@ const video = {
 };
 
 const action_title = {
-    field: "action_title",
-    name: "action_title",
+    field: "action_button_title",
+    name: "action_button_title",
     label: "boton de accion titulo",
     align: "left",
     sortable: true,
@@ -92,8 +92,8 @@ const action_title = {
 };
 
 const action_url = {
-    field: "action_url",
-    name: "action_url",
+    field: "action_button_url",
+    name: "action_button_url",
     label: "boton de accion url",
     align: "left",
     sortable: true,
@@ -106,8 +106,8 @@ const periodicity = {
 };
 
 const state = {
-    field: "state",
-    name: "state",
+    field: "status",
+    name: "status",
     label: "estado",
     align: "left",
     type: "select",
@@ -122,8 +122,8 @@ const state = {
 };
 
 const sections = {
-    field: "section_id",
-    name: "section_id",
+    field: "sections_id",
+    name: "sections_id",
     label: "secciones",
     type: "select",
     othersProps: {
@@ -149,7 +149,6 @@ const columns = [
 
 const fields = [
     //campaigns,
-    sections,
     title,
     message,
     image,

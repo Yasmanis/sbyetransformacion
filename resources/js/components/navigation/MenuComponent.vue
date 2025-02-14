@@ -306,7 +306,10 @@ function navigateTo(payload) {
             }
         } else if (typeof payload === "object") {
             router.get(payload.name);
-            emit("change-url", currentModule(payload.name).module);
+            let module = currentModule(payload.name);
+            if (module) {
+                emit("change-url", currentModule(payload.name).module);
+            }
         }
     }
 }

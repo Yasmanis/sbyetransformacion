@@ -18,7 +18,7 @@ class Controller extends BaseController
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        $request->session()->flash('error', 'acceso denegado, debe autenticarse nuevamente');
+        $request->session()->flash('error', 'usted no tiene acceso a esta solicitud. contacte a su administrador');
         return to_route('login');
     }
 

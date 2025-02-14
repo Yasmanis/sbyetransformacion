@@ -1,9 +1,9 @@
 <template>
     <q-btn-component
-        tooltips="crear campaña"
-        :icon="`img:${$page.props.public_path}images/icon/${
-            Dark.isActive ? 'white' : 'black'
-        }-campaign.png`"
+        :tooltips="
+            defaultTooltips ? defaultTooltips : object ? 'editar' : 'adicionar'
+        "
+        :icon="defaultIcon ? defaultIcon : icon"
         @click="showDialog = true"
     />
     <q-dialog
@@ -11,7 +11,7 @@
         persistent
         :position="position"
         :full-hight="fullHeight"
-        @show="setDefault = !setDefault"
+        @before-show="setDefaultData"
         @hide="onHide"
     >
         <q-card class="scroll">
@@ -29,17 +29,21 @@
                             <text-field
                                 label="titulo"
                                 name="title"
+                                :modelValue="formData.title"
                                 :othersProps="{
                                     required: true,
                                 }"
+                                @update="onUpdateField"
                             />
                             <text-field
                                 label="url"
                                 name="url"
+                                :modelValue="formData.url"
                                 :othersProps="{
                                     required: true,
                                     type: 'url',
                                 }"
+                                @update="onUpdateField"
                             />
                         </div>
                         <div
@@ -49,22 +53,53 @@
                             "
                         >
                             <image-field
+                                :modelValue="formData.logo"
                                 height="100px"
                                 width="100px"
                                 name="logo"
                                 label="logo"
+                                @change="onUpdateField"
                             />
                         </div>
                     </div>
+                    <div class="row q-mt-none">
+                        <select-field
+                            name="sections_id"
+                            label="secciones"
+                            :modelValue="formData.sections_id"
+                            :multiple="true"
+                            :othersProps="{
+                                url_to_options:
+                                    '/category-nomenclatures/section',
+                                required: true,
+                            }"
+                            @update="onUpdateField"
+                        />
+                        <users-select-dialog-component
+                            label="usuarios"
+                            name="assigned_to_id"
+                            :default_users="users"
+                            @update="onUpdateUsers"
+                        />
+                    </div>
+                    <periodicity-field
+                        :data="periodicity"
+                        @update="onUpdateField"
+                    />
                 </q-form>
             </q-card-section>
-            <form-body
-                :fields="fields"
-                :module="module"
-                @created="onCreated"
-                @updated="onUpdated"
-                @cancel="showDialog = false"
-            />
+            <q-separator />
+            <q-card-actions align="right">
+                <btn-save-component @click="save(true)" />
+                <btn-save-and-new-component
+                    @click="save(false)"
+                    v-if="!object"
+                />
+                <btn-cancel-component
+                    :cancel="true"
+                    @click="showDialog = false"
+                />
+            </q-card-actions>
         </q-card>
     </q-dialog>
 </template>
@@ -79,11 +114,17 @@ import QBtnComponent from "../../base/QBtnComponent.vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import TextField from "../../form/input/TextField.vue";
 import ImageField from "../../form/input/ImageField.vue";
-import FormBody from "../../form/FormBody.vue";
-import { usePage } from "@inertiajs/vue3";
+import SelectField from "../../form/input/SelectField.vue";
+import PeriodicityField from "../../form/input/PeriodicityField.vue";
+import UsersSelectDialogComponent from "../user/UsersSelectDialogComponent.vue";
+import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
+import BtnSaveAndNewComponent from "../../btn/BtnSaveAndNewComponent.vue";
+import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
+import { useForm, usePage } from "@inertiajs/vue3";
 import { Dark, useQuasar } from "quasar";
 
 const props = defineProps({
+    module: Object,
     fields: {
         type: Array,
         default: () => [],
@@ -112,6 +153,8 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    defaultIcon: String,
+    defaultTooltips: String,
 });
 const emits = defineEmits(["created", "updated"]);
 const $q = useQuasar();
@@ -119,60 +162,19 @@ const form = ref(null);
 const fullTitle = ref(null);
 const icon = ref(null);
 const showDialog = ref(false);
-const setDefault = ref(false);
-const module = ref({
-    singular_label: "Campaña",
-    plural_label: "Campañas",
-    model: "Campaign",
-    ico: "mdi-view-list",
-    base_url: "/admin/campaigns",
-    to_str: "title",
+const formData = useForm({
+    title: null,
+    url: null,
+    sections_id: null,
+    start_date: null,
+    end_date: null,
+    logo: null,
+    assigned_to_id: null,
+    _method: null,
 });
-
+const periodicity = ref(null);
+const users = ref([]);
 const page = usePage();
-
-const fields = ref([
-    {
-        name: "title",
-        label: "titulo",
-        type: "text",
-        othersProps: {
-            required: true,
-        },
-    },
-    {
-        name: "url",
-        label: "url",
-        type: "text",
-        othersProps: {
-            required: true,
-            type: "url",
-        },
-    },
-    {
-        field: "sections",
-        name: "sections",
-        label: "secciones",
-        type: "select",
-        othersProps: {
-            url_to_options: "/category-nomenclatures/section",
-            multiple: true,
-            required: true,
-        },
-    },
-    {
-        field: "users",
-        name: "users",
-        label: "usuarios",
-        type: "users",
-    },
-    {
-        field: "users",
-        name: "users",
-        label: "usuarios",
-        type: "periodicity",
-    },
-]);
 
 onMounted(() => {
     if (props.object != null) {
@@ -190,8 +192,79 @@ const screen = computed(() => {
     return $q.screen;
 });
 
+const onUpdateField = (name, val) => {
+    formData[name] = val;
+};
+
+const onUpdateUsers = (name, val) => {
+    formData[name] = val ? val.map((v) => v.value) : val;
+};
+
+const setDefaultData = () => {
+    formData["title"] = props.object ? props.object.title : null;
+    formData["url"] = props.object ? props.object.url : null;
+    formData["sections_id"] = props.object ? props.object.sections_id : null;
+    formData["start_date"] = props.object ? props.object.start_date : null;
+    formData["end_date"] = props.object ? props.object.end_date : null;
+    formData["logo"] = props.object
+        ? props.object.logo
+            ? `${page.props.public_path}storage/${props.object.logo}`
+            : null
+        : null;
+    formData["_method"] = props.object ? "put" : "post";
+    users.value = props.object
+        ? props.object.assigned_to_id.map((u) => {
+              return {
+                  value: u.id,
+                  label: u.full_name,
+              };
+          })
+        : [];
+    if (props.object)
+        periodicity.value = {
+            start: props.object.start_date,
+            end: props.object.end_date,
+        };
+    else periodicity.value = null;
+};
+
+const save = async (hide) => {
+    form.value.validate().then((success) => {
+        if (success) {
+            if (props.object) {
+                update();
+            } else {
+                store(hide);
+            }
+        } else {
+            errorValidation();
+        }
+    });
+};
+
+const store = async (hide) => {
+    formData.post("/admin/campaigns", {
+        onSuccess: (data) => {
+            emits("created", data.props.object);
+            if (hide) {
+                showDialog.value = false;
+            } else {
+                setDefaultData();
+            }
+        },
+    });
+};
+
+const update = async () => {
+    formData.post(`/admin/campaigns/${props.object.id}`, {
+        onSuccess: (data) => {
+            emits("updated", data.props.object);
+            showDialog.value = false;
+        },
+    });
+};
+
 const onHide = () => {
-    setDefault.value = !setDefault.value;
     page.props.errors = {};
 };
 

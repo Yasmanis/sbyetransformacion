@@ -225,6 +225,7 @@
                 formData.description = null;
             }
         "
+        v-if="formData.principalVideo || changePrincipalVideo"
     />
 
     <editor-field
@@ -240,7 +241,9 @@
                 formData.description = val;
             }
         "
-        v-if="addDescription"
+        v-if="
+            addDescription && (formData.principalVideo || changePrincipalVideo)
+        "
     />
 
     <confirm-component
@@ -288,10 +291,6 @@ const props = defineProps({
     name: {
         type: String,
         default: "name",
-    },
-    segment: {
-        type: String,
-        required: true,
     },
     btnDelete: {
         type: Boolean,
@@ -352,6 +351,11 @@ onBeforeMount(() => {
     addDescription.value =
         props.topic && props.topic.description !== null ? true : false;
     attachments.value = resources.filter((r) => !r.principal);
+});
+
+const segment = computed(() => {
+    const pathSegments = window.location.pathname.split("/");
+    return pathSegments.pop() || pathSegments[pathSegments.length - 2];
 });
 
 watch(
