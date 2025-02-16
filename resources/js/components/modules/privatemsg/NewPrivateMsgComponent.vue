@@ -195,10 +195,6 @@ const onChangeAttachment = (files) => {
     });
 };
 
-const onChangeUsers = (users) => {
-    formData.users = users.length > 0 ? users.map((u) => u.id) : null;
-};
-
 const onUpdateField = (name, val) => {
     formData[name] = val;
 };
@@ -211,7 +207,6 @@ const onFinishUploaded = (info) => {
 };
 
 const onShowDialog = () => {
-    formData.users = props.user ? [props.user] : null;
     formData.parent_id = props.parent ? props.parent : null;
     formData.to_id = props.user ? props.user : null;
 };

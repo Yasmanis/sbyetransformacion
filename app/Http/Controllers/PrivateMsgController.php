@@ -21,7 +21,7 @@ class PrivateMsgController extends Controller
         $request->validate([
             'title' => ['required_if:parent_id,null'],
             'msg' => ['required'],
-            'users' => ['required', 'array'],
+            'users' => ['required_if:parent_id,null'],
         ]);
         $repository = new PrivateMsgRepository();
         $data = $request->only((new ($repository->model()))->getFillable());
@@ -42,13 +42,14 @@ class PrivateMsgController extends Controller
             $data['title'] = $request->title;
         }
         $msg = $repository->create($data);
-        foreach ($request->users as $u) {
-            if ($u != $user->id) {
-                $received = new PrivateMsgReceived();
-                $received->user_id = $u;
-                $received->message_id=$msg->id;
-                //$received->parent_id = isset($request->parent_id) ? $request->parent_id : null;
-                $received->save();
+        if (isset($request->users)) {
+            foreach ($request->users as $u) {
+                if ($u != $user->id) {
+                    $received = new PrivateMsgReceived();
+                    $received->user_id = $u;
+                    $received->message_id = $msg->id;
+                    $received->save();
+                }
             }
         }
         return redirect()->back()->with('success', 'mensaje enviado correctamente');

@@ -121,8 +121,6 @@
                         </q-card-section>
                         <q-card-actions>
                             <new-private-msg-component
-                                :parent="currentMsg?.id"
-                                :user="currentMsg?.from.id"
                                 @hide="currentMsg = null"
                             />
                         </q-card-actions>

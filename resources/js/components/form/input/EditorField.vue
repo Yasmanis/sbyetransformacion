@@ -15,7 +15,7 @@
     />
     <div
         class="column help-editor q-ml-none"
-        v-if="othersProps?.required && !errorMsg"
+        v-if="othersProps?.required && !errorMsg && !modelRef?.hasError"
     >
         <span>requerido</span>
     </div>
@@ -32,16 +32,42 @@
         </div>
     </q-item-label>
 
+    <q-item-label
+        class="q-field--error"
+        v-if="modelRef?.hasError"
+        style="margin-left: -12px; margin-top: 0px"
+    >
+        <div class="q-field__bottom row items-start q-field__bottom--stale">
+            <div class="q-field__messages col">
+                <div role="alert">requerido</div>
+            </div>
+        </div>
+    </q-item-label>
+
     <emojis-menu-component
         :target="targetEmojis"
         @hide="targetEmojis = null"
         @selected="inserText"
         v-if="targetEmojis"
     />
+
+    <q-input
+        v-model="model"
+        ref="modelRef"
+        :name="props.name"
+        :rules="fieldRules"
+        :error="errorMsg !== null"
+        :error-message="errorMsg"
+        type="textarea"
+        lazy-rules
+        reactive-rules
+        class="hidden"
+    ></q-input>
 </template>
 
 <script setup>
-import { onMounted, ref, watch, computed } from "vue";
+import { onBeforeMount, onMounted, ref, watch, computed } from "vue";
+import { validations } from "../../../helpers/validations";
 import {
     ClassicEditor,
     Autoformat,
@@ -125,9 +151,11 @@ const props = defineProps({
 const emits = defineEmits(["update", "save", "cancel"]);
 const page = usePage();
 const model = ref("");
+const modelRef = ref(null);
 const defaultValue = ref(null);
 const targetEmojis = ref(null);
 const editorInstance = ref(null);
+const fieldRules = ref([]);
 
 class SaveBtn extends Plugin {
     init() {
@@ -322,6 +350,11 @@ const editorProps = ref({
         },
         translations: [coreTranslations],
     },
+});
+
+onBeforeMount(() => {
+    const { rules } = validations.getRules(props.othersProps);
+    fieldRules.value = rules;
 });
 
 onMounted(() => {
