@@ -23,6 +23,7 @@
                 :object="object"
                 :fields="fields"
                 :module="module"
+                :post-on-update="postOnUpdate"
                 @created="onCreated"
                 @updated="showDialog = false"
                 @cancel="showDialog = false"
@@ -80,6 +81,10 @@ const props = defineProps({
     fullHeight: {
         type: Boolean,
         default: true,
+    },
+    postOnUpdate: {
+        type: Boolean,
+        default: false,
     },
 });
 

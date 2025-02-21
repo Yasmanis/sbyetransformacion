@@ -136,7 +136,12 @@
         </div>
     </Layout>
 
-    <publications-msg-component />
+    <publications-msg-component
+        v-if="
+            currentCategory.name === 'libro' ||
+            currentCategory.name === 'libros'
+        "
+    />
 </template>
 
 <script setup>

@@ -2,15 +2,17 @@
     <q-dialog v-model="showDialog" persistent @show="emits('showing')">
         <q-card
             :style="{
-                'min-width': screen.lg || screen.md ? '650px' : null,
+                'min-width': !screen.xs ? '640px' : null,
             }"
             class="bg-custom-blue"
         >
             <dialog-header-component closable :separator="false" />
             <q-card-section class="q-pt-none" style="margin-top: -20px">
-                <p class="text-center text-bold">
-                    tienes mi libro? <br />
-                    accede a mas contenido exclusivo!
+                <p class="text-center">
+                    <b
+                        >tienes mi libro? <br />
+                        accede a mas contenido exclusivo!</b
+                    >
                 </p>
                 <p class="text-center">
                     🎥 disfruta de todo el libro en video, leido por mi, dentro
@@ -30,8 +32,8 @@
                     📢 mas adelante, te pedire una reseña para ayudar a expandir
                     este mensaje
                 </p>
-                <p class="text-center text-bold">
-                    📌 solo una persona por compra puede registrarse
+                <p class="text-center">
+                    <b>📌 solo una persona por compra puede registrarse</b>
                 </p>
             </q-card-section>
             <q-card-actions align="center" class="q-mb-sm">

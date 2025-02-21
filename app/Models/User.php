@@ -262,31 +262,31 @@ class User extends Authenticatable
     public function getSections($type)
     {
         $sections = SchoolSection::type($type)->get();
-        if (!$this->sa && $type != 'conference') {
-            $topics = [];
-            $sections1 = [];
-            $volumes = $this->book_volumes ? $this->book_volumes : [];
-            foreach ($sections as $s) {
-                foreach ($s->topics as $t) {
-                    if (in_array($t->book_volume, $volumes)) {
-                        $topics[] = $t;
-                    }
-                }
-                if (count($topics) > 0) {
-                    $ss = $s;
-                    $ss['topics'] = $topics;
-                    $sections1[] = [
-                        'id' => $s->id,
-                        'name' => $s->name,
-                        'description' => $s->desription,
-                        'order' => $s->order,
-                        'topics' => $topics
-                    ];
-                    $topics = [];
-                }
-            }
-            return $sections1;
-        }
+        // if (!$this->sa && $type != 'conference') {
+        //     $topics = [];
+        //     $sections1 = [];
+        //     $volumes = $this->book_volumes ? $this->book_volumes : [];
+        //     foreach ($sections as $s) {
+        //         foreach ($s->topics as $t) {
+        //             if (in_array($t->book_volume, $volumes)) {
+        //                 $topics[] = $t;
+        //             }
+        //         }
+        //         if (count($topics) > 0) {
+        //             $ss = $s;
+        //             $ss['topics'] = $topics;
+        //             $sections1[] = [
+        //                 'id' => $s->id,
+        //                 'name' => $s->name,
+        //                 'description' => $s->desription,
+        //                 'order' => $s->order,
+        //                 'topics' => $topics
+        //             ];
+        //             $topics = [];
+        //         }
+        //     }
+        //     return $sections1;
+        // }
         return $sections;
     }
 

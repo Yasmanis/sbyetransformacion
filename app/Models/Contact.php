@@ -12,7 +12,7 @@ class Contact extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['book_number', 'book_date', 'msg_title', 'message', 'other_people', 'user_id', 'ticket'];
+    protected $fillable = ['book_date', 'msg_title', 'message', 'other_people', 'user_id', 'ticket'];
 
     protected $appends = ['book_volume_img'];
 

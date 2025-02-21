@@ -14,7 +14,8 @@ class SchoolTopic extends Model
         'percent',
         'has_resources',
         'has_principal_video',
-        'has_access'
+        'has_access',
+        'has_access_by_volume'
     ];
 
     protected $casts = [
@@ -63,7 +64,14 @@ class SchoolTopic extends Model
     public function getHasAccessAttribute()
     {
         $user = auth()->user();
-        return $user->has_testimony || $user->sa || !$this->visible_after_testimony;
+        return $user->sa || $user->has_testimony || !$this->visible_after_testimony;
+    }
+
+    public function getHasAccessByVolumeAttribute()
+    {
+        $user = auth()->user();
+        $volumes = $user->book_volumes ? $user->book_volumes : [];
+        return $user->sa || in_array($this->book_volume, $volumes);
     }
 
     public function getHasPrincipalVideoAttribute()

@@ -6,7 +6,7 @@
             </q-item-section>
 
             <q-item-section
-                class="bg-grey-4 q-pa-sm"
+                class="bg-white q-pa-sm"
                 style="
                     border-top-left-radius: 5px;
                     border-bottom-left-radius: 5px;
@@ -58,26 +58,17 @@
                         class="q-ml-sm"
                         v-for="(a, indexAttach) in m.attachments"
                         :key="`attach_${indexAttach}`"
-                        :style="{
-                            'margin-top': indexAttach === 0 ? '-10px' : '',
-                        }"
                     >
                         <a
                             :href="`${$page.props.public_path}storage/${a.path}`"
                             target="_blank"
-                            class="caption"
+                            class="caption text-primary"
                             style="text-decoration: none"
                             >{{ a.name }}</a
                         >
                     </q-item-label>
                 </template>
-                <q-item-label
-                    :class="
-                        m.attachments.length > 0 && m.showAttach
-                            ? 'q-pt-sm'
-                            : ''
-                    "
-                >
+                <q-item-label class="q-pt-sm">
                     <q-btn
                         dense
                         flat
@@ -178,7 +169,7 @@
             <q-item-section
                 avatar
                 top
-                class="bg-grey-4 no-padding"
+                class="bg-white no-padding"
                 style="
                     border-top-right-radius: 5px;
                     border-bottom-right-radius: 5px;

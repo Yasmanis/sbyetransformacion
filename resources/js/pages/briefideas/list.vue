@@ -1,14 +1,14 @@
 <template>
     <Layout>
         <q-page padding>
-            <!-- <table-component
+            <table-component
                 :columns="columns"
                 :searchFields="searchFields"
                 :filterFields="filterFields"
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
-            ></table-component> -->
+            ></table-component>
         </q-page>
     </Layout>
 </template>
@@ -43,25 +43,22 @@ const message = {
     type: "editor",
 };
 
-const created = {
-    field: "created_by",
-    name: "created_by",
-    label: "creada por",
+const sections = {
+    field: "sections",
+    name: "sections",
+    label: "secciones",
     align: "left",
-    type: "select",
-    othersProps: {
-        url_to_options: "/users",
-    },
+    type: "text",
 };
 
 const searchFields = [name];
 
-const filterFields = [created];
+const filterFields = [];
 
 const columns = [
     name,
     message,
-    created,
+    sections,
     {
         field: "actions",
         name: "actions",

@@ -196,6 +196,7 @@
                         :title="current_module.singular_label"
                         :fields="updateFields"
                         :module="current_module"
+                        post-on-update
                         size="sm"
                         v-if="has_edit"
                     />
@@ -292,6 +293,7 @@
                                             "
                                             :fields="updateFields"
                                             :module="current_module"
+                                            post-on-update
                                             size="sm"
                                             v-if="has_edit"
                                         />

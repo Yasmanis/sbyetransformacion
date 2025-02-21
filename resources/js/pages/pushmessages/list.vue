@@ -4,20 +4,28 @@
             <table-component
                 :columns="columns"
                 :searchFields="searchFields"
+                :filterFields="filterFields"
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
+                v-if="segment !== 'briefideas'"
             ></table-component>
         </q-page>
     </Layout>
 </template>
 
 <script setup>
+import { computed, onBeforeMount } from "vue";
 import Layout from "../../layouts/AdminLayout.vue";
 import TableComponent from "../../components/table/TableComponent.vue";
 
 defineOptions({
     name: "ListPage",
+});
+
+const segment = computed(() => {
+    const pathSegments = window.location.pathname.split("/");
+    return pathSegments.pop() || pathSegments[pathSegments.length - 2];
 });
 
 const campaigns = {
@@ -105,6 +113,15 @@ const periodicity = {
     type: "periodicity",
 };
 
+const datetimerange = {
+    type: "datetimerangefield",
+    startName: "start_at",
+    endName: "end_at",
+    othersStartProps: {
+        required: true,
+    },
+};
+
 const state = {
     field: "status",
     name: "status",
@@ -133,19 +150,27 @@ const sections = {
     },
 };
 
+const sections_str = {
+    field: "sections_str",
+    name: "sections_str",
+    label: "secciones",
+    align: "left",
+    type: "text",
+};
+
+const campaign_str = {
+    field: "campaign_str",
+    name: "campaign_str",
+    label: "campaña",
+    align: "left",
+    type: "text",
+};
+
 const searchFields = [title];
 
-const columns = [
-    title,
-    message,
-    {
-        field: "actions",
-        name: "actions",
-        label: "Acciones",
-        type: "actions",
-        width: "100px",
-    },
-];
+const filterFields = [sections];
+
+const columns = [title];
 
 const fields = [
     //campaigns,
@@ -155,7 +180,43 @@ const fields = [
     video,
     action_title,
     action_url,
+    datetimerange,
     periodicity,
     state,
 ];
+
+onBeforeMount(() => {
+    if (segment.value === "briefideas") {
+        columns.push(message);
+    } else {
+        columns.push({
+            field: "created_at",
+            name: "created_at",
+            label: "alta",
+            align: "left",
+        });
+        columns.push({
+            field: "start_at",
+            name: "start_at",
+            label: "emitido",
+            align: "left",
+        });
+        columns.push({
+            field: "next",
+            name: "next",
+            label: "proxima",
+            align: "left",
+        });
+        columns.push(state);
+        columns.push(campaign_str);
+    }
+    columns.push(sections_str);
+    columns.push({
+        field: "actions",
+        name: "actions",
+        label: "Acciones",
+        type: "actions",
+        width: "100px",
+    });
+});
 </script>

@@ -119,9 +119,22 @@
         icon-confirm="mdi-video-account"
         icon-confirm-size="18px"
         icon-confirm-tooltips="ir a testimonios"
-        :message="`para ver el contenido de este tema debes <br> cumplir el requisito de haber dado un testimonio. pulsa <a class='text-bold cursor-pointer' href='/publicaciones/2'>aqui</a> para adjuntar tu testimonio o escribirlo`"
+        :message="`para ver el contenido de este tema debes <br> cumplir el requisito de haber dado un testimonio. pulsa <a class='text-bold cursor-pointer' href='/publicaciones/2#form-testimony'>aqui</a> para adjuntar tu testimonio o escribirlo`"
         @hide="showNoAccess = false"
-        @ok="router.get('/publicaciones/2')"
+        @ok="router.get('/publicaciones/2#form-testimony')"
+    />
+
+    <confirm-component
+        width="435px"
+        :show="showNoAccessByVolume"
+        :header="false"
+        :question="null"
+        icon-confirm="mdi-checkbox-marked-circle-outline"
+        icon-confirm-size="18px"
+        icon-confirm-tooltips="ir a testimonios"
+        :message="`para ver el contenido de este tomo debes <br> adquirido <a class='text-bold cursor-pointer' href='https://www.amazon.es/dp/B0DJG45MMK?binding=paperback&ref=dbs_dp_sirpi'>aqui</a> y enviarnos a traves del <a class='text-bold cursor-pointer' href='/contactame'>formulario <br> de contacto</a> los datos que se te requieren para darte de alta en el area privada`"
+        @hide="showNoAccessByVolume = false"
+        @ok="showNoAccessByVolume = false"
     />
 </template>
 
@@ -155,6 +168,7 @@ const courses_completed = ref(0);
 const showVideo = ref(false);
 const principalVideo = ref(null);
 const showNoAccess = ref(false);
+const showNoAccessByVolume = ref(false);
 const currentTopic = ref(null);
 
 onMounted(() => {
@@ -194,12 +208,14 @@ const changeTopic = (topic) => {
         section: props.section,
         sectionIndex: props.sectionIndex,
     });
-    if (topic.has_access) {
+    if (topic.has_access && topic.has_access_by_volume) {
         principalVideo.value = topic.resources.find((r) => r.principal);
         currentTopic.value = topic;
         if (principalVideo.value) {
             showVideo.value = true;
         }
+    } else if (!topic.has_access_by_volume) {
+        showNoAccessByVolume.value = true;
     } else {
         showNoAccess.value = true;
     }

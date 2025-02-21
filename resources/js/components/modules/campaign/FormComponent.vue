@@ -82,8 +82,14 @@
                             @update="onUpdateUsers"
                         />
                     </div>
-                    <periodicity-field
-                        :data="periodicity"
+                    <date-time-range-field
+                        start-label="fecha y hora de inicio"
+                        end-label="fecha y hora de terminacion"
+                        :start-value="formData.start_at"
+                        :end-value="formData.end_at"
+                        :others-start-props="{
+                            required: true,
+                        }"
                         @update="onUpdateField"
                     />
                 </q-form>
@@ -115,13 +121,14 @@ import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import TextField from "../../form/input/TextField.vue";
 import ImageField from "../../form/input/ImageField.vue";
 import SelectField from "../../form/input/SelectField.vue";
-import PeriodicityField from "../../form/input/PeriodicityField.vue";
+import DateTimeRangeField from "../../form/input/DateTimeRangeField.vue";
 import UsersSelectDialogComponent from "../user/UsersSelectDialogComponent.vue";
 import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import BtnSaveAndNewComponent from "../../btn/BtnSaveAndNewComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { Dark, useQuasar } from "quasar";
+import { errorValidation } from "../../../helpers/notifications";
 
 const props = defineProps({
     module: Object,
@@ -166,13 +173,12 @@ const formData = useForm({
     title: null,
     url: null,
     sections_id: null,
-    start_date: null,
-    end_date: null,
+    start_at: null,
+    end_at: null,
     logo: null,
     assigned_to_id: null,
     _method: null,
 });
-const periodicity = ref(null);
 const users = ref([]);
 const page = usePage();
 
@@ -203,9 +209,12 @@ const onUpdateUsers = (name, val) => {
 const setDefaultData = () => {
     formData["title"] = props.object ? props.object.title : null;
     formData["url"] = props.object ? props.object.url : null;
-    formData["sections_id"] = props.object ? props.object.sections_id : null;
-    formData["start_date"] = props.object ? props.object.start_date : null;
-    formData["end_date"] = props.object ? props.object.end_date : null;
+    formData["sections_id"] =
+        props.object && props.object.sections_id.length > 0
+            ? props.object.sections_id
+            : null;
+    formData["start_at"] = props.object ? props.object.start_at : null;
+    formData["end_at"] = props.object ? props.object.end_at : null;
     formData["logo"] = props.object
         ? props.object.logo
             ? `${page.props.public_path}storage/${props.object.logo}`
@@ -220,12 +229,6 @@ const setDefaultData = () => {
               };
           })
         : [];
-    if (props.object)
-        periodicity.value = {
-            start: props.object.start_date,
-            end: props.object.end_date,
-        };
-    else periodicity.value = null;
 };
 
 const save = async (hide) => {

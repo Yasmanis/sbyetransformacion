@@ -1,5 +1,5 @@
 <template>
-    <div class="col-lg-12 p-4 mt-4">
+    <div class="col-lg-12 p-4 mt-4" id="form-testimony">
         <q-card
             class="my-card rounded bg-primary shadow-4"
             :class="showForm ? 'bg-company' : 'text-center'"
@@ -280,6 +280,7 @@
             </q-card-section>
 
             <q-btn
+                ref="btnShowForm"
                 label="sube tu testimonio"
                 rounded
                 color="black"
@@ -307,7 +308,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { errorValidation, error } from "../../helpers/notifications";
 import BtnDeleteComponent from "../btn/BtnDeleteComponent.vue";
@@ -331,7 +332,7 @@ const showForm = ref(false);
 const confirm = ref(false);
 const fileAmazonImg = ref(null);
 const fileRef = ref(null);
-
+const btnShowForm = ref(null);
 const formRef = ref(null);
 
 const form = useForm({
@@ -346,6 +347,13 @@ const form = useForm({
     testimonyVideo: null,
     sendAdmMsg: false,
     msg_to_admin: null,
+});
+
+onMounted(() => {
+    const hash = window.location.hash;
+    if (hash && hash === "#form-testimony") {
+        btnShowForm.value.click();
+    }
 });
 
 const onChangeTestimonyType = (val) => {

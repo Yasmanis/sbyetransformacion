@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class CampaignController extends Controller
 {
@@ -30,11 +31,11 @@ class CampaignController extends Controller
             ]);
             $repository = new CampaignRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            if (isset($request->start_date)) {
-                $data['start_date'] = Carbon::createFromFormat('d/m/Y', $request->start_date);
+            if (isset($request->start_at)) {
+                $data['start_at'] = Carbon::createFromFormat('d/m/Y h:i a', $request->start_at);
             }
-            if (isset($request->end_date)) {
-                $data['end_date'] = Carbon::createFromFormat('d/m/Y', $request->end_date);
+            if (isset($request->end_at)) {
+                $data['end_at'] = Carbon::createFromFormat('d/m/Y h:i a', $request->end_at);
             }
             if ($request->hasFile('logo')) {
                 $path = $request->logo->store('campaigns', 'public');
@@ -63,11 +64,11 @@ class CampaignController extends Controller
             ]);
             $repository = new CampaignRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            if (isset($request->start_date)) {
-                $data['start_date'] = Carbon::createFromFormat('d/m/Y', $request->start_date);
+            if (isset($request->start_at)) {
+                $data['start_at'] = Carbon::createFromFormat('d/m/Y h:i a', $request->start_at);
             }
-            if (isset($request->end_date)) {
-                $data['end_date'] = Carbon::createFromFormat('d/m/Y', $request->end_date);
+            if (isset($request->end_at)) {
+                $data['end_at'] = Carbon::createFromFormat('d/m/Y h:i a', $request->end_at);
             }
             $current_logo = null;
             if ($request->hasFile('logo')) {

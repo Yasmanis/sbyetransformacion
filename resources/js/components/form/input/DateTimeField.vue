@@ -27,7 +27,7 @@
                 </li>
             </ul>
         </template>
-        <template v-slot:append>
+        <template v-slot:prepend>
             <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
                     cover
@@ -37,7 +37,7 @@
                 >
                     <q-date
                         v-model="proxy"
-                        mask="DD/MM/YYYY"
+                        mask="DD/MM/YYYY hh:mm a"
                         :options="options"
                     >
                         <div class="row items-center justify-end q-gutter-sm">
@@ -68,6 +68,37 @@
                 </q-popup-proxy>
             </q-icon>
         </template>
+        <template v-slot:append>
+            <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                    @before-show="onBeforeShowProxy"
+                >
+                    <q-time
+                        v-model="proxy"
+                        mask="DD/MM/YYYY hh:mm a"
+                        :format24h="false"
+                    >
+                        <div class="row items-center justify-end">
+                            <q-btn-component
+                                icon="check"
+                                :tooltips="$q.lang.label.ok"
+                                v-close-popup
+                                @click="ok(proxy)"
+                            />
+                            <q-btn-component
+                                icon="mdi-cancel"
+                                color="brown-5"
+                                :tooltips="$q.lang.label.cancel"
+                                v-close-popup
+                            />
+                        </div>
+                    </q-time>
+                </q-popup-proxy>
+            </q-icon>
+        </template>
     </q-input>
 </template>
 
@@ -79,7 +110,7 @@ import { usePage } from "@inertiajs/vue3";
 import { date as useDate } from "quasar";
 
 defineOptions({
-    name: "DateField",
+    name: "DateTimeField",
 });
 
 const props = defineProps({
@@ -126,14 +157,15 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-    model.value = props.modelValue;
-    proxy.value = props.modelValue;
+    //model.value = props.modelValue ? props.modelValue.toLowerCase() : null;
+    //proxy.value = props.modelValue;
+    //console.log(model.value);
 });
 
 watch(
     () => props.modelValue,
     (n, o) => {
-        model.value = n;
+        model.value = n ? n.toLowerCase() : null;
     }
 );
 

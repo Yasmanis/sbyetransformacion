@@ -1,14 +1,14 @@
 <template>
     <Layout>
         <q-page padding>
-            <!-- <table-component
+            <table-component
                 :columns="columns"
                 :searchFields="searchFields"
                 :filterFields="filterFields"
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
-            ></table-component> -->
+            ></table-component>
         </q-page>
     </Layout>
 </template>
@@ -44,8 +44,8 @@ const name = {
 };
 
 const start = {
-    field: "start_date",
-    name: "start_date",
+    field: "start_at",
+    name: "start_at",
     label: "inicio",
     align: "left",
     sortable: true,
@@ -53,8 +53,8 @@ const start = {
 };
 
 const end = {
-    field: "end_date",
-    name: "end_date",
+    field: "end_at",
+    name: "end_at",
     label: "fin",
     align: "left",
     sortable: true,

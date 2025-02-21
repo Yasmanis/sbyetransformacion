@@ -94,15 +94,6 @@
                         type="textarea"
                         @update="onUpdateField"
                     />
-                    <text-field
-                        v-model="formData.book_number"
-                        name="book_number"
-                        label="numero de pedido"
-                        :others-props="{
-                            required: true,
-                        }"
-                        @update="onUpdateField"
-                    />
                     <date-field
                         v-model="formData.book_date"
                         name="book_date"
@@ -185,7 +176,6 @@ const $q = useQuasar();
 const form = ref(null);
 const iAmNot = ref(false);
 const formData = useForm({
-    book_number: null,
     book_date: null,
     msg_title: null,
     message: null,
@@ -203,10 +193,6 @@ const columns = ref([
     {
         name: "message",
         label: "mensaje",
-    },
-    {
-        name: "book_number",
-        label: "# pedido",
     },
     {
         name: "book_date",

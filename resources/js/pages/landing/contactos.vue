@@ -203,29 +203,6 @@
                             >
                                 <i
                                     class="mdi mdi-asterisk text-red"
-                                    style="margin-left: 455px"
-                                    v-if="!form.book_number"
-                                />
-                                <q-input
-                                    v-model="form.book_number"
-                                    type="text"
-                                    name="book_number"
-                                    placeholder="numero de pedido de amazon por la compra del libro"
-                                    dense
-                                    rounded
-                                    outlined
-                                    bg-color="white"
-                                    required
-                                    :rules="[(val) => !!val || 'requerido']"
-                                    hide-bottom-space
-                                />
-                            </div>
-                            <div
-                                class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
-                                v-if="contactPrivateArea"
-                            >
-                                <i
-                                    class="mdi mdi-asterisk text-red"
                                     style="margin-left: 225px"
                                     v-if="!form.book_date"
                                 />
@@ -438,7 +415,6 @@ const form = useForm({
     name: null,
     surname: null,
     email: null,
-    book_number: null,
     book_date: null,
     msg_title: null,
     message: null,
@@ -452,7 +428,6 @@ const openTiket = ref(false);
 const book_date = ref("text");
 
 watch(contactPrivateArea, (n, o) => {
-    form.reset("book_number");
     form.reset("book_date");
 });
 

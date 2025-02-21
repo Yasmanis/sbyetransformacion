@@ -67,13 +67,22 @@ class FileController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
+    {        
         if (auth()->user()->hasUpdate('file')) {
             $repository = new FileRepository();
             $public_access = $repository->getById($id)->public_access;
             $data = $request->only((new ($repository->model()))->getFillable());
             if (isset($request->public_date)) {
                 $data['public_date'] = Carbon::createFromFormat('d/m/Y', $request->public_date);
+            }
+            $old_file= null;
+            if ($request->hasFile('file')) {
+                $properties = $this->getPropertiesFromFile($request->file('file'));
+                $data['path'] = $properties['path'];
+                $data['type'] = $properties['type'];
+                $data['size'] = $properties['size'];
+                $object = $repository->getById($id);
+                $old_file = $object->path;
             }
             $file = $repository->updateById($id, $data);
             if (isset($request->public_date) && $file->public_date != $request->public_date) {
@@ -82,6 +91,9 @@ class FileController extends Controller
             } else if ($file->public_access != $public_access) {
                 $file->public_date = $file->public_access ? $file->updated_at : null;
                 $file->save();
+            }
+            if ($old_file) {
+                Storage::delete('public/' . $old_file);
             }
             return redirect()->back()->with('success', 'archivo modificado correctamente');
         }

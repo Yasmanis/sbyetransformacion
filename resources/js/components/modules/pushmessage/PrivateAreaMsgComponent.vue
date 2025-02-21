@@ -6,12 +6,12 @@
             }"
             class="bg-custom-blue"
         >
-            <dialog-header-component :closable="false" :separator="false" />
+            <dialog-header-component closable :separator="false" />
             <q-card-section class="q-pt-none" style="margin-top: -10px">
                 <p class="text-center">
                     cada mes explorare un aspecto clave de mi libro de forma
-                    simple y profunda, para <br />
-                    que lo mas importante se quede contigo
+                    simple y profunda, para que lo mas importante se quede
+                    contigo
                 </p>
                 <p class="text-center">
                     📌 como lo hare?<br />
@@ -23,8 +23,7 @@
                 </p>
                 <p class="text-center">
                     cada recurso te dara una perspectiva unica para que integres
-                    el mensaje con<br />
-                    facilidad
+                    el mensaje con facilidad
                 </p>
                 <p class="text-center">
                     📲 activa las notificaciones push y no te pierdas nada

@@ -13,6 +13,6 @@ class BriefIdeaRepository extends BaseRepository
 
     public function component()
     {
-        return 'briefideas/list';
+        return 'pushmessages/list';
     }
 }

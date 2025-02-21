@@ -198,13 +198,6 @@ const columns = ref([
         sortable: true,
     },
     {
-        field: "book_number",
-        name: "book_number",
-        label: "# pedido",
-        align: "left",
-        sortable: true,
-    },
-    {
         field: "book_date",
         name: "book_date",
         label: "fecha de compra",

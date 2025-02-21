@@ -484,54 +484,35 @@
         </div>
         <div class="row container bg-primary text-white q-pa-lg" id="subscribe">
             <div class="col-md-6">
-                <h5 class="q-mx-sm q-my-none text-white">
-                    SUSCRIBETE A MI NEWSLETTER EXCLUSIVA DONDE DESARROLLO DESDE
-                    OTRA PERSPECTIVA O CON OTRO MATIZ LOS TEMAS QUE ABORDO EN MI
-                    LIBRO, EN REDES SOCIALES Y EN MIS CONFERENCIAS
-                </h5>
-                <p class="q-mx-sm q-mt-md">
-                    mas o menos cada mes, aunque la periodicidad puede variar,
-                    abordo un tema concreto de mi libro
-                    <i
-                        >liberacion emocional la puerta para vivir en plenitud
-                        con la intervencion directa de dios</i
-                    >, para desarrollarlo desde distintos puntos de vista.
-                    utilizo todo tipo de formas de comunicacion, desde posts y
-                    videos breves en las redes sociales, que tambien cuelgo en
-                    el apartado de publicaciones de este sitio web, a estas
-                    newsletters, entrevistas y conferencias online o
-                    presenciales. la idea es destacar los aspectos mas
-                    relevantes que abordo en el libro y que son las claves
-                    necesarias para vivir en plenitud
+                <h6 class="q-mx-sm q-my-none text-white">
+                    DESCUBRE LAS CLAVES PARA VIVIR EN PLENITUD
+                </h6>
+                <p class="q-mx-sm q-mt-md text-justify">
+                    📩 suscribete a mi newsletter exclusiva y accede a
+                    reflexiones profundas, enseñanzas ineditas y herramientas
+                    practicas para liberarte emocionalmente y conectar con la
+                    guia de dios en tu dia a dia
                 </p>
                 <p class="q-mx-sm q-mt-md">
-                    vive en plenitud una persona que obtiene en cada momento el
-                    mayor potencial de si misma y sabe con total certeza que es
-                    un instrumento divino en accion, porque dios se lo corrobora
-                    dialogando de forma directa con ella a traves de su
-                    pensamiento. vivir en plenitud es el siguiente paso de la
-                    humanidad y mi libro es un eslabon mas del camino que dios
-                    ha trazado para que podamos vivir en plenitud, podamos vivir
-                    el paraiso en la tierra, la tierra prometida como dirian en
-                    la biblia
-                    <img
-                        :src="`${$page.props.public_path}images/icon/smile-2.png`"
-                        style="width: 22px; margin-bottom: -5px"
-                    />
-                    te apuntas a despertar? mis newsletters te seran muy utiles
-                    para ir interiorizando el mensaje que dios tiene preparado
-                    para todos nosotros!
+                    <b>que recibiras?</b><br />
+                    🎁 nuevas perspectivas sobre los temas de mi libro<i>
+                        liberacion emocional</i
+                    ><br />
+                    🎁 mensajes y enseñanzas que no comparto en redes<br />
+                    🎁 claves esenciales para vivir en plenitud y reconocer la
+                    intervencion de dios en tu vida
                 </p>
                 <p class="q-mx-sm q-mt-md">
-                    ademas por suscribirte te regalare el ultimo capitulo que
-                    habia escrito y que no he publicado en el libro por exceso
-                    de paginas
-                    <img
-                        :src="`${$page.props.public_path}images/icon/smile-1.png`"
-                        style="width: 22px; margin-bottom: -5px"
-                    />
-                    “enemigos del aprendizaje. analiza con los siguientes test
-                    esta parte de tu personalidad”
+                    <b>regalo por suscripcion</b><br />
+                    un <b>test rapido</b> para identificar tus enemigos del
+                    aprendizaje<br />
+                    una <b>guia en PDF</b> con estrategias para liberar tu mente
+                    y aprender sin miedo<br />
+                    acceso exclusivo a <b>contenido indito de mi libro</b>
+                    <i> liberación emocional</i>
+                </p>
+                <p class="q-mx-sm q-mt-md">
+                    unete ahora y empieza tu camino hacia la plenitud!
                 </p>
             </div>
             <div class="col-md-6">
@@ -552,6 +533,8 @@
             </div>
         </div>
     </Layout>
+
+    <!-- <subscription-test /> -->
 </template>
 
 <script setup>
@@ -559,6 +542,7 @@ import Layout from "../../layouts/MainLayout.vue";
 import { ref, computed } from "vue";
 import { router } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
+import SubscriptionTest from "../../components/landing/SubscriptionTest.vue";
 
 defineOptions({
     name: "VivirEnPlenitud",

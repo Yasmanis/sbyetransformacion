@@ -90,6 +90,17 @@
                     @update="onUpdateField"
                     v-else-if="f.type === 'date'"
                 />
+                <date-time-range-field
+                    :start-name="f.startName"
+                    :end-name="f.endName"
+                    :start-label="f.startLabel"
+                    :end-label="f.endLabel"
+                    :start-value="formData[f.startName]"
+                    :end-value="formData[f.endName]"
+                    :others-start-props="f.othersStartProps"
+                    @update="onUpdateField"
+                    v-else-if="f.type === 'datetimerangefield'"
+                />
                 <password-field
                     :label="f.label"
                     :name="f.name"
@@ -119,6 +130,7 @@ import TextField from "./input/TextField.vue";
 import SelectField from "./input/SelectField.vue";
 import CheckboxField from "./input/CheckboxField.vue";
 import DateField from "./input/DateField.vue";
+import DateTimeRangeField from "./input/DateTimeRangeField.vue";
 import PasswordField from "./input/PasswordField.vue";
 import UploaderField from "./input/UploaderField.vue";
 import EditorField from "./input/EditorField.vue";
@@ -146,6 +158,10 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    postOnUpdate: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const emits = defineEmits(["created", "updated", "cancel"]);
@@ -164,6 +180,13 @@ const setDefaultData = () => {
             formData.value[f.name] = props.object
                 ? props.object[f.name]
                 : false;
+        } else if (f.type === "datetimerangefield") {
+            formData.value[f.startName] = props.object
+                ? props.object[f.startName]
+                : null;
+            formData.value[f.endName] = props.object
+                ? props.object[f.endName]
+                : null;
         } else if (f.type === "periodicity") {
             console.log("periodicity");
         } else if (f.type === "select") {
@@ -219,12 +242,23 @@ const store = async (hide) => {
 };
 
 const update = async () => {
-    const send = useForm(formData.value);
-    send.put(`${props.module.base_url}/${props.object.id}`, {
-        onSuccess: (data) => {
-            setDefaultData();
-            emits("updated", data.props.object);
-        },
-    });
+    if (props.postOnUpdate) {
+        formData.value["_method"] = "put";
+        const send = useForm(formData.value);
+        send.post(`${props.module.base_url}/${props.object.id}`, {
+            onSuccess: (data) => {
+                setDefaultData();
+                emits("updated", data.props.object);
+            },
+        });
+    } else {
+        const send = useForm(formData.value);
+        send.put(`${props.module.base_url}/${props.object.id}`, {
+            onSuccess: (data) => {
+                setDefaultData();
+                emits("updated", data.props.object);
+            },
+        });
+    }
 };
 </script>

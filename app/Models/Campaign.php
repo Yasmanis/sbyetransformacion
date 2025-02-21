@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ class Campaign extends Model
     use HasFactory;
 
     protected $table = 'campaigns';
-    protected $fillable = ['title', 'start_date', 'end_date', 'url', 'logo'];
+    protected $fillable = ['title', 'start_at', 'end_at', 'url', 'logo'];
     protected $appends = ['dir', 'assigned_to_id', 'sections', 'sections_id'];
     protected $guarded = ['id'];
     protected $casts = [
@@ -96,14 +97,14 @@ class Campaign extends Model
         return $this->sections()->get()->pluck('id');
     }
 
-    public function getStartDateAttribute($val)
+    public function getStartAtAttribute($val)
     {
-        return isset($val) ? DateTime::createFromFormat('Y-m-d', $val)->format('d/m/Y') : null;
+        return isset($val) ? Carbon::createFromFormat('Y-m-d H:i:s', $val)->format('d/m/Y h:i A') : null;
     }
 
-    public function getEndDateAttribute($val)
+    public function getEndAtAttribute($val)
     {
-        return isset($val) ? DateTime::createFromFormat('Y-m-d', $val)->format('d/m/Y') : null;
+        return isset($val) ? Carbon::createFromFormat('Y-m-d H:i:s', $val)->format('d/m/Y h:i A') : null;
     }
 
     public function getCreatedByAttribute($val)

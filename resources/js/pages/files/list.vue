@@ -86,6 +86,20 @@ const public_date = {
     sortable: true,
     align: "left",
 };
+
+const fileChange = {
+    field: "file",
+    name: "file",
+    label: "nuevo archivo",
+    type: "file",
+    sortable: true,
+    align: "left",
+    othersProps: {
+        change: true,
+        icon: "mdi-file-outline",
+    },
+};
+
 const searchFields = [name];
 
 const columns = [
@@ -129,6 +143,7 @@ const fields = [
         },
     },
     public_date,
+    fileChange,
 ];
 
 const filterFields = [

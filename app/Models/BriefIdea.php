@@ -8,7 +8,7 @@ class BriefIdea extends Model
 {
     protected $table = 'brief_ideas';
 
-    protected $fillable = ['title', 'message'];
+    protected $fillable = ['title', 'message', 'message_id'];
 
     public static function boot()
     {

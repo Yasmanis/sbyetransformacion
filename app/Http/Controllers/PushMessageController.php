@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\PushMessageRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,8 +26,14 @@ class PushMessageController extends Controller
         if (auth()->user()->hasCreate('pushmessage')) {
             $repository = new PushMessageRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
+            if (isset($request->start_at)) {
+                $data['start_at'] = Carbon::createFromFormat('d/m/Y h:i a', $request->start_at);
+            }
+            if (isset($request->end_at)) {
+                $data['end_at'] = Carbon::createFromFormat('d/m/Y h:i a', $request->end_at);
+            }
             if ($request->hasFile('image')) {
-                $path = $request->logo->store('pushmessage', 'public');
+                $path = $request->image->store('pushmessage', 'public');
                 $data['image'] = $path;
             }
             if ($request->hasFile('video')) {
@@ -47,6 +54,12 @@ class PushMessageController extends Controller
         if (auth()->user()->hasUpdate('pushmessage')) {
             $repository = new PushMessageRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
+            if (isset($request->start_at)) {
+                $data['start_at'] = Carbon::createFromFormat('d/m/Y h:i a', $request->start_at);
+            }
+            if (isset($request->end_at)) {
+                $data['end_at'] = Carbon::createFromFormat('d/m/Y h:i a', $request->end_at);
+            }
             $current_image = null;
             if ($request->hasFile('image')) {
                 $path = $request->logo->store('pushmessage', 'public');

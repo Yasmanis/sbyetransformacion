@@ -1,50 +1,4 @@
 <template>
-    <div class="row q-mb-sm">
-        <div
-            class="col-lg-6 col-md-6 col-sm-6 col-xs-12"
-            :class="!screen.xs ? 'q-pr-sm' : ''"
-        >
-            <date-field
-                v-model="startDate"
-                :start-date="date.formatDate(new Date(), 'YYYY/MM/DD')"
-                label="fecha y hora de inicio"
-                name="start_date"
-                time
-                :othersProps="{ required: true }"
-                @update="
-                    (n, v) => {
-                        startDate = v;
-                        onUpdateField(n, v);
-                    }
-                "
-            />
-        </div>
-        <div
-            class="col-lg-6 col-md-6 col-sm-6 col-xs-12"
-            :class="!screen.xs ? 'q-pl-sm' : ''"
-        >
-            <date-field
-                v-model="endDate"
-                label="fecha y hora de terminacion"
-                name="end_date"
-                time
-                :start-date="
-                    startDate
-                        ? date.formatDate(
-                              date.extractDate(startDate, 'DD/MM/YYYY'),
-                              'YYYY/MM/DD'
-                          )
-                        : null
-                "
-                @update="
-                    (n, v) => {
-                        endDate = v;
-                        onUpdateField(n, v);
-                    }
-                "
-            />
-        </div>
-    </div>
     <checkbox-field
         label="periodicidad"
         name="hasPeriodicity"
@@ -263,7 +217,6 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
-import DateField from "./DateField.vue";
 import CheckboxField from "./CheckboxField.vue";
 import SelectField from "./SelectField.vue";
 import RadioGroupField from "./RadioGroupField.vue";
@@ -287,8 +240,6 @@ const props = defineProps({
 const emits = defineEmits(["update", "update-periodicity"]);
 
 const hasPeriodicity = ref(false);
-const startDate = ref(null);
-const endDate = ref(null);
 const repeatTo = ref(null);
 const monthday = ref(null);
 const repeatAlways = ref(null);
@@ -358,22 +309,7 @@ onMounted(() => {
         label: "ultimo",
         value: "last",
     });
-    setDefaultData();
 });
-
-const screen = computed(() => {
-    return $q.screen;
-});
-
-const setDefaultData = () => {
-    if (props.data) {
-        startDate.value = props.data.start ?? null;
-        endDate.value = props.data.end ?? null;
-    } else {
-        startDate.value = null;
-        endDate.value = null;
-    }
-};
 
 const onUpdateField = (name, val) => {
     emits("update", name, val);
