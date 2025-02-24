@@ -482,7 +482,7 @@
                 </div>
             </div>
         </div>
-        <div class="row container bg-primary text-white q-pa-lg" id="subscribe">
+        <div class="row container bg-primary text-white q-pa-lg" id="suscribe">
             <div class="col-md-6">
                 <h6 class="q-mx-sm q-my-none text-white">
                     DESCUBRE LAS CLAVES PARA VIVIR EN PLENITUD
