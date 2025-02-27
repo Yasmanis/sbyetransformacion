@@ -1,5 +1,5 @@
 <template>
-    <q-dialog v-model="showDialog" persistent>
+    <q-dialog v-model="showDialog" persistent @hide="emits('hide')">
         <q-card class="bg-custom-blue">
             <dialog-header-component closable :separator="false" />
             <q-card-section class="q-pt-none" style="margin-top: -15px">
@@ -79,7 +79,16 @@ defineOptions({
     name: "SubscriptionTest",
 });
 
-const showDialog = ref(true);
+const props = defineProps({
+    show: {
+        type: Boolean,
+        default: false,
+    },
+});
+
+const emits = defineEmits(["hide"]);
+
+const showDialog = ref(false);
 const formRef = ref(null);
 const model = ref({
     question_1: null,
@@ -216,6 +225,13 @@ watch(
         updateResults();
     },
     { deep: true }
+);
+
+watch(
+    () => props.show,
+    (n) => {
+        showDialog.value = true;
+    }
 );
 
 const updateResults = () => {

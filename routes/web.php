@@ -2,6 +2,7 @@
 
 use App\Events\PushMessage;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\BrevoController;
 use App\Http\Controllers\BriefIdeasController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CategoryController;
@@ -230,3 +231,4 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 Route::get('/categories', [SelectsController::class, 'categories']);
 Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
 Route::get('/download/{id}', [FileController::class, 'download']);
+Route::post('/subscribe', [BrevoController::class, 'subscribe']);

@@ -495,20 +495,20 @@
                 </p>
                 <p class="q-mx-sm q-mt-md">
                     <b>que recibiras?</b><br />
-                    🎁 nuevas perspectivas sobre los temas de mi libro<i>
+                    nuevas perspectivas sobre los temas de mi libro<i>
                         liberacion emocional</i
                     ><br />
-                    🎁 mensajes y enseñanzas que no comparto en redes<br />
-                    🎁 claves esenciales para vivir en plenitud y reconocer la
+                    mensajes y enseñanzas que no comparto en redes<br />
+                    claves esenciales para vivir en plenitud y reconocer la
                     intervencion de dios en tu vida
                 </p>
                 <p class="q-mx-sm q-mt-md">
                     <b>regalo por suscripcion</b><br />
-                    un <b>test rapido</b> para identificar tus enemigos del
+                    🎁 un <b>test rapido</b> para identificar tus enemigos del
                     aprendizaje<br />
-                    una <b>guia en PDF</b> con estrategias para liberar tu mente
-                    y aprender sin miedo<br />
-                    acceso exclusivo a <b>contenido indito de mi libro</b>
+                    🎁 una <b>guia en PDF</b> con estrategias para liberar tu
+                    mente y aprender sin miedo<br />
+                    🎁 acceso exclusivo a <b>contenido indito de mi libro</b>
                     <i> liberación emocional</i>
                 </p>
                 <p class="q-mx-sm q-mt-md">
@@ -516,25 +516,10 @@
                 </p>
             </div>
             <div class="col-md-6">
-                <iframe
-                    src="https://fa479f52.sibforms.com/serve/MUIFAOQ-uk0Xiu3xqyoC2onXPMQOkM6fJioTdRUKeVBvCXn5pT1XEpfF2eNRj-6yo1D1SyktllOlDPnT0JdOLq9x0a-zeXwhx5QcC395GGXNObgePLhWEpyI9FzmHUcAQdVq2dqh-M2WAXmsxFicH-aLYcJzXqSlzYsGXoAXChf8pk8eQmcHNX1hg1AzEt5U7CCt4lcH3dJEn3xy"
-                    frameborder="0"
-                    scrolling="auto"
-                    allowfullscreen
-                    style="
-                        display: block;
-                        margin-left: auto;
-                        margin-right: auto;
-                        max-width: 100%;
-                        width: 100%;
-                        height: 100%;
-                    "
-                ></iframe>
+                <form-subscription-component />
             </div>
         </div>
     </Layout>
-
-    <!-- <subscription-test /> -->
 </template>
 
 <script setup>
@@ -542,7 +527,7 @@ import Layout from "../../layouts/MainLayout.vue";
 import { ref, computed } from "vue";
 import { router } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
-import SubscriptionTest from "../../components/landing/SubscriptionTest.vue";
+import FormSubscriptionComponent from "../../components/landing/FormSubscriptionComponent.vue";
 
 defineOptions({
     name: "VivirEnPlenitud",
