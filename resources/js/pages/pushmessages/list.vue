@@ -111,6 +111,7 @@ const action_url = {
 
 const periodicity = {
     type: "periodicity",
+    name: "periodicity",
 };
 
 const datetimerange = {

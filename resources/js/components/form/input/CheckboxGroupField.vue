@@ -20,7 +20,7 @@ defineOptions({
 const props = defineProps({
     modelValue: {
         type: Array,
-        default: () => [],
+        default: [],
     },
     name: {
         type: String,
@@ -58,7 +58,7 @@ const emits = defineEmits(["update"]);
 const model = ref([]);
 
 onMounted(() => {
-    model.value = props.modelValue;
+    model.value = props.modelValue ? props.modelValue : [];
 });
 
 const onUpdate = (val) => {

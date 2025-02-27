@@ -1,6 +1,6 @@
 <template>
     <checkbox-field
-        label="periodicidad"
+        :label="label"
         name="hasPeriodicity"
         v-model="hasPeriodicity"
         @update="onUpdatePeriodicity"
@@ -9,6 +9,7 @@
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <radio-group-field
                 name="repeatTo"
+                v-model="periodicity.repeat"
                 :options="[
                     {
                         label: 'diariamente',
@@ -30,16 +31,16 @@
             <q-input
                 dense
                 type="number"
-                v-model="repeatAlways"
-                v-if="repeatTo === 'day'"
+                v-model="periodicity.every"
+                v-if="periodicity?.repeat === 'day'"
                 ><template #before>
                     <span class="text-subtitle1">repetir cada:</span> </template
                 ><template #after>
                     <span class="text-subtitle1">dias</span>
                 </template></q-input
             >
-            <div class="column" v-if="repeatTo === 'week'">
-                <q-input type="number" v-model="repeatAlways" dense
+            <div class="column" v-if="periodicity?.repeat === 'week'">
+                <q-input type="number" v-model="periodicity.every" dense
                     ><template #before>
                         <span class="text-subtitle1"
                             >repetir cada:</span
@@ -49,49 +50,24 @@
                     </template></q-input
                 >
                 <checkbox-group-field
+                    v-model="periodicity.week_days"
+                    :modelValue="periodicity?.week_days"
                     dense
                     name="week_day"
-                    :options="[
-                        {
-                            label: 'domingo',
-                            value: '0',
-                        },
-                        {
-                            label: 'lunes',
-                            value: '1',
-                        },
-                        {
-                            label: 'martes',
-                            value: '2',
-                        },
-                        {
-                            label: 'miercoles',
-                            value: '3',
-                        },
-                        {
-                            label: 'jueves',
-                            value: '4',
-                        },
-                        {
-                            label: 'viernes',
-                            value: '5',
-                        },
-                        {
-                            label: 'sabado',
-                            value: '6',
-                        },
-                    ]"
+                    :options="weekDays"
                     @update="
-                        (n, v) =>
-                            (periodicity.week_days =
-                                v && v.length > 0 ? v : null)
+                        (n, v) => {
+                            periodicity.week_days =
+                                v && v.length > 0 ? v : null;
+                        }
                     "
                 />
             </div>
-            <div class="column" v-if="repeatTo === 'month'">
+            <div class="column" v-if="periodicity?.repeat === 'month'">
                 <select-field
                     label="meses"
                     name="months"
+                    v-model="periodicity.months"
                     :options="months"
                     multiple
                     :filterable="false"
@@ -105,6 +81,7 @@
                     name="monthday"
                     inline
                     dense
+                    v-model="periodicity.month_type"
                     :options="[
                         {
                             label: 'dias',
@@ -120,10 +97,12 @@
                             monthday = v;
                             periodicity.week_days = null;
                             periodicity.days = null;
+                            periodicity['month_type'] = v;
                         }
                     "
                 />
                 <select-field
+                    v-model="periodicity.days"
                     name="days"
                     :options="days"
                     multiple
@@ -132,11 +111,15 @@
                         (n, v) =>
                             (periodicity.days = v && v.length > 0 ? v : null)
                     "
-                    v-if="monthday === 'day'"
+                    v-if="periodicity?.month_type === 'day'"
                 />
-                <div class="row q-mt-md" v-else-if="monthday === 'el'">
+                <div
+                    class="row q-mt-md"
+                    v-else-if="periodicity?.month_type === 'el'"
+                >
                     <div class="col">
                         <checkbox-group-field
+                            v-model="periodicity.days"
                             name="days"
                             dense
                             :options="[
@@ -170,38 +153,10 @@
                     </div>
                     <div class="col">
                         <checkbox-group-field
+                            v-model="periodicity.week_days"
                             dense
                             name="week_days"
-                            :options="[
-                                {
-                                    label: 'domingo',
-                                    value: '0',
-                                },
-                                {
-                                    label: 'lunes',
-                                    value: '1',
-                                },
-                                {
-                                    label: 'martes',
-                                    value: '2',
-                                },
-                                {
-                                    label: 'miercoles',
-                                    value: '3',
-                                },
-                                {
-                                    label: 'jueves',
-                                    value: '4',
-                                },
-                                {
-                                    label: 'viernes',
-                                    value: '5',
-                                },
-                                {
-                                    label: 'sabado',
-                                    value: '6',
-                                },
-                            ]"
+                            :options="weekDays"
                             @update="
                                 (n, v) =>
                                     (periodicity.week_days =
@@ -232,19 +187,52 @@ const $q = useQuasar();
 const props = defineProps({
     name: {
         type: String,
-        defaul: "periodicity",
+        required: true,
     },
-    data: Object,
+    label: {
+        type: String,
+        default: "periodicidad",
+    },
+    modelValue: Object,
 });
 
-const emits = defineEmits(["update", "update-periodicity"]);
+const emits = defineEmits(["update"]);
 
 const hasPeriodicity = ref(false);
 const repeatTo = ref(null);
 const monthday = ref(null);
 const repeatAlways = ref(null);
 const periodicity = ref(null);
-
+const weekDays = [
+    {
+        label: "domingo",
+        value: 0,
+    },
+    {
+        label: "lunes",
+        value: 1,
+    },
+    {
+        label: "martes",
+        value: 2,
+    },
+    {
+        label: "miercoles",
+        value: 3,
+    },
+    {
+        label: "jueves",
+        value: 4,
+    },
+    {
+        label: "viernes",
+        value: 5,
+    },
+    {
+        label: "sabado",
+        value: 6,
+    },
+];
 const months = ref([
     {
         label: "enero",
@@ -309,36 +297,26 @@ onMounted(() => {
         label: "ultimo",
         value: "last",
     });
+    setDefaultData();
 });
 
 const onUpdateField = (name, val) => {
     emits("update", name, val);
 };
 
-const initPeriodicity = (n) => {
-    periodicity.value = n
-        ? {
-              repeat: n,
-              every: null,
-              days: null,
-              months: null,
-              week_days: null,
-          }
-        : null;
+const initPeriodicity = (data) => {
+    periodicity.value = data;
 };
 
-watch(
-    () => props.data,
-    (n) => {
-        setDefaultData();
-    },
-    {
-        deep: true,
-    }
-);
-
 watch(repeatTo, (n) => {
-    initPeriodicity(n);
+    initPeriodicity({
+        repeat: n,
+        every: null,
+        days: null,
+        months: null,
+        week_days: null,
+        month_type: null,
+    });
 });
 
 watch(repeatAlways, (n) => {
@@ -357,9 +335,27 @@ watch(
     }
 );
 
+const setDefaultData = () => {
+    if (props.modelValue) {
+        hasPeriodicity.value = true;
+        let data = props.modelValue;
+        periodicity.value = data;
+    }
+};
+
 const onUpdatePeriodicity = (name, value) => {
     repeatTo.value = null;
     hasPeriodicity.value = value;
+    periodicity.value = hasPeriodicity.value
+        ? {
+              repeat: "day",
+              every: null,
+              days: null,
+              months: null,
+              week_days: null,
+              month_type: null,
+          }
+        : null;
 };
 
 const onUpdateRepeatTo = (name, value) => {

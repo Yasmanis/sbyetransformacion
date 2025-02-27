@@ -9,9 +9,13 @@ class PushMessage extends Model
 {
     protected $table = 'push_messages';
 
-    protected $fillable = ['title', 'message', 'status', 'url', 'campaign_id', 'action_button_url', 'action_button_title', 'start_at', 'end_at'];
+    protected $fillable = ['title', 'message', 'status', 'url', 'campaign_id', 'action_button_url', 'action_button_title', 'start_at', 'end_at', 'periodicity'];
 
     protected $appends = ['sections_id', 'sections_str', 'campaign_str'];
+
+    protected $casts = [
+        'periodicity' => 'json'
+    ];
 
     public static function boot()
     {

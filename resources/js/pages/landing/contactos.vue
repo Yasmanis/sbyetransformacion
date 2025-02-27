@@ -38,6 +38,8 @@
                                     bg-color="white"
                                     :class="!screen.xs ? 'q-mr-xs' : ''"
                                     :rules="[(val) => !!val || 'requerido']"
+                                    :readonly="user !== null"
+                                    :disable="user !== null"
                                     hide-bottom-space
                                 />
                             </div>
@@ -62,6 +64,8 @@
                                     bg-color="white"
                                     :class="!screen.xs ? 'q-ml-xs' : ''"
                                     :rules="[(val) => !!val || 'requerido']"
+                                    :readonly="user !== null"
+                                    :disable="user !== null"
                                     hide-bottom-space
                                 />
                             </div>
@@ -88,6 +92,8 @@
                                             !!rules.email(val) ||
                                             'email no valido',
                                     ]"
+                                    :readonly="user !== null"
+                                    :disable="user !== null"
                                     hide-bottom-space
                                 />
                             </div>
@@ -389,7 +395,7 @@
 
 <script setup>
 import Layout from "../../layouts/MainLayout.vue";
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import { error, errorValidation } from "../../helpers/notifications.js";
@@ -422,10 +428,20 @@ const form = useForm({
     attachments: null,
     ticket: null,
 });
+const user = ref(null);
 
 const openTiket = ref(false);
 
 const book_date = ref("text");
+
+onMounted(() => {
+    user.value = usePage().props.auth?.user ?? null;
+    if (user.value) {
+        form.name = user.value.name;
+        form.surname = user.value.surname;
+        form.email = user.value.email;
+    }
+});
 
 watch(contactPrivateArea, (n, o) => {
     form.reset("book_date");
@@ -465,6 +481,11 @@ const onSubmit = () => {
                     book_date.value = "text";
                     form.reset();
                     formRef.value.reset();
+                    if (user.value) {
+                        form.name = user.value.name;
+                        form.surname = user.value.surname;
+                        form.email = user.value.email;
+                    }
                 },
                 onError: () => {
                     sending.value = false;

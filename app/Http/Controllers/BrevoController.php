@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class BrevoController extends Controller
 {
@@ -19,7 +20,7 @@ class BrevoController extends Controller
         $data = [
             'email' => $request->email,
             'attributes' => [
-                'NAME' => $request->name,
+                'FIRSTNAME' => $request->name,
                 'LASTNAME' => $request->surname, // Atributos personalizados (opcional)
             ],
             'listIds' => [2], // IDs de las listas a las que se suscribirá el contacto
@@ -28,7 +29,7 @@ class BrevoController extends Controller
 
         // Configurar el cliente HTTP
         $client = new Client([
-            'base_uri' => 'https://api.brevo.com/v3/',
+            'base_uri' => 'https://api.brevo.com/v3/contacts',
             'headers' => [
                 'api-key' => env('BREVO_API_KEY'), // Asegúrate de tener tu API Key en el archivo .env
                 'Content-Type' => 'application/json',

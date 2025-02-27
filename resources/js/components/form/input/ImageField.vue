@@ -71,7 +71,7 @@ defineOptions({
 });
 
 const props = defineProps({
-    modelValue: String,
+    modelValue: String | Object,
     ratio: Number,
     label: String,
     name: {

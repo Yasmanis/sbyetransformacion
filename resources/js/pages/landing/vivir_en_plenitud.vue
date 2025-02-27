@@ -515,7 +515,10 @@
                     unete ahora y empieza tu camino hacia la plenitud!
                 </p>
             </div>
-            <div class="col-md-6">
+            <div
+                class="col-md-6"
+                :class="!screen.xs && !screen.sm ? 'q-pl-xl' : ''"
+            >
                 <form-subscription-component />
             </div>
         </div>

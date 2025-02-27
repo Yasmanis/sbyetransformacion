@@ -53,6 +53,9 @@
                     v-else-if="f.type === 'campaign'"
                 />
                 <periodicity-field
+                    :name="f.name"
+                    :label="f.label"
+                    :modelValue="formData[f.name]"
                     @update="onUpdateField"
                     v-if="f.type === 'periodicity'"
                 />
@@ -187,8 +190,6 @@ const setDefaultData = () => {
             formData.value[f.endName] = props.object
                 ? props.object[f.endName]
                 : null;
-        } else if (f.type === "periodicity") {
-            console.log("periodicity");
         } else if (f.type === "select") {
             formData.value[f.name] = props.object ? props.object[f.name] : null;
         } else if (f.type === "campaign") {

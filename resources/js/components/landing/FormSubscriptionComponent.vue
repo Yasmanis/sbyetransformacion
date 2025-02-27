@@ -1,7 +1,7 @@
 <template>
     <div class="col-lg-12 p-4 mt-4" id="form-testimony">
         <q-card flat class="my-card bg-primary">
-            <q-card-section>
+            <q-card-section class="q-pa-none">
                 <q-form ref="formRef" greedy>
                     <div class="row">
                         <div
@@ -106,7 +106,7 @@
                     </div>
                 </q-form>
             </q-card-section>
-            <q-card-actions>
+            <q-card-actions class="q-pa-none">
                 <q-btn
                     label="me apunto!"
                     rounded
@@ -153,20 +153,14 @@ const form = useForm({
     conditions: false,
 });
 
-const onVerify = () => {};
-
-const onExpire = () => {
-    recaptchaResponse = null;
-};
-
 const onSubmit = () => {
     formRef.value.validate().then((success) => {
         if (success) {
             if (!form.conditions) {
                 error("debe especificar las condiciones");
-            } else if (!recaptchaResponse.value) {
+            } /*else if (!recaptchaResponse.value) {
                 error("debe especificar las condiciones");
-            } else {
+            }*/ else {
                 submit();
             }
         } else {
@@ -176,7 +170,7 @@ const onSubmit = () => {
 };
 
 const submit = () => {
-    form.post("/brevo/store", {
+    form.post("/subscribe", {
         onSuccess: (response) => {
             let d = response.props.object;
             if (

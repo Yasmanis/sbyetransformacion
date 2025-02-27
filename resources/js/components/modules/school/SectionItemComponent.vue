@@ -119,7 +119,7 @@
         icon-confirm="mdi-video-account"
         icon-confirm-size="18px"
         icon-confirm-tooltips="ir a testimonios"
-        :message="`para ver el contenido de este tema debes <br> cumplir el requisito de haber dado un testimonio. pulsa <a class='text-bold cursor-pointer' href='/publicaciones/2#form-testimony'>aqui</a> para adjuntar tu testimonio o escribirlo`"
+        :message="`para ver el contenido de este tema debes <br> cumplir el requisito de haber dado un testimonio. pulsa <a class='text-bold cursor-pointer text-black' href='/publicaciones/2#form-testimony'>aqui</a> para adjuntar tu testimonio o escribirlo`"
         @hide="showNoAccess = false"
         @ok="router.get('/publicaciones/2#form-testimony')"
     />
@@ -132,7 +132,7 @@
         icon-confirm="mdi-checkbox-marked-circle-outline"
         icon-confirm-size="18px"
         icon-confirm-tooltips="ir a testimonios"
-        :message="`para ver el contenido de este tomo debes <br> adquirido <a class='text-bold cursor-pointer' href='https://www.amazon.es/dp/B0DJG45MMK?binding=paperback&ref=dbs_dp_sirpi'>aqui</a> y enviarnos a traves del <a class='text-bold cursor-pointer' href='/contactame'>formulario <br> de contacto</a> los datos que se te requieren para darte de alta en el area privada`"
+        :message="`para ver el contenido de este tomo debes <br> adquirido <a class='text-bold cursor-pointer text-black' href='https://www.amazon.es/dp/B0DJG45MMK?binding=paperback&ref=dbs_dp_sirpi'>aqui</a> y enviarnos a traves del <a class='text-bold cursor-pointer text-black' href='/contactame'>formulario <br> de contacto</a> los datos que se te requieren para darte de alta en el area privada`"
         @hide="showNoAccessByVolume = false"
         @ok="showNoAccessByVolume = false"
     />

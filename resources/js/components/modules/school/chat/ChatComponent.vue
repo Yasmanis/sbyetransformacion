@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-grey-13 q-px-md q-mt-sm">
+    <div class="bg-grey-4 q-px-md q-mt-sm">
         <q-list>
             <q-item style="padding: 0">
                 <q-item-section
@@ -46,12 +46,8 @@
         </q-list>
         <div class="chat-panel" v-show="showPanel">
             <div
-                class="q-mb-sm"
-                style="
-                    height: 30px;
-                    background-color: gainsboro;
-                    margin-top: 10px;
-                "
+                class="q-mb-sm bg-white"
+                style="height: 30px; margin-top: 10px"
                 v-if="topic?.messages.length === 0"
             >
                 <q-tooltip
