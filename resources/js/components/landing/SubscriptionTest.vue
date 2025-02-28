@@ -1,5 +1,5 @@
 <template>
-    <q-dialog v-model="showDialog" persistent @hide="emits('hide')">
+    <q-dialog v-model="showDialog" persistent @hide="initDefault">
         <q-card class="bg-custom-blue">
             <dialog-header-component closable :separator="false" />
             <q-card-section class="q-pt-none" style="margin-top: -15px">
@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import DialogHeaderComponent from "../base/DialogHeaderComponent.vue";
 import { error } from "../../helpers/notifications";
 defineOptions({
@@ -219,6 +219,23 @@ const questions = [
     },
 ];
 
+onMounted(() => {
+    showDialog.value = props.show;
+});
+
+const initDefault = () => {
+    showResults.value = false;
+    results.value = [];
+    model.value = {
+        question_1: null,
+        question_2: null,
+        question_3: null,
+        question_4: null,
+        question_5: null,
+    };
+    emits("hide");
+};
+
 watch(
     model,
     (n) => {
@@ -230,7 +247,9 @@ watch(
 watch(
     () => props.show,
     (n) => {
-        showDialog.value = true;
+        if (n) {
+            showDialog.value = true;
+        }
     }
 );
 

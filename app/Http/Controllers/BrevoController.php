@@ -13,45 +13,36 @@ class BrevoController extends Controller
         $request->validate([
             'email' => 'required|email',
             'name' => 'required|string',
-            'surname' => 'required|string', // Opcional, dependiendo de tu formulario
+            'surname' => 'required|string',
         ]);
-
-        // Datos para enviar a la API de Brevo
         $data = [
             'email' => $request->email,
             'attributes' => [
                 'FIRSTNAME' => $request->name,
-                'LASTNAME' => $request->surname, // Atributos personalizados (opcional)
+                'LASTNAME' => $request->surname,
             ],
-            'listIds' => [2], // IDs de las listas a las que se suscribirá el contacto
-            'updateEnabled' => true, // Actualizar el contacto si ya existe
         ];
-
-        // Configurar el cliente HTTP
         $client = new Client([
             'base_uri' => 'https://api.brevo.com/v3/contacts',
             'headers' => [
-                'api-key' => env('BREVO_API_KEY'), // Asegúrate de tener tu API Key en el archivo .env
+                'api-key' => env('BREVO_API_KEY'),
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
             ],
         ]);
-
-        // Enviar la solicitud a la API de Brevo
         try {
             $response = $client->post('contacts', [
                 'json' => $data,
             ]);
-
-            return response()->json([
-                'message' => 'Suscripción realizada correctamente',
-                'response' => json_decode($response->getBody()->getContents()),
-            ]);
+            return redirect()->back()->with(
+                'object',
+                $response->getBody()->getContents()
+            );
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Error al realizar la suscripción',
-                'details' => $e->getMessage(),
-            ], 500);
+            return redirect()->back()->with(
+                'object',
+                $e->getMessage()
+            );
         }
     }
 }

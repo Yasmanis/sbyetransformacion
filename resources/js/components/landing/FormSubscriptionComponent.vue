@@ -95,24 +95,28 @@
                         <div
                             class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
                         >
-                            <vue3-recaptcha
-                                sitekey=""
-                                @verify="
-                                    (response) => (recaptchaResponse = response)
-                                "
-                                @expire="recaptchaResponse = null"
-                            ></vue3-recaptcha>
+                            <div class="recaptcha-container">
+                                <vue3-recaptcha
+                                    :sitekey="google_key"
+                                    @verify="
+                                        (response) =>
+                                            (recaptchaResponse = response)
+                                    "
+                                    @expire="recaptchaResponse = null"
+                                ></vue3-recaptcha>
+                            </div>
                         </div>
                     </div>
                 </q-form>
             </q-card-section>
-            <q-card-actions class="q-pa-none">
+            <q-card-actions class="q-px-none">
                 <q-btn
                     label="me apunto!"
                     rounded
                     color="black"
                     no-caps
                     class="q-mb-md"
+                    padding="10px"
                     @click="onSubmit"
                 />
             </q-card-actions>
@@ -153,14 +157,16 @@ const form = useForm({
     conditions: false,
 });
 
+const google_key = import.meta.env.VITE_GOOGLE_CAPTCHA;
+
 const onSubmit = () => {
     formRef.value.validate().then((success) => {
         if (success) {
             if (!form.conditions) {
                 error("debe especificar las condiciones");
-            } /*else if (!recaptchaResponse.value) {
-                error("debe especificar las condiciones");
-            }*/ else {
+            } else if (!recaptchaResponse.value) {
+                error("debe confirmar que usted no es un robot");
+            } else {
                 submit();
             }
         } else {
@@ -198,8 +204,8 @@ const submit = () => {
                     ],
                 });
                 form.reset();
-                showTest.value = true;
                 formRef.value.reset();
+                showTest.value = true;
             }
         },
         onError: (errors) => {
@@ -228,5 +234,9 @@ const submit = () => {
     font-size: 12px;
     z-index: 9;
     margin-top: 5px;
+}
+
+.recaptcha-container {
+    width: 100%;
 }
 </style>
