@@ -150,6 +150,7 @@ import { router } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
+import { Screen } from "quasar";
 
 defineOptions({
     name: "MainLayout",
@@ -185,6 +186,10 @@ const links = ref([
     {
         title: "publicaciones",
         url: "/publicaciones",
+    },
+    {
+        title: "maria",
+        url: "/maria",
     },
     {
         title: "contactame",

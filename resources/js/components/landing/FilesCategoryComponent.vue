@@ -1,5 +1,19 @@
 <template>
     <div class="row" v-if="category.files.length > 0">
+        <div class="col-xl-12 col-lg-12 col-sm-12 col-sm-12 text-center">
+            <q-btn
+                label="quiero recibir mi newsletter!"
+                rounded
+                color="black"
+                no-caps
+                class="q-mb-md"
+                href="/#suscribe"
+                v-if="
+                    category?.name?.toLowerCase() == 'newsletter' ||
+                    category?.name?.toLowerCase() == 'newsletters'
+                "
+            />
+        </div>
         <template
             v-for="(file, indexFile) in category.files"
             :key="`file-${indexFile}`"
@@ -140,6 +154,22 @@
                 </template>
             </div>
         </template>
+        <div
+            class="col-xl-12 col-lg-12 col-sm-12 col-sm-12 text-center"
+            v-if="
+                category?.name?.toLowerCase() == 'newsletter' ||
+                category?.name?.toLowerCase() == 'newsletters'
+            "
+        >
+            <q-btn
+                label="quiero recibir mi newsletter!"
+                rounded
+                color="black"
+                no-caps
+                class="q-mb-md"
+                href="/#suscribe"
+            />
+        </div>
     </div>
     <div
         class="row"

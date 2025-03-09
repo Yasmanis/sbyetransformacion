@@ -15,7 +15,8 @@
                     <q-card class="q-mb-md">
                         <q-card-section class="text-center">
                             <p class="q-mb-none">
-                                {{ course_percentage }}% COMPLETO
+                                {{ Math.round(course_percentage * 100) / 100 }}%
+                                COMPLETO
                             </p>
                             <q-linear-progress
                                 :value="course_percentage / 100"

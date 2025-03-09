@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SchoolChat extends Model
 {
-    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user'];
+    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user', 'topic_str', 'section_str', 'created_str'];
 
     protected $table = 'schoolchat';
 
@@ -29,6 +29,22 @@ class SchoolChat extends Model
     public function getOwnerAttribute()
     {
         return auth()->user()->id == $this->from->id;
+    }
+
+    public function getTopicStrAttribute()
+    {
+        return $this->topic()->first()->name;
+    }
+
+    public function getSectionStrAttribute()
+    {
+        $topic = $this->topic()->first();
+        return $topic->section()->first()->name;
+    }
+
+    public function getCreatedStrAttribute()
+    {
+        return $this->created_at->format('d/m/Y h:i A');
     }
 
     public function getOwnerReplyAttribute()

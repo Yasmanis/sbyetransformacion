@@ -125,19 +125,19 @@
                             :options="[
                                 {
                                     label: 'primer',
-                                    value: 0,
-                                },
-                                {
-                                    label: 'segundo',
                                     value: 1,
                                 },
                                 {
-                                    label: 'tercer',
+                                    label: 'segundo',
                                     value: 2,
                                 },
                                 {
-                                    label: 'cuarto',
+                                    label: 'tercer',
                                     value: 3,
+                                },
+                                {
+                                    label: 'cuarto',
+                                    value: 4,
                                 },
                                 {
                                     label: 'ultimo',
@@ -236,51 +236,51 @@ const weekDays = [
 const months = ref([
     {
         label: "enero",
-        value: 0,
-    },
-    {
-        label: "febrero",
         value: 1,
     },
     {
-        label: "marzo",
+        label: "febrero",
         value: 2,
     },
     {
-        label: "abril",
+        label: "marzo",
         value: 3,
     },
     {
-        label: "mayo",
+        label: "abril",
         value: 4,
     },
     {
-        label: "junio",
+        label: "mayo",
         value: 5,
     },
     {
-        label: "julio",
+        label: "junio",
         value: 6,
     },
     {
-        label: "agosto",
+        label: "julio",
         value: 7,
     },
     {
-        label: "septiembre",
+        label: "agosto",
         value: 8,
     },
     {
-        label: "octubre",
+        label: "septiembre",
         value: 9,
     },
     {
-        label: "noviembre",
+        label: "octubre",
         value: 10,
     },
     {
-        label: "diciembre",
+        label: "noviembre",
         value: 11,
+    },
+    {
+        label: "diciembre",
+        value: 12,
     },
 ]);
 

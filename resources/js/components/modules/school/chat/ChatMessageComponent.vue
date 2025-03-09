@@ -164,7 +164,7 @@
                         </q-menu>
                     </q-btn>
                 </q-item-label>
-                <chat-actions-component :message="m" />
+                <chat-actions-component :message="m" v-if="showActions" />
             </q-item-section>
             <q-item-section
                 avatar
@@ -202,6 +202,10 @@ const props = defineProps({
     messages: {
         type: Array,
         default: [],
+    },
+    showActions: {
+        type: Boolean,
+        default: true,
     },
 });
 </script>

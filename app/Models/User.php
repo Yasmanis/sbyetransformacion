@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -63,7 +64,7 @@ class User extends Authenticatable
         'active' => 'boolean',
         'configuration' => 'json',
         'book_volumes' => 'json',
-        'subscripted'=> 'boolean',
+        'subscripted' => 'boolean',
     ];
 
     protected $appends = ['permissions', 'roles', 'full_name', 'notifications', 'has_testimony'];
@@ -225,38 +226,21 @@ class User extends Authenticatable
         return ($this->sa || $this->hasPerm('delete_' . $model)) && $this->active;
     }
 
-    public function getCoursePercentage()
+    public function getCoursePercentage($segment)
     {
-        $videos_views = DB::table('school_users_videos')
-            ->join('school_resources', function ($join) {
-                $join->on('school_users_videos.resource_id', '=', 'school_resources.id');
-            })
-            ->join('school_topics', function ($join) {
-                $join->on('school_resources.topic_id', '=', 'school_topics.id');
-            })
-            ->where('school_users_videos.user_id', '=', $this->id)
-            ->where('school_users_videos.percent', 100)
-            ->select('school_users_videos.resource_id')
-            ->distinct()->count();
-        $percentage = 0;
-        if ($videos_views > 0) {
-            $book_volumes = $this->book_volumes ? $this->book_volumes : [];
-            $all_videos = DB::table('school_resources')
-                ->join('school_topics', function ($join) use ($book_volumes) {
-                    $join->on('school_resources.topic_id', '=', 'school_topics.id');
-                    if (!$this->sa) {
-                        $join->whereIn('school_topics.book_volume', $book_volumes);
-                    }
-                })
-                ->where('school_resources.principal', true)
-                //->where('type', 'like', 'video/%')
-                ->select('school_resources.*')
-                ->distinct()->count();
-            if ($all_videos > 0) {
-                $percentage = $videos_views / $all_videos * 100;
-            }
+        $sections = SchoolSection::type($segment)->get();
+        $time_view = 0;
+        $time_access = 0;
+        $total_time = 0;
+        foreach ($sections as $s) {
+            $time_view += $s->getTotalTimeViewByUser($this);
+            $time_access += $s->getTotalTimeAccessByUser($this);
+            $total_time += $s->getTotalTime();
         }
-        return (int)$percentage;
+
+        if ($total_time == 0) return 100;
+        if ($time_access == 0 && $total_time > 0) return 0;
+        return ($time_view / $total_time) * 100;
     }
 
     public function getSections($type)
@@ -288,6 +272,65 @@ class User extends Authenticatable
         //     return $sections1;
         // }
         return $sections;
+    }
+
+    public function getTopicsBySection($type)
+    {
+        $all_sections = SchoolSection::type($type)->get();
+        $topics = [];
+        $sections = [];
+        $volumes = $this->book_volumes ? $this->book_volumes : [];
+        foreach ($all_sections as $s) {
+            foreach ($s->topics as $t) {
+                if (!$this->sa && $type != 'conference') {
+                    if (in_array($t->book_volume, $volumes)) {
+                        $topics[] = [
+                            'id' => $t->id,
+                            'name' => $t->name,
+                            'percent' => $t->getPercentByUser($this)
+                        ];
+                    }
+                } else {
+                    $topics[] = [
+                        'id' => $t->id,
+                        'name' => $t->name,
+                        'percent' => $t->getPercentByUser($this)
+                    ];
+                }
+            }
+            if (count($topics) > 0) {
+                $ss = $s;
+                $ss['topics'] = $topics;
+                $sections[] = [
+                    'id' => $s->id,
+                    'name' => $s->name,
+                    'percent' => $s->getPercentByUser($this),
+                    'topics' => $topics
+                ];
+                $topics = [];
+            }
+        }
+        return [
+            'percent' => $this->getCoursePercentage($type),
+            'sections' => $sections
+        ];
+    }
+
+    public function getComments()
+    {
+        $id = $this->id;
+        $messages = SchoolChat::where('from_id', $this->id)->get();
+        $reacts = SchoolChat::whereHas('reacts', function (Builder $query) use ($id) {
+            $query->where('user_id', $id);
+        })->get();
+        $highligths = SchoolChat::whereHas('highligths', function (Builder $query) use ($id) {
+            $query->where('user_id', $id);
+        })->get();
+        return [
+            'comments' => $messages,
+            'reacts' => $reacts,
+            'highligths' => $highligths
+        ];
     }
 
     public function applyFiltersMessage($query, $request, $exclude_search = false)

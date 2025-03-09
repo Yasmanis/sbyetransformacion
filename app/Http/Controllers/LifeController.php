@@ -23,9 +23,10 @@ class LifeController extends Controller
         $user = auth()->user();
         if ($user->hasView('schoolsection') || $user->hasView('conference')) {
             $repository = new SchoolSectionsRepository();
+            $segment = $this->segment();
             return Inertia::render($repository->component(), [
-                'sections' => $user->getSections($this->segment()),
-                'course_percentage' => $user->getCoursePercentage(),
+                'sections' => $user->getSections($segment),
+                'course_percentage' => $user->getCoursePercentage($segment),
                 'private_messages' => $user->getPrivateMessages($request, 'received')
             ]);
         }

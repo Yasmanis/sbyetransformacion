@@ -83,6 +83,10 @@ Route::get('/taller_online', function () {
     return Inertia('landing/taller_online');
 });
 
+Route::get('/maria', function () {
+    return Inertia('landing/maria');
+});
+
 Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
     $categories = Category::where('public_access', true)->orderBy('order', 'ASC')->get();
     $recent_files = File::publicAccess()->orderBy('public_date', 'DESC')->take(6)->get();
@@ -175,6 +179,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/users/change-password/{id}', [UserController::class, 'changePassword']);
     Route::post('/admin/users/change-my-password', [UserController::class, 'changeMyPassword']);
     Route::post('/admin/users/change-theme', [UserController::class, 'changeTheme']);
+    Route::post('/admin/users/progress/{id}', [UserController::class, 'progress']);
+    Route::post('/admin/users/comments/{id}', [UserController::class, 'comments']);
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/testimony', TestimonyController::class);

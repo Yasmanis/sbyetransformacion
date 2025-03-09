@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SchoolSection;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
@@ -130,5 +131,28 @@ class UserController extends Controller
         $user->configuration = $config;
         $user->save();
         return redirect()->back()->with('success', 'se ha ' . ($request->dark ? 'activado' : 'desactivado') . ' el modo oscuro correctamente');
+    }
+
+    public function progressByTopic(Request $request, $id)
+    {
+        if (auth()->user()->hasView('user')) {
+            $user = User::find($id);
+            return redirect()->back()->with('success', 'usuario modificado correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function progress(Request $request, $id)
+    {
+        $user = User::find($id);
+        return response()->json([
+            'sections' => $user->getTopicsBySection($request->section)
+        ]);
+    }
+
+    public function comments(Request $request, $id)
+    {
+        $user = User::find($id);
+        return response()->json($user->getComments());
     }
 }

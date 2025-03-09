@@ -47,12 +47,17 @@ class SchoolTopic extends Model
 
     public function getPercentAttribute()
     {
-        $principal = $this->resources()->where('type', 'like', 'video/%')->where('principal', true)->first();
+        return $this->getPercentByUser(auth()->user());
+    }
+
+    public function getPercentByUser($user)
+    {
+        $principal = $this->resources()->where('principal', true)->first();
         if ($principal != null) {
-            $percent = SchoolUserVideo::where('user_id', auth()->user()->id)->where('resource_id', $principal->id)->first();
-            return $percent != null ? $percent->percent : 0;
+            $percent = SchoolUserVideo::where('user_id', $user->id)->where('resource_id', $principal->id)->first();
+            return $percent != null ? ($percent->last_time / $percent->total_time) * 100  : 0;
         }
-        return 100;
+        return 0;
     }
 
     public function getHasResourcesAttribute()
