@@ -2,8 +2,6 @@
 
 namespace App\Traits;
 
-use Carbon\Carbon;
-
 trait DateUtils
 {
     public function nextDateFromPeriod($date, $period)
@@ -43,16 +41,15 @@ trait DateUtils
             $period['every'] = 1;
         }
         $next = $date->copy();
+        if ($period['first_send']) {
+            $next = $next->addWeeks($period['every']);
+        }
         while (true) {
-            if ($period['first_send']) {
-                $next->addWeek($period['every'])->startOfWeek(0);
-                $date->startOfWeek(0);
-                $period['first_send'] = false;
-            } else {
-                $next->addDay();
-            }
+            $next->addDay();
             if (in_array($next->dayOfWeek, $period['week_days'])) {
-                $difference = $date->diffInWeeks($next);
+                $startWeek = $date->copy()->startOfWeek(0);
+                $endWeek = $next->copy()->startOfWeek(0);
+                $difference = $startWeek->diffInWeeks($endWeek);
                 if ($difference % $period['every'] == 0) {
                     break;
                 }
@@ -63,95 +60,102 @@ trait DateUtils
 
     private function getRepeatFromMonth($date, $period)
     {
-        if ($period['month_type'] == 'day') {
+        if (
+            !isset($period['month_type']) ||
+            (!isset($period['days']) && !isset($period['week_days'])) ||
+            ($period['month_type'] == 'day' && !isset($period['days'])) ||
+            ($period['month_type'] == 'el' && !isset($period['week_days']))
+        ) {
+            return $this->getRepeatFromMonthOnly($date, $period);
+        } else if ($period['month_type'] == 'day') {
             return $this->getRepeatFromMonthAtDay($date, $period);
         }
         return $this->getRepeatFromMonthAtDayOfWeek($date, $period);
     }
 
-    private function getRepeatFromMonthAtDay($date, $period)
+    private function getRepeatFromMonthOnly($date, $period)
     {
-        if (!isset($period['days']) && !isset($period['months'])) {
-            $date->addMonth();
-        } else if (isset($period['days']) && !isset($period['months'])) {
+        $next = $date->copy();
+        if (!isset($period['months'])) {
+            $next->addMonthNoOverflow();
+        } else {
             while (true) {
-                $date->addDay();
-                $next = $date->copy();
-                $next->endOfMonth();
-                if (in_array($date->dayOfMonth, $period['days']) || (in_array('last', $period['days']) && $date->day == $next->day)) {
+                $next->addMonthNoOverflow();
+                if (in_array($next->month, $period['months'])) {
                     break;
                 }
             }
-        } else if (!isset($period['days']) && isset($period['months'])) {
+        }
+        return $next;
+    }
+
+    private function getRepeatFromMonthAtDay($date, $period)
+    {
+        $next = $date->copy();
+        if (!isset($period['months'])) {
             while (true) {
-                $date->addMonth();
-                if (in_array($date->month, $period['months'])) {
+                $next->addDay();
+                $lastDate = $next->copy()->endOfMonth();
+                if (
+                    in_array($next->day, $period['days']) ||
+                    (in_array('last', $period['days']) && $lastDate->day == $next->day)
+                ) {
                     break;
                 }
             }
         } else {
-            $next = $date->copy();
             while (true) {
                 $next->addDay();
-                if (in_array($next->dayOfMonth, $period['days']) || (in_array('last', $period['days']) && $date->day == $next->day)) {
-                    $difference = $date->diffInMonths($next);
-                    if ($difference % $period['every'] == 0) {
-                        $date = $next;
-                        break;
-                    }
+                $lastDate = $next->copy()->endOfMonth();
+                if ((in_array($next->day, $period['days']) ||
+                        (in_array('last', $period['days']) && $lastDate->day == $next->day)) &&
+                    in_array($next->month, $period['months'])
+                ) {
+                    break;
                 }
             }
         }
-        return $date;
+        return $next;
     }
 
     private function getRepeatFromMonthAtDayOfWeek($date, $period)
     {
-        if (!isset($period['days']) && !isset($period['months']) && !isset($period['week_days'])) {
-            $date->addMonth();
-        } else {
-            $next = $date->copy();
-            if (!isset($period['months'])) {
-                $period['months'] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 11, 12];
+        $next = $date->copy();
+        if (!isset($period['months'])) {
+            $period['months'] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        }
+        if (isset($period['week_days']) && !isset($period['days'])) {
+            while (true) {
+                $next->addDay();
+                if (
+                    in_array($next->dayOfWeek, $period['week_days']) &&
+                    in_array(
+                        $next->month,
+                        $period['months']
+                    )
+                ) {
+                    break;
+                }
             }
-            if (!isset($period['days']) && !isset($period['week_days'])) {
-                while (true) {
-                    $next->addMonth();
-                    if (in_array($next->month, $period['months'])) {
-                        $date = $next;
+        } else {
+            while (true) {
+                $next->addDay();
+                if (in_array($next->month, $period['months'])) {
+                    $lastDayOfMonth = $next->copy()->endOfMonth();
+                    $dayOfWeek = $next->dayOfWeek;
+                    $lastDayOfWeek = $lastDayOfMonth->copy()->previous($dayOfWeek);
+                    $week = ceil($next->day / 7);
+                    if (
+                        in_array($dayOfWeek, $period['week_days']) &&
+                        (in_array($week, $period['days']) || (in_array('last', $period['days']) && $lastDayOfWeek->format('Y-m-d') == $next->format('Y-m-d')))
+                    ) {
                         break;
                     }
-                }
-            } else {
-                while (true) {
-                    $next->addDay();
-                    if (in_array($next->month, $period['months'])) {
-                        if (!isset($period['days']) && isset($period['week_days']) && in_array($next->dayOfWeek(), $period['week_days'])) {
-                            $date = $next;
-                            break;
-                        } else if (isset($period['days']) && isset($period['week_days'])) {
-                            $break = false;
-                            foreach ($period['week_days'] as $wd) {
-                                if (!in_array($wd, [0, 1, 2, 3, 4, 5, 6])) {
-                                    continue;
-                                }
-                                foreach ($period['days'] as $d) {
-                                    $d = $d == -1 ? $next->copy()->lastOfMonth($wd) : $next->copy()->nthOfMonth($d, $wd);
-                                    if ($d->gt($date)) {
-                                        $date = $d;
-                                        $break = true;
-                                        break;
-                                    }
-                                }
-                                if ($break) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                } else {
+                    $next->endOfMonth();
                 }
             }
         }
-        return $date;
+        return $next;
     }
 }

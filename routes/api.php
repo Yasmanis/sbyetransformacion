@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/test-next-date', function (Request $request) {
-    $date = Carbon::createFromFormat('Y-m-d', '2025-03-05');
+    $date = Carbon::createFromFormat('Y-m-d', '2025-03-01');
     $period = $request->period;
     $p = new PushMessage();
     dd($p->nextDateFromPeriod($date, $period)->format('d-m-Y'));
