@@ -21,6 +21,7 @@ class BrevoController extends Controller
                 'FIRSTNAME' => $request->name,
                 'LASTNAME' => $request->surname,
             ],
+            'listIds' => [3]
         ];
         $client = new Client([
             'base_uri' => 'https://api.brevo.com/v3/contacts',
