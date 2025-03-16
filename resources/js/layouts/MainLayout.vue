@@ -176,6 +176,10 @@ const links = ref([
         url: "/",
     },
     {
+        title: "maria",
+        url: "/maria",
+    },
+    {
         title: "consulta individual",
         url: "/consulta_individual",
     },
@@ -186,10 +190,6 @@ const links = ref([
     {
         title: "publicaciones",
         url: "/publicaciones",
-    },
-    {
-        title: "maria",
-        url: "/maria",
     },
     {
         title: "contactame",

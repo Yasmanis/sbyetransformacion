@@ -13,6 +13,7 @@
         @ready="onReady"
         @input="onEditorInput"
     />
+
     <div
         class="column help-editor q-ml-none"
         v-if="othersProps?.required && !errorMsg && !modelRef?.hasError"
@@ -108,6 +109,8 @@ import {
 import "ckeditor5/ckeditor5.css";
 import coreTranslations from "ckeditor5/translations/es.js";
 import EmojisMenuComponent from "./editor/EmojisMenuComponent.vue";
+import collapse from "../../../../../public/images/icon/collapse.svg";
+import expand from "../../../../../public/images/icon/collapse.svg";
 import { usePage } from "@inertiajs/vue3";
 
 defineOptions({
@@ -146,9 +149,13 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    maximizeBtn: {
+        type: Boolean,
+        default: false,
+    },
 });
 
-const emits = defineEmits(["update", "save", "cancel"]);
+const emits = defineEmits(["update", "save", "cancel", "maximize"]);
 const page = usePage();
 const model = ref("");
 const modelRef = ref(null);
@@ -156,7 +163,7 @@ const defaultValue = ref(null);
 const targetEmojis = ref(null);
 const editorInstance = ref(null);
 const fieldRules = ref([]);
-
+const isMaximized = ref(false);
 class SaveBtn extends Plugin {
     init() {
         const editor = this.editor;
@@ -201,6 +208,21 @@ class SaveBtn extends Plugin {
                 targetEmojis.value = `.btn-${props.name}`;
             });
             return button;
+        });
+
+        editor.ui.componentFactory.add("maximize-btn", () => {
+            const button = new ButtonView();
+            button.set({
+                label: "maximizar",
+                class: `btn-${props.name}`,
+                icon: `<svg width="800px" height="800px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"><g id="Icon-Set" sketch:type="MSLayerGroup" transform="translate(-308.000000, -1191.000000)" fill="#000000"><path d="M339.685,1191.3 C339.503,1191.12 339.251,1191 338.972,1191 L330,1191 C329.447,1191 329,1191.45 329,1192 C329,1192.55 329.447,1193 330,1193 L336.629,1193 L325.83,1203.8 L327.244,1205.21 L338.031,1194.42 L338,1201 C338,1201.55 338.447,1202 339,1202 C339.553,1202 340,1201.55 340,1201 L340,1192 C340,1191.7 339.878,1191.46 339.685,1191.3 L339.685,1191.3 Z M320.756,1208.79 L309.969,1219.58 L310,1213 C310,1212.45 309.553,1212 309,1212 C308.447,1212 308,1212.45 308,1213 L308,1222 C308,1222.3 308.122,1222.54 308.315,1222.7 C308.497,1222.88 308.749,1223 309.028,1223 L318,1223 C318.553,1223 319,1222.55 319,1222 C319,1221.45 318.553,1221 318,1221 L311.371,1221 L322.17,1210.2 L320.756,1208.79 L320.756,1208.79 Z" id="expand" sketch:type="MSShapeGroup"></path></g></g></svg>`,
+                tooltip: true,
+            });
+            button.on("execute", () => {
+                isMaximized.value = !isMaximized.value;
+                emits("maximize", isMaximized.value);
+            });
+            return props.maximizeBtn ? button : null;
         });
     }
 }
@@ -276,6 +298,7 @@ const editorProps = ref({
                 "|",
                 "save-btn",
                 "cancel-btn",
+                "maximize-btn",
             ],
             shouldNotGroupWhenFull: true,
         },

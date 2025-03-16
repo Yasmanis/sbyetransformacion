@@ -145,6 +145,7 @@
         </q-header>
 
         <q-drawer
+            class="menu-drawer"
             :class="Dark.isActive ? '' : 'bg-primary text-white'"
             v-model="leftDrawerOpen"
             show-if-above
@@ -158,6 +159,7 @@
         </q-drawer>
 
         <q-drawer
+            class="menu-drawer"
             :class="Dark.isActive ? '' : 'bg-primary text-white'"
             v-model="leftDrawerOpen"
             show-if-above
@@ -295,6 +297,10 @@ const links = ref([
         url: "/",
     },
     {
+        title: "maria",
+        url: "/maria",
+    },
+    {
         title: "consulta individual",
         url: "/consulta_individual",
     },
@@ -343,3 +349,22 @@ const changePassword = () => {
     });
 };
 </script>
+<style>
+.menu-drawer::-webkit-scrollbar {
+    width: 8px;
+}
+
+.menu-drawer:hover::-webkit-scrollbar {
+    opacity: 1;
+}
+
+.menu-drawer::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.menu-drawer::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    border-radius: 20px;
+    border: 3px solid #fff;
+}
+</style>

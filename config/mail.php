@@ -78,6 +78,11 @@ return [
                 'log',
             ],
         ],
+
+        'brevo' => [
+            'transport' => 'brevo',
+            'api_key' => env('BREVO_API_KEY'),
+        ],
     ],
 
     /*

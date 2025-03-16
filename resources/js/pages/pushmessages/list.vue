@@ -174,7 +174,7 @@ const filterFields = [sections];
 const columns = [title];
 
 const fields = [
-    //campaigns,
+    campaigns,
     title,
     message,
     image,

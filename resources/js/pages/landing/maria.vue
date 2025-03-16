@@ -22,29 +22,38 @@
         <div class="row q-pt-xl container">
             <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
                 <div class="column">
+                    <p class="text-justify">hola! soy maria garriga</p>
                     <p class="text-justify">
-                        ¡hola! soy maria garriga <br />
                         no creo que lo mas importante en esta web sea hablar de
                         mi, pero se que es lo que esperas encontrar aqui. lo
                         verdaderamente relevante es el libro que dios ha
                         inspirado en mi para escribir. mi vida ha sido el camino
                         que me llevo a poder contarlo, porque dios me creo con
-                        esta intencion: vivirlo para poder transmitirlo no soy
-                        mas especial que tu, todos somos dios en accion, todos
-                        somos instrumentos suyos para experimentarse a si mism@.
-                        simplemente, mi diseño tiene este proposito naci en
-                        carballiño, ourense, en 1973, en una familia tradicional
-                        y con una educacion dividida entre colegios religiosos y
-                        un entorno ateo. creci entre contrastes y experiencias
-                        que marcaron mi camino. fui directora bancaria, estudie
-                        diversas disciplinas desde economia hasta naturopatia y
-                        sanacion, y mi vocacion siempre ha sido comprender la
-                        vida en profundidad pero lo realmente importante no es
-                        lo que he hecho, sino lo que he descubierto: la certeza
-                        absoluta de que dios existe y nos habla todo el tiempo.
-                        hoy vivo plenamente, con la conviccion de que podemos
-                        recordar quienes somos y transformar nuestra realidad si
-                        quieres conocer mas, te invito a ver mi historia
+                        esta intencion: vivirlo para poder transmitirlo
+                    </p>
+                    <p class="text-justify">
+                        no soy mas especial que tu, todos somos dios en accion,
+                        todos somos instrumentos suyos para experimentarse a si
+                        mism@. simplemente, mi diseño tiene este proposito
+                    </p>
+                    <p class="text-justify">
+                        naci en carballiño, ourense, en 1973, en una familia
+                        tradicional y con una educacion dividida entre colegios
+                        religiosos y un entorno ateo. creci entre contrastes y
+                        experiencias que marcaron mi camino. fui directora
+                        bancaria, estudie diversas disciplinas desde economia
+                        hasta naturopatia y sanacion, y mi vocacion siempre ha
+                        sido comprender la vida en profundidad
+                    </p>
+                    <p class="text-justify">
+                        pero lo realmente importante no es lo que he hecho, sino
+                        lo que he descubierto: la certeza absoluta de que dios
+                        existe y nos habla todo el tiempo. hoy vivo plenamente,
+                        con la conviccion de que podemos recordar quienes somos
+                        y transformar nuestra realidad
+                    </p>
+                    <p class="text-justify">
+                        si quieres conocer mas, te invito a ver mi historia
                     </p>
                 </div>
             </div>

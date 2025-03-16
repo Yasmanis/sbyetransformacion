@@ -38,6 +38,8 @@
                     <q-date
                         v-model="proxy"
                         mask="DD/MM/YYYY"
+                        :today-btn="todayBtn"
+                        :today-btn-label="todayBtn ? 'hoy' : null"
                         :options="options"
                     >
                         <div class="row items-center justify-end q-gutter-sm">
@@ -47,6 +49,12 @@
                                 :tooltips="$q.lang.label.ok"
                                 @click="ok(proxy)"
                                 v-if="proxy"
+                            />
+                            <q-btn-component
+                                icon="mdi-calendar"
+                                v-close-popup
+                                tooltips="hoy"
+                                @click="setNow"
                             />
                             <q-btn-component
                                 icon="mdi-cancel"
@@ -93,9 +101,9 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    time: {
+    todayBtn: {
         type: Boolean,
-        default: false,
+        default: true,
     },
     name: {
         type: String,
@@ -153,6 +161,11 @@ const onUpdate = (val) => {
 
 const onBeforeShowProxy = () => {
     proxy.value = model.value;
+};
+
+const setNow = () => {
+    proxy.value = useDate.formatDate(Date.now(), "DD/MM/YYYY");
+    ok(proxy.value);
 };
 
 const ok = (val) => {

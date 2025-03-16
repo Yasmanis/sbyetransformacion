@@ -6,7 +6,7 @@
                 rounded
                 color="black"
                 no-caps
-                class="q-mb-md"
+                class="q-mb-xl"
                 href="/#suscribe"
                 v-if="
                     category?.name?.toLowerCase() == 'newsletter' ||
@@ -154,22 +154,6 @@
                 </template>
             </div>
         </template>
-        <div
-            class="col-xl-12 col-lg-12 col-sm-12 col-sm-12 text-center"
-            v-if="
-                category?.name?.toLowerCase() == 'newsletter' ||
-                category?.name?.toLowerCase() == 'newsletters'
-            "
-        >
-            <q-btn
-                label="quiero recibir mi newsletter!"
-                rounded
-                color="black"
-                no-caps
-                class="q-mb-md"
-                href="/#suscribe"
-            />
-        </div>
     </div>
     <div
         class="row"

@@ -2,14 +2,20 @@
 
 namespace App\Models;
 
+use App\Notifications\StandardNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Notification;
 
 class SchoolChat extends Model
 {
     protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user', 'topic_str', 'section_str', 'created_str'];
 
     protected $table = 'schoolchat';
+
+    protected $casts = [
+        'from_visible' => 'boolean'
+    ];
 
     public function getFromNameAttribute()
     {
@@ -54,7 +60,7 @@ class SchoolChat extends Model
 
     public function getOwnerVisibleAttribute()
     {
-        return (bool)$this->from_visible; // || auth()->user()->isPersonalSbyeDieta();
+        return $this->from_visible; // || auth()->user()->isPersonalSbyeDieta();
     }
 
     public function getDeleteByUserAttribute()
@@ -75,6 +81,20 @@ class SchoolChat extends Model
         }
     }
 
+    public function sendNotifications()
+    {
+        $notification = new UserNotifications();
+        $notification->title = 'tiene un nuevo mensaje en el chat';
+        $notification->priority = 'Baja';
+        $notification->user_id = auth()->user()->id;
+        $notification->description = $this->from_visible ? ('el usuario ' . ($this->from->full_name) . ' le ha escrito en el chat') : 'se le ha escrito en el chat de forma anonima';
+        $notification->code = 'chat_writter';
+        $notification->model = 'SchoolChat';
+        $notification->model_id = $this->id;
+        $notification->save();
+        Notification::send($this->users()->get(), new StandardNotification($notification));
+        return true;
+    }
 
     public function from()
     {

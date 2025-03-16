@@ -25,15 +25,25 @@
         v-model="showDialog"
         persistent
         allow-focus-outside
+        draggable
+        :maximized="maximizedToggle"
         @hide="onHide"
     >
         <q-card>
             <dialog-header-component
                 icon="mdi-chat-processing-outline"
-                title="escribir en el chat "
+                title="escribir en el chat"
+                maximizeable
                 closable
+                @fullsize="(s) => (maximizedToggle = s)"
             />
-            <q-card-section style="max-height: 50vh" class="scroll">
+
+            <q-card-section
+                :style="{
+                    'max-height': maximizedToggle ? '' : '50vh',
+                }"
+                class="scroll"
+            >
                 <div>
                     <q-inner-loading
                         :showing="showInnerLoading"
@@ -48,6 +58,7 @@
                         @click="helpEdit = true"
                         class="absolute-top-right"
                         style="z-index: 1; margin-top: 30px; margin-right: 30px"
+                        v-if="!maximizeEditor"
                     />
                     <editor-field
                         v-model="help"
@@ -66,6 +77,7 @@
                                 help = val;
                             }
                         "
+                        v-if="!maximizeEditor"
                     />
                 </div>
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
@@ -84,7 +96,7 @@
                             },
                         ]"
                         @update="onUpdateTo"
-                        v-if="!props.message"
+                        v-if="!props.message && !maximizeEditor"
                     />
                     <select-field
                         :modelValue="formData.publish"
@@ -103,16 +115,19 @@
                             },
                         ]"
                         @update="onUpdateField"
+                        v-if="!maximizeEditor"
                     />
-                    <text-field
-                        :modelValue="formData.message"
+                    <editor-field
+                        v-model="formData.message"
                         name="message"
                         label="mensaje"
-                        type="textarea"
-                        :othersProps="{
-                            required: true,
-                        }"
                         @update="onUpdateField"
+                        @maximize="
+                            (val) => {
+                                maximizeEditor = val;
+                                maximizedToggle = val;
+                            }
+                        "
                     />
                     <uploader-field
                         label="adjuntos"
@@ -131,6 +146,7 @@
                             }
                         "
                         @finish="onFinishUploaded"
+                        v-if="!maximizeEditor"
                     />
                 </q-form>
             </q-card-section>
@@ -192,6 +208,8 @@ const upload = ref(false);
 const form = ref(null);
 const currentMessage = ref(null);
 const showInnerLoading = ref(false);
+const maximizedToggle = ref(false);
+const maximizeEditor = ref(false);
 
 onBeforeMount(() => {
     getHelp("help_chat_everybody");
@@ -279,6 +297,7 @@ const onHide = () => {
     formData.publish = "oculto";
     formData.message = null;
     helpEdit.value = false;
+    maximizedToggle.value = false;
     getHelp("help_chat_everybody");
     if (props.message) {
         emits("hide-menu");

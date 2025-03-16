@@ -1,10 +1,12 @@
 <?php
 
+use App\Mail\BrevoMailable;
 use App\Models\PushMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Traits\DateUtils;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,4 +28,12 @@ Route::post('/test-next-date', function (Request $request) {
     $period = $request->period;
     $p = new PushMessage();
     dd($p->nextDateFromPeriod($date, $period)->format('d-m-Y'));
+});
+
+Route::post('/send-email', function (Request $request) {
+    $to = 'yfdezmerino91@gmail.com';
+    $subject = 'prueba';
+    $htmlContent = 'contenido html';
+    Mail::to($to)->send(new BrevoMailable($subject, $htmlContent));
+    return response()->json(['message' => 'Correo enviado correctamente.']);
 });
