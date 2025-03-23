@@ -41,6 +41,25 @@
                 <q-item-section>destacar</q-item-section>
             </q-item>
 
+            <q-item clickable>
+                <q-item-section
+                    avatar
+                    style="
+                        padding-right: 5px !important;
+                        min-width: 0px !important;
+                    "
+                >
+                    <q-icon
+                        :name="`img:${$page.props.public_path}images/icon/${
+                            Dark.isActive ? 'white' : 'black'
+                        }-edit.png`"
+                        size="22px"
+                    ></q-icon>
+                </q-item-section>
+
+                <q-item-section>editar</q-item-section>
+            </q-item>
+
             <q-item clickable v-close-popup @click="confirm = true">
                 <q-item-section
                     avatar
@@ -77,6 +96,7 @@ import { ref } from "vue";
 import FormChatComponent from "./FormChatComponent.vue";
 import ConfirmComponent from "../../../base/ConfirmComponent.vue";
 import { useForm, router } from "@inertiajs/vue3";
+import { Dark } from "quasar";
 
 defineOptions({
     name: "ChatActionsComponent",

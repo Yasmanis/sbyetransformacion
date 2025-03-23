@@ -1,6 +1,10 @@
 <template>
     <q-list padding>
-        <q-item v-for="(m, indexMsg) in messages" :key="`message_${indexMsg}`">
+        <q-item
+            v-for="(m, indexMsg) in messages"
+            :key="`message_${indexMsg}`"
+            :id="`chat-${m.id}-${m.topic_id}-${m.section_id}`"
+        >
             <q-item-section top avatar v-if="m.owner">
                 <q-avatar font-size="32px" icon="mdi-account-circle"></q-avatar>
             </q-item-section>
@@ -207,5 +211,6 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    showChat: String,
 });
 </script>

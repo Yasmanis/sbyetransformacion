@@ -5,16 +5,43 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\File;
 use App\Models\PrivateMsg;
+use App\Models\PrivateMsgAttachments;
 use App\Models\PrivateMsgReceived;
 use App\Models\PrivateMsgUserNote;
 use App\Repositories\CategoryRepository;
 use App\Repositories\PrivateMsgRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class PrivateMsgController extends Controller
 {
+    public function getPropertiesFromFile($file)
+    {
+        $originalName = $file->getClientOriginalName();
+        $disk = 'public';
+        $destinationPath = 'private_messages';
+        $path = $file->storePublicly($destinationPath, $disk);
+        return array(
+            'originalName' => $originalName,
+            'path' => $path,
+            'type' => Storage::mimeType('public/' . $path),
+            'size' => Storage::size('public/' . $path)
+        );
+    }
+
+    public function addAttachmentToMsg($file, $msg)
+    {
+        $properties = $this->getPropertiesFromFile($file);
+        $attachment = new PrivateMsgAttachments();
+        $attachment->name = $properties['originalName'];
+        $attachment->path = $properties['path'];
+        $attachment->message()->associate($msg);
+        $attachment->save();
+        return true;
+    }
+
     public function store(Request $request)
     {
         $user = auth()->user();
@@ -50,6 +77,11 @@ class PrivateMsgController extends Controller
                     $received->message_id = $msg->id;
                     $received->save();
                 }
+            }
+        }
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file("attachments") as $file) {
+                $this->addAttachmentToMsg($file, $msg);
             }
         }
         return redirect()->back()->with('success', 'mensaje enviado correctamente');
@@ -185,9 +217,9 @@ class PrivateMsgController extends Controller
         ]);
     }
 
-    public function download($attachmentId)
+    public function download($id)
     {
-        $attachment = PrivateMsgAttachments::find($attachmentId);
+        $attachment = PrivateMsgAttachments::find($id);
         return Storage::download('public/' . $attachment->path, $attachment->name);
     }
 }

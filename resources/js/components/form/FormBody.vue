@@ -22,7 +22,7 @@
                     :othersProps="f.othersProps"
                     :modelValue="formData[f.name]"
                     @update="onUpdateField"
-                    v-if="f.type === 'editor'"
+                    v-else-if="f.type === 'editor'"
                 />
                 <file-field
                     v-model="formData[f.name]"
@@ -31,18 +31,21 @@
                     :othersProps="f.othersProps"
                     :modelValue="formData[f.name]"
                     @update="onUpdateField"
-                    v-if="f.type === 'file'"
+                    v-else-if="f.type === 'file'"
                 />
                 <hidden-field
                     :name="f.name"
                     :modelValue="formData[f.name]"
-                    v-if="f.type === 'hidden'"
+                    v-else-if="f.type === 'hidden'"
                 />
                 <users-select-dialog-component
                     :name="f.name"
                     :label="f.label"
+                    :multiple="f.multiple"
+                    :required="f.required"
+                    :model-value="formData[f.name]"
                     @update="onUpdateUsers"
-                    v-if="f.type === 'users'"
+                    v-else-if="f.type === 'users'"
                 />
                 <campaign-field
                     :label="f.label"
@@ -57,7 +60,7 @@
                     :label="f.label"
                     :modelValue="formData[f.name]"
                     @update="onUpdateField"
-                    v-if="f.type === 'periodicity'"
+                    v-else-if="f.type === 'periodicity'"
                 />
                 <checkbox-field
                     :label="f.label"
@@ -199,6 +202,28 @@ const setDefaultData = () => {
             formData.value["sections_id"] = props.object
                 ? props.object["sections_id"]
                 : null;
+        } else if (f.type === "users") {
+            let users = [];
+            let selected = props.object
+                ? props.object[`${f.name}_object`]
+                : null;
+            if (selected !== null && selected != undefined) {
+                selected = props.object[`${f.name}_object`];
+                if (Array.isArray(selected)) {
+                    selected.forEach((u) => {
+                        users.push({
+                            value: u.id,
+                            label: u.full_name,
+                        });
+                    });
+                } else {
+                    users.push({
+                        value: selected.id,
+                        label: selected.full_name,
+                    });
+                }
+            }
+            formData.value[f.name] = users;
         } else {
             formData.value[f.name] = props.object
                 ? props.object[f.name]
@@ -215,7 +240,6 @@ const onUpdateField = (name, val) => {
 
 const onUpdateUsers = (name, val) => {
     formData.value[name] = val.map((v) => v.value);
-    console.log(formData.value[name]);
 };
 
 const save = async (hide) => {

@@ -80,7 +80,7 @@ return [
         ],
 
         'brevo' => [
-            'transport' => 'brevo',
+            'transport' => 'brevo+api',
             'api_key' => env('BREVO_API_KEY'),
         ],
     ],

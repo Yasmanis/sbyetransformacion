@@ -84,7 +84,10 @@
                 </q-tooltip>
             </div>
             <div class="messages" v-else>
-                <chat-message-component :messages="topic?.messages" />
+                <chat-message-component
+                    :messages="topic?.messages"
+                    :show-chat="showChat"
+                />
             </div>
             <btn-reload-component @click="router.reload()" />
             <form-chat-component :topic="props.topic" />
@@ -108,7 +111,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import BtnDownUpComponent from "../../../btn/BtnDownUpComponent.vue";
 import BtnLeftRightComponent from "../../../btn/BtnLeftRightComponent.vue";
 import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
@@ -139,12 +142,20 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    showChat: String,
 });
 
 const showPanel = ref(false);
 const messages = [];
 const emits = defineEmits(["change-topic"]);
 const confirm = ref(false);
+
+watch(
+    () => props.showChat,
+    (n) => {
+        showPanel.value = n !== null;
+    }
+);
 
 const clearChat = async () => {
     showLoading.value = true;

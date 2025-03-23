@@ -81,7 +81,7 @@
                             unchecked-icon="panorama_fish_eye"
                             :val="u"
                             @update:model-value="onChangeUser(u)"
-                            color="red"
+                            color="primary"
                             v-else
                         ></q-radio>
                     </q-item-section>
@@ -96,7 +96,7 @@
         </q-card-section>
         <q-inner-loading
             :showing="loading"
-            color="danger"
+            color="primary"
             size="30px"
         ></q-inner-loading>
     </q-card>
@@ -117,7 +117,7 @@ defineOptions({
 const props = defineProps({
     url: String,
     imgbase: String,
-    default_users: {
+    modelValue: {
         type: Array,
         default: [],
     },
@@ -138,16 +138,15 @@ const role = ref(null);
 const selectAllRole = ref(false);
 const lists = ref([]);
 const paginatedLists = ref([]);
-const shared = ref(-1);
 const current_selected = ref([]);
 
 onMounted(() => {
-    current_selected.value = props.default_users;
+    current_selected.value = props.modelValue;
     getList();
 });
 
 watch(
-    () => props.default_users,
+    () => props.modelValue,
     (n, o) => {
         current_selected.value = n;
     }
@@ -174,7 +173,7 @@ const getList = () => {
         .then((response) => {
             let data = response.data.options;
             data.forEach((d) => {
-                const checked = props.default_users.find((u) => u.id === d.id);
+                const checked = props.modelValue.find((u) => u.id === d.id);
                 d["checked"] = checked ? true : false;
             });
             lists.value = data;
@@ -212,9 +211,9 @@ const onChangeUser = async (u) => {
             }
         }
     } else {
-        if (current_selected.value && current_selected.value.length > 0) {
+        if (current_selected.value.length > 0) {
             let user = lists.value.find(
-                (e) => e.id === current_selected.value[0].id
+                (e) => e.value === current_selected.value[0].value
             );
             if (user) {
                 user.checked = false;

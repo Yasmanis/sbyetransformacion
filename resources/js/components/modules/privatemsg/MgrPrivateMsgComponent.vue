@@ -339,8 +339,9 @@
                             style="min-width: 20px; padding-right: 0"
                         >
                             <btn-show-hide-component
-                                :href="`${url}/storage/${a.path}`"
+                                :href="`${$page.props.public_path}storage/${a.path}`"
                                 target="_blanck"
+                                size="sm"
                                 tooltips="ver"
                             />
                         </q-item-section>
@@ -349,8 +350,9 @@
                             style="min-width: 20px; padding-left: 0"
                         >
                             <btn-download-component
-                                :href="`${url}/${base}/download/${a.id}/`"
+                                :href="`/admin/private-message/download/${a.id}/`"
                                 target="_self"
+                                size="xs"
                             />
                         </q-item-section>
                     </q-item>
@@ -429,8 +431,9 @@
                             style="min-width: 20px; padding-right: 0"
                         >
                             <btn-show-hide-component
-                                :href="`${url}/storage/${a.path}`"
+                                :href="`${$page.props.public_path}storage/${a.path}`"
                                 target="_blanck"
+                                size="sm"
                                 tooltips="ver"
                             />
                         </q-item-section>
@@ -439,7 +442,8 @@
                             style="min-width: 20px; padding-left: 0"
                         >
                             <btn-download-component
-                                :href="`${url}/${base}/download/${a.id}/`"
+                                :href="`/admin/private-message/download/${a.id}/`"
+                                size="xs"
                                 target="_self"
                             />
                         </q-item-section>
@@ -466,7 +470,7 @@ defineOptions({
     name: "MgrPrivateMsgComponent",
 });
 
-import { onMounted, ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnLeftRightComponent from "../../btn/BtnLeftRightComponent.vue";
@@ -511,20 +515,34 @@ const showDialog = ref(false);
 const showHistoryMenu = ref(false);
 const currentMsg = ref(null);
 const firstMsg = ref(null);
-//const messages = ref([]);
 const unread = ref(0);
 const page = usePage();
 const form = useForm({
     poster: null,
 });
+const messages = ref([]);
 
 onMounted(() => {
-    //normalizeMessages();
+    messages.value = page.props.private_messages;
+    countUnread();
 });
 
-const messages = computed(() => {
-    return page.props.private_messages;
-});
+watch(
+    () => page.props.private_messages,
+    (n) => {
+        messages.value = n;
+        countUnread();
+    }
+);
+
+const countUnread = () => {
+    unread.value = 0;
+    messages.value.forEach((m) => {
+        if (!m.read) {
+            unread.value++;
+        }
+    });
+};
 
 watch(currentMsg, () => {
     showHistoryMenu.value = currentMsg.value !== null;
@@ -567,39 +585,6 @@ const setRead = async () => {
             .catch((error) => {
                 error("ha ocurrido un error al tratar de ver el mensaje");
             });
-    }
-};
-
-const normalizeMessages = () => {
-    let msgs = page.props.private_messages;
-    unread.value = 0;
-    msgs.forEach((d) => {
-        d.created_at = date.formatDate(d.created_at, "DD MMM YYYY hh:mm:ss A");
-        if (d.parent !== null) {
-            d.parent.created_at = date.formatDate(
-                d.parent.created_at,
-                "DD MMM YYYY hh:mm:ss A"
-            );
-        }
-        d.interactions = d.interactions.filter(
-            (i) => i.delete_by_to === false && i.delete_by_from === false
-        );
-        d.interactions.forEach((i) => {
-            i.created_at = date.formatDate(
-                i.created_at,
-                "DD MMM YYYY hh:mm:ss A"
-            );
-        });
-        console.log(d.interactions);
-        if (!d.read) {
-            unread.value++;
-        }
-    });
-    messages.value = msgs;
-    if (currentMsg.value !== null) {
-        currentMsg.value.interactions = messages.value.find(
-            (m) => m.id === currentMsg.value.id
-        ).interactions;
     }
 };
 

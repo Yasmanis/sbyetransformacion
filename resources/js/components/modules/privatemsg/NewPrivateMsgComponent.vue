@@ -130,7 +130,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
@@ -145,8 +145,7 @@ import {
     errorValidation,
     success,
 } from "../../../helpers/notifications";
-import axios from "axios";
-import { Loading, Dark } from "quasar";
+import { Loading } from "quasar";
 
 defineOptions({
     name: "NewPrivateMsgComponent",
@@ -170,8 +169,6 @@ const props = defineProps({
 const emits = defineEmits(["hide"]);
 
 const showDialog = ref(false);
-const help = ref(null);
-const helpEdit = ref(false);
 const formData = useForm({
     title: null,
     msg: null,
@@ -181,13 +178,7 @@ const formData = useForm({
     to_id: null,
 });
 const file_attachment_ref = ref(null);
-const totalFiles = ref(0);
-const upload = ref(false);
 const form = ref(null);
-const currentMessage = ref(null);
-const showInnerLoading = ref(false);
-
-onBeforeMount(() => {});
 
 const onChangeAttachment = (files) => {
     files.forEach((f) => {
@@ -197,13 +188,6 @@ const onChangeAttachment = (files) => {
 
 const onUpdateField = (name, val) => {
     formData[name] = val;
-};
-
-const onFinishUploaded = (info) => {
-    success("mensaje enviado correctamente");
-    Loading.hide();
-    showDialog.value = false;
-    router.reload({}, "preserveState");
 };
 
 const onShowDialog = () => {

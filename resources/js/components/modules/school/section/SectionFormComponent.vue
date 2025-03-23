@@ -116,7 +116,7 @@ const store = async () => {
 
 const update = async () => {
     const send = useForm(formData.value);
-    send.put(`/admin/life/${props.object.id}`, {
+    send.put(`/admin/school/${props.object.id}`, {
         onSuccess: () => {
             emits("update");
         },

@@ -64,7 +64,7 @@ const showDialog = ref(false);
 const page = usePage();
 
 onMounted(() => {
-    if (!page.props.auth.user.subscripted) {
+    if (!page.props.auth.user.subscripted && page.props.show_msg_subscription) {
         showDialog.value = true;
     }
 });

@@ -36,7 +36,10 @@ class AuthController extends Controller
             if ($user->active) {
                 $request->session()->regenerate();
                 auth()->login($user);
-                return redirect()->intended('admin')->with('success', 'bienvenido ' . $user->username);
+                return redirect()->intended('admin')->with([
+                    'success' => 'bienvenido ' . $user->username,
+                    'show_msg_subscription' => !$user->subscripted
+                ]);
             }
             Auth::logout();
             $request->session()->invalidate();
@@ -103,14 +106,14 @@ class AuthController extends Controller
         if (isset($avatar)) {
             if (preg_match('/^data:image\/(\w+);base64,/', $avatar, $matches)) {
                 $imgType = $matches[1];
-                $imgData = substr($avatar, strpos($avatar, ',')+1);
+                $imgData = substr($avatar, strpos($avatar, ',') + 1);
             }
             $image = base64_decode($imgData);
             if (!$image) {
                 return redirect()->back()->with('error', 'no se ha podido decodificar la imagen');
             }
             Storage::disk('public')->put('avatars/' . $user->id . '.' . $imgType, $image);
-            $path = 'avatars/'. $user->id . '.' . $imgType;
+            $path = 'avatars/' . $user->id . '.' . $imgType;
         }
         $user->avatar = $path;
         $user->save();

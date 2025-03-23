@@ -197,7 +197,7 @@
                 formData[name] = val;
             }
         "
-        v-if="segment === 'life'"
+        v-if="segment === 'school'"
     />
     <checkbox-field
         v-model="formData.visible_after_testimony"
@@ -210,7 +210,7 @@
                 formData[name] = val;
             }
         "
-        v-if="segment === 'life'"
+        v-if="segment === 'school'"
     />
     <br />
     <checkbox-field

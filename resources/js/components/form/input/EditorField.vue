@@ -465,4 +465,7 @@ const errorMsg = computed(() => {
 .ck-read-only {
     border-color: transparent !important;
 }
+.ck-editor__editable {
+    resize: vertical;
+}
 </style>

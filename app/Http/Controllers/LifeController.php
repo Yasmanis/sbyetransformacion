@@ -11,19 +11,15 @@ class LifeController extends Controller
 {
     public function segment()
     {
-        $segment = last(request()->segments());
-        if ($segment == 'life') {
-            $segment = 'school';
-        }
-        return $segment;
+        return last(request()->segments());
     }
 
     public function index(Request $request)
     {
         $user = auth()->user();
-        if ($user->hasView('schoolsection') || $user->hasView('conference')) {
+        $segment = $this->segment();
+        if ($user->hasView($segment)) {
             $repository = new SchoolSectionsRepository();
-            $segment = $this->segment();
             return Inertia::render($repository->component(), [
                 'sections' => $user->getSections($segment),
                 'course_percentage' => $user->getCoursePercentage($segment),
@@ -35,7 +31,8 @@ class LifeController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->hasCreate('schoolsection') || $user->hasView('conference')) {
+        $segment = $this->segment();
+        if (auth()->user()->hasCreate($segment)) {
             $request->validate([
                 'name' => ['required', 'unique:school_sections'],
             ]);
@@ -50,7 +47,8 @@ class LifeController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('schoolsection') || $user->hasView('conference')) {
+        $segment = $this->segment();
+        if (auth()->user()->hasUpdate($segment)) {
             $request->validate([
                 'name' => ['required', Rule::unique('school_sections', 'name')->ignore($id)],
             ]);
@@ -63,7 +61,8 @@ class LifeController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        if (auth()->user()->hasDelete('schoolsection') || $user->hasView('conference')) {
+        $segment = $this->segment();
+        if (auth()->user()->hasDelete($segment)) {
             $repository = new SchoolSectionsRepository();
             $repository->deleteById($id);
             return redirect()->back()->with('success', 'seccion eliminada correctamente');

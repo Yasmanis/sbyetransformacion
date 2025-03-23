@@ -147,6 +147,7 @@
         :section="section"
         :index="indexTopic"
         :has_edit="has_edit"
+        :show-chat="showChat"
         @change-topic="(i) => emits('change-topic', i)"
     />
 
@@ -201,6 +202,7 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    showChat: String,
     has_edit: {
         type: Boolean,
         default: false,

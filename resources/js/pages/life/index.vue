@@ -57,11 +57,14 @@
                                 :indexTopic="tIndex"
                                 :totalSections="sections.length"
                                 :has_edit="has_edit"
+                                :show-chat="show_chat"
                                 @change-section="onChangeSection"
                                 @change-topic="
-                                    (i) =>
-                                        (currentTopic =
-                                            sections[sIndex].topics[i])
+                                    (i) => {
+                                        resetHash();
+                                        currentTopic =
+                                            sections[sIndex].topics[i];
+                                    }
                                 "
                                 v-if="sections.length > 0"
                             />
@@ -118,6 +121,8 @@ const tIndex = ref(0);
 const has_add = ref(false);
 const has_edit = ref(false);
 const has_delete = ref(false);
+let chat = null;
+const show_chat = ref(null);
 
 const sections = computed(() => {
     return page.props.sections ? page.props.sections : [];
@@ -140,7 +145,12 @@ watch(currentTopic, (n, o) => {
 });
 
 onBeforeMount(() => {
-    const current_module = currentModule(page.url.split("?")[0]).module;
+    let url = page.url.split("?")[0];
+    if (url.includes("#")) {
+        chat = url.substring(url.indexOf("#") + 6);
+        url = url.substring(0, url.indexOf("#"));
+    }
+    const current_module = currentModule(url).module;
     const permissions = current_module.permissions.map((p) => p.name);
     const modelName = current_module.model.toLowerCase();
     has_add.value = permissions.includes(`add_${modelName}`);
@@ -170,8 +180,25 @@ const setDefaults = () => {
                 }
             }
         } else {
-            currentSection.value = n[0];
-            sIndex.value = 0;
+            if (chat != null) {
+                let ids = chat.split("-");
+                const section = n.find((s) => s.id === parseInt(ids[2]));
+                if (section) {
+                    currentSection.value = section;
+                    const topic = section.topics.find(
+                        (t) => t.id === parseInt(ids[1])
+                    );
+                    if (topic) {
+                        currentTopic.value = topic;
+                        show_chat.value = chat;
+                    }
+                } else {
+                    currentSection.value = n[0];
+                }
+            } else {
+                currentSection.value = n[0];
+                sIndex.value = 0;
+            }
         }
         if (currentTopic.value !== null) {
             let exist = currentSection.value.topics.find(
@@ -204,6 +231,14 @@ const onChangeTopic = (attrs) => {
 
 const onChangeSection = (i) => {
     currentSection.value = sections.value[i];
+    resetHash();
     setDefaults();
+};
+
+const resetHash = () => {
+    if (chat !== null) {
+        location.hash = "";
+        chat = null;
+    }
 };
 </script>

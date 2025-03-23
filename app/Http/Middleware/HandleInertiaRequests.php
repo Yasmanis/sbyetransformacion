@@ -50,6 +50,7 @@ class HandleInertiaRequests extends Middleware
                     'permissions' => $user->getAllPermissions()->pluck('name'),
                 ] : null;
             },
+            'show_msg_subscription' => $request->session()->get('show_msg_subscription'),
             'public_path' => asset(''),
             'flash_success' => $request->session()->get('success'),
             'flash_error' => $request->session()->get('error'),

@@ -17,6 +17,8 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\ContactAdminController;
+use App\Http\Controllers\LearningController;
+use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\PrivateMsgController;
 use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\SchoolTopicsController;
@@ -187,12 +189,15 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/push-messages', PushMessageController::class);
     Route::resource('/admin/campaigns', CampaignController::class);
     Route::resource('/admin/briefideas', BriefIdeasController::class);
+    Route::resource('/admin/messages', MessagesController::class);
+
     Route::post('/admin/testimony/publicated/{id}', [TestimonyController::class, 'publicated']);
     Route::post('/admin/testimony/store-from-publications', [TestimonyController::class, 'storeFromPublications']);
-    Route::resource('/admin/life', LifeController::class);
+    Route::resource('/admin/school', LifeController::class);
     Route::resource('/admin/conference', ConferenceController::class);
-    Route::post('/admin/life/sort-topics', [SchoolTopicsController::class, 'sortTopics']);
+    Route::resource('/admin/learning', LearningController::class);
     Route::resource('/admin/schooltopics', SchoolTopicsController::class);
+    Route::post('/admin/schooltopics/sort-topics', [SchoolTopicsController::class, 'sortTopics']);
     Route::post('/admin/schooltopics/addResources', [SchoolTopicsController::class, 'addResource']);
     Route::delete('/admin/schooltopics/deleteResource/{id}', [SchoolTopicsController::class, 'deleteResource']);
     Route::post('/admin/schooltopics/update-video-percentaje-to-user', [SchoolTopicsController::class, 'updateVideoPercentage']);
@@ -210,9 +215,10 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/files/poster/{id}', [FileController::class, 'poster']);
     Route::post('/admin/files/public-access/{id}', [FileController::class, 'publicAccess']);
     Route::resource('/admin/private-message', PrivateMsgController::class)->except(['index']);
-    Route::resource('/admin/sections', SectionsController::class);
+    Route::get('/admin/private-message/download/{id}', [PrivateMsgController::class, 'download']);
     Route::post('/admin/private-message/highlight/{id}', [PrivateMsgController::class, 'highlight']);
     Route::put('/admin/private-message/read/{id}', [PrivateMsgController::class, 'read']);
+    Route::resource('/admin/sections', SectionsController::class);
 
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);

@@ -4,6 +4,7 @@
     <q-dialog
         v-model="showDialog"
         persistent
+        allow-focus-outside
         :position="position"
         :full-hight="fullHeight"
         @show="setDefault = !setDefault"

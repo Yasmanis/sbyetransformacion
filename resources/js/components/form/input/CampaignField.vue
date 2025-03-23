@@ -11,7 +11,7 @@
         :newObject="newCampaign"
         @update="onUpdateCampaign"
     >
-        <!-- <template v-slot:after>
+        <template v-slot:after>
             <form-component
                 :defaultIcon="`img:${$page.props.public_path}images/icon/${
                     Dark.isActive ? 'white' : 'black'
@@ -19,7 +19,7 @@
                 defaultTooltips="crear campaña"
                 @created="onCreated"
             />
-        </template> -->
+        </template>
     </select-field>
     <select-field
         name="sections_id"

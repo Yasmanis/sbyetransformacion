@@ -46,7 +46,8 @@ class PushMessage extends Model
 
     public function getSectionsIdAttribute()
     {
-        return $this->sections()->get()->pluck('id');
+        $sections = $this->sections()->get();
+        return count($sections) > 0 ? $sections->pluck('id') : null;
     }
 
     public function getSectionsStrAttribute()

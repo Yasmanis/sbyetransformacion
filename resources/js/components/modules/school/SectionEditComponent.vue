@@ -53,7 +53,7 @@
                             <sort-elements-component
                                 tooltips="ordenar temas"
                                 :items="s.topics"
-                                url="/admin/life/sort-topics"
+                                url="/admin/schooltopics/sort-topics"
                             />
                         </q-item-section>
                         <q-item-section avatar v-if="has_delete">
@@ -247,7 +247,7 @@
         :message="`seguro que deseas eliminar la seccion <b>${currentSection?.name}</b>`"
         @hide="confirmSection = false"
         @ok="
-            router.delete(`/admin/life/${currentSection.id}`, {
+            router.delete(`/admin/school/${currentSection.id}`, {
                 onSuccess: () => (confirmSection = false),
             })
         "

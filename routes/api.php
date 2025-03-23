@@ -2,6 +2,7 @@
 
 use App\Mail\BrevoMailable;
 use App\Models\PushMessage;
+use App\Services\BrevoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Traits\DateUtils;
@@ -31,9 +32,19 @@ Route::post('/test-next-date', function (Request $request) {
 });
 
 Route::post('/send-email', function (Request $request) {
-    $to = 'yfdezmerino91@gmail.com';
-    $subject = 'prueba';
-    $htmlContent = 'contenido html';
-    Mail::to($to)->send(new BrevoMailable($subject, $htmlContent));
-    return response()->json(['message' => 'Correo enviado correctamente.']);
+    $to = [
+        'email' => 'yfdezmerino91@gmail.com',
+        'name' => 'yfdezmerino91',
+    ];
+
+    $templateId = 1; // Reemplaza con el ID de tu plantilla
+    $params = null;
+    $service = new BrevoService();
+    $result = $service->sendEmail($to, $templateId, $params);
+
+    if ($result['success']) {
+        return response()->json(['message' => 'Correo enviado exitosamente', 'data' => $result['data']]);
+    } else {
+        return response()->json(['error' => 'Error al enviar el correo', 'details' => $result['error']], 500);
+    }
 });

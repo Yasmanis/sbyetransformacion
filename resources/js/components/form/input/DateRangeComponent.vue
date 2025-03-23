@@ -26,6 +26,13 @@
                     <q-date v-model="proxyDate" range mask="DD/MM/YYYY">
                         <div class="row items-center justify-end q-gutter-sm">
                             <q-btn-component
+                                icon="mdi-calendar"
+                                v-close-popup
+                                tooltips="hoy"
+                                @click="setNow"
+                            />
+
+                            <q-btn-component
                                 icon="mdi-check-circle-outline"
                                 tooltips="aceptar"
                                 @click="save"
@@ -51,10 +58,8 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { date as dateQuasar } from "quasar";
-import BtnSaveAndNewComponent from "../../btn/BtnSaveAndNewComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
-import BtnClearComponent from "../../btn/BtnClearComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 
 defineOptions({
@@ -124,8 +129,17 @@ const save = () => {
     }
     proxyRef.value.hide();
 };
+
 const normalizeDate = (d, currentFormat, outputFormat) => {
     const newDate = dateQuasar.extractDate(d, currentFormat);
     return dateQuasar.formatDate(newDate, outputFormat);
+};
+
+const setNow = () => {
+    proxyDate.value = {
+        from: dateQuasar.formatDate(Date.now(), "DD/MM/YYYY"),
+        to: dateQuasar.formatDate(Date.now(), "DD/MM/YYYY"),
+    };
+    save();
 };
 </script>

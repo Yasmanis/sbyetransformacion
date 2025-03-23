@@ -12,7 +12,7 @@
                     readonly
                     hide-bottom-space
                     :label="label"
-                    :hint="!errorMsg ? 'requerido' : ''"
+                    :hint="!errorMsg ? (required ? 'requerido' : '') : ''"
                     :rules="rules"
                 />
                 <q-item-label
@@ -40,7 +40,9 @@
 
             <q-item-section avatar style="min-width: 30px; height: 40px">
                 <q-btn-component
-                    tooltips="seleccionar usuarios"
+                    :tooltips="`seleccionar ${
+                        multiple ? 'usuarios' : 'usuario'
+                    }`"
                     icon="mdi-account-circle"
                     v-if="multiple"
                 >
@@ -91,7 +93,7 @@
                     </q-menu>
                 </q-btn-component>
                 <q-btn-component
-                    tooltips="seleccionar usuarios"
+                    tooltips="seleccionar usuario"
                     icon="mdi-account-circle"
                     @click="showDialog = true"
                     v-else
@@ -114,7 +116,7 @@
                     :imgbase="imgbase"
                     :url="url"
                     @change="onChange"
-                    :default_users="current_selected"
+                    :modelValue="current_selected"
                     :multiple="multiple"
                 />
             </q-card-section>
@@ -167,7 +169,7 @@ const props = defineProps({
     },
     url: String,
     imgbase: String,
-    default_users: {
+    modelValue: {
         type: Array,
         default: [],
     },
@@ -182,18 +184,11 @@ const current_selected = ref([]);
 const rules = ref(null);
 
 onMounted(() => {
-    default_selected.value = props.default_users;
+    default_selected.value = props.modelValue;
     if (props.required) {
         rules.value = [(val) => !!val || "requerido"];
     }
 });
-
-watch(
-    () => props.default_users,
-    (n, o) => {
-        default_selected.value = n;
-    }
-);
 
 watch(default_selected, (n) => {
     setDefaults(current_selected, n);

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Notification;
 
 class SchoolChat extends Model
 {
-    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user', 'topic_str', 'section_str', 'created_str'];
+    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user', 'topic_str', 'section_str', 'created_str', 'section_id', 'segment'];
 
     protected $table = 'schoolchat';
 
@@ -39,13 +39,23 @@ class SchoolChat extends Model
 
     public function getTopicStrAttribute()
     {
-        return $this->topic()->first()->name;
+        return $this->topic->name;
     }
 
     public function getSectionStrAttribute()
     {
-        $topic = $this->topic()->first();
-        return $topic->section()->first()->name;
+        return $this->topic->section()->first()->name;
+    }
+
+    public function getSectionIdAttribute()
+    {
+        $topic = $this->topic->section_id;
+        return $topic;
+    }
+
+    public function getSegmentAttribute()
+    {
+        return $this->topic->section()->first()->category;
     }
 
     public function getCreatedStrAttribute()

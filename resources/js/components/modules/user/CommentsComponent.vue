@@ -40,9 +40,24 @@
                         dense
                         :columns="columns"
                         :rows="comments"
+                        rows-per-page-label="filas por pagina"
+                        :rows-per-page-options="[20, 30, 50, 100, 0]"
                         flat
                         wrap-cells
                     >
+                        <template #body-cell-message="props">
+                            <td class="text-left">
+                                <span v-html="props.row.message"></span>
+                            </td>
+                        </template>
+                        <template #body-cell-actions="props">
+                            <td class="text-right">
+                                <btn-go-component
+                                    tooltips="ir al chat"
+                                    :href="`/admin/${props.row.segment}#chat-${props.row.id}-${props.row.topic_id}-${props.row.section_id}`"
+                                />
+                            </td>
+                        </template>
                     </q-table>
                 </q-tab-panel>
                 <q-tab-panel name="react">
@@ -76,6 +91,8 @@
 import { onMounted, ref } from "vue";
 import axios from "axios";
 import { Dark } from "quasar";
+import BtnGoComponent from "../../btn/BtnGoComponent.vue";
+
 defineOptions({
     name: "CommentsComponent",
 });
@@ -109,6 +126,15 @@ const columns = ref([
         align: "left",
     },
     {
+        name: "segment",
+        field: "segment",
+        label: "panel",
+        align: "left",
+        format: (val) => {
+            return panels[val];
+        },
+    },
+    {
         name: "reply_to_msg",
         field: "reply_to_msg",
         label: "respuesta a",
@@ -123,11 +149,24 @@ const columns = ref([
         label: "fecha",
         align: "left",
     },
+    {
+        name: "actions",
+        field: "actions",
+        label: "",
+        align: "right",
+    },
 ]);
 
 const comments = ref([]);
 const reacts = ref([]);
 const highligths = ref([]);
+const panels = {
+    school: "vivir en plenitud",
+    conference: "conferencias",
+    posts: "posts",
+    newsletters: "newsletters",
+    learning: "aprender a liberar",
+};
 
 const showLoading = ref(false);
 
