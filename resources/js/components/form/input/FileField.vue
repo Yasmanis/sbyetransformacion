@@ -1,14 +1,15 @@
 <template>
     <checkbox-field
         name="file_change"
-        label="cambiar archivo"
+        :label="`cambiar ${label}`"
         :othersProps="{
             help: [
-                'marque esta casilla si desea reemplazar el archivo existente',
+                othersProps?.helpCheck ??
+                    'marque esta casilla si desea reemplazar el archivo existente',
             ],
         }"
         @update="onUpdateCheck"
-        v-if="othersProps?.change"
+        v-if="hasFile"
     />
     <q-file
         ref="modelRef"
@@ -29,7 +30,7 @@
         class="full-width"
         @rejected="onRejected"
         @update:model-value="(val) => update(val)"
-        v-if="!othersProps?.change || fileChange"
+        v-if="!hasFile || fileChange"
     >
         <template #hint v-if="fieldHelp?.length > 0">
             <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
@@ -105,11 +106,15 @@ const modelRef = ref(null);
 const fieldRules = ref([]);
 const fieldHelp = ref([]);
 const fileChange = ref(false);
+const hasFile = ref(false);
 
 onBeforeMount(() => {
     const { rules, help } = validations.getRules(props.othersProps);
     fieldRules.value = rules;
     fieldHelp.value = help;
+    if (props.modelValue) {
+        hasFile.value = true;
+    }
 });
 
 const onUpdateCheck = (name, value) => {

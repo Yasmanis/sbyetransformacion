@@ -120,6 +120,13 @@
     </q-card-section>
     <q-separator />
     <q-card-actions align="right">
+        <q-btn-component
+            icon="mdi-eye-outline"
+            tooltips="vista previa"
+            :disable="disablePreviewBtn"
+            :loading="loadingPreviewBtn"
+            @click="emits('show-preview', formData)"
+        />
         <btn-save-component @click="save(true)" />
         <btn-save-and-new-component
             @click="save(false)"
@@ -134,25 +141,26 @@ defineOptions({
     name: "FormBody",
 });
 
-import { ref, onBeforeMount } from "vue";
-import TextField from "./input/TextField.vue";
-import SelectField from "./input/SelectField.vue";
-import CheckboxField from "./input/CheckboxField.vue";
-import DateField from "./input/DateField.vue";
-import DateTimeRangeField from "./input/DateTimeRangeField.vue";
-import PasswordField from "./input/PasswordField.vue";
-import UploaderField from "./input/UploaderField.vue";
-import EditorField from "./input/EditorField.vue";
-import FileField from "./input/FileField.vue";
-import HiddenField from "./input/HiddenField.vue";
-import CampaignField from "./input/CampaignField.vue";
-import PeriodicityField from "./input/PeriodicityField.vue";
-import UsersSelectDialogComponent from "../modules/user/UsersSelectDialogComponent.vue";
-import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
-import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
-import BtnSaveAndNewComponent from "../btn/BtnSaveAndNewComponent.vue";
+import { ref, onBeforeMount, watch } from "vue";
+import TextField from "../../form/input/TextField.vue";
+import SelectField from "../../form/input/SelectField.vue";
+import CheckboxField from "../../form/input/CheckboxField.vue";
+import DateField from "../../form/input/DateField.vue";
+import DateTimeRangeField from "../../form/input/DateTimeRangeField.vue";
+import PasswordField from "../../form/input/PasswordField.vue";
+import UploaderField from "../../form/input/UploaderField.vue";
+import EditorField from "../../form/input/EditorField.vue";
+import FileField from "../../form/input/FileField.vue";
+import HiddenField from "../../form/input/HiddenField.vue";
+import CampaignField from "../../form/input/CampaignField.vue";
+import PeriodicityField from "../../form/input/PeriodicityField.vue";
+import UsersSelectDialogComponent from "../../modules/user/UsersSelectDialogComponent.vue";
+import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
+import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
+import BtnSaveAndNewComponent from "../../btn/BtnSaveAndNewComponent.vue";
+import QBtnComponent from "../../base/QBtnComponent.vue";
 import { useForm } from "@inertiajs/vue3";
-import { errorValidation } from "../../helpers/notifications";
+import { errorValidation } from "../../../helpers/notifications";
 
 const props = defineProps({
     module: {
@@ -177,10 +185,11 @@ const props = defineProps({
     },
 });
 
-const emits = defineEmits(["created", "updated", "cancel"]);
+const emits = defineEmits(["created", "updated", "cancel", "show-preview"]);
 
 const form = ref(null);
-
+const disablePreviewBtn = ref(false);
+const loadingPreviewBtn = ref(false);
 const formData = ref({});
 
 onBeforeMount(() => {
@@ -293,4 +302,14 @@ const update = async () => {
         });
     }
 };
+
+const disablePreview = (val) => {
+    disablePreviewBtn.value = val;
+};
+
+const loadingPreview = (val) => {
+    loadingPreviewBtn.value = val;
+};
+
+defineExpose({ disablePreview, loadingPreview });
 </script>

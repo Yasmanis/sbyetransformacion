@@ -90,13 +90,15 @@ const public_date = {
 const fileChange = {
     field: "file",
     name: "file",
-    label: "nuevo archivo",
+    label: "archivo",
     type: "file",
     sortable: true,
     align: "left",
     othersProps: {
-        change: true,
         icon: "mdi-file-outline",
+        change: true,
+        helpCheck:
+            "marque esta casilla si desea reemplazar el fichero existente",
     },
 };
 

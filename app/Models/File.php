@@ -16,7 +16,7 @@ class File extends Model
 
     protected $fillable = ['name', 'size', 'path', 'type', 'category_id', 'public_access', 'public_date'];
 
-    protected $appends = ['category', 'size_str'];
+    protected $appends = ['category', 'size_str', 'file'];
 
     protected $casts = [
         'public_access' => 'boolean',
@@ -55,6 +55,11 @@ class File extends Model
         for ($i = 0; $bytes > 1024; $i++)
             $bytes /= 1024;
         return round($bytes, 2) . ' ' . $units[$i];
+    }
+
+    public function getFileAttribute()
+    {
+        return $this->path;
     }
 
     public function getPublicDateAttribute($v)

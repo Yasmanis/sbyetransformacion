@@ -308,15 +308,15 @@
 <script setup>
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
 import { useQuasar } from "quasar";
-import FormComponent from "../form/FormComponent.vue";
-import DeleteComponent from "./actions/DeleteComponent.vue";
-import VisibleColumnsComponent from "./actions/VisibleColumnsComponent.vue";
-import BtnReloadComponent from "../btn/BtnReloadComponent.vue";
-import QBtnComponent from "../base/QBtnComponent.vue";
-import SearchComponent from "./actions/SearchComponent.vue";
-import FilterComponent from "./actions/FilterComponent.vue";
+import FormComponent from "./FormComponent.vue";
+import DeleteComponent from "../../table/actions/DeleteComponent.vue";
+import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
+import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
+import QBtnComponent from "../../base/QBtnComponent.vue";
+import SearchComponent from "../../table/actions/SearchComponent.vue";
+import FilterComponent from "../../table/actions/FilterComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
-import { currentModule } from "../../services/current_module";
+import { currentModule } from "../../../services/current_module";
 
 defineOptions({
     name: "TableComponent",

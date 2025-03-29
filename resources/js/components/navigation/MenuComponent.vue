@@ -93,7 +93,23 @@
                             @click="navigateTo({ name: m.base_url })"
                         >
                             <q-item-section avatar>
-                                <q-icon :name="m.ico" />
+                                <q-icon
+                                    :name="
+                                        m.ico_from_path
+                                            ? `img:${$page.props.public_path}${
+                                                  Dark.isActive
+                                                      ? m.ico.replace(
+                                                            'black',
+                                                            'white'
+                                                        )
+                                                      : m.ico.replace(
+                                                            'white',
+                                                            'black'
+                                                        )
+                                              }`
+                                            : m.ico
+                                    "
+                                />
                             </q-item-section>
                             <q-item-section class="text-lowercase">{{
                                 m.plural_label
@@ -137,7 +153,13 @@
                                 @click="navigateTo({ name: m.base_url })"
                             >
                                 <q-item-section avatar>
-                                    <q-icon :name="m.ico" />
+                                    <q-icon
+                                        :name="
+                                            m.ico_from_path
+                                                ? `img:${$page.props.public_path}${m.ico}`
+                                                : m.ico
+                                        "
+                                    />
                                 </q-item-section>
                                 <q-item-section class="text-lowercase">{{
                                     m.plural_label
@@ -218,11 +240,7 @@
                 </q-card-section>
             </q-card>
         </q-expansion-item>
-        <q-item
-            clickable
-            :class="isActiveParent(configuration) ? 'text-primary' : ''"
-            v-if="configuration && mini"
-        >
+        <q-item clickable v-if="configuration && mini">
             <q-item-section avatar>
                 <q-icon :name="configuration.ico" />
             </q-item-section>

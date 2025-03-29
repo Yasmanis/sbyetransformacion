@@ -89,6 +89,10 @@ Route::get('/maria', function () {
     return Inertia('landing/maria');
 });
 
+Route::get('/store', function () {
+    return Inertia('landing/store');
+});
+
 Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
     $categories = Category::where('public_access', true)->orderBy('order', 'ASC')->get();
     $recent_files = File::publicAccess()->orderBy('public_date', 'DESC')->take(6)->get();
@@ -188,6 +192,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/testimony', TestimonyController::class);
     Route::resource('/admin/push-messages', PushMessageController::class);
     Route::resource('/admin/campaigns', CampaignController::class);
+    Route::get('/admin/campaigns/logo/{id}', [CampaignController::class, 'logo']);
     Route::resource('/admin/briefideas', BriefIdeasController::class);
     Route::resource('/admin/messages', MessagesController::class);
 
@@ -202,6 +207,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::delete('/admin/schooltopics/deleteResource/{id}', [SchoolTopicsController::class, 'deleteResource']);
     Route::post('/admin/schooltopics/update-video-percentaje-to-user', [SchoolTopicsController::class, 'updateVideoPercentage']);
     Route::post('/admin/schooltopics/add-message/{id}', [SchoolTopicsController::class, 'addMessage']);
+    Route::post('/admin/schooltopics/edit-message/{id}', [SchoolTopicsController::class, 'editMessage']);
     Route::delete('/admin/schooltopics/delete-message/{id}', [SchoolTopicsController::class, 'deleteMsg']);
     Route::post('/admin/schooltopics/clear-chat/{id}', [SchoolTopicsController::class, 'clearChat']);
     Route::post('/admin/schooltopics/react-message/{id}', [SchoolTopicsController::class, 'reactMsg']);

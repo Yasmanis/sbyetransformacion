@@ -8,7 +8,8 @@
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
-                v-if="segment !== 'briefideas'"
+                :new-on-create="false"
+                post-on-update
             ></table-component>
         </q-page>
     </Layout>
@@ -17,7 +18,7 @@
 <script setup>
 import { computed, onBeforeMount } from "vue";
 import Layout from "../../layouts/AdminLayout.vue";
-import TableComponent from "../../components/table/TableComponent.vue";
+import TableComponent from "../../components/modules/pushmessage/TableComponent.vue";
 
 defineOptions({
     name: "ListPage",
@@ -65,27 +66,59 @@ const message = {
     },
 };
 
-const image = {
-    field: "image",
-    name: "image",
-    label: "imagen",
+const url = {
+    field: "url",
+    name: "url",
+    label: "url",
+    align: "left",
+    sortable: true,
+    type: "text",
+    required: true,
+    othersProps: {
+        type: "url",
+    },
+};
+
+const logo = {
+    field: "logo",
+    name: "logo",
+    label: "logo",
     type: "file",
     othersProps: {
         icon: "mdi-image-outline",
         titleIcon: "seleccionar imagen",
         accept: "image/*",
+        change: true,
+        helpCheck: "marque esta casilla si desea reemplazar el logo existente",
+    },
+};
+
+const image = {
+    field: "image",
+    name: "image",
+    label: "imagen adjunta",
+    type: "file",
+    othersProps: {
+        icon: "mdi-image-outline",
+        titleIcon: "seleccionar imagen",
+        accept: "image/*",
+        change: true,
+        helpCheck:
+            "marque esta casilla si desea reemplazar la imagen existente",
     },
 };
 
 const video = {
     field: "video",
     name: "video",
-    label: "video",
+    label: "video adjunto",
     type: "file",
     othersProps: {
         icon: "mdi-video-outline",
         titleIcon: "seleccionar video",
         accept: "video/*",
+        change: true,
+        helpCheck: "marque esta casilla si desea reemplazar video existente",
     },
 };
 
@@ -177,6 +210,8 @@ const fields = [
     campaigns,
     title,
     message,
+    url,
+    logo,
     image,
     video,
     action_title,

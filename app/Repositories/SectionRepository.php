@@ -15,4 +15,11 @@ class SectionRepository extends BaseRepository
     {
         return 'sections/list';
     }
+
+    protected $scopes = [
+        array(
+            'method' => 'byKey',
+            'args' => 'section'
+        )
+    ];
 }

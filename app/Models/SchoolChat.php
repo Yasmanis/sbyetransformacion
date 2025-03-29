@@ -91,13 +91,17 @@ class SchoolChat extends Model
         }
     }
 
-    public function sendNotifications()
+    public function sendNotifications($edit)
     {
         $notification = new UserNotifications();
-        $notification->title = 'tiene un nuevo mensaje en el chat';
+        $notification->title = $edit ? 'modificación de mensaje en el chat' : 'tiene un nuevo mensaje en el chat';
         $notification->priority = 'Baja';
         $notification->user_id = auth()->user()->id;
-        $notification->description = $this->from_visible ? ('el usuario ' . ($this->from->full_name) . ' le ha escrito en el chat') : 'se le ha escrito en el chat de forma anonima';
+        if ($edit) {
+            $notification->description = $this->from_visible ? sprintf('el usuario %s ha modificado un mensaje en el chat', $this->from->full_name) : 'se ha modificado un mensaje en el chat';
+        } else {
+            $notification->description = $this->from_visible ? sprintf('el usuario %s le ha escrito en el chat', $this->from->full_name) : 'se le ha escrito en el chat de forma anonima';
+        }
         $notification->code = 'chat_writter';
         $notification->model = 'SchoolChat';
         $notification->model_id = $this->id;

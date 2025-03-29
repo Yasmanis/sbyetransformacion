@@ -115,4 +115,12 @@ class CampaignController extends Controller
         }
         return $this->deny_access($request);
     }
+
+    public function logo($id)
+    {
+        $repository = new CampaignRepository();
+        $object = $repository->getById($id);
+        $logo = isset($object->logo) ? sprintf('storage/%s', $object->logo) : 'images/logo/1.png';
+        return response()->json(['success' => true, 'logo' => $logo]);
+    }
 }

@@ -25,101 +25,92 @@
                 solo ayudo a quien se ayuda
             </h4>
             <p>
-                por tanto, solo atendere a personas que realmente quieran
-                cambiar y se involucren en su cambio <br />
-                si estas preparado en profundizar en tu dolor, sanarlo y
-                transmutarlo, este es tu sitio <br />
-                puedes hacer consulta de forma directa conmigo o, mejor aun,
-                apuntate al taller online
+                solo atiendo a personas que realmente quieren cambiar y se
+                involucran en su transformacion <br />
+                si estas listo para profundizar en tu dolor, sanarlo y
+                transmutarlo, este es tu sitio<br />
+                puedes hacer una consulta individual directamente conmigo o,
+                mejor aun, apuntarte al taller online
             </p>
         </div>
         <div class="row q-pt-xl container">
             <div class="col-md-6 col-lg-6">
                 <div class="column">
-                    <h4 class="q-mb-none text-uppercase">
+                    <h4 class="q-mb-none text-uppercase text-black text-bold">
                         consulta individual
                     </h4>
                     <p>
-                        las consultas podran ser online, telefonicas o
-                        presenciales, por lo que no es necesario que vivas cerca
-                        de mi o te desplaces. por supuesto la magia de estar
-                        juntos se rompe un poco en la distancia, pero he
-                        trabajado muchas veces asi y te aseguro que sera muy
-                        eficaz <br />
-                        <br />
-                        siempre estoy flexibilizandome y adaptandome a las
-                        circunstancias mias y de la otra persona, por lo que no
-                        descarto nada, asi que ponte en contacto conmigo y
-                        buscaremos juntos cual es la mejor formula para ambos.
-                        por ponerte un ejemplo, en ocasiones he trabajado cinco
-                        dias seguidos con personas que necesitaban un empujon
-                        grande, y han estado o en mi casa o en un apartamento
-                        por la zona donde vivo. quien quiere, siempre encuentra
-                        como!
-                        <img
+                        las consultas pueden ser
+                        <b>online, telefonicas o presenciales</b>, asi que no es
+                        necesario que vivas cerca de mi o que te desplaces.
+                        claro, la magia de estar juntos se siente diferente en
+                        la distancia, pero he trabajado muchas veces asi y te
+                        aseguro que sigue siendo igual de eficaz
+                    </p>
+                    <p>
+                        me adapto siempre a cada persona y a cada situacion. por
+                        eso, si lo necesitas, podemos encontrar juntos la mejor
+                        forma de trabajar. por ejemplo, en ocasiones he
+                        trabajado con personas durante cinco dias seguidos,
+                        alojandose en mi casa o en un apartamento cercano para
+                        recibir un impulso intensivo.
+                        <b>quien quiere, siempre encuentra el cómo</b
+                        ><img
                             :src="`${$page.props.public_path}images/icon/smile-2.png`"
                             style="width: 22px; margin-bottom: -5px"
                         />
-                        <br />
-                        <br />
-                        la duracion de la consulta es indefinida, es decir,
-                        puedo estar contigo de una hora a cinco horas seguidas,
-                        dependiendo de lo que necesites
-                        <br /><br />
-                        en la consulta trabajare con los recursos que te he
-                        presentado en el libro y, por tanto, utilizare la
-                        desprogramacion de creencias, la reflexion y la
-                        liberacion emocional, para conseguir facilitarte el
-                        camino hacia tu plenitud
+                    </p>
+                    <h4 class="q-mb-none text-uppercase text-black text-bold">
+                        consulta sin reloj
+                    </h4>
+                    <p>
+                        la duracion de la consulta es <b>indefinida</b>. puedo
+                        estar contigo una hora o cinco horas seguidas, segun lo
+                        que necesites
+                    </p>
+                    <p>
+                        en cada sesion trabajaremos con los recursos de mi
+                        libro:
+                        <b
+                            >desprogramacion de creencias, reflexion y
+                            liberacion emocional</b
+                        >, facilitando tu camino hacia la plenitud
                     </p>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-6">
-                <div class="row q-mt-xl items-center">
-                    <div class="col-lg-6 col-md-6 text-center">
-                        <img
-                            :src="`${$page.props.public_path}images/others/mujer-llorando.png`"
-                            class="rounded"
-                            style="width: 80%"
-                        />
-                        <br />
-                        <img
-                            :src="`${$page.props.public_path}images/others/piezas-faltan.png`"
-                            class="rounded"
-                            style="width: 80%"
-                        />
-                    </div>
-                    <div class="col-lg-6 col-md-6 text-center">
-                        <img
-                            :src="`${$page.props.public_path}images/others/mujer-timon-barco.png`"
-                            style="width: 80%"
-                            class="rounded"
-                        />
-                    </div>
-                </div>
+            <div class="col-md-6 col-lg-6 q-pa-lg text-center">
+                <video-player
+                    :src="`${$page.props.public_path}media/consulta-individual.mp4`"
+                    :poster="`${$page.props.public_path}images/others/poster-vivir-en-plenitud.png`"
+                    controls
+                    aspectRatio="4:3"
+                    :volume="0.6"
+                />
             </div>
         </div>
         <div class="row container">
+            <h4 class="q-mb-none text-uppercase text-black text-bold">
+                UN PROCESO DE TRANSFORMACION CON ACOMPAÑAMIENTO
+            </h4>
             <p>
-                normalmente trabajo en un marco temporal de 3 meses con
-                consultas quincenales en donde me mantengo en permanente
-                contacto con la persona que esta liberando y cambiando, para que
-                en ningun momento se sienta sola y desamparada, sino querida y
-                apoyada, pero siempre buscando su empoderamiento, de modo que al
-                cabo de este marco temporal, que podra variar ligeramente segun
-                cada uno, la persona sepa utilizar por si misma todas las
-                herramientas y ya solo necesite apoyarse en mi en momentos
-                puntuales de crisis
-                <br /><br />
-                como sabes, mis clientes se convierten en mis amigos,
-                sencillamente porque me desnudo con ellos, les comprendo y me
-                comprenden, tenemos un fin comun y conectamos desde lo mas
-                profundo de nuestro ser, es por esto que, tanto en el periodo de
-                consultas como posteriormente a lo largo de toda la vida, no
-                cobrare mi acompañamiento, y si me siento desbordada, buscare la
-                formula, junto con dios, para que nunca, jamas, te sientas sola
-                o solo en tu proceso de sanancion y cambio, en tu camino a la
-                plenitud
+                suelo trabajar en un <b>marco de tres meses</b>, con
+                <b>consultas quincenales</b> y un contacto continuo entre
+                sesiones. no quiero que en ningun momento te sientas solo o sin
+                apoyo. sin embargo, siempre busco tu
+                <b>empoderamiento y autonomia</b>. al final de este periodo (que
+                puede ajustarse segun cada persona), sabras utilizar todas las
+                herramientas por ti mismo y solo necesitaras apoyo en momentos
+                puntuales
+            </p>
+            <p>
+                mis clientes se convierten en mis amigos, porque nos
+                comprendemos desde lo mas profundo. por eso, tanto durante el
+                proceso como despues, mi acompañamiento no tiene coste.
+                <b
+                    >si en algun momento me desbordo, encontrarr la forma, junto
+                    con dios, de que nunca te sientas solo en tu camino de
+                    sanacion y cambio</b
+                >
             </p>
         </div>
         <div class="row container q-pb-lg">
@@ -319,14 +310,16 @@
                 </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12">
-                <p
-                    class="text-white"
+                <h4
+                    class="q-mb-none text-uppercase text-white text-bold"
                     :class="screen.xs || screen.sm ? 'q-pt-lg' : ''"
                 >
-                    te dejo varios informes reales, en donde he cambiado el
-                    nombre de la persona para mayor privacidad, con el fin de
-                    que sepas que puedes esperar de una consulta individual
-                    conmigo
+                    QUE PUEDES ESPERAR DE UNA CONSULTA CONMIGO?
+                </h4>
+                <p class="text-white q-pt-lg">
+                    te dejo varios informes reales (con los nombres modificados
+                    para privacidad) para que veas como trabajo y que puedes
+                    esperar de una consulta individual conmigo
                 </p>
             </div>
         </div>
@@ -338,6 +331,8 @@ import { Link } from "@inertiajs/vue3";
 import Layout from "../../layouts/MainLayout.vue";
 import { useQuasar } from "quasar";
 import { computed } from "vue";
+import { VideoPlayer } from "@videojs-player/vue";
+import "video.js/dist/video-js.css";
 
 defineOptions({
     name: "ConsultaIndividual",

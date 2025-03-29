@@ -32,12 +32,16 @@ class PushMessageController extends Controller
             if (isset($request->end_at)) {
                 $data['end_at'] = Carbon::createFromFormat('d/m/Y h:i a', $request->end_at);
             }
+            if ($request->hasFile('logo')) {
+                $path = $request->logo->store('pushmessage', 'public');
+                $data['logo'] = $path;
+            }
             if ($request->hasFile('image')) {
                 $path = $request->image->store('pushmessage', 'public');
                 $data['image'] = $path;
             }
             if ($request->hasFile('video')) {
-                $path = $request->logo->store('pushmessage', 'public');
+                $path = $request->video->store('pushmessage', 'public');
                 $data['video'] = $path;
             }
             $object = $repository->create($data);
@@ -62,35 +66,36 @@ class PushMessageController extends Controller
             }
             $current_image = null;
             if ($request->hasFile('image')) {
-                $path = $request->logo->store('pushmessage', 'public');
+                $path = $request->image->store('pushmessage', 'public');
                 $data['image'] = $path;
                 $object = $repository->getById($id);
                 if (isset($object->image)) {
                     $current_image = $object->image;
                 }
-            } else if (isset($request->image)) {
-                $data['image'] = substr($request->image, strpos($request->image, 'storage') + 8);
             } else {
-                $object = $repository->getById($id);
-                if (isset($object->image)) {
-                    $current_image = $object->image;
-                }
+                unset($data['image']);
             }
             $current_video = null;
             if ($request->hasFile('video')) {
-                $path = $request->logo->store('pushmessage', 'public');
+                $path = $request->video->store('pushmessage', 'public');
                 $data['video'] = $path;
                 $object = $repository->getById($id);
                 if (isset($object->video)) {
                     $current_video = $object->video;
                 }
-            } else if (isset($request->video)) {
-                $data['video'] = substr($request->video, strpos($request->video, 'storage') + 8);
             } else {
+                unset($data['video']);
+            }
+            $current_logo = null;
+            if ($request->hasFile('logo')) {
+                $path = $request->logo->store('pushmessage', 'public');
+                $data['logo'] = $path;
                 $object = $repository->getById($id);
-                if (isset($object->video)) {
-                    $current_video = $object->video;
+                if (isset($object->logo)) {
+                    $current_logo = $object->logo;
                 }
+            } else {
+                unset($data['logo']);
             }
             $object = $repository->updateById($id, $data);
             if (isset($request->sections_id)) {
@@ -101,6 +106,9 @@ class PushMessageController extends Controller
             }
             if (isset($current_video)) {
                 Storage::delete('public/' . $current_video);
+            }
+            if (isset($current_logo)) {
+                Storage::delete('public/' . $current_logo);
             }
             return redirect()->back()->with('success', 'mensaje modificado correctamente');
         }

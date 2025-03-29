@@ -313,6 +313,10 @@ const links = ref([
         url: "/publicaciones",
     },
     {
+        title: "tienda",
+        url: "/store",
+    },
+    {
         title: "contactame",
         url: "/contactame",
     },

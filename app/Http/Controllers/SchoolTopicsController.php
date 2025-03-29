@@ -227,7 +227,20 @@ class SchoolTopicsController extends Controller
         }
         $msg->save();
         $msg->users()->attach($users);
-        $msg->sendNotifications();
+        $msg->sendNotifications(false);
+        return $msg;
+    }
+
+    public function editMessage(Request $request, $id)
+    {
+        $msg = SchoolChat::find($id);
+        $msg->message = $request->message;
+        $msg->save();
+        $attachments = SchoolChat_Attachment::whereNotIn('id', $request->currentAttachments)->get();
+        foreach ($attachments as $a) {
+            $a->delete();
+        }
+        $msg->sendNotifications(true);
         return $msg;
     }
 

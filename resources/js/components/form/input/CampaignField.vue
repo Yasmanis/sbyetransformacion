@@ -68,9 +68,9 @@ onMounted(() => {
 });
 
 const onUpdateCampaign = (name, value, object) => {
-    campaignSections.value = object.sections_id;
+    campaignSections.value = object?.sections_id;
     emits("update", name, value, object);
-    emits("update", "sections_id", object.sections_id);
+    emits("update", "sections_id", object?.sections_id);
 };
 
 const onCreated = (object) => {

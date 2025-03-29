@@ -78,7 +78,7 @@
                         <users-select-dialog-component
                             label="usuarios"
                             name="assigned_to_id"
-                            :default_users="users"
+                            :model-value="users"
                             @update="onUpdateUsers"
                         />
                     </div>

@@ -25,6 +25,7 @@
                 :fields="fields"
                 :module="module"
                 :post-on-update="postOnUpdate"
+                :new-on-create="newOnCreate"
                 @created="onCreated"
                 @updated="showDialog = false"
                 @cancel="showDialog = false"
@@ -86,6 +87,10 @@ const props = defineProps({
     postOnUpdate: {
         type: Boolean,
         default: false,
+    },
+    newOnCreate: {
+        type: Boolean,
+        default: true,
     },
 });
 

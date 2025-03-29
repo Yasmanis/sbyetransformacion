@@ -11,7 +11,7 @@ class PushMessage extends Model
     use DateUtils;
     protected $table = 'push_messages';
 
-    protected $fillable = ['title', 'message', 'status', 'url', 'campaign_id', 'action_button_url', 'action_button_title', 'start_at', 'end_at', 'periodicity'];
+    protected $fillable = ['title', 'message', 'status', 'url', 'campaign_id', 'action_button_url', 'action_button_title', 'start_at', 'end_at', 'periodicity', 'image', 'video', 'logo'];
 
     protected $appends = ['sections_id', 'sections_str', 'campaign_str'];
 
@@ -26,11 +26,14 @@ class PushMessage extends Model
             $obj->created_by = auth()->user()->id;
         });
         static::created(function ($obj) {
-            BriefIdea::create([
+            $bi = BriefIdea::create([
                 'message_id' => $obj->id,
                 'title' => $obj->title,
                 'message' => $obj->message,
             ]);
+            if (request()->has('sections_id')) {
+                $bi->sections()->attach(request('sections_id'));
+            }
         });
     }
 

@@ -58,7 +58,6 @@
                         @click="helpEdit = true"
                         class="absolute-top-right"
                         style="z-index: 1; margin-top: 30px; margin-right: 30px"
-                        v-if="!maximizeEditor"
                     />
                     <editor-field
                         v-model="help"
@@ -77,7 +76,6 @@
                                 help = val;
                             }
                         "
-                        v-if="!maximizeEditor"
                     />
                 </div>
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
@@ -96,7 +94,7 @@
                             },
                         ]"
                         @update="onUpdateTo"
-                        v-if="!props.message && !maximizeEditor"
+                        v-if="!props.message"
                     />
                     <select-field
                         :modelValue="formData.publish"
@@ -115,19 +113,12 @@
                             },
                         ]"
                         @update="onUpdateField"
-                        v-if="!maximizeEditor"
                     />
                     <editor-field
                         v-model="formData.message"
                         name="message"
                         label="mensaje"
                         @update="onUpdateField"
-                        @maximize="
-                            (val) => {
-                                maximizeEditor = val;
-                                maximizedToggle = val;
-                            }
-                        "
                     />
                     <uploader-field
                         label="adjuntos"
@@ -146,7 +137,6 @@
                             }
                         "
                         @finish="onFinishUploaded"
-                        v-if="!maximizeEditor"
                     />
                 </q-form>
             </q-card-section>
@@ -209,7 +199,6 @@ const form = ref(null);
 const currentMessage = ref(null);
 const showInnerLoading = ref(false);
 const maximizedToggle = ref(false);
-const maximizeEditor = ref(false);
 
 onBeforeMount(() => {
     getHelp("help_chat_everybody");
@@ -298,6 +287,7 @@ const onHide = () => {
     formData.message = null;
     helpEdit.value = false;
     maximizedToggle.value = false;
+    totalFiles.value = 0;
     getHelp("help_chat_everybody");
     if (props.message) {
         emits("hide-menu");
