@@ -9,6 +9,7 @@
                 :updateFields="fields"
                 :has_delete="false"
                 :new-on-create="false"
+                :segment="segment"
                 post-on-update
             ></table-component>
         </q-page>
@@ -252,7 +253,7 @@ onBeforeMount(() => {
         name: "actions",
         label: "Acciones",
         type: "actions",
-        width: "100px",
+        width: "160px",
     });
 });
 </script>

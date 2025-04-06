@@ -183,7 +183,8 @@ return [
         'username' => 'usuario',
         'email' => 'correo',
         'title' => 'titulo',
-        'msg' => 'mensaje'
+        'msg' => 'mensaje',
+        'name' => 'nombre'
     ],
 
 ];

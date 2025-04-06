@@ -6,6 +6,7 @@ use App\Http\Controllers\BrevoController;
 use App\Http\Controllers\BriefIdeasController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\ConferenceController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
@@ -17,12 +18,15 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\ContactAdminController;
+use App\Http\Controllers\CountryController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\PrivateMsgController;
 use App\Http\Controllers\PushMessageController;
+use App\Http\Controllers\ReasonForReturnController;
 use App\Http\Controllers\SchoolTopicsController;
 use App\Http\Controllers\SectionsController;
+use App\Http\Controllers\StateController;
 use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
 use App\Models\Configuration;
@@ -114,7 +118,7 @@ Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
         $category->files = $files;
     }
     if ($category->name == 'testimonios') {
-        $testimonies = Testimony::active()->with('user')->orderBy('type', 'DESC')->get();
+        $testimonies = Testimony::active()->with('user')->orderBy('type', 'DESC')->orderBy('order', 'ASC')->get();
     }
     return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'recent_files' => $recent_files, 'testimonies' => $testimonies])->with('error', 'asasdasd');
 })->name('publicaciones');
@@ -189,11 +193,20 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/users/comments/{id}', [UserController::class, 'comments']);
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
+
     Route::resource('/admin/testimony', TestimonyController::class);
+    Route::post('/admin/testimony/sort', [TestimonyController::class, 'sort']);
+
     Route::resource('/admin/push-messages', PushMessageController::class);
     Route::resource('/admin/campaigns', CampaignController::class);
+    Route::resource('/admin/cities', CityController::class);
+    Route::resource('/admin/countries', CountryController::class);
+    Route::resource('/admin/states', StateController::class);
+    Route::resource('/admin/reason-for-return', ReasonForReturnController::class);
     Route::get('/admin/campaigns/logo/{id}', [CampaignController::class, 'logo']);
     Route::resource('/admin/briefideas', BriefIdeasController::class);
+    Route::post('/admin/briefideas/fixed/{id}', [BriefIdeasController::class, 'fixed']);
+    Route::post('/admin/briefideas/config-notification/{id}', [BriefIdeasController::class, 'configNotification']);
     Route::resource('/admin/messages', MessagesController::class);
 
     Route::post('/admin/testimony/publicated/{id}', [TestimonyController::class, 'publicated']);
@@ -247,6 +260,9 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 });
 
 Route::get('/categories', [SelectsController::class, 'categories']);
+Route::get('/countries', [SelectsController::class, 'countries']);
+Route::get('/cities', [SelectsController::class, 'cities']);
+Route::get('/states/{id?}', [SelectsController::class, 'states']);
 Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
 Route::get('/download/{id}', [FileController::class, 'download']);
 Route::post('/subscribe', [BrevoController::class, 'subscribe']);

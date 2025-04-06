@@ -293,7 +293,7 @@ abstract class BaseRepository implements BaseInterface
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginate($limit = 30, array $columns = ['*'], $pageName = 'page', $page = null)
+    public function paginate($limit = 30, array $columns = ['*'], $pageName = 'page', $page = null, $data = null)
     {
         $this->newQuery()->eagerLoad()->setScopes()->setClauses();
 
@@ -366,6 +366,9 @@ abstract class BaseRepository implements BaseInterface
                 if (isset($f->scope)) {
                     $this->scopes[] = ['method' => $f->scope, 'args' => $f->value];
                 } else {
+                    if ($f->type === 'hidden') {
+                        $this->where($f->name, '=', $f->value);
+                    }
                     if ($f->type === 'select') {
                         $this->whereIn($f->name, $f->value);
                     } else if ($f->type === 'boolean' || $f->type === 'number') {

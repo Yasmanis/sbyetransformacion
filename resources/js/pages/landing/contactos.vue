@@ -19,7 +19,7 @@
                         cubrir todos los campos para que podamos comprobar y
                         darte de alta
                     </p>
-                    <q-form ref="formRef" greedy>
+                    <q-form ref="formRef" class="custom-check" greedy>
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                 <i
@@ -498,16 +498,16 @@ const onSubmit = () => {
 };
 </script>
 <style scope>
-.q-checkbox__bg {
+.custom-check .q-checkbox__bg {
     border-radius: 10px;
     border-color: #fff;
 }
 
-.q-checkbox__icon-container i {
+.custom-check .q-checkbox__icon-container i {
     font-size: 0.6em;
 }
 
-.q-checkbox__label {
+.custom-check .q-checkbox__label {
     width: 100%;
 }
 

@@ -8,7 +8,7 @@ defineOptions({
 });
 
 const props = defineProps({
-    modelValue: String,
+    modelValue: String | Number,
     name: {
         type: String,
         required: true,

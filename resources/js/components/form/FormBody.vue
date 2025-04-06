@@ -96,6 +96,12 @@
                     @update="onUpdateField"
                     v-else-if="f.type === 'date'"
                 />
+                <state-field
+                    :country="f.country"
+                    :state="f.state"
+                    @update="onUpdateField"
+                    v-else-if="f.type === 'state'"
+                />
                 <date-time-range-field
                     :start-name="f.startName"
                     :end-name="f.endName"
@@ -147,6 +153,7 @@ import FileField from "./input/FileField.vue";
 import HiddenField from "./input/HiddenField.vue";
 import CampaignField from "./input/CampaignField.vue";
 import PeriodicityField from "./input/PeriodicityField.vue";
+import StateField from "./input/StateField.vue";
 import UsersSelectDialogComponent from "../modules/user/UsersSelectDialogComponent.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
@@ -209,6 +216,27 @@ const setDefaultData = () => {
             formData.value["sections_id"] = props.object
                 ? props.object["sections_id"]
                 : null;
+        } else if (f.type === "state") {
+            let country = {
+                name: f.country?.name ?? "country_id",
+                label: f.country?.label ?? "pais",
+                modelValue: null,
+                othersProps: f.country?.othersProps ?? null,
+            };
+            let state = {
+                name: f.state?.name ?? "state_id",
+                label: f.state?.label ?? "estado",
+                modelValue: null,
+                othersProps: f.state?.othersProps ?? null,
+            };
+            if (props.object) {
+                country.modelValue = props.object[country.name];
+                state.modelValue = props.object[state.name];
+            }
+            formData.value[country.name] = country.modelValue;
+            formData.value[state.name] = state.modelValue;
+            f.country = country;
+            f.state = state;
         } else if (f.type === "users") {
             let users = [];
             let selected = props.object

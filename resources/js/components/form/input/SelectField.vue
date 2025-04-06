@@ -141,6 +141,13 @@ watch(
     }
 );
 
+watch(
+    () => props.othersProps?.url_to_options,
+    (n, o) => {
+        setData();
+    }
+);
+
 const errorMsg = computed(() => {
     return page.props.errors
         ? page.props.errors[props.name]

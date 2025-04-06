@@ -36,7 +36,7 @@
         <div class="row q-pt-xl container">
             <div class="col-md-6 col-lg-6">
                 <div class="column">
-                    <h4 class="q-mb-none text-uppercase text-black text-bold">
+                    <h4 class="q-mb-none text-uppercase text-black">
                         consulta individual
                     </h4>
                     <p>
@@ -60,7 +60,7 @@
                             style="width: 22px; margin-bottom: -5px"
                         />
                     </p>
-                    <h4 class="q-mb-none text-uppercase text-black text-bold">
+                    <h4 class="q-mb-none text-uppercase text-black">
                         consulta sin reloj
                     </h4>
                     <p>
@@ -89,7 +89,7 @@
             </div>
         </div>
         <div class="row container">
-            <h4 class="q-mb-none text-uppercase text-black text-bold">
+            <h4 class="q-mb-none text-uppercase text-black">
                 UN PROCESO DE TRANSFORMACION CON ACOMPAÑAMIENTO
             </h4>
             <p>

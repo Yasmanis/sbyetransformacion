@@ -46,12 +46,24 @@
                         @update="onUpdate"
                         v-if="f.type === 'select'"
                     />
+                    <state-field
+                        :country="f.country"
+                        :state="f.state"
+                        @update="onUpdateState"
+                        v-else-if="f.type === 'state'"
+                    />
+                    <hidden-field
+                        :name="f.name"
+                        :model-value="f.value"
+                        @update="onUpdate"
+                        v-else-if="f.type === 'hidden'"
+                    />
                     <boolean-select-field
                         :name="f.name"
                         :label="f.label"
                         :modelValue="f.value"
                         @update="onUpdate"
-                        v-if="f.type === 'boolean'"
+                        v-else-if="f.type === 'boolean'"
                     />
                     <range-size
                         :name="f.name"
@@ -61,14 +73,14 @@
                         :max="f.max"
                         :unitOfMeasurement="f.unitOfMeasurement"
                         @update="onUpdate"
-                        v-if="f.type === 'range_size'"
+                        v-else-if="f.type === 'range_size'"
                     />
                     <date-range-component
                         :name="f.name"
                         :label="f.label"
                         :modelValue="f.value"
                         @update="onUpdate"
-                        v-if="f.type === 'date'"
+                        v-else-if="f.type === 'date'"
                     />
                 </div>
             </q-card-section>
@@ -91,6 +103,8 @@ import { ref, computed } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import SelectField from "../../form/input/SelectField.vue";
+import StateField from "../../form/input/StateField.vue";
+import HiddenField from "../../form/input/HiddenField.vue";
 import BooleanSelectField from "../../form/input/BooleanSelectField.vue";
 import RangeSize from "../../form/input/RangeSize.vue";
 import DateRangeComponent from "../../form/input/DateRangeComponent.vue";
@@ -130,9 +144,30 @@ const onBeforeShow = () => {
     filters.value = props.fields;
     if (currentFilters.value.length > 0) {
         filters.value.forEach((f) => {
-            let exist = currentFilters.value.find((ff) => ff.name === f.name);
-            f.value = exist ? exist.value : null;
+            if (f.type === "hidden") {
+                setExcludesValue(f);
+            } else {
+                let exist = currentFilters.value.find(
+                    (ff) => ff.name === f.name
+                );
+                f.value = exist ? exist.value : null;
+            }
         });
+    } else {
+        let state = filters.value.find((ff) => ff.type === "state");
+        if (state) {
+            state.country.modelValue = null;
+            state.state.modelValue = null;
+        }
+    }
+};
+
+const setExcludesValue = (f) => {
+    let state = filters.value.find((ff) => ff.type === "state");
+    if (f.name === "country_id") {
+        state.country.modelValue = f.value;
+    } else if (f.name === "state_id") {
+        state.state.modelValue = f.value;
     }
 };
 
@@ -143,6 +178,16 @@ function clear() {
     emit("refresh-data", "filters");
 }
 
+const onUpdateState = (name, val, full) => {
+    let current = filters.value.find((f) => f.name === name);
+    current.value = val;
+    if (val === null && name === "country_id") {
+        filters.value.find((f) => f.name === "state_id").value = null;
+        filters.value.find((ff) => ff.type === "state").state.modelValue = null;
+    }
+    setFilters();
+};
+
 const onUpdate = (name, val, full) => {
     let current = filters.value.find((f) => f.name === name);
     current["value"] = val
@@ -152,7 +197,9 @@ const onUpdate = (name, val, full) => {
                 : [val]
             : val
         : null;
-    setFilters();
+    if (current.type !== "hidden") {
+        setFilters();
+    }
 };
 
 const setFilters = () => {

@@ -203,6 +203,18 @@
                         size="sm"
                         v-if="updateFields.length > 0 && has_edit"
                     />
+                    <view-brief-idea-component
+                        :data="props.row"
+                        v-if="segment === 'briefideas'"
+                    />
+                    <fixed-brief-idea-component
+                        :data="props.row"
+                        v-if="
+                            updateFields.length > 0 &&
+                            has_edit &&
+                            segment === 'briefideas'
+                        "
+                    />
                     <delete-component
                         :objects="[props.row]"
                         :url="current_module.base_url"
@@ -288,6 +300,18 @@
                                                 has_edit
                                             "
                                         />
+                                        <view-brief-idea-component
+                                            :data="props.row"
+                                            v-if="segment === 'briefideas'"
+                                        />
+                                        <fixed-brief-idea-component
+                                            :data="props.row"
+                                            v-if="
+                                                updateFields.length > 0 &&
+                                                has_edit &&
+                                                segment === 'briefideas'
+                                            "
+                                        />
                                         <delete-component
                                             :objects="[props.row]"
                                             :url="current_module.base_url"
@@ -315,6 +339,8 @@ import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";
+import FixedBriefIdeaComponent from "./components/FixedBriefIdeaComponent.vue";
+import ViewBriefIdeaComponent from "./components/ViewBriefIdeaComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
 
@@ -351,6 +377,7 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    segment: String,
 });
 
 const $q = useQuasar();

@@ -13,10 +13,12 @@ class PushMessage extends Model
 
     protected $fillable = ['title', 'message', 'status', 'url', 'campaign_id', 'action_button_url', 'action_button_title', 'start_at', 'end_at', 'periodicity', 'image', 'video', 'logo'];
 
-    protected $appends = ['sections_id', 'sections_str', 'campaign_str'];
+    protected $appends = ['sections_id', 'sections_str', 'campaign_str', 'logo', 'is_fixed', 'notification_config'];
 
     protected $casts = [
-        'periodicity' => 'json'
+        'periodicity' => 'json',
+        'is_fixed' => 'boolean',
+        'notification_config' => 'json'
     ];
 
     public static function boot()
@@ -25,21 +27,21 @@ class PushMessage extends Model
         static::creating(function ($obj) {
             $obj->created_by = auth()->user()->id;
         });
-        static::created(function ($obj) {
-            $bi = BriefIdea::create([
-                'message_id' => $obj->id,
-                'title' => $obj->title,
-                'message' => $obj->message,
-            ]);
-            if (request()->has('sections_id')) {
-                $bi->sections()->attach(request('sections_id'));
-            }
-        });
     }
 
     public function campaign()
     {
-        return $this->belongsTo(Campaign::class);
+        return $this->belongsTo(Campaign::class, 'campaign_id');
+    }
+
+    public function fixed()
+    {
+        return $this->hasMany(PushMessageFixedUser::class, 'message_id');
+    }
+
+    public function config()
+    {
+        return $this->hasMany(PushMessageConfigNotification::class, 'message_id');
     }
 
     public function sections()
@@ -81,5 +83,20 @@ class PushMessage extends Model
     public function getEndAtAttribute($v)
     {
         return isset($v) ? Carbon::parse($v)->format('d/m/Y h:i A') : null;
+    }
+
+    public function getLogoAttribute()
+    {
+        return isset($this->campaign->logo) ? sprintf('storage/%s', $this->campaign->logo) : 'images/logo/1.png';
+    }
+
+    public function getIsFixedAttribute()
+    {
+        return $this->fixed()->where('user_id', auth()->user()->id)->first()->fixed ?? false;
+    }
+
+    public function getNotificationConfigAttribute()
+    {
+        return $this->config()->where('user_id', auth()->user()->id)->first()->data ?? null;
     }
 }

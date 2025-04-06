@@ -21,7 +21,13 @@ class TestimonyController extends Controller
             if (!$user->sa) {
                 $repository->where('user_id', '=', $user->id);
             }
-            $repository->orderBy($request->sortBy, $request->sortDirection);
+            $sortBy = $request->sortBy;
+            $sortDirection = $request->sortDirection;
+            if (!isset($sortBy)) {
+                $sortBy = 'order';
+                $sortDirection = 'ASC';
+            }
+            $repository->orderBy($sortBy, $sortDirection);
             return $this->data_index($repository, $request);
         }
         return $this->deny_access($request);
@@ -114,6 +120,19 @@ class TestimonyController extends Controller
             $testimony->publicated = !$testimony->publicated;
             $testimony->save();
             return redirect()->back()->with('success', $testimony->publicated ? 'testimonio pasado a acceso publico correctamente' : 'testimonio quitado del acceso publico correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function sort(Request $request)
+    {
+        if (auth()->user()->hasUpdate('testimony')) {
+            $testimonies = json_decode($request->ids);
+            $repository = new TestimonyRepository();
+            foreach ($testimonies as $c) {
+                $repository->updateById($c->id, ['order' => $c->order]);
+            }
+            return redirect()->back()->with('success', 'testimonios ordenados correctamente');
         }
         return $this->deny_access($request);
     }

@@ -51,6 +51,12 @@
                             size="sm"
                             v-if="has_add"
                         />
+                        <sort-elements-component
+                            :items="rows"
+                            :url="`${current_module.base_url}/sort`"
+                            tooltips="ordenar testimonios"
+                            v-if="has_edit"
+                        />
                         <btn-reload-component @click="onRequest" />
                         <visible-columns-component
                             :columns="columns"
@@ -329,6 +335,7 @@ import BtnClearComponent from "../../btn/BtnClearComponent.vue";
 import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import QTooltipComponent from "../../base/QTooltipComponent.vue";
+import SortElementsComponent from "../../others/SortElementsComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
 

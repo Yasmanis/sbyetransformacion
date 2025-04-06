@@ -9,9 +9,14 @@ use Illuminate\Support\Facades\Storage;
 
 class PushMessageController extends Controller
 {
+    public function segment()
+    {
+        return 'pushmessage';
+    }
+
     public function index(Request $request)
     {
-        if (auth()->user()->hasView('pushmessage')) {
+        if (auth()->user()->hasView($this->segment())) {
             $repository = new PushMessageRepository();
             $repository->search($request->search);
             $repository->filters($request->filters);
@@ -23,7 +28,7 @@ class PushMessageController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->hasCreate('pushmessage')) {
+        if (auth()->user()->hasCreate($this->segment())) {
             $repository = new PushMessageRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
             if (isset($request->start_at)) {
@@ -48,14 +53,14 @@ class PushMessageController extends Controller
             if (isset($request->sections_id)) {
                 $object->sections()->attach($request->sections_id);
             }
-            return redirect()->back()->with('success', 'mensaje adicionado correctamente');
+            return redirect()->back()->with('success', sprintf('%s correctamente', $this->segment() == 'pushmessage' ? 'mensaje adicionado' : 'idea breve adicionada'));
         }
         return $this->deny_access($request);
     }
 
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('pushmessage')) {
+        if (auth()->user()->hasUpdate($this->segment())) {
             $repository = new PushMessageRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
             if (isset($request->start_at)) {
@@ -110,14 +115,14 @@ class PushMessageController extends Controller
             if (isset($current_logo)) {
                 Storage::delete('public/' . $current_logo);
             }
-            return redirect()->back()->with('success', 'mensaje modificado correctamente');
+            return redirect()->back()->with('success', sprintf('%s correctamente', $this->segment() == 'pushmessage' ? 'mensaje modificado' : 'idea breve modificada'));
         }
         return $this->deny_access($request);
     }
 
     public function destroy(Request $request, $ids)
     {
-        if (auth()->user()->hasDelete('pushmessage')) {
+        if (auth()->user()->hasDelete($this->segment())) {
             $repository = new PushMessageRepository();
             $ids = explode(',', $ids);
             if (count($ids) == 1) {
@@ -125,7 +130,7 @@ class PushMessageController extends Controller
             } else {
                 $repository->deleteMultipleById($ids);
             }
-            return redirect()->back()->with('success', count($ids) == 1 ? 'mensaje eliminado correctamente' : 'mensajes eliminados correctamente');
+            return redirect()->back()->with('success', count($ids) == 1 ? sprintf('%s correctamente', $this->segment() == 'pushmessage' ? 'mensaje eliminado' : 'idea breve eliminada') : sprintf('%s correctamente', $this->segment() == 'pushmessage' ? 'mensajes eliminados' : 'ideas breves eliminadas'));
         }
         return $this->deny_access($request);
     }

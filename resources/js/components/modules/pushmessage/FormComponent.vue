@@ -209,7 +209,7 @@ const getActions = (image, video) => {
         actions.push({
             icon: "mdi-image",
             noCaps: true,
-            color: "white",
+            color: "black",
             noDismiss: true,
             handler: () => {
                 urlImage.value =
@@ -224,7 +224,7 @@ const getActions = (image, video) => {
         actions.push({
             icon: "mdi-video",
             noCaps: true,
-            color: "white",
+            color: "black",
             noDismiss: true,
             handler: () => {
                 if (typeof video === "string") {
@@ -240,7 +240,7 @@ const getActions = (image, video) => {
     }
     actions.push({
         icon: "close",
-        color: "white",
+        color: "black",
         noCaps: true,
     });
     return actions;
@@ -292,6 +292,8 @@ const showPreview = async (timeout = 0) => {
             message: `<span class='text-h6'>${title}</span> <br> <span>${message}</span>`,
             position: "top-left",
             html: true,
+            color: "white",
+            textColor: "black",
             iconSize: "100px",
             classes: "hidde-on-show-dialog",
             timeout: timeout,

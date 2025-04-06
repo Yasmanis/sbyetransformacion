@@ -9,7 +9,7 @@ class Testimony extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'message', 'type', 'user_id', 'publicated', 'name_to_show', 'anonimous', 'msg_to_admin', 'amazon_image'];
+    protected $fillable = ['title', 'message', 'type', 'user_id', 'publicated', 'name_to_show', 'anonimous', 'msg_to_admin', 'amazon_image', 'order'];
 
     protected $casts = [
         'publicated' => 'boolean',
@@ -17,7 +17,8 @@ class Testimony extends Model
     ];
 
     protected $appends = [
-        'user_name'
+        'user_name',
+        'name'
     ];
 
     public function user()
@@ -39,5 +40,10 @@ class Testimony extends Model
     public function getUserNameAttribute()
     {
         return $this->user->full_name;
+    }
+
+    public function getNameAttribute()
+    {
+        return sprintf('%s (%s)', $this->title, $this->user_name);
     }
 }

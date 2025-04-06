@@ -2,78 +2,88 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\BriefIdeaRepository;
-use Carbon\Carbon;
+use App\Models\PushMessageConfigNotification;
+use App\Models\PushMessageFixedUser;
 use Illuminate\Http\Request;
+use App\Repositories\PushMessageRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Inertia\Inertia;
 
 class BriefIdeasController extends PushMessageController
 {
-    // public function index(Request $request)
-    // {
-    //     if (auth()->user()->hasView('briefidea')) {
-    //         $repository = new BriefIdeaRepository();
-    //         $repository->search($request->search);
-    //         $repository->filters($request->filters);
-    //         $repository->orderBy($request->sortBy, $request->sortDirection);
-    //         return $this->data_index($repository, $request);
-    //     }
-    //     return $this->deny_access($request);
-    // }
+    public function segment()
+    {
+        return 'briefidea';
+    }
 
-    // public function store(Request $request)
-    // {
-    //     if (auth()->user()->hasCreate('briefidea')) {
-    //         $request->validate([
-    //             'title' => ['required'],
-    //         ]);
-    //         $repository = new BriefIdeaRepository();
-    //         $data = $request->only((new ($repository->model()))->getFillable());
-    //         if (isset($request->start_date)) {
-    //             $data['start_date'] = Carbon::createFromFormat('d/m/Y', $request->start_date);
-    //         }
-    //         if (isset($request->end_date)) {
-    //             $data['end_date'] = Carbon::createFromFormat('d/m/Y', $request->end_date);
-    //         }
-    //         $object = $repository->create($data);
-    //         if (isset($request->sections)) {
-    //             $object->sections()->attach($request->sections);
-    //         }
-    //         if (isset($request->users)) {
-    //             $object->assignedTo()->attach($request->users);
-    //         }
-    //         return redirect()->back()->with([
-    //             'success' => 'idea breve adicionada correctamente',
-    //             'object' => $object->only('id', 'title')
-    //         ]);
-    //     }
-    //     return $this->deny_access($request);
-    // }
+    public function index(Request $request)
+    {
+        if (auth()->user()->hasView($this->segment())) {
+            $repository = new PushMessageRepository();
+            $repository->search($request->search);
+            $repository->filters($request->filters);
+            $sortBy = $request->sortBy;
+            $sortDirection = $request->sortDirection;
+            $data = [];
+            if (empty($sortBy)) {
+                $data = $repository->get()->sortByDesc('is_fixed')->values();
+            } else {
+                $repository->orderBy($sortBy, $sortDirection);
+            }
+            return Inertia::render($repository->component(), [
+                'data' => !empty($sortBy) ? $repository->paginate(
+                    isset($request->rowsPerPage) ? $request->rowsPerPage : 20,
+                    ['*'],
+                    'page',
+                    isset($request->page) ? $request->page : null
+                ) : new LengthAwarePaginator(
+                    $data,
+                    $repository->count(),
+                    isset($request->rowsPerPage) ? $request->rowsPerPage : 20,
+                    isset($request->page) ? $request->page : null
+                ),
+                'search' => isset($request->search) ? json_decode($request->search) : null,
+                'filters' => isset($request->filters) ? json_decode($request->filters) : null,
+                'sort' => isset($request->sortBy) ? [
+                    'sortBy' => $request->sortBy,
+                    'sortDirection' => $request->sortDirection
+                ] : null
+            ]);
+        }
+        return $this->deny_access($request);
+    }
 
-    // public function update(Request $request, $id)
-    // {
-    //     if (auth()->user()->hasUpdate('briefidea')) {
-    //         $request->validate([
-    //             'title' => ['required'],
-    //         ]);
-    //         $repository = new BriefIdeaRepository();
-    //         $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
-    //         return redirect()->back()->with('success', 'idea breve modificada correctamente');
-    //     }
-    //     return $this->deny_access($request);
-    // }
+    public function fixed(Request $request, $id)
+    {
+        $user = auth()->user();
+        $object = PushMessageFixedUser::where('user_id', $user->id)->where('message_id', $id)->first();
+        if ($object == null) {
+            $object = PushMessageFixedUser::create([
+                'user_id' => $user->id,
+                'message_id' => $id,
+                'fixed' => true
+            ]);
+        } else {
+            $object->fixed = !$object->fixed;
+            $object->save();
+        }
+        return redirect()->back()->with('success', sprintf('idea breve %s correctamente', $object->fixed ? 'fijada' : 'dejada de fijar'));
+    }
 
-    // public function destroy(Request $request, $ids)
-    // {
-    //     if (auth()->user()->hasDelete('briefidea')) {
-    //         $repository = new BriefIdeaRepository();
-    //         $ids = explode(',', $ids);
-    //         if (count($ids) == 1) {
-    //             $repository->deleteById($ids[0]);
-    //         } else {
-    //             $repository->deleteMultipleById($ids);
-    //         }
-    //         return redirect()->back()->with('success', count($ids) == 1 ? 'idea breve eliminada correctamente' : 'ideas breves eliminadas correctamente');
-    //     }
-    //     return $this->deny_access($request);
-    // }
+    public function configNotification(Request $request, $id)
+    {
+        $user = auth()->user();
+        $object = PushMessageConfigNotification::where('user_id', $user->id)->where('message_id', $id)->first();
+        if ($object == null) {
+            $object = PushMessageConfigNotification::create([
+                'user_id' => $user->id,
+                'message_id' => $id,
+                'data' => $request->config
+            ]);
+        } else {
+            $object->data = $request->config;
+            $object->save();
+        }
+        return redirect()->back()->with('success', 'notificacion configurada correctamente');
+    }
 }

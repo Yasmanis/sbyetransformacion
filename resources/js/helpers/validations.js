@@ -3,6 +3,9 @@ import { date } from "quasar";
 
 const isValidUrl = (url) => {
     try {
+        if (url === null || url.trim() === "") {
+            return true;
+        }
         new URL(url);
         return true;
     } catch (e) {

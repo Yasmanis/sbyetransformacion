@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\BriefIdea;
 use App\Models\Message;
 
 class MessageRepository extends BaseRepository
