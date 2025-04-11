@@ -285,11 +285,19 @@ const showPreview = async (timeout = 0) => {
         } else {
             logo =
                 typeof logo === "string"
-                    ? `${page.props.public_path}storage/${logo}`
+                    ? `${page.props.public_path}${logo}`
                     : URL.createObjectURL(logo);
         }
+        let imgView = "";
+        if (image !== null) {
+            image =
+                typeof image === "string"
+                    ? `${page.props.public_path}storage/${image}`
+                    : URL.createObjectURL(image);
+            imgView = `<img src='${image}' width="120px" style="float: left;" class="q-mr-md"/>`;
+        }
         Notify.create({
-            message: `<span class='text-h6'>${title}</span> <br> <span>${message}</span>`,
+            message: `<div class="row">${imgView}<p class='text-h6'>${title}</p> <br> <span>${message}</span></div> <div class="row"><div class="col text-center"><img src='${logo}' width="80px"/></div></div>`,
             position: "top-left",
             html: true,
             color: "white",
@@ -297,7 +305,6 @@ const showPreview = async (timeout = 0) => {
             iconSize: "100px",
             classes: "hidde-on-show-dialog",
             timeout: timeout,
-            icon: `img:${logo}`,
             caption: date.formatDate(new Date(), "MMMM DD, YYYY"),
             actions: getActions(image, video),
             badgeStyle: {

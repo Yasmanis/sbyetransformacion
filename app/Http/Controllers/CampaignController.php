@@ -120,7 +120,7 @@ class CampaignController extends Controller
     {
         $repository = new CampaignRepository();
         $object = $repository->getById($id);
-        $logo = isset($object->logo) ? sprintf('storage/%s', $object->logo) : 'images/logo/1.png';
+        $logo = isset($object->logo) ? sprintf('storage/%s', $object->logo) : 'images/logo/2.png';
         return response()->json(['success' => true, 'logo' => $logo]);
     }
 }

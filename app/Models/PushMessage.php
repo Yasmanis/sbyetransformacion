@@ -87,7 +87,7 @@ class PushMessage extends Model
 
     public function getLogoAttribute()
     {
-        return isset($this->campaign->logo) ? sprintf('storage/%s', $this->campaign->logo) : 'images/logo/1.png';
+        return isset($this->campaign->logo) ? sprintf('storage/%s', $this->campaign->logo) : 'images/logo/2.png';
     }
 
     public function getIsFixedAttribute()
