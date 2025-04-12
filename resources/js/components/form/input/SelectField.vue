@@ -14,6 +14,7 @@
         :rules="fieldRules"
         :error="errorMsg !== null"
         :error-message="errorMsg"
+        :loading="loading"
         lazy-rules
         reactive-rules
         input-debounce="0"
@@ -113,6 +114,7 @@ const allOptions = ref([]);
 
 const fieldRules = ref([]);
 const fieldHelp = ref([]);
+const loading = ref(false);
 
 onBeforeMount(() => {
     const { rules, help } = validations.getRules(props.othersProps);
@@ -171,6 +173,7 @@ const setData = async () => {
 
 const setDataFromServer = async () => {
     if (props?.othersProps?.url_to_options) {
+        loading.value = true;
         await axios
             .get(props.othersProps.url_to_options)
             .then((response) => {
@@ -178,6 +181,9 @@ const setDataFromServer = async () => {
             })
             .catch((error) => {
                 currentOptions.value = [];
+            })
+            .finally(() => {
+                loading.value = false;
             });
     }
 };

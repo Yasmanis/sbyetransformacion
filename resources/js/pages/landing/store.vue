@@ -26,24 +26,22 @@
                 closable
             />
             <q-card-section>
-                <div class="row">
+                <div class="row bg-teal-11">
                     <div
-                        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 bg-teal-11 q-pa-xl text-center"
+                        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 q-pa-xl self-center text-center"
                     >
-                        <p class="text-center">
-                            ES LA PRIMERA VEZ <br />
-                            QUE CONTRATO EN SBYE DIETAPP
-                        </p>
-                        <q-btn label="INICIAR REGISTRO" color="primary" />
+                        <form-register-component />
                     </div>
                     <div
-                        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 q-pa-xl"
+                        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 q-pa-xl bg-white"
                     >
                         <div class="column items-center">
                             <q-form ref="formRef" class="q-gutter-md">
                                 <q-card flat>
                                     <q-card-section class="q-gutter-sm">
-                                        <p>YA SOY CLIENTE EN SBYE DIETAPP</p>
+                                        <p class="text-center">
+                                            YA SOY CLIENTE EN SBYE DIETAPP
+                                        </p>
                                         <text-field
                                             label="email"
                                             name="email"
@@ -89,8 +87,7 @@ import CheckboxField from "../../components/form/input/CheckboxField.vue";
 import DialogHeaderComponent from "../../components/base/DialogHeaderComponent.vue";
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
-import { VideoPlayer } from "@videojs-player/vue";
-import "video.js/dist/video-js.css";
+import FormRegisterComponent from "../../components/landing/store/FormRegisterComponent.vue";
 
 defineOptions({
     name: "ConsultaIndividual",

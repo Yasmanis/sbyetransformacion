@@ -80,10 +80,16 @@
                 <div class="row">
                     <div
                         class="col-xs-5 col-md-12 col-lg-12 col-sm-12 col-xl-12"
+                        v-if="data.image"
                     >
                         <q-img
-                            :src="`${$page.props.public_path}${data.logo}`"
+                            :src="`${$page.props.public_path}${
+                                data.image.startsWith('image')
+                                    ? data.image
+                                    : `storage/${data.image}`
+                            }`"
                             :ratio="1"
+                            fit="fill"
                         />
                     </div>
                     <div
@@ -91,6 +97,23 @@
                         :class="Screen.xs ? 'q-pl-sm' : 'q-pt-sm'"
                     >
                         <span v-html="data.message"></span>
+                    </div>
+                    <div
+                        class="full-width text-center q-pt-md"
+                        v-if="data.logo"
+                    >
+                        <q-img
+                            :src="`${$page.props.public_path}${data.logo}`"
+                            width="100px"
+                        />
+
+                        <q-btn-component
+                            icon="mdi-video"
+                            class="absolute-bottom-right q-ma-xs"
+                            tooltips="ver video"
+                            @click="dialogVideo = true"
+                            v-if="data.video"
+                        />
                     </div>
                 </div>
             </q-card-section>
@@ -106,6 +129,29 @@
         @ok="disableNotification"
         @hide="show = false"
     />
+
+    <q-dialog v-model="dialogVideo" persistent v-if="data.video">
+        <q-card>
+            <q-card-section style="width: 400px">
+                <q-responsive :ratio="1">
+                    <video-player
+                        :src="`${$page.props.public_path}storage/${data.video}`"
+                        controls
+                        aspectRatio="16:9"
+                        :volume="0.6"
+                    />
+                </q-responsive>
+                <q-btn
+                    label="cerrar"
+                    no-caps
+                    color="primary"
+                    outline
+                    class="full-width q-mt-sm"
+                    @click="dialogVideo = false"
+                />
+            </q-card-section>
+        </q-card>
+    </q-dialog>
 </template>
 
 <script setup>
@@ -118,6 +164,9 @@ import { router, useForm } from "@inertiajs/vue3";
 import { onMounted, ref } from "vue";
 import { Screen } from "quasar";
 import { errorValidation } from "../../../../helpers/notifications";
+import { VideoPlayer } from "@videojs-player/vue";
+import "video.js/dist/video-js.css";
+
 defineOptions({
     name: "ViewBriefIdeaComponent",
 });
@@ -128,6 +177,7 @@ const props = defineProps({
 
 const show = ref(false);
 const showDialog = ref(false);
+const dialogVideo = ref(false);
 const formData = useForm({
     config: {
         by: null,

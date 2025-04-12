@@ -205,21 +205,6 @@ const onShowPreview = (d) => {
 
 const getActions = (image, video) => {
     let actions = [];
-    if (image !== null) {
-        actions.push({
-            icon: "mdi-image",
-            noCaps: true,
-            color: "black",
-            noDismiss: true,
-            handler: () => {
-                urlImage.value =
-                    typeof image === "string"
-                        ? `${page.props.public_path}storage/${image}`
-                        : URL.createObjectURL(image);
-                dialogImage.value = true;
-            },
-        });
-    }
     if (video !== null) {
         actions.push({
             icon: "mdi-video",
@@ -294,10 +279,10 @@ const showPreview = async (timeout = 0) => {
                 typeof image === "string"
                     ? `${page.props.public_path}storage/${image}`
                     : URL.createObjectURL(image);
-            imgView = `<img src='${image}' width="120px" style="float: left;" class="q-mr-md"/>`;
+            imgView = `<q-item-section><img src='${image}' width="120px" style="float: left;" class="q-mr-md"/></q-item-section>`;
         }
         Notify.create({
-            message: `<div class="row">${imgView}<p class='text-h6'>${title}</p> <br> <span>${message}</span></div> <div class="row"><div class="col text-center"><img src='${logo}' width="80px"/></div></div>`,
+            message: `<q-item>${imgView}<q-item-section><q-item-label class='text-h6 q-mb-none'>${title}</q-item-label> <q-item-label>${message}<q-item-label></q-item-section></q-item> <q-item><div class="col text-center"><br><img src='${logo}' width="80px"/></q-item>`,
             position: "top-left",
             html: true,
             color: "white",
