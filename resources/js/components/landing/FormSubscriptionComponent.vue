@@ -78,8 +78,9 @@
                         >
                             <q-checkbox
                                 v-model="form.conditions"
-                                color="white"
+                                class="text-white checkbox-white"
                                 checked-icon="mdi-circle"
+                                unchecked-icon="mdi-circle-outline"
                                 dense
                                 label="acepto las condiciones y recibir tus newsletters"
                             />
@@ -215,19 +216,6 @@ const submit = () => {
 };
 </script>
 <style>
-.q-checkbox__bg {
-    border-radius: 10px;
-    border-color: #fff;
-}
-
-.q-checkbox__icon-container i {
-    font-size: 0.6em;
-}
-
-.q-checkbox__label {
-    width: 100%;
-}
-
 .mdi-asterisk {
     opacity: 0.8;
     position: absolute;

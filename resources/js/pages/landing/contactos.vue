@@ -158,8 +158,9 @@
                             >
                                 <q-checkbox
                                     v-model="contactPrivateArea"
-                                    color="white"
+                                    class="text-white checkbox-white"
                                     checked-icon="mdi-circle"
+                                    unchecked-icon="mdi-circle-outline"
                                     dense
                                     label="contacto para que me deis de alta en el
                                                 area privada"
@@ -268,15 +269,12 @@
                             >
                                 <q-checkbox
                                     v-model="iAmNot"
-                                    color="white"
+                                    class="text-white checkbox-white"
                                     checked-icon="mdi-circle"
+                                    unchecked-icon="mdi-circle-outline"
+                                    label="la persona que aparece en el ticket no soy yo"
                                     dense
-                                >
-                                    <span class="text-white"
-                                        >la persona que aparece en el ticket no
-                                        soy yo</span
-                                    >
-                                </q-checkbox>
+                                />
                             </div>
                             <div
                                 class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
@@ -498,19 +496,6 @@ const onSubmit = () => {
 };
 </script>
 <style scope>
-.custom-check .q-checkbox__bg {
-    border-radius: 10px;
-    border-color: #fff;
-}
-
-.custom-check .q-checkbox__icon-container i {
-    font-size: 0.6em;
-}
-
-.custom-check .q-checkbox__label {
-    width: 100%;
-}
-
 .mdi-asterisk {
     opacity: 0.8;
     position: absolute;
@@ -523,15 +508,6 @@ const onSubmit = () => {
     margin-top: 5px !important;
     margin-left: 83px;
     z-index: 9;
-}
-
-.q-field__control::before,
-.q-field__control::after {
-    border: 0.5px solid !important;
-}
-
-.q-textarea .q-field__native {
-    resize: none !important;
 }
 
 .q-field__messages {

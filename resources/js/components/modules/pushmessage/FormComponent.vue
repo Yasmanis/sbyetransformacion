@@ -203,34 +203,6 @@ const onShowPreview = (d) => {
     showPreview();
 };
 
-const getActions = (image, video) => {
-    let actions = [];
-    if (video !== null) {
-        actions.push({
-            icon: "mdi-video",
-            noCaps: true,
-            color: "black",
-            noDismiss: true,
-            handler: () => {
-                if (typeof video === "string") {
-                    urlVideo.value = `${page.props.public_path}storage/${video}`;
-                    blobVideo.value = true;
-                } else {
-                    urlVideo.value = URL.createObjectURL(video);
-                    blobVideo.value = true;
-                }
-                dialogVideo.value = true;
-            },
-        });
-    }
-    actions.push({
-        icon: "close",
-        color: "black",
-        noCaps: true,
-    });
-    return actions;
-};
-
 const getLogo = async (campaign) => {
     let result = `${page.props.public_path}images/logo/1.png`;
     if (campaign !== null) {
@@ -281,8 +253,15 @@ const showPreview = async (timeout = 0) => {
                     : URL.createObjectURL(image);
             imgView = `<q-item-section><img src='${image}' width="120px" style="float: left;" class="q-mr-md"/></q-item-section>`;
         }
-        Notify.create({
-            message: `<q-item>${imgView}<q-item-section><q-item-label class='text-h6 q-mb-none'>${title}</q-item-label> <q-item-label>${message}<q-item-label></q-item-section></q-item> <q-item><div class="col text-center"><br><img src='${logo}' width="80px"/></q-item>`,
+        const notification = await Notify.create({
+            message: `<q-item>${imgView}<q-item-section><q-item-label class='text-h6 q-mb-none'>${title}</q-item-label> <q-item-label>${message}<q-item-label></q-item-section></q-item><div class="row"><div class="col self-center" style="opacity: 0.7">${date.formatDate(
+                new Date(),
+                "MMMM DD, YYYY"
+            )}</div><div class="col text-center"><img src='${logo}' width="80px"/></div><div class="col self-center text-right" style="font-size: 24px;">${
+                video
+                    ? '<i class="cursor-pointer mdi mdi-video q-mr-sm" id="video-btn"></i>'
+                    : ""
+            }<i class="cursor-pointer mdi mdi-close" id="notification-close"></i></div></div>`,
             position: "top-left",
             html: true,
             color: "white",
@@ -290,8 +269,6 @@ const showPreview = async (timeout = 0) => {
             iconSize: "100px",
             classes: "hidde-on-show-dialog",
             timeout: timeout,
-            caption: date.formatDate(new Date(), "MMMM DD, YYYY"),
-            actions: getActions(image, video),
             badgeStyle: {
                 display: timeout === 1 ? "none" : "inherit",
             },
@@ -304,6 +281,23 @@ const showPreview = async (timeout = 0) => {
         });
         showing = true;
         formBody.value?.disablePreview(true);
+
+        let closeBtn = document.getElementById("notification-close");
+        closeBtn.addEventListener("click", (ev) => {
+            notification();
+        });
+
+        let videoBtn = document.getElementById("video-btn");
+        videoBtn.addEventListener("click", (ev) => {
+            if (typeof video === "string") {
+                urlVideo.value = `${page.props.public_path}storage/${video}`;
+                blobVideo.value = true;
+            } else {
+                urlVideo.value = URL.createObjectURL(video);
+                blobVideo.value = true;
+            }
+            dialogVideo.value = true;
+        });
     }
 };
 

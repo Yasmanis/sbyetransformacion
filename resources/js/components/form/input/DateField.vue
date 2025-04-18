@@ -101,6 +101,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    endNow: {
+        type: Boolean,
+        default: false,
+    },
     todayBtn: {
         type: Boolean,
         default: true,
@@ -146,9 +150,13 @@ watch(
 );
 
 const options = (date) => {
-    if (props.startNow) {
+    if (props.startNow && props.endNow)
+        return date === useDate.formatDate(Date.now(), "YYYY/MM/DD");
+    else if (props.startNow)
         return date >= useDate.formatDate(Date.now(), "YYYY/MM/DD");
-    } else if (props.startDate && props.endDate)
+    else if (props.endNow)
+        return date <= useDate.formatDate(Date.now(), "YYYY/MM/DD");
+    else if (props.startDate && props.endDate)
         return date >= props.startDate && date <= props.endDate;
     else if (props.startDate) return date >= props.startDate;
     else if (props.endDate) return date <= props.endDate;

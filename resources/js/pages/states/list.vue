@@ -1,14 +1,14 @@
 <template>
     <Layout>
         <q-page padding>
-            <!-- <table-component
+            <table-component
                 :columns="columns"
                 :searchFields="searchFields"
                 :filterFields="filterFields"
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
-            ></table-component> -->
+            ></table-component>
         </q-page>
     </Layout>
 </template>

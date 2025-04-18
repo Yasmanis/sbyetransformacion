@@ -146,8 +146,9 @@ Route::post('/contacts/store', [ContactsController::class, 'store']);
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/authenticate', [AuthController::class, 'authenticate']);
 Route::post('/getPassword', [AuthController::class, 'getPassword']);
+Route::post('/buyer-register', [AuthController::class, 'buyerRegister']);
 
-Route::get('/shared-file/${id}', function ($id) {
+Route::get('/shared-file/{id}', function ($id) {
     $id = base64_decode($id);
     $file = File::find($id);
     if ($file != null) {
@@ -261,7 +262,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
 Route::get('/categories', [SelectsController::class, 'categories']);
 Route::get('/countries', [SelectsController::class, 'countries']);
-Route::get('/cities', [SelectsController::class, 'cities']);
+Route::get('/cities/{id?}', [SelectsController::class, 'cities']);
 Route::get('/states/{id?}', [SelectsController::class, 'states']);
 Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
 Route::get('/download/{id}', [FileController::class, 'download']);

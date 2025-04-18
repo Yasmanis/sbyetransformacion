@@ -222,3 +222,7 @@
 .swal2-container {
     z-index: 9999;
 }
+
+.checkbox-white .q-checkbox__inner i {
+    color: #fff !important;
+}

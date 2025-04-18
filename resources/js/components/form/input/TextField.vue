@@ -18,6 +18,9 @@
         class="full-width"
         @update:model-value="(val) => update(val)"
     >
+        <template v-slot:before v-if="$slots.before">
+            <slot name="before"></slot>
+        </template>
         <template #hint v-if="fieldHelp?.length > 0">
             <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
                 <li
@@ -47,10 +50,7 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    label: {
-        type: String,
-        required: true,
-    },
+    label: String,
     dense: {
         type: Boolean,
         default: true,

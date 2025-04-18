@@ -7,6 +7,7 @@ use App\Models\Contact;
 use App\Models\User;
 use App\Models\UserNotifications;
 use App\Notifications\StandardNotification;
+use App\Repositories\BuyerRepository;
 use App\Repositories\ContactRepository;
 use App\Repositories\UserRepository;
 use Carbon\Carbon;
@@ -182,5 +183,39 @@ class AuthController extends Controller
                 )),
             )
         );
+    }
+
+    public function buyerRegister(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'unique:users'],
+            'password' => ['required', 'min:8'],
+            'password_confirmed' => ['required', 'same:password'],
+        ]);
+        $repository = new UserRepository();
+        $data = $request->only((new ($repository->model()))->getFillable());
+        $data['username'] = $request->email;
+        $data['password'] = $request->password;
+        $data['active'] = false;
+        $user = $repository->create($data);
+        $repository = new BuyerRepository();
+        $data = $request->only((new ($repository->model()))->getFillable());
+        $data['user_id'] = $user->id;
+        $data['birthdate'] = Carbon::createFromFormat('d/m/Y', $data['birthdate']);
+        $buyer = $repository->create($data);
+
+        $notification = new UserNotifications();
+        $notification->title = 'registro de nuevo comprador';
+        $notification->priority = 'Alta';
+        $notification->user_id = $user->id;
+        $notification->description = sprintf('el usuario con correo <b>%s</b> se ha registrado como comprador', $request->email);
+        $notification->code = 'buyer_register';
+        $notification->model = 'Buyer';
+        $notification->model_id = $buyer->id;
+        $notification->save();
+
+        $users = User::isAdmin()->get();
+        Notification::send($users, new StandardNotification($notification));
+        return redirect()->back()->with('success', 'registro realizado correctamente; espere un correo especificando los detalles de su cuenta');
     }
 }

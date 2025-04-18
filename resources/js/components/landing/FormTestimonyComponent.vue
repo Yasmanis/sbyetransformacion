@@ -21,7 +21,12 @@
                     <br />
                     gracias!
                 </p>
-                <q-form ref="formRef" greedy v-if="showForm">
+                <q-form
+                    ref="formRef"
+                    class="form-testimony"
+                    greedy
+                    v-if="showForm"
+                >
                     <div class="row">
                         <div
                             class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
@@ -45,6 +50,8 @@
                                 v-model="form.anonimous"
                                 color="white"
                                 checked-icon="mdi-circle"
+                                unchecked-icon="mdi-circle-outline"
+                                class="checkbox-white"
                                 dense
                                 label="marca esta casilla si quieres hacer un testimonio anonimo, aunque es preferible que utilices un pseudonimo o solo tu nombre o diminutivo"
                             />
@@ -84,7 +91,9 @@
                                 v-model="form.testimonyTextCheck"
                                 color="white"
                                 checked-icon="mdi-circle"
+                                unchecked-icon="mdi-circle-outline"
                                 dense
+                                class="checkbox-white"
                                 label="escribir el testimonio"
                             />
                         </div>
@@ -117,7 +126,9 @@
                             <q-checkbox
                                 v-model="form.testimonyVideoCheck"
                                 color="white"
+                                class="checkbox-white"
                                 checked-icon="mdi-circle"
+                                unchecked-icon="mdi-circle-outline"
                                 dense
                                 label="subir testimonio en forma de video"
                                 @update:model-value="onChangeTestimonyType"
@@ -171,7 +182,9 @@
                             <q-checkbox
                                 v-model="form.amazonImgAttach"
                                 color="white"
+                                class="checkbox-white"
                                 checked-icon="mdi-circle"
+                                unchecked-icon="mdi-circle-outline"
                                 dense
                                 label="adjuntar imagen del testimonio de amazon"
                                 @update:model-value="onChangeTestimonyType"
@@ -229,7 +242,9 @@
                             <q-checkbox
                                 v-model="form.sendAdmMsg"
                                 color="white"
+                                class="checkbox-white"
                                 checked-icon="mdi-circle"
+                                unchecked-icon="mdi-circle-outline"
                                 dense
                                 label="hablar con el administrador del sitio web"
                             />
@@ -439,19 +454,6 @@ const submit = () => {
 };
 </script>
 <style>
-.q-checkbox__bg {
-    border-radius: 10px;
-    border-color: #fff;
-}
-
-.q-checkbox__icon-container i {
-    font-size: 0.6em;
-}
-
-.q-checkbox__label {
-    width: 100%;
-}
-
 .img-aster-testimony {
     margin-top: 5px !important;
     margin-left: 98px;

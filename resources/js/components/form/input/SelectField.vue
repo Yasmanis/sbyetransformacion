@@ -6,6 +6,7 @@
         :options-dense="dense"
         :name="name"
         :label="label"
+        :disable="disable"
         :multiple="multiple"
         :clearable="clearable"
         :options="currentOptions"
@@ -25,6 +26,11 @@
         @filter="filterFn"
         @update:model-value="updateModel"
     >
+        <template v-slot:selected-item="scope">
+            <q-item-label lines="1" style="margin-top: 5px">{{
+                scope.opt.label
+            }}</q-item-label>
+        </template>
         <template v-slot:after v-if="$slots.after">
             <slot name="after"></slot>
         </template>
@@ -77,6 +83,10 @@ const props = defineProps({
         type: String,
     },
     multiple: {
+        type: Boolean,
+        default: false,
+    },
+    disable: {
         type: Boolean,
         default: false,
     },
@@ -144,6 +154,13 @@ watch(
 );
 
 watch(
+    () => props.options,
+    (n, o) => {
+        setData();
+    }
+);
+
+watch(
     () => props.othersProps?.url_to_options,
     (n, o) => {
         setData();
@@ -159,6 +176,7 @@ const errorMsg = computed(() => {
 });
 
 const setData = async () => {
+    currentOptions.value = [];
     await setDataFromServer();
     if (currentOptions.value.length === 0) {
         currentOptions.value = props.options;

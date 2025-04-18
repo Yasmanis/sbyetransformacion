@@ -170,7 +170,7 @@
 import { ref, computed, watch } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import { login, getPassword } from "../../services/auth";
-import { errorValidation, error } from "../../helpers/notifications";
+import { errorValidation } from "../../helpers/notifications";
 import QBtnComponent from "../../components/base/QBtnComponent.vue";
 defineOptions({
     name: "Login",
