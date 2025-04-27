@@ -1,12 +1,10 @@
 <?php
 
-use App\Events\PushMessage;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BrevoController;
 use App\Http\Controllers\BriefIdeasController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CityController;
 use App\Http\Controllers\ConferenceController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
@@ -22,22 +20,17 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\PrivateMsgController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\ReasonForReturnController;
 use App\Http\Controllers\SchoolTopicsController;
 use App\Http\Controllers\SectionsController;
-use App\Http\Controllers\StateController;
 use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
-use App\Models\PasswordChangeNotification;
 use App\Models\Testimony;
-use App\Models\User;
-use App\Notifications\StandardNotification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Pusher\Pusher;
@@ -200,10 +193,9 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
     Route::resource('/admin/push-messages', PushMessageController::class);
     Route::resource('/admin/campaigns', CampaignController::class);
-    Route::resource('/admin/cities', CityController::class);
     Route::resource('/admin/countries', CountryController::class);
-    Route::resource('/admin/states', StateController::class);
     Route::resource('/admin/reason-for-return', ReasonForReturnController::class);
+    Route::resource('/admin/products', ProductController::class);
     Route::get('/admin/campaigns/logo/{id}', [CampaignController::class, 'logo']);
     Route::resource('/admin/briefideas', BriefIdeasController::class);
     Route::post('/admin/briefideas/fixed/{id}', [BriefIdeasController::class, 'fixed']);
@@ -262,8 +254,6 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
 Route::get('/categories', [SelectsController::class, 'categories']);
 Route::get('/countries', [SelectsController::class, 'countries']);
-Route::get('/cities/{id?}', [SelectsController::class, 'cities']);
-Route::get('/states/{id?}', [SelectsController::class, 'states']);
 Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
 Route::get('/download/{id}', [FileController::class, 'download']);
 Route::post('/subscribe', [BrevoController::class, 'subscribe']);

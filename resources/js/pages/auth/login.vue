@@ -6,7 +6,7 @@
             >
                 <div class="column q-pa-lg">
                     <q-card square class="shadow-24" style="width: 300px">
-                        <q-card-section class="bg-black">
+                        <q-card-section class="bg-primary">
                             <q-img
                                 :src="`${$page.props.public_path}images/logo/1.png`"
                             />
@@ -77,7 +77,7 @@
                         <q-card-section class="q-px-lg q-pt-none">
                             <q-btn
                                 size="md"
-                                color="primary"
+                                color="black"
                                 class="full-width text-white"
                                 :label="
                                     lostPassword
@@ -105,58 +105,58 @@
                                 size="sm"
                                 padding="sm"
                                 icon="fas fa-home"
-                                tooltipsColor="primary"
+                                tooltipsColor="black"
                                 tooltips="volver a inicio"
                                 href="/"
                                 :flat="false"
-                                color="primary"
+                                color="black"
                             />
                             <q-btn-component
                                 size="sm"
                                 padding="sm"
                                 icon="fab fa-facebook-f"
-                                tooltipsColor="primary"
+                                tooltipsColor="black"
                                 tooltips="facebook"
                                 class="q-mx-md"
                                 href="https://www.facebook.com/profile.php?id=61563937152210"
                                 target="_blank"
                                 :flat="false"
-                                color="primary"
+                                color="black"
                             />
                             <q-btn-component
                                 size="sm"
                                 padding="sm"
                                 icon="fab fa-youtube"
-                                tooltipsColor="primary"
+                                tooltipsColor="black"
                                 tooltips="youtube"
                                 href="https://www.youtube.com/@sbyetransformacion"
                                 target="_blank"
                                 :flat="false"
-                                color="primary"
+                                color="black"
                             />
                             <q-btn-component
                                 size="sm"
                                 padding="sm"
                                 icon="fab fa-instagram"
-                                tooltipsColor="primary"
+                                tooltipsColor="black"
                                 tooltips="instagram"
                                 class="q-mx-md"
                                 href="https://www.instagram.com/sbyetransformacion/"
                                 target="_blank"
                                 :flat="false"
-                                color="primary"
+                                color="black"
                             />
 
                             <q-btn-component
                                 size="sm"
                                 padding="sm"
                                 icon="fab fa-tiktok"
-                                tooltipsColor="primary"
+                                tooltipsColor="black"
                                 tooltips="tiktok"
                                 href="https://www.tiktok.com/@sbyetransformacion"
                                 target="_blank"
                                 :flat="false"
-                                color="primary"
+                                color="black"
                             />
                         </q-card-section>
                     </q-card>

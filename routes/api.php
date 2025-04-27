@@ -31,13 +31,13 @@ Route::post('/test-next-date', function (Request $request) {
     dd($p->nextDateFromPeriod($date, $period)->format('d-m-Y'));
 });
 
-Route::post('/send-email', function (Request $request) {
+Route::get('/send-email', function (Request $request) {
     $to = [
         'email' => 'yfdezmerino91@gmail.com',
         'name' => 'yfdezmerino91',
     ];
 
-    $templateId = 1; // Reemplaza con el ID de tu plantilla
+    $templateId = 11; // Reemplaza con el ID de tu plantilla
     $params = null;
     $service = new BrevoService();
     $result = $service->sendEmail($to, $templateId, $params);

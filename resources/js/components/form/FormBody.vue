@@ -10,10 +10,29 @@
                     v-model="formData[f.name]"
                     :label="f.label"
                     :name="f.name"
+                    :autogrow="f.autogrow ?? false"
                     :othersProps="f.othersProps"
                     :modelValue="formData[f.name]"
                     @update="onUpdateField"
                     v-if="f.type === 'text'"
+                />
+                <number-field
+                    v-model="formData[f.name]"
+                    :label="f.label"
+                    :name="f.name"
+                    :othersProps="f.othersProps"
+                    :modelValue="formData[f.name]"
+                    @update="onUpdateField"
+                    v-if="f.type === 'number'"
+                />
+                <image-field
+                    v-model="formData[f.name]"
+                    :label="f.label"
+                    :name="f.name"
+                    :othersProps="f.othersProps"
+                    :modelValue="formData[f.name]"
+                    @change="onUpdateField"
+                    v-if="f.type === 'image'"
                 />
                 <editor-field
                     v-model="formData[f.name]"
@@ -142,6 +161,8 @@ defineOptions({
 
 import { ref, onBeforeMount } from "vue";
 import TextField from "./input/TextField.vue";
+import NumberField from "./input/NumberField.vue";
+import ImageField from "./input/ImageField.vue";
 import SelectField from "./input/SelectField.vue";
 import CheckboxField from "./input/CheckboxField.vue";
 import DateField from "./input/DateField.vue";

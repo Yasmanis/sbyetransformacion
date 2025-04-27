@@ -16,6 +16,10 @@
         bottom-slots
         @update:model-value="onUpdate"
     >
+        <template #label v-if="label">
+            {{ label }}
+            <span class="text-red" v-if="othersProps?.required">*</span>
+        </template>
         <template #hint v-if="fieldHelp?.length > 0">
             <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
                 <li

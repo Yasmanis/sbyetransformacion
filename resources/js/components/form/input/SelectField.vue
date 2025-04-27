@@ -26,6 +26,10 @@
         @filter="filterFn"
         @update:model-value="updateModel"
     >
+        <template #label v-if="label">
+            {{ label }}
+            <span class="text-red" v-if="othersProps?.required">*</span>
+        </template>
         <template v-slot:selected-item="scope">
             <q-item-label lines="1" style="margin-top: 5px">{{
                 scope.opt.label

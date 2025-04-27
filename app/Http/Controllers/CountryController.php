@@ -24,7 +24,7 @@ class CountryController extends Controller
     {
         if (auth()->user()->hasCreate('country')) {
             $request->validate([
-                'name' => ['required', 'unique:reason_for_return'],
+                'name' => ['required', 'unique:countries'],
             ]);
             $repository = new CountryRepository();
             $repository->create($request->only((new ($repository->model()))->getFillable()));
@@ -37,7 +37,7 @@ class CountryController extends Controller
     {
         if (auth()->user()->hasUpdate('country')) {
             $request->validate([
-                'name' => ['required', Rule::unique('reason_for_return', 'name')->ignore($id)],
+                'name' => ['required', Rule::unique('countries', 'name')->ignore($id)],
             ]);
             $repository = new CountryRepository();
             $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));

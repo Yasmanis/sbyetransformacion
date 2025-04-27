@@ -33,7 +33,7 @@ export const validations = {
         if (field && typeof field === "object") {
             if (field.required) {
                 result = [...result, rules.required];
-                help = [...help, "requerido"];
+                //help = [...help, "requerido"];
             }
             if (field.unique) {
                 help = [...help, "unico"];
@@ -41,14 +41,14 @@ export const validations = {
             if (field.type) {
                 if (field.type === "email") {
                     result = [...result, rules.email];
-                    help = [
-                        ...help,
-                        "formato de correo ej: example@example.com",
-                    ];
+                    // help = [
+                    //     ...help,
+                    //     "formato de correo ej: example@example.com",
+                    // ];
                 }
                 if (field.type === "url") {
                     result = [...result, rules.url];
-                    help = [...help, "formato url ej: http://example.com"];
+                    // help = [...help, "formato url ej: http://example.com"];
                 }
             }
             if (field.minLength) {
@@ -56,43 +56,43 @@ export const validations = {
                     ...result,
                     (val, min) => rules.minLength(val, field.minLength),
                 ];
-                help = [...help, `minimo ${field.minLength} caracteres`];
+                // help = [...help, `minimo ${field.minLength} caracteres`];
             }
             if (field.minValue) {
                 result = [
                     ...result,
                     (val, min) => rules.minValue(val, field.minValue),
                 ];
-                help = [...help, `valor mininimo ${field.minValue}`];
+                // help = [...help, `valor mininimo ${field.minValue}`];
             }
             if (field.maxLength) {
                 result = [
                     ...result,
                     (val, max) => rules.maxLength(val, field.maxLength),
                 ];
-                help = [...help, `maximo ${field.maxLength} caracteres`];
+                // help = [...help, `maximo ${field.maxLength} caracteres`];
             }
             if (field.maxValue) {
                 result = [
                     ...result,
                     (val, max) => rules.maxValue(val, field.maxValue),
                 ];
-                help = [...help, `valor maximo ${field.maxValue}`];
+                // help = [...help, `valor maximo ${field.maxValue}`];
             }
             if (field.numeric) {
                 result = [...result, rules.numeric];
-                help = [...help, rules.numeric];
+                // help = [...help, rules.numeric];
             }
             if (field.rules) {
                 field.rules.map((r) => {
                     result = [...result, r];
                 });
             }
-            if (field.help) {
-                field.help.forEach((h) => {
-                    help = [...help, h];
-                });
-            }
+            // if (field.help) {
+            //     field.help.forEach((h) => {
+            //         help = [...help, h];
+            //     });
+            // }
         }
         return { rules: result, help: help };
     },

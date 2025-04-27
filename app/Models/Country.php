@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -23,14 +22,4 @@ class Country extends Model
     protected $casts = [
         'timezones' => 'array'
     ];
-
-    public function states(): HasMany
-    {
-        return $this->hasMany(State::class);
-    }
-
-    public function cities(): HasMany
-    {
-        return $this->hasMany(City::class);
-    }
 }

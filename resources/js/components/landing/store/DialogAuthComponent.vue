@@ -4,25 +4,36 @@
         outline
         no-caps
         color="primary"
+        href="/admin"
+        v-if="authenticated"
+    />
+
+    <q-btn
+        label="entrar"
+        outline
+        no-caps
+        color="primary"
         @click="showDialog = true"
+        v-else
     />
 
     <q-dialog v-model="showDialog" @hide="onHide">
-        <q-card style="width: 800px; max-width: 80vw">
+        <q-card class="bg-primary" style="width: 800px; max-width: 80vw">
             <dialog-header-component
                 icon="mdi-key"
-                title="ACCESO A SBYE DIETAPP PARA FORMALIZAR TU COMPRA"
+                title="ACCESO ASBYETRANSFORMACION APP PARA FORMALIZAR TU COMPRA"
                 closable
+                class="text-white"
             />
             <q-card-section>
-                <div class="row bg-teal-11">
+                <div class="row bg-white">
                     <div
                         class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 q-pa-xl self-center text-center"
                     >
                         <form-register-component />
                     </div>
                     <div
-                        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 q-pa-xl bg-white"
+                        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 q-pa-xl bg-primary"
                     >
                         <div class="column items-center">
                             <form-login-component />
@@ -35,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import FormLoginComponent from "./FormLoginComponent.vue";
 import FormRegisterComponent from "./FormRegisterComponent.vue";
@@ -49,4 +60,8 @@ const showDialog = ref(false);
 const onHide = () => {
     usePage().props.errors = {};
 };
+
+const authenticated = computed(() => {
+    return usePage().props.auth;
+});
 </script>

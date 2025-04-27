@@ -1,22 +1,22 @@
 <template>
     <p class="text-center">
         ES LA PRIMERA VEZ <br />
-        QUE CONTRATO EN SBYE DIETAPP
+        QUE CONTRATO EN SBYETRANSFORMACION APP
     </p>
-    <q-btn
-        label="INICIAR REGISTRO"
-        color="primary"
-        @click="showDialog = true"
-    />
+    <q-btn label="INICIAR REGISTRO" color="black" @click="showDialog = true" />
     <q-dialog v-model="showDialog" persistent @hide="onHide">
         <q-card style="width: 900px; max-width: 90vw">
-            <dialog-header-component
-                closable
-                icon="mdi-file-account-outline"
-                title="acceso a sbye-transformacion para formalizar la compra"
-            />
+            <q-toolbar>
+                <q-icon name="mdi-file-account-outline" size="sm" />
+                <q-toolbar-title style="padding-left: 5px"
+                    >acceso a sbyetransformacion para formalizar la
+                    compra</q-toolbar-title
+                >
+                <car-component only-btn />
+            </q-toolbar>
+            <q-separator />
             <q-card-section>
-                <q-form ref="formRef" greedy>
+                <q-form ref="formRef" greedy class="q-gutter-sm">
                     <div class="row">
                         <div
                             class="col-xs-12 col-sm-6 col-md-3 col-lg-3 col-xl-3 q-px-sm"
@@ -54,11 +54,11 @@
                                 :filterable="false"
                                 :options="[
                                     {
-                                        label: 'Masculino',
+                                        label: 'masculino',
                                         value: 'M',
                                     },
                                     {
-                                        label: 'Femenino',
+                                        label: 'femenino',
                                         value: 'F',
                                     },
                                 ]"
@@ -101,16 +101,12 @@
                         <div
                             class="col-xs-12 col-sm-6 col-md-3 col-lg-3 col-xl-3 q-px-sm"
                         >
-                            <select-field
-                                label="estado"
-                                name="state_id"
-                                :model-value="formData.state_id"
-                                :disable="stateDisable"
+                            <text-field
+                                label="localidad"
+                                name="city"
+                                :model-value="formData.city"
                                 :others-props="{
                                     required: true,
-                                    url_to_options: formData.country_id
-                                        ? `/states/${formData.country_id}`
-                                        : null,
                                 }"
                                 @update="onUpdateField"
                             />
@@ -118,16 +114,12 @@
                         <div
                             class="col-xs-12 col-sm-6 col-md-3 col-lg-3 col-xl-3 q-px-sm"
                         >
-                            <select-field
-                                label="localidad"
-                                name="city_id"
-                                :model-value="formData.city_id"
-                                :disable="cityDisable"
+                            <text-field
+                                label="provincia"
+                                name="province"
+                                :model-value="formData.province"
                                 :others-props="{
                                     required: true,
-                                    url_to_options: formData.state_id
-                                        ? `/cities/${formData.state_id}`
-                                        : null,
                                 }"
                                 @update="onUpdateField"
                             />
@@ -195,10 +187,7 @@
                                         :options="phoneCodes"
                                         :filterable="false"
                                         :clearable="false"
-                                        style="
-                                            width: 100px !important;
-                                            margin-top: 20px !important;
-                                        "
+                                        style="width: 120px !important"
                                         @update="onUpdateField"
                                         :others-props="{
                                             required: true,
@@ -280,7 +269,7 @@
 
 <script setup>
 import { ref, computed, watch } from "vue";
-import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
+import CarComponent from "./CarComponent.vue";
 import TextField from "../../form/input/TextField.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import DateField from "../../form/input/DateField.vue";
@@ -303,8 +292,8 @@ const formData = useForm({
     genre: null,
     birthdate: null,
     country_id: null,
-    state_id: null,
-    city_id: null,
+    city: null,
+    province: null,
     road: null,
     address: null,
     postal_code: null,
@@ -324,24 +313,12 @@ const showDialog = ref(false);
 
 const page = usePage();
 
-const stateDisable = ref(true);
-const cityDisable = ref(true);
 const phoneCodes = ref([]);
 
 watch(
     () => formData.country_id,
     (n) => {
-        stateDisable.value = n === null;
-        formData.state_id = null;
         formData.phone_code = null;
-    }
-);
-
-watch(
-    () => formData.state_id,
-    (n) => {
-        cityDisable.value = n === null;
-        formData.city_id = null;
     }
 );
 
@@ -351,8 +328,8 @@ const onHide = () => {
     formData["genre"] = null;
     formData["birthdate"] = null;
     formData["country_id"] = null;
-    formData["state_id"] = null;
-    formData["city_id"] = null;
+    formData["city"] = null;
+    formData["province"] = null;
     formData["road"] = null;
     formData["address"] = null;
     formData["postal_code"] = null;

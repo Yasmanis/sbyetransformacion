@@ -155,13 +155,10 @@
                         "
                     >
                         <q-avatar v-if="props.col.type === 'avatar'">
-                            <q-img
-                                :src="`${$page.props.public_path}${props.value}`"
-                                loading="lazy"
-                            />
+                            <q-img :src="props.value" loading="lazy" />
                         </q-avatar>
                         <q-img
-                            :src="`${$page.props.public_path}${props.value}`"
+                            :src="props.value"
                             loading="lazy"
                             width="70px"
                             v-else
@@ -234,12 +231,12 @@
                                     >
                                         <q-avatar v-if="col.type === 'avatar'">
                                             <q-img
-                                                :src="`${$page.props.public_path}${col.value}`"
+                                                :src="col.value"
                                                 loading="lazy"
                                             />
                                         </q-avatar>
                                         <q-img
-                                            :src="`${$page.props.public_path}${col.value}`"
+                                            :src="col.value"
                                             loading="lazy"
                                             width="100px"
                                             v-else

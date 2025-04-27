@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\CategoryNomenclature;
-use App\Models\City;
 use App\Models\Country;
 use App\Models\Role;
-use App\Models\State;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -41,20 +39,6 @@ class SelectsController extends Controller
     {
         return response()->json([
             'options' => Country::select('id as value', 'name as label', 'phonecode')->get()
-        ]);
-    }
-
-    public function states($country)
-    {
-        return response()->json([
-            'options' => isset($country) ? State::where('country_id', $country)->select('id as value', 'name as label')->get() : []
-        ]);
-    }
-
-    public function cities($state)
-    {
-        return response()->json([
-            'options' => isset($state) ? City::where('state_id', $state)->select('id as value', 'name as label', 'state_id', 'country_id')->get() : []
         ]);
     }
 

@@ -1,8 +1,10 @@
 <template>
-    <q-form ref="formRef" greedy class="q-gutter-md">
+    <p class="text-center text-white">
+        YA SOY CLIENTE EN SBYETRANSFORMACION APP
+    </p>
+    <q-form ref="formLogin" greedy class="q-gutter-md">
         <q-card flat>
             <q-card-section class="q-gutter-sm">
-                <p class="text-center">YA SOY CLIENTE EN SBYE DIETAPP</p>
                 <text-field
                     label="email"
                     name="email"
@@ -48,7 +50,7 @@
                         lostPassword ? 'CAMBIO DE CONTRASEÑA' : 'INICIAR SESION'
                     "
                     label="INICIAR SESION"
-                    color="primary"
+                    color="black"
                     @click="authenticate"
                 />
             </q-card-section>
@@ -80,7 +82,7 @@ defineOptions({
 });
 
 const lostPassword = ref(false);
-const formRef = ref(null);
+const formLogin = ref(null);
 
 const form = ref({
     email: null,
@@ -94,7 +96,7 @@ watch(lostPassword, (n) => {
         password: null,
         rememberme: false,
     };
-    formRef.value.resetValidation();
+    formLogin.value.resetValidation();
 });
 
 const errors = computed(() => {
@@ -106,7 +108,7 @@ const onUpdate = (name, val) => {
 };
 
 const authenticate = async () => {
-    formRef.value.validate().then(async (success) => {
+    formLogin.value.validate().then(async (success) => {
         if (success) {
             let { email, password, rememberme } = form.value;
             if (lostPassword.value) {

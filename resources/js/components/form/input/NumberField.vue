@@ -8,7 +8,7 @@
         :error-message="errorMsg"
         :dense="dense"
         :clearable="clearable"
-        :type="type"
+        type="number"
         :autogrow="autogrow"
         lazy-rules
         reactive-rules

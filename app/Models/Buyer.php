@@ -11,8 +11,8 @@ class Buyer extends Model
     protected $fillable = [
         'user_id',
         'country_id',
-        'state_id',
-        'city_id',
+        'city',
+        'province',
         'postal_code',
         'road',
         'address',

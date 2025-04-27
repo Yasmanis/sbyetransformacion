@@ -1,5 +1,5 @@
 <template>
-    <q-toolbar :class="draggable ? 'move' : null" ref="draggableRef">
+    <q-toolbar :class="cls" ref="draggableRef">
         <q-icon :name="icon" :size="iconSize"></q-icon>
         <q-toolbar-title style="padding-left: 5px">{{ title }}</q-toolbar-title>
         <q-btn
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onBeforeMount, onMounted, ref, watch } from "vue";
 import { dom } from "quasar";
 defineOptions({
     name: "DialogHeaderComponent",
@@ -46,6 +46,7 @@ const props = defineProps({
         type: Boolean,
         defaul: false,
     },
+    class: String,
 });
 
 const emits = defineEmits(["fullsize"]);
@@ -55,9 +56,20 @@ let pos = { top: 0, left: 0 };
 let offset = { x: 0, y: 0 };
 let dragging = false;
 const { css } = dom;
+const cls = ref(null);
 
 watch(maximized, (n) => {
     emits("fullsize", n);
+});
+
+onBeforeMount(() => {
+    cls.value = "";
+    if (props.draggable) {
+        cls.value += "move ";
+    }
+    if (props.class) {
+        cls.value += props.class;
+    }
 });
 
 onMounted(() => {
