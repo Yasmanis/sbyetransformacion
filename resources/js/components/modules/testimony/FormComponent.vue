@@ -110,13 +110,13 @@ const onHide = () => {
 
 const onCreated = (object, close) => {
     if (close) {
-        showDialog.value = true;
+        showDialog.value = false;
     }
 };
 
 const onUpdated = (object, close) => {
     if (close) {
-        showDialog.value = true;
+        showDialog.value = false;
     }
 };
 </script>

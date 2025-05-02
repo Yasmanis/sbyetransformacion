@@ -82,7 +82,8 @@ class SelectsController extends Controller
         foreach ($users as $u) {
             $options[] = [
                 'value' => $u->id,
-                'label' => $u->full_name
+                'label' => $u->full_name,
+                'volumes' => $u->book_volumes
             ];
         }
         return response()->json([

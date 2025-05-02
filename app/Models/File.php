@@ -74,7 +74,7 @@ class File extends Model
 
     public function scopePublicAccess($query)
     {
-        return $query->where('public_access', true)->whereHas('category', function (Builder $query) {
+        return $query->where('public_access', true)->whereDate('public_date', '<=', Carbon::today())->whereHas('category', function (Builder $query) {
             $query->where('public_access', true);
         });
     }

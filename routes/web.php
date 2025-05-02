@@ -30,6 +30,7 @@ use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
 use App\Models\Testimony;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -240,6 +241,10 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/selects/campaigns', [SelectsController::class, 'campaigns']);
     Route::get('/admin/posts', [PostController::class, 'index']);
     Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
+
+    Route::get('/admin/buys', function () {
+        return Inertia('compras/stepper');
+    });
 
     Route::get('/admin/configuration/legal', [ConfigurationController::class, 'legal']);
     Route::get('/admin/configuration/private', [ConfigurationController::class, 'private']);

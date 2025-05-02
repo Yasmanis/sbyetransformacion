@@ -1,6 +1,9 @@
 <template>
     <div class="column q-ml-none" v-if="label">
-        <label>{{ label }}</label>
+        <label
+            >{{ label }}
+            <span class="text-red" v-if="othersProps?.required">*</span></label
+        >
     </div>
     <ckeditor
         v-model="model"
@@ -13,13 +16,6 @@
         @ready="onReady"
         @input="onEditorInput"
     />
-
-    <div
-        class="column help-editor q-ml-none"
-        v-if="othersProps?.required && !errorMsg && !modelRef?.hasError"
-    >
-        <span>requerido</span>
-    </div>
 
     <q-item-label
         class="q-field--error"

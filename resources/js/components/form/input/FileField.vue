@@ -1,5 +1,6 @@
 <template>
     <checkbox-field
+        class="q-mt-sm"
         name="file_change"
         :label="`cambiar ${label}`"
         :othersProps="{
@@ -32,6 +33,10 @@
         @update:model-value="(val) => update(val)"
         v-if="!hasFile || fileChange"
     >
+        <template #label v-if="label">
+            {{ label }}
+            <span class="text-red" v-if="othersProps?.required">*</span>
+        </template>
         <template #hint v-if="fieldHelp?.length > 0">
             <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
                 <li
@@ -116,6 +121,8 @@ onBeforeMount(() => {
         hasFile.value = true;
     }
 });
+
+onMounted(() => {});
 
 const onUpdateCheck = (name, value) => {
     fileChange.value = value;

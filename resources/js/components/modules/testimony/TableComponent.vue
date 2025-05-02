@@ -244,18 +244,29 @@
                                         v-if="col.type === 'avatar'"
                                         class="text-center"
                                     >
-                                        <q-avatar v-if="col.value">
-                                            <q-img
-                                                :src="`${$page.props.public_path}${col.value}`"
-                                                loading="lazy"
-                                            />
-                                        </q-avatar>
-                                        <q-avatar v-else>
-                                            <q-img
-                                                src="~assets/default-avatar.png"
-                                                loading="lazy"
-                                            />
-                                        </q-avatar>
+                                        <q-img
+                                            :src="`${$page.props.public_path}storage/${props.row.amazon_image}`"
+                                            loading="lazy"
+                                            width="50px"
+                                            height="50px"
+                                            img-class="cursor-pointer"
+                                            fit="fill"
+                                            @click="
+                                                openImage(
+                                                    `${$page.props.public_path}storage/${props.row.amazon_image}`
+                                                )
+                                            "
+                                            v-if="props.row.amazon_image"
+                                            ><q-tooltip-component
+                                                title="click para ampliar"
+                                        /></q-img>
+                                        <q-icon
+                                            name="mdi-help-circle-outline"
+                                            size="50px"
+                                            v-else
+                                            ><q-tooltip-component
+                                                title="no existe imagen para este testimonio"
+                                        /></q-icon>
                                     </q-item-label>
                                     <q-item-label
                                         v-else-if="col.type === 'boolean'"
@@ -275,6 +286,24 @@
                                             "
                                             :label="col.value ? 'Si' : 'No'"
                                         />
+                                    </q-item-label>
+                                    <q-item-label
+                                        caption
+                                        v-else-if="col.name === 'message'"
+                                    >
+                                        <q-btn-component
+                                            icon="mdi-message-video"
+                                            color="primary"
+                                            tooltips="reproducir mensaje"
+                                            flat
+                                            dense
+                                            square
+                                            size="md"
+                                            target="_blank"
+                                            :href="`${$page.props.public_path}storage/${col.value}`"
+                                            v-if="props.row['type'] === 'video'"
+                                        />
+                                        <span v-html="col.value" v-else></span>
                                     </q-item-label>
                                     <q-item-label caption v-else>{{
                                         col.value ? col.value : "..."
@@ -364,6 +393,12 @@ const page = usePage();
 
 const loading = ref(false);
 
+const volumes = {
+    tomo_1: "tomo I",
+    tomo_2: "tomo II",
+    tomo_3: "tomo III",
+};
+
 const sa = computed(() => {
     return page.props.auth.user.sa;
 });
@@ -391,6 +426,16 @@ const columns = ref([
         label: "mensaje",
         align: "left",
         type: "text",
+    },
+    {
+        field: "book_volume",
+        name: "book_volume",
+        label: "tomo",
+        align: "left",
+        type: "text",
+        format: (val) => {
+            return val ? volumes[val] : null;
+        },
     },
     {
         field: "publicated",

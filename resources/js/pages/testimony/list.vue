@@ -4,6 +4,7 @@
             <table-component
                 :searchFields="searchFields"
                 :filterFields="filterFields"
+                :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
             ></table-component>
@@ -65,14 +66,32 @@ const name_to_show = {
 const anonimous = {
     field: "anonimous",
     name: "anonimous",
-    label: "anonimo",
+    label: "marca esta casilla si quieres hacer un testimonio anonimo, aunque es preferible que utilices un pseudonimo o solo tu nombre o diminutivo",
     align: "center",
     type: "boolean",
-    othersProps: {
-        help: [
-            "indica que el usuario es super-administrador, incluso sin tener rol o permiso asociado tiene acceso a todas las funcionalidades del sistema",
-        ],
-    },
+};
+
+const volumes = {
+    field: "book_volume",
+    name: "book_volume",
+    label: "tomo",
+    type: "select",
+    align: "left",
+    options: [
+        {
+            label: "tomo I",
+            value: "tomo_1",
+        },
+        {
+            label: "tomo II",
+            value: "tomo_2",
+        },
+        {
+            label: "tomo III",
+            value: "tomo_3",
+        },
+    ],
+    filterable: false,
 };
 
 const searchFields = [
@@ -87,11 +106,12 @@ const searchFields = [
 
 const fields = [
     name_to_show,
+    anonimous,
     title,
     message,
     message_to_admin,
-    anonimous,
     amzonImage,
+    volumes,
 ];
 
 const filterFields = [
@@ -120,6 +140,7 @@ const filterFields = [
         label: "anonimo",
         type: "boolean",
     },
+    volumes,
 ];
 
 if (usePage().props.auth.user.sa) {

@@ -226,3 +226,11 @@
 .checkbox-white .q-checkbox__inner i {
     color: #fff !important;
 }
+
+.custom-stepper-header .q-stepper__dot {
+    padding: 5px;
+    font-size: 18px;
+}
+.header-no-bold th {
+    font-weight: normal !important;
+}

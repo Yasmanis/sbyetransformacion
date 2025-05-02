@@ -7,6 +7,7 @@ use App\Models\Testimony;
 use App\Repositories\TestimonyRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class TestimonyController extends Controller
@@ -42,13 +43,12 @@ class TestimonyController extends Controller
             ]);
             $repository = new TestimonyRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $data['user_id'] = $user->id;
             if ($request->hasFile('amazon_image')) {
                 $path = $request->file('amazon_image')->store('testimonies', 'public');
                 $data['amazon_image'] = $path;
             }
-            if ($request->hasFile('file')) {
-                $path = $request->file('file')->store('testimonies', 'public');
+            if ($request->hasFile('message')) {
+                $path = $request->file('message')->store('testimonies', 'public');
                 $data['message'] = $path;
             }
             $repository->create($data);
@@ -92,7 +92,32 @@ class TestimonyController extends Controller
                 'title' => ['required'],
             ]);
             $repository = new TestimonyRepository();
-            $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+            $object = $repository->getById($id);
+            $type = $object->type;
+            $data = $request->only((new ($repository->model()))->getFillable());
+            $old_file = null;
+            if ($request->hasFile('message') || $type == 'video') {
+                $old_file = $object->message;
+                if ($request->hasFile('message')) {
+                    $path = $request->file('message')->store('testimonies', 'public');
+                    $data['message'] = $path;
+                }
+            }
+            $old_image = null;
+            if ($request->hasFile('amazon_image') || !isset($request->amazon_image)) {
+                $old_image = $object->amazon_image;
+                if ($request->hasFile('amazon_image')) {
+                    $path = $request->file('amazon_image')->store('testimonies', 'public');
+                    $data['amazon_image'] = $path;
+                }
+            }
+            $repository->updateById($id, $data);
+            if ($old_file) {
+                Storage::delete('public/' . $old_file);
+            }
+            if ($old_image) {
+                Storage::delete('public/' . $old_image);
+            }
             return redirect()->back()->with('success', 'testimonio modificado correctamente');
         }
         return $this->deny_access($request);
