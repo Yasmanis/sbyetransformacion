@@ -42,25 +42,25 @@ return new class extends Migration
     public function setStates()
     {
         $states = $this->getJsonFileAsArray('states');
-        foreach ($states as $s) {
+        /* foreach ($states as $s) {
             State::create([
                 'id' => $s->id,
                 'name' => $s->name,
                 'country_id' => $s->country_id
             ]);
-        }
+        } */
     }
 
     public function setCities()
     {
         $cities = $this->getJsonFileAsArray('cities');
         foreach ($cities as $s) {
-            City::create([
+           /*  City::create([
                 'id' => $s->id,
                 'name' => $s->name,
                 'country_id' => $s->country_id,
                 'state_id' => $s->state_id
-            ]);
+            ]); */
         }
     }
 
@@ -69,6 +69,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('cities');
+        Schema::dropIfExists('states');
+        Schema::dropIfExists('countries');
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
@@ -88,7 +91,7 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        $this->setStates();
+        //$this->setStates();
 
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
@@ -99,7 +102,7 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        $this->setCities();
+        //$this->setCities();
     }
 
     /**
