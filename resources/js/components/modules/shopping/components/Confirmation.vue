@@ -213,8 +213,8 @@
 
 <script setup>
 import { ref } from "vue";
-import CheckboxField from "../../components/form/input/CheckboxField.vue";
-import QBtnComponent from "../../components/base/QBtnComponent.vue";
+import CheckboxField from "../../../form/input/CheckboxField.vue";
+import QBtnComponent from "../../../base/QBtnComponent.vue";
 import { Screen } from "quasar";
 
 defineOptions({

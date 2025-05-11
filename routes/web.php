@@ -25,6 +25,7 @@ use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\ReasonForReturnController;
 use App\Http\Controllers\SchoolTopicsController;
 use App\Http\Controllers\SectionsController;
+use App\Http\Controllers\ShoppingController;
 use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
 use App\Models\Configuration;
@@ -225,6 +226,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/categories/public-access/{id}', [CategoryController::class, 'publicAccess']);
     Route::post('/admin/categories/private-area/{id}', [CategoryController::class, 'privateArea']);
     Route::resource('/admin/files', FileController::class);
+    Route::resource('/admin/shopping', ShoppingController::class);
     Route::post('/admin/files/poster/{id}', [FileController::class, 'poster']);
     Route::post('/admin/files/public-access/{id}', [FileController::class, 'publicAccess']);
     Route::resource('/admin/private-message', PrivateMsgController::class)->except(['index']);
@@ -236,15 +238,12 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);
     Route::get('/users', [SelectsController::class, 'users']);
+    Route::get('/reasons-for-return', [SelectsController::class, 'reasonsForReturn']);
     Route::post('/users', [SelectsController::class, 'users']);
     Route::get('/category-nomenclatures/{key}', [SelectsController::class, 'sections']);
     Route::get('/selects/campaigns', [SelectsController::class, 'campaigns']);
     Route::get('/admin/posts', [PostController::class, 'index']);
     Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
-
-    Route::get('/admin/buys', function () {
-        return Inertia('compras/stepper');
-    });
 
     Route::get('/admin/configuration/legal', [ConfigurationController::class, 'legal']);
     Route::get('/admin/configuration/private', [ConfigurationController::class, 'private']);

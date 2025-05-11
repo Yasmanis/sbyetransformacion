@@ -1,6 +1,14 @@
 <template>
     <q-btn
-        :color="color ? color : Dark.isActive ? 'white' : 'black'"
+        :color="
+            color
+                ? color
+                : Dark.isActive
+                ? label
+                    ? 'primary'
+                    : 'white'
+                : 'black'
+        "
         :round="round"
         :size="size"
         :icon="icon"

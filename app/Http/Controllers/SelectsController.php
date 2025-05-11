@@ -6,6 +6,7 @@ use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\CategoryNomenclature;
 use App\Models\Country;
+use App\Models\ReasonForReturn;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -57,6 +58,13 @@ class SelectsController extends Controller
     {
         return response()->json([
             'options' => Category::select('id as value', 'name as label')->get()
+        ]);
+    }
+
+    public function reasonsForReturn()
+    {
+        return response()->json([
+            'options' => ReasonForReturn::select('id as value', 'name as label')->get()
         ]);
     }
 

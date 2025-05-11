@@ -9,29 +9,11 @@
                     <q-list dense
                         ><q-item class="bg-primary text-white">
                             <q-item-section>
-                                1. SELECCIONA EL METODO DE PAGO
-                            </q-item-section> </q-item
-                        ><q-item clickable>
-                            <q-item-section avatar>
-                                <checkbox-field /> </q-item-section
-                            ><q-item-section avatar>
-                                <q-icon
-                                    name="mdi-credit-card-outline"
-                                /> </q-item-section
-                            ><q-item-section>
-                                <q-item-label>tarjeta bancaria</q-item-label>
-                            </q-item-section> </q-item
-                        ><q-item clickable>
-                            <q-item-section avatar>
-                                <checkbox-field /> </q-item-section
-                            ><q-item-section avatar>
-                                <q-icon name="mdi-cellphone" /> </q-item-section
-                            ><q-item-section>
-                                <q-item-label>bizum</q-item-label>
+                                1. SELECCIONA LA FORMA DE ENTREGA
                             </q-item-section> </q-item
                         ><q-item class="bg-primary text-white q-mt-md">
                             <q-item-section>
-                                2. DIRECCION DE FACTURACION
+                                2. DIRECCION DE ENVIO
                             </q-item-section>
                         </q-item>
                         <q-item style="padding: 10px 0px">
@@ -58,6 +40,16 @@
                                 <btn-edit-component />
                             </q-item-section>
                         </q-item>
+                        <q-item class="bg-primary text-white q-mt-md">
+                            <q-item-section>
+                                3. OBSERVACIONES PARA EL TRANSPORTISTA
+                            </q-item-section>
+                        </q-item>
+                        <q-item style="padding: 10px 0px">
+                            <q-item-section>
+                                <text-field type="textarea" />
+                            </q-item-section>
+                        </q-item>
                     </q-list>
                 </q-card-section>
             </q-card>
@@ -72,6 +64,14 @@
                         <q-item class="bg-primary text-white">
                             <q-item-section> subtotal: </q-item-section>
                             <q-item-section avatar> 270 € </q-item-section>
+                        </q-item>
+                        <q-item>
+                            <q-item-section> envio MRW </q-item-section>
+                            <q-item-section avatar> 4,95 € </q-item-section>
+                        </q-item>
+                        <q-item class="text-bold">
+                            <q-item-section> total </q-item-section>
+                            <q-item-section avatar> 274,95 € </q-item-section>
                         </q-item>
                         <q-item>
                             <q-item-section> pagos pendientes: </q-item-section>
@@ -96,12 +96,13 @@
 
 <script setup>
 import { ref } from "vue";
-import CheckboxField from "../../components/form/input/CheckboxField.vue";
-import BtnEditComponent from "../../components/btn/BtnEditComponent.vue";
+import CheckboxField from "../../../form/input/CheckboxField.vue";
+import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
+import TextField from "../../../form/input/TextField.vue";
 import { Screen } from "quasar";
 
 defineOptions({
-    name: "Payment",
+    name: "Shipment",
 });
 
 const step = ref(1);

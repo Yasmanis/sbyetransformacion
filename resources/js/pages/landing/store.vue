@@ -28,8 +28,6 @@
 import Layout from "../../layouts/MainLayout.vue";
 import DialogAuthComponent from "../../components/landing/store/DialogAuthComponent.vue";
 import CarComponent from "../../components/landing/store/CarComponent.vue";
-import QBtnComponent from "../../components/base/QBtnComponent.vue";
-import BtnLeftRightComponent from "../../components/btn/BtnLeftRightComponent.vue";
 defineOptions({
     name: "ConsultaIndividual",
 });

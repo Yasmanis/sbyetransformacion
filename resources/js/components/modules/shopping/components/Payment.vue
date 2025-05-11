@@ -1,63 +1,71 @@
 <template>
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
+        <div
+            class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8"
+            :class="!Screen.xs ? 'q-pr-xs' : ''"
+        >
             <q-card flat>
                 <q-card-section class="q-pa-none">
-                    <q-list dense>
-                        <q-item>
-                            <q-item-section avatar top>
-                                <q-img
-                                    :src="`${$page.props.public_path}images/logo/2.png`"
-                                    fit
-                                    width="70px"
+                    <q-list dense
+                        ><q-item class="bg-primary text-white">
+                            <q-item-section>
+                                1. SELECCIONA EL METODO DE PAGO
+                            </q-item-section> </q-item
+                        ><q-item clickable>
+                            <q-item-section avatar>
+                                <checkbox-field /> </q-item-section
+                            ><q-item-section avatar>
+                                <q-icon
+                                    name="mdi-credit-card-outline"
+                                /> </q-item-section
+                            ><q-item-section>
+                                <q-item-label>tarjeta bancaria</q-item-label>
+                            </q-item-section> </q-item
+                        ><q-item clickable>
+                            <q-item-section avatar>
+                                <checkbox-field /> </q-item-section
+                            ><q-item-section avatar>
+                                <q-icon name="mdi-cellphone" /> </q-item-section
+                            ><q-item-section>
+                                <q-item-label>bizum</q-item-label>
+                            </q-item-section> </q-item
+                        ><q-item class="bg-primary text-white q-mt-md">
+                            <q-item-section>
+                                2. DIRECCION DE FACTURACION
+                            </q-item-section>
+                        </q-item>
+                        <q-item style="padding: 10px 0px">
+                            <q-item-section>
+                                <q-item-label>
+                                    nombre apellido apellido
+                                </q-item-label>
+                                <q-item-label>
+                                    direccion completa
+                                </q-item-label>
+                                <q-item-label> pueblo – ciudad </q-item-label>
+                                <q-item-label>
+                                    cp – provincia (pais)
+                                </q-item-label>
+                            </q-item-section>
+                        </q-item>
+                        <q-item style="padding: 0px 0px">
+                            <q-item-section>
+                                <checkbox-field
+                                    label="direccion nueva para este envio"
                                 />
                             </q-item-section>
-                            <q-item-section>
-                                <q-item-label class="text-bold">
-                                    JUNT@S!
-                                </q-item-label>
-                                <q-item-label>contado</q-item-label>
-                                <q-item-label
-                                    ><ul class="q-ma-none q-pl-md text-body2">
-                                        <li>pago inicial 270 €</li>
-                                        <li>4 pagos mensuales de 130 €</li>
-                                    </ul></q-item-label
-                                >
-                                <q-item-label class="text-bold">
-                                    790 €
-                                </q-item-label>
+                            <q-item-section avatar>
+                                <btn-edit-component />
                             </q-item-section>
-                            <q-item-section avatar top>
-                                <q-input dense outlined style="width: 50px" />
-                            </q-item-section>
-                            <q-item-section
-                                avatar
-                                top
-                                style="padding: 0px; min-width: 20px"
-                            >
-                                <btn-delete-component class="q-ml-xs q-mt-xs"
-                            /></q-item-section>
                         </q-item>
                     </q-list>
                 </q-card-section>
-                <q-card-section>
-                    <b>tabla de pagos</b>
-                    <q-table
-                        :columns="columns"
-                        :rows="rows"
-                        flat
-                        dense
-                        hide-bottom
-                        table-header-class="header-no-bold"
-                    />
-                </q-card-section>
-                <q-card-actions>
-                    <btn-delete-component tooltips="vaciar cesta" />
-                    <btn-shoppin-car-component />
-                </q-card-actions>
             </q-card>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
+        <div
+            class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4"
+            :class="!Screen.xs ? 'q-pl-xs' : ''"
+        >
             <q-card flat>
                 <q-card-section class="q-pa-none">
                     <q-list dense>
@@ -88,12 +96,15 @@
 
 <script setup>
 import { ref } from "vue";
-import BtnDeleteComponent from "../../components/btn/BtnDeleteComponent.vue";
-import BtnShoppinCarComponent from "../../components/btn/BtnShoppinCarComponent.vue";
+import CheckboxField from "../../../form/input/CheckboxField.vue";
+import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
+import { Screen } from "quasar";
 
 defineOptions({
-    name: "Products",
+    name: "Payment",
 });
+
+const step = ref(1);
 
 const columns = ref([
     {

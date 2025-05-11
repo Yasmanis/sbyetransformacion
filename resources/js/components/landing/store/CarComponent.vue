@@ -3,6 +3,7 @@
         :icon="onlyBtn ? 'mdi-basket' : 'mdi-chevron-double-left'"
         flat
         rounded
+        color="black"
         padding="2px"
     >
         <q-tooltip
@@ -19,6 +20,8 @@
             :transition-hide="onlyBtn ? '' : 'slide-right'"
             style="min-width: 520px"
             :offset="[2, -30]"
+            @before-show="emits('show')"
+            @hide="emits('hide')"
         >
             <q-card bordered>
                 <q-card-section
@@ -114,6 +117,8 @@ const props = defineProps({
         default: false,
     },
 });
+
+const emits = defineEmits(["show", "hide"]);
 const menu = ref(false);
 const menuRef = ref(null);
 const showDialog = ref(false);
