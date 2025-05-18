@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SchoolSection;
 use App\Models\User;
+use App\Models\UserLastCourse;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -154,5 +155,27 @@ class UserController extends Controller
     {
         $user = User::find($id);
         return response()->json($user->getComments());
+    }
+
+    public function updateLastCourses(Request $request)
+    {
+        $user = auth()->user()->id;
+        $category = $request->category;
+        $section = $request->section_id;
+        $topic = $request->topic_id;
+        $last = UserLastCourse::where('user_id', $user)->where('category', $category)->first();
+        if ($last) {
+            $last->section_id = $section;
+            $last->topic_id = $topic;
+            $last->save();
+        } else {
+            $last = UserLastCourse::create([
+                'category' => $category,
+                'user_id' => $user,
+                'section_id' => $section,
+                'topic_id' => $topic
+            ]);
+        }
+        return response()->json($last);
     }
 }

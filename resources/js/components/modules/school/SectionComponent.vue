@@ -45,7 +45,12 @@
                             }}
                             <btn-left-right-component
                                 :leftDirection="false"
-                                :disable="totalSections === index + 1"
+                                :disable="
+                                    totalSections === index + 1 ||
+                                    (topic?.percent < 95 &&
+                                        segment === 'learning' &&
+                                        topic?.has_principal_video)
+                                "
                                 @click="emits('change-section', index + 1)"
                             />
                         </q-item-label>
@@ -203,6 +208,7 @@ const props = defineProps({
         default: 0,
     },
     showChat: String,
+    segment: String,
     has_edit: {
         type: Boolean,
         default: false,

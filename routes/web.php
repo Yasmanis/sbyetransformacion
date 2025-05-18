@@ -184,6 +184,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/users/lockUnlock/{id}', [UserController::class, 'lockUnlock']);
     Route::post('/admin/users/change-password/{id}', [UserController::class, 'changePassword']);
     Route::post('/admin/users/change-my-password', [UserController::class, 'changeMyPassword']);
+    Route::post('/admin/users/update-last-courses', [UserController::class, 'updateLastCourses']);
     Route::post('/admin/users/change-theme', [UserController::class, 'changeTheme']);
     Route::post('/admin/users/progress/{id}', [UserController::class, 'progress']);
     Route::post('/admin/users/comments/{id}', [UserController::class, 'comments']);

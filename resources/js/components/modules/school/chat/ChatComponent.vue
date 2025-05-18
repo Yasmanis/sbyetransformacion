@@ -38,7 +38,12 @@
                     <btn-left-right-component
                         :leftDirection="false"
                         title="tema siguiente"
-                        :disable="index === section?.topics.length - 1"
+                        :disable="
+                            index === section?.topics.length - 1 ||
+                            (topic?.percent < 95 &&
+                                segment === 'learning' &&
+                                topic?.has_principal_video)
+                        "
                         @click="emits('change-topic', index + 1)"
                     />
                 </q-item-section>
@@ -111,7 +116,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import BtnDownUpComponent from "../../../btn/BtnDownUpComponent.vue";
 import BtnLeftRightComponent from "../../../btn/BtnLeftRightComponent.vue";
 import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
@@ -156,6 +161,11 @@ watch(
         showPanel.value = n !== null;
     }
 );
+
+const segment = computed(() => {
+    const pathSegments = window.location.pathname.split("/");
+    return pathSegments.pop() || pathSegments[pathSegments.length - 2];
+});
 
 const clearChat = async () => {
     showLoading.value = true;

@@ -146,6 +146,7 @@ import VideoComponent from "./VideoComponent.vue";
 import ConfirmComponent from "../../base/ConfirmComponent.vue";
 import { router } from "@inertiajs/vue3";
 import { Dark } from "quasar";
+import { info } from "../../../helpers/notifications";
 
 defineOptions({
     name: "SectionItemComponent",
@@ -153,8 +154,14 @@ defineOptions({
 
 const props = defineProps({
     section: Object,
+    topics: {
+        type: Array,
+        default: [],
+    },
     sectionIndex: Number,
     class: String,
+    segment: String,
+    currentTopic: Object,
     expand: {
         type: Boolean,
         default: false,
@@ -202,17 +209,48 @@ const updateViewSection = () => {
     }
 };
 
+const othersCompleted = (first, last) => {
+    const topics = props.topics;
+    const firstIndex = topics.findIndex((t) => t.id === first.id);
+    const lastIndex = topics.findIndex((t) => t.id === last.id);
+    if (firstIndex > lastIndex) {
+        return true;
+    }
+    for (let i = firstIndex; i < lastIndex; i++) {
+        const temp = topics[i];
+        if (temp.percent < 95 && temp.has_principal_video) {
+            return false;
+        }
+    }
+    return true;
+};
+
 const changeTopic = (topic) => {
-    emits("change-topic", {
-        topic: topic,
-        section: props.section,
-        sectionIndex: props.sectionIndex,
-    });
+    const t = props.currentTopic;
     if (topic.has_access && topic.has_access_by_volume) {
-        principalVideo.value = topic.resources.find((r) => r.principal);
-        currentTopic.value = topic;
-        if (principalVideo.value) {
-            showVideo.value = true;
+        if (t.id === topic.id) {
+            principalVideo.value = t.resources.find((r) => r.principal);
+            currentTopic.value = t;
+            if (principalVideo.value) {
+                showVideo.value = true;
+            }
+        } else {
+            if (props.segment === "learning" && !othersCompleted(t, topic)) {
+                info(
+                    "no se puede pasar a este tema sin completar los anteriores"
+                );
+            } else {
+                emits("change-topic", {
+                    topic: topic,
+                    section: props.section,
+                    sectionIndex: props.sectionIndex,
+                });
+                principalVideo.value = topic.resources.find((r) => r.principal);
+                currentTopic.value = topic;
+                if (principalVideo.value) {
+                    showVideo.value = true;
+                }
+            }
         }
     } else if (!topic.has_access_by_volume) {
         showNoAccessByVolume.value = true;

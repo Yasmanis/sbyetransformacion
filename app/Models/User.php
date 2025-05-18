@@ -69,9 +69,16 @@ class User extends Authenticatable
 
     protected $appends = ['permissions', 'roles', 'full_name', 'notifications', 'has_testimony'];
 
+    protected $with = ['latestCourses'];
+
     public function books()
     {
         return $this->hasMany(Contact::class);
+    }
+
+    public function latestCourses()
+    {
+        return $this->hasMany(UserLastCourse::class, 'user_id');
     }
 
     public function getHasTestimonyAttribute()

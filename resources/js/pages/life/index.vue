@@ -58,6 +58,7 @@
                                 :totalSections="sections.length"
                                 :has_edit="has_edit"
                                 :show-chat="show_chat"
+                                :segment="segment"
                                 @change-section="onChangeSection"
                                 @change-topic="
                                     (i) => {
@@ -79,6 +80,9 @@
                         :key="index"
                         :sectionIndex="index"
                         :section="section"
+                        :topics="topics"
+                        :current-topic="currentTopic"
+                        :segment="segment"
                         :expand="index === 0"
                         class="q-mt-md"
                         @change-topic="onChangeTopic"
@@ -101,6 +105,7 @@ import { usePage } from "@inertiajs/vue3";
 import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 import { useQuasar } from "quasar";
 import { currentModule } from "../../services/current_module";
+import axios from "axios";
 
 defineOptions({
     name: "LifePage",
@@ -128,6 +133,17 @@ const sections = computed(() => {
     return page.props.sections ? page.props.sections : [];
 });
 
+const topics = computed(() => {
+    const sections = page.props.sections ?? [];
+    let temp = [];
+    sections.forEach((s) => {
+        s.topics.forEach((t) => {
+            temp.push(t);
+        });
+    });
+    return temp;
+});
+
 const course_percentage = computed(() => {
     return page.props.course_percentage;
 });
@@ -137,11 +153,12 @@ watch(sections, (n, o) => {
 });
 
 watch(currentTopic, (n, o) => {
-    if (n !== null)
+    if (n !== null) {
         tIndex.value = currentSection.value.topics.findIndex(
             (t) => t.id === currentTopic.value.id
         );
-    else tIndex.value = 0;
+        updateLastCourses(n);
+    } else tIndex.value = 0;
 });
 
 onBeforeMount(() => {
@@ -160,6 +177,11 @@ onBeforeMount(() => {
 
 onMounted(() => {
     setDefaults();
+});
+
+const segment = computed(() => {
+    const pathSegments = window.location.pathname.split("/");
+    return pathSegments.pop() || pathSegments[pathSegments.length - 2];
 });
 
 const setDefaults = () => {
@@ -196,8 +218,21 @@ const setDefaults = () => {
                     currentSection.value = n[0];
                 }
             } else {
-                currentSection.value = n[0];
-                sIndex.value = 0;
+                const latest = getLatest();
+                if (latest) {
+                    currentSection.value = n.find(
+                        (s) => s.id === latest.section_id
+                    );
+                    currentTopic.value = currentSection.value.topics.find(
+                        (t) => t.id === latest.topic_id
+                    );
+                    sIndex.value = n.findIndex(
+                        (s) => s.id === latest.section_id
+                    );
+                } else {
+                    currentSection.value = n[0];
+                    sIndex.value = 0;
+                }
             }
         }
         if (currentTopic.value !== null) {
@@ -239,6 +274,26 @@ const resetHash = () => {
     if (chat !== null) {
         location.hash = "";
         chat = null;
+    }
+};
+
+const getLatest = () => {
+    return (
+        page.props?.auth.user.latest_courses.find(
+            (l) => l.category === segment.value
+        ) ?? null
+    );
+};
+
+const updateLastCourses = (topic) => {
+    const latest = getLatest();
+    const { id, section_id } = topic;
+    if (!latest || id !== latest.topic_id || section_id !== latest.section_id) {
+        axios.post("/admin/users/update-last-courses", {
+            category: segment.value,
+            topic_id: topic.id,
+            section_id: topic.section_id,
+        });
     }
 };
 </script>

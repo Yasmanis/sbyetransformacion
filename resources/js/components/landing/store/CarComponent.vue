@@ -19,7 +19,7 @@
             :transition-show="onlyBtn ? '' : 'slide-left'"
             :transition-hide="onlyBtn ? '' : 'slide-right'"
             style="min-width: 520px"
-            :offset="[2, -30]"
+            :offset="[2, -38]"
             @before-show="emits('show')"
             @hide="emits('hide')"
         >
@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnLeftRightComponent from "../../btn/BtnLeftRightComponent.vue";
 import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
@@ -116,12 +116,23 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    show: Boolean,
 });
 
 const emits = defineEmits(["show", "hide"]);
 const menu = ref(false);
 const menuRef = ref(null);
 const showDialog = ref(false);
+
+watch(
+    () => props.show,
+    (n) => {
+        if (n) {
+            menu.value = true;
+            emits("show");
+        }
+    }
+);
 
 const onClick = () => {
     menu.value.show = true;

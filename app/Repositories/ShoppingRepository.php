@@ -13,6 +13,6 @@ class ShoppingRepository extends BaseRepository
 
     public function component()
     {
-        return 'shopping/shopping';
+        return 'sales/index';
     }
 }

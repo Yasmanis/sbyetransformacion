@@ -23,7 +23,11 @@
             <span class="text-red" v-if="othersProps?.required">*</span>
         </template>
         <template v-slot:before v-if="$slots.before">
-            <slot name="before"></slot>
+            <slot name="before"></slot> </template
+        ><template v-slot:after v-if="$slots.after">
+            <slot name="after"></slot> </template
+        ><template v-slot:append v-if="$slots.append">
+            <slot name="append"></slot>
         </template>
         <template #hint v-if="fieldHelp?.length > 0">
             <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">

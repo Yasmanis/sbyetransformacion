@@ -1,23 +1,18 @@
 <template>
-    <q-btn-component
-        :tooltips="tooltips"
-        :icon="list ? 'mdi-format-list-bulleted' : 'mdi-menu'"
-        @click="onClick"
-    />
+    <q-btn-component :tooltips="tooltips" icon="mdi-basket" @click="onClick" />
 </template>
 
 <script setup>
 import QBtnComponent from "../base/QBtnComponent.vue";
 defineOptions({
-    name: "BtnListComponent",
+    name: "BtnNoteComponent",
 });
 
 const props = defineProps({
     tooltips: {
         type: String,
-        default: "",
+        default: "cesta",
     },
-    list: Boolean,
 });
 
 const emits = defineEmits(["click"]);
