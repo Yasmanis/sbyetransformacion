@@ -49,7 +49,8 @@
                                     totalSections === index + 1 ||
                                     (topic?.percent < 95 &&
                                         segment === 'learning' &&
-                                        topic?.has_principal_video)
+                                        topic?.has_principal_video &&
+                                        !topic?.skip)
                                 "
                                 @click="emits('change-section', index + 1)"
                             />

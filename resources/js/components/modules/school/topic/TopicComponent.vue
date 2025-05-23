@@ -225,7 +225,6 @@
                 formData.description = null;
             }
         "
-        v-if="formData.principalVideo || changePrincipalVideo"
     />
 
     <editor-field
@@ -241,9 +240,22 @@
                 formData.description = val;
             }
         "
-        v-if="
-            addDescription && (formData.principalVideo || changePrincipalVideo)
+        v-if="addDescription"
+    />
+    <br />
+
+    <checkbox-field
+        v-model="formData.skip"
+        label="permitir saltar este tema"
+        name="skip"
+        class="q-ml-none q-mt-sm"
+        :modelValue="formData.skip"
+        @update="
+            (name, val) => {
+                formData[name] = val;
+            }
         "
+        v-if="segment === 'learning'"
     />
 
     <confirm-component
@@ -335,6 +347,7 @@ onBeforeMount(() => {
         section_id,
         book_volume,
         visible_after_testimony,
+        skip,
     } = props.topic;
     let resources = props.topic.resources;
     ppalVideo.value = resources.find((r) => r.principal);
@@ -346,6 +359,7 @@ onBeforeMount(() => {
         section_id,
         book_volume,
         visible_after_testimony,
+        skip,
         principalVideo: false,
     };
     addDescription.value =
@@ -422,6 +436,7 @@ const update = async () => {
         coverImage,
         book_volume,
         visible_after_testimony,
+        skip,
     } = formData.value;
     const send = useForm({
         name,
@@ -429,6 +444,7 @@ const update = async () => {
         coverImage,
         book_volume,
         visible_after_testimony,
+        skip,
         _method: "put",
         excludeFlash: totalFiles.value > 0 || formData.value.principalVideo,
     });

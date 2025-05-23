@@ -1,6 +1,12 @@
 <template>
     <Layout title="tienda">
         <div class="q-py-lg">
+            <div class="row bg-red q-pa-md text-h5 text-white">
+                <div class="col text-center">
+                    esta pagina no funciona correctamente dado que está en
+                    desarrollo
+                </div>
+            </div>
             <q-toolbar>
                 <q-toolbar-title></q-toolbar-title>
                 <dialog-auth-component />

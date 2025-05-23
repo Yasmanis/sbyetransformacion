@@ -32,10 +32,7 @@ defineOptions({
 });
 
 const props = defineProps({
-    object: {
-        type: Object,
-        required: true,
-    },
+    object: Object,
     has_edit: {
         type: Boolean,
         default: false,

@@ -4,7 +4,7 @@
         tooltips="añadir una nueva tarjeta"
     />
 
-    <q-dialog v-model="showDialog" persistent>
+    <q-dialog v-model="showDialog" persistent @hide="showDialogConfirm = false">
         <q-card>
             <dialog-header-component
                 icon="mdi-credit-card-plus-outline"
@@ -28,6 +28,7 @@
                         hint="formato #### #### #### ####"
                         :othersProps="{
                             required: true,
+                            type: 'creditcard',
                         }"
                         @update="(name, val) => (formData[name] = val)"
                     />
@@ -38,6 +39,7 @@
                         hint="formato ##/####"
                         :othersProps="{
                             required: true,
+                            type: 'monthyear',
                         }"
                         @update="(name, val) => (formData[name] = val)"
                     />
@@ -61,47 +63,8 @@
             <q-card-section style="max-height: 50vh" class="scroll">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                        <current-billing-information />
                         <q-list dense>
-                            <q-item class="bg-green-11">
-                                <q-item-section>
-                                    <q-item-label class="text-center text-bold">
-                                        DATOS FACTURACION
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        nombre apellido apellido
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label> nif </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        direccion completa
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        pueblo – ciudad
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        cp –provincia (pais)
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
                             <q-item style="padding: 0">
                                 <checkbox-field
                                     label="metodo de pago predeterminado"
@@ -182,7 +145,7 @@
             </q-card-section>
             <q-separator />
             <q-card-actions align="right">
-                <btn-confirm-component @click="object ? update : store" />
+                <btn-confirm-component @click="store" />
                 <btn-cancel-component
                     cancel
                     @click="showDialogConfirm = false"
@@ -204,6 +167,8 @@ import BtnConfirmComponent from "../../../btn/BtnConfirmComponent.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { Screen } from "quasar";
 import { errorValidation } from "../../../../helpers/notifications";
+
+import CurrentBillingInformation from "./CurrentBillingInformation.vue";
 
 defineOptions({
     name: "CardComponent",
@@ -232,37 +197,30 @@ const user = computed(() => {
     return usePage().props.auth.user;
 });
 
-const save = async () => {
-    console.log(formData);
+const setDefaultData = () => {
+    formData.reset();
+    form.value.resetValidation();
+};
 
-    showDialogConfirm.value = true;
-    // form.value.validate().then((success) => {
-    //     if (success) {
-    //         showDialogConfirm.value = true;
-    //     } else {
-    //         errorValidation();
-    //     }
-    // });
+const save = async () => {
+    form.value.validate().then((success) => {
+        if (success) {
+            showDialogConfirm.value = true;
+        } else {
+            errorValidation();
+        }
+    });
 };
 
 const store = async () => {
-    console.log(formData);
-
-    // formData.post(props.module.base_url, {
-    //     onSuccess: (data) => {
-    //         setDefaultData();
-    //         emits("created", data.props.object, hide);
-    //     },
-    // });
-};
-
-const update = async () => {
-    console.log(formData);
-    // formData.put(`${props.module.base_url}/${props.object.id}`, {
-    //     onSuccess: (data) => {
-    //         setDefaultData();
-    //         emits("updated", data.props.object);
-    //     },
-    // });
+    formData.post("/admin/users/payment-methods", {
+        onSuccess: () => {
+            setDefaultData();
+            showDialog.value = false;
+        },
+        onError: () => {
+            showDialogConfirm.value = false;
+        },
+    });
 };
 </script>

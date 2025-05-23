@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SchoolTopic extends Model
 {
-    protected $fillable = ['name', 'coverImage', 'description', 'section_id', 'book_volume', 'visible_after_testimony'];
+    protected $fillable = ['name', 'coverImage', 'description', 'section_id', 'book_volume', 'visible_after_testimony', 'skip'];
     protected $appends = [
         'duration_string',
         'percent',
@@ -19,7 +19,8 @@ class SchoolTopic extends Model
     ];
 
     protected $casts = [
-        'visible_after_testimony' => 'boolean'
+        'visible_after_testimony' => 'boolean',
+        'skip' => 'boolean',
     ];
 
     public static function boot()

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\BillingInformationController;
 use App\Http\Controllers\BrevoController;
 use App\Http\Controllers\BriefIdeasController;
 use App\Http\Controllers\CampaignController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\ContactAdminController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PrivateMsgController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PushMessageController;
@@ -30,6 +32,7 @@ use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
+use App\Models\PaymentMethod;
 use App\Models\Testimony;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -74,6 +77,10 @@ Route::get('/listen', function () {
 
 Route::get('/', function () {
     return Inertia('landing/vivir_en_plenitud');
+});
+
+Route::get('/free_learning', function () {
+    return Inertia('landing/free_learning');
 });
 
 Route::get('/consulta_individual', function () {
@@ -199,6 +206,9 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/countries', CountryController::class);
     Route::resource('/admin/reason-for-return', ReasonForReturnController::class);
     Route::resource('/admin/products', ProductController::class);
+    Route::resource('/admin/users/payment-methods', PaymentMethodController::class)->except('index');
+    Route::resource('/admin/users/billing-information', BillingInformationController::class)->except('index');
+    Route::post('/admin/users/billing-information/predetermined/{id}', [BillingInformationController::class, 'predetermined']);
     Route::get('/admin/campaigns/logo/{id}', [CampaignController::class, 'logo']);
     Route::resource('/admin/briefideas', BriefIdeasController::class);
     Route::post('/admin/briefideas/fixed/{id}', [BriefIdeasController::class, 'fixed']);

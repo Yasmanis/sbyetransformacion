@@ -59,51 +59,7 @@
                     <div
                         class="col-xs-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 q-pa-sm"
                     >
-                        <q-list dense>
-                            <q-item class="bg-green-11">
-                                <q-item-section>
-                                    <q-item-label class="text-center text-bold">
-                                        DATOS FACTURACION
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        nombre apellido apellido
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label> nif </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        direccion completa
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        pueblo – ciudad
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        cp –provincia (pais)
-                                    </q-item-label>
-                                </q-item-section>
-                                <q-item-section avatar>
-                                    <address-send-sales />
-                                </q-item-section>
-                            </q-item>
-                        </q-list>
+                        <current-billing-information />
                     </div>
                 </div>
                 <div class="row">
@@ -116,9 +72,18 @@
                                     </q-item-label>
                                 </q-item-section>
                             </q-item>
-                            <q-item class="q-py-sm">
+                            <q-item
+                                class="q-py-sm"
+                                v-for="(method, indexMethod) in paymentMethods"
+                                :key="`method-${indexMethod}`"
+                            >
                                 <q-item-section avatar>
-                                    <checkbox-field :dense="false" />
+                                    <checkbox-field
+                                        :dense="false"
+                                        name="predetermined"
+                                        :model-value="method.predetermined"
+                                        disable
+                                    />
                                 </q-item-section>
                                 <q-item-section avatar>
                                     <q-img
@@ -130,13 +95,16 @@
                                 </q-item-section>
                                 <q-item-section>
                                     <q-item-label>
-                                        visa clasica credito abanca
+                                        {{ method.name }}
                                     </q-item-label>
                                     <q-item-label>
                                         tarjeta de credito que termina en ••••
-                                        1111
+                                        {{ method.number.split(" ")[3] }}
                                     </q-item-label>
-                                    <q-item-label class="text-red">
+                                    <q-item-label
+                                        class="text-red"
+                                        v-if="method.expired"
+                                    >
                                         <q-icon
                                             name="mdi-alert-outline"
                                             size="md"
@@ -145,38 +113,17 @@
                                     </q-item-label>
                                 </q-item-section>
                                 <q-item-section avatar>
-                                    <btn-delete-component />
-                                </q-item-section>
-                                <q-item-section avatar>
-                                    <payment-method />
-                                </q-item-section>
-                            </q-item>
-                            <q-item class="q-py-sm">
-                                <q-item-section avatar>
-                                    <checkbox-field :dense="false" />
-                                </q-item-section>
-                                <q-item-section avatar>
-                                    <q-img
-                                        :src="`${$page.props.public_path}images/logo/2.png`"
-                                        :ratio="16 / 9"
-                                        width="200px"
-                                        fit="fill"
+                                    <btn-delete-component
+                                        @click="
+                                            () => {
+                                                currentPaymentMethod = method;
+                                                showConfirm = true;
+                                            }
+                                        "
                                     />
                                 </q-item-section>
-                                <q-item-section>
-                                    <q-item-label>
-                                        visa debito abanca
-                                    </q-item-label>
-                                    <q-item-label>
-                                        tarjeta de debito que termina en ••••
-                                        3004
-                                    </q-item-label>
-                                </q-item-section>
                                 <q-item-section avatar>
-                                    <btn-delete-component />
-                                </q-item-section>
-                                <q-item-section avatar>
-                                    <payment-method />
+                                    <payment-method :object="method" />
                                 </q-item-section>
                             </q-item>
                             <q-item>
@@ -193,6 +140,13 @@
             </q-card-actions>
         </q-card>
     </q-dialog>
+
+    <confirm-component
+        :show="showConfirm"
+        cancel
+        @hide="showConfirm = false"
+        @ok="destroyPaymentMethod"
+    />
 </template>
 
 <script setup>
@@ -205,21 +159,34 @@ import CheckboxField from "../../../form/input/CheckboxField.vue";
 import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
 import CardComponent from "./CardComponent.vue";
 import PaymentMethod from "./PaymentMethod.vue";
-import { usePage } from "@inertiajs/vue3";
+import ConfirmComponent from "../../../base/ConfirmComponent.vue";
+import CurrentBillingInformation from "./CurrentBillingInformation.vue";
+import { useForm, usePage } from "@inertiajs/vue3";
 defineOptions({
     name: "SalesDatesComponent",
 });
 
 const props = defineProps({
-    object: {
-        type: Object,
-        required: true,
-    },
+    object: Object,
 });
 
 const showDialog = ref(false);
+const showConfirm = ref(false);
+const currentPaymentMethod = ref(null);
 
-const user = computed(() => {
-    return usePage().props.auth.user;
+const paymentMethods = computed(() => {
+    return usePage().props.auth.user.payment_methods;
 });
+
+const destroyPaymentMethod = () => {
+    const send = useForm({});
+    send.delete(
+        `/admin/users/payment-methods/${currentPaymentMethod.value.id}`,
+        {
+            onSuccess: () => {
+                showConfirm.value = false;
+            },
+        }
+    );
+};
 </script>

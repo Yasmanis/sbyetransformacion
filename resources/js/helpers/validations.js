@@ -25,6 +25,10 @@ export const rules = {
     url: (val) => isValidUrl(val) || "formato no valido",
     email: (val, rules) => rules.email(val) || "formato no valido",
     validDate: (val) => date.isValid(val) || "formato no valido",
+    creditCard: (val) =>
+        testPattern.creditCard(val) || "formato no valido #### #### #### ####",
+    monthYear: (val) =>
+        testPattern.monthYear(val) || "formato no valido #### ####",
 };
 export const validations = {
     getRules: (field) => {
@@ -48,6 +52,14 @@ export const validations = {
                 }
                 if (field.type === "url") {
                     result = [...result, rules.url];
+                    // help = [...help, "formato url ej: http://example.com"];
+                }
+                if (field.type === "creditcard") {
+                    result = [...result, (val) => rules.creditCard(val)];
+                    // help = [...help, "formato url ej: http://example.com"];
+                }
+                if (field.type === "monthyear") {
+                    result = [...result, (val) => rules.monthYear(val)];
                     // help = [...help, "formato url ej: http://example.com"];
                 }
             }

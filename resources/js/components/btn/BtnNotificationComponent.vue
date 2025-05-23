@@ -1,5 +1,18 @@
 <template>
-    <q-btn-component :tooltips="tooltips" :icon="`img:${$page.props.public_path}images/icon/${Dark.isActive?'white':'black'}-notification.png`" :size="size" @click="onClick" />
+    <q-btn-component
+        :tooltips="tooltips"
+        :icon="`img:${$page.props.public_path}images/icon/${
+            Dark.isActive ? 'white' : 'black'
+        }-notification.png`"
+        :size="size"
+        @click="onClick"
+        ><q-badge
+            floating
+            style="margin-top: -6px; margin-right: -4px"
+            v-if="badge"
+            >{{ badge }}</q-badge
+        ></q-btn-component
+    >
 </template>
 
 <script setup>
@@ -16,8 +29,9 @@ const props = defineProps({
     },
     size: {
         type: String,
-        default: '12px'
-    }
+        default: "12px",
+    },
+    badge: String,
 });
 
 const emits = defineEmits(["click"]);

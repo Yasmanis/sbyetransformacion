@@ -6,6 +6,7 @@
         :name="name"
         :dense="dense"
         :class="class"
+        :disable="disable"
         hide-bottom-space
         bottom-slots
         @update:model-value="onUpdate"
@@ -63,6 +64,10 @@ const props = defineProps({
     dense: {
         type: Boolean,
         default: true,
+    },
+    disable: {
+        type: Boolean,
+        default: false,
     },
     othersProps: {
         type: Object,

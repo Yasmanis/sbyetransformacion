@@ -1,6 +1,12 @@
 <template>
     <Layout>
         <q-page padding>
+            <div class="row bg-red q-pa-md text-h5 text-white q-my-sm">
+                <div class="col text-center">
+                    esta pagina no funciona correctamente dado que está en
+                    desarrollo
+                </div>
+            </div>
             <q-item style="padding: 0">
                 <q-item-section>
                     <q-card>

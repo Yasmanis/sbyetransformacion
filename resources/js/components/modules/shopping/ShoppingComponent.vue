@@ -13,14 +13,7 @@
             >
         </q-card-section>
         <q-card-section class="q-pa-none">
-            <q-btn-component
-                label="toda mi informacion"
-                class="full-width"
-                :flat="false"
-                :round="false"
-                :color="Dark.isActive ? 'primary' : ''"
-                square
-            />
+            <full-sale-information />
             <div class="text-right q-pa-xs q-gutter-xs">
                 <basket-sale-component />
                 <return-sale-component />
@@ -31,10 +24,9 @@
 
 <script setup>
 import BtnShareComponent from "../../btn/BtnShareComponent.vue";
-import QBtnComponent from "../../base/QBtnComponent.vue";
+import FullSaleInformation from "./FullSaleInformation.vue";
 import BasketSaleComponent from "./BasketSaleComponent.vue";
 import ReturnSaleComponent from "./ReturnSaleComponent.vue";
-import { Dark } from "quasar";
 defineOptions({
     name: "ShoppingComponent",
 });

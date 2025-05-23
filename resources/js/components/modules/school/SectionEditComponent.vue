@@ -343,6 +343,7 @@ const newTopic = (reset) => {
         index: index.value,
         book_volume: null,
         visible_after_testimony: false,
+        skip: false,
     };
     if (reset) {
         itemsTopics.value = [topic];

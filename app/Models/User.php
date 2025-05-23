@@ -69,7 +69,7 @@ class User extends Authenticatable
 
     protected $appends = ['permissions', 'roles', 'full_name', 'notifications', 'has_testimony'];
 
-    protected $with = ['latestCourses'];
+    protected $with = ['latestCourses', 'paymentMethods', 'billingsInformation'];
 
     public function books()
     {
@@ -79,6 +79,16 @@ class User extends Authenticatable
     public function latestCourses()
     {
         return $this->hasMany(UserLastCourse::class, 'user_id');
+    }
+
+    public function paymentMethods()
+    {
+        return $this->hasMany(PaymentMethod::class, 'user_id');
+    }
+
+    public function billingsInformation()
+    {
+        return $this->hasMany(BillingInformation::class, 'user_id');
     }
 
     public function getHasTestimonyAttribute()

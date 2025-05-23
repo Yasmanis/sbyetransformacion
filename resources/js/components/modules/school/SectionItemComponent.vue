@@ -218,7 +218,7 @@ const othersCompleted = (first, last) => {
     }
     for (let i = firstIndex; i < lastIndex; i++) {
         const temp = topics[i];
-        if (temp.percent < 95 && temp.has_principal_video) {
+        if (temp.percent < 95 && temp.has_principal_video && !temp.skip) {
             return false;
         }
     }

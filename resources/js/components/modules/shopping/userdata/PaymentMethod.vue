@@ -1,7 +1,12 @@
 <template>
     <btn-edit-component @click="showDialog = true" tooltips="editar" />
 
-    <q-dialog v-model="showDialog" persistent>
+    <q-dialog
+        v-model="showDialog"
+        persistent
+        @before-show="onBeforeShow"
+        @hide="onHide"
+    >
         <q-card style="width: 900px; max-width: 100vw">
             <dialog-header-component
                 icon="mdi-credit-card-edit-outline"
@@ -10,11 +15,14 @@
             />
             <q-card-section style="max-height: 50vh" class="scroll">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <div
+                        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 q-pa-sm"
+                    >
                         <q-form ref="form" greedy>
                             <text-field
                                 label="nombre"
                                 name="name"
+                                :model-value="formData.name"
                                 :othersProps="{
                                     required: true,
                                 }"
@@ -25,8 +33,10 @@
                                 name="defeat"
                                 mask="##/####"
                                 hint="formato ##/####"
+                                :model-value="formData.defeat"
                                 :othersProps="{
                                     required: true,
+                                    type: 'monthyear',
                                 }"
                                 @update="(name, val) => (formData[name] = val)"
                             />
@@ -34,6 +44,7 @@
                                 label="metodo de pago predeterminado"
                                 name="predetermined"
                                 class="q-mt-sm"
+                                :model-value="formData.predetermined"
                                 @update="(name, val) => (formData[name] = val)"
                             />
                             <q-item
@@ -50,60 +61,15 @@
                             </q-item>
                         </q-form>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                        <q-list
-                            dense
-                            :class="!Screen.xs && !Screen.sm ? 'q-ml-xl' : ''"
-                        >
-                            <q-item class="bg-green-11">
-                                <q-item-section>
-                                    <q-item-label class="text-center text-bold">
-                                        DATOS FACTURACION
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        nombre apellido apellido
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label> nif </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        direccion completa
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        pueblo – ciudad
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>
-                                        cp –provincia (pais)
-                                    </q-item-label>
-                                </q-item-section>
-                                <q-item-section avatar>
-                                    <billing-information />
-                                </q-item-section>
-                            </q-item>
-                        </q-list>
+                    <div
+                        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 q-pa-sm"
+                    >
+                        <current-billing-information />
                     </div>
                 </div>
             </q-card-section>
             <q-card-actions align="right">
-                <btn-save-component />
+                <btn-save-component @click="save" />
                 <btn-cancel-component cancel @click="showDialog = false" />
             </q-card-actions>
         </q-card>
@@ -111,16 +77,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import DialogHeaderComponent from "../../../base/DialogHeaderComponent.vue";
 import BtnCancelComponent from "../../../btn/BtnCancelComponent.vue";
 import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
 import BtnSaveComponent from "../../../btn/BtnSaveComponent.vue";
 import TextField from "../../../form/input/TextField.vue";
 import CheckboxField from "../../../form/input/CheckboxField.vue";
-import AddressSendSales from "./AddressSendSales.vue";
-import BillingInformation from "./BillingInformation.vue";
-import { useForm } from "@inertiajs/vue3";
+import CurrentBillingInformation from "./CurrentBillingInformation.vue";
+import { useForm, usePage } from "@inertiajs/vue3";
 import { Screen } from "quasar";
 
 defineOptions({
@@ -128,18 +93,46 @@ defineOptions({
 });
 
 const props = defineProps({
-    object: {
-        type: Object,
-        required: true,
-    },
+    object: Object,
 });
 
 const showDialog = ref(false);
 const form = ref(null);
+
 const formData = useForm({
     name: null,
-    number: null,
     defeat: null,
     predetermined: false,
 });
+
+const onBeforeShow = () => {
+    for (const key in props.object) {
+        if (formData[key] !== undefined) {
+            formData[key] = props.object[key];
+        }
+    }
+};
+
+const save = async () => {
+    form.value.validate().then((success) => {
+        if (success) {
+            update();
+        } else {
+            errorValidation();
+        }
+    });
+};
+
+const update = async () => {
+    formData.put(`/admin/users/payment-methods/${props.object.id}`, {
+        onSuccess: () => {
+            showDialog.value = false;
+        },
+    });
+};
+
+const onHide = () => {
+    formData.reset();
+    form.value.resetValidation();
+};
 </script>
