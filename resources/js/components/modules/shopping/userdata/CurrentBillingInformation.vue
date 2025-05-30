@@ -10,7 +10,7 @@
         <q-item>
             <q-item-section>
                 <q-item-label>
-                    {{ user.full_name }}
+                    {{ billingInformation.full_name }}
                 </q-item-label>
             </q-item-section>
         </q-item>

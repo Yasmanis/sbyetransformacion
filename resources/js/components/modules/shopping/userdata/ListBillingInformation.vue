@@ -37,7 +37,7 @@
                             class="cursor-pointer"
                         >
                             <q-item-label>
-                                {{ user.full_name }}
+                                {{ item.full_name }}
                             </q-item-label>
                             <q-item-label> {{ item.address }} </q-item-label>
                             <q-item-label> pueblo – ciudad </q-item-label>

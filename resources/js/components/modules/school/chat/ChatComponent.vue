@@ -40,7 +40,8 @@
                         title="tema siguiente"
                         :disable="
                             index === section?.topics.length - 1 ||
-                            (topic?.percent < 95 &&
+                            (!$page.props.auth.user.sa &&
+                                topic?.percent < 95 &&
                                 segment === 'learning' &&
                                 topic?.has_principal_video)
                         "

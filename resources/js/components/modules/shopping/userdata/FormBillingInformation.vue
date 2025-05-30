@@ -19,7 +19,6 @@
                                 name="name"
                                 label="nombre"
                                 :model-value="user.name"
-                                disable
                                 @update="(name, val) => (formData[name] = val)"
                             />
                         </div>
@@ -31,7 +30,6 @@
                                 name="surname"
                                 label="apellidos"
                                 :model-value="user.surname"
-                                disable
                                 @update="(name, val) => (formData[name] = val)"
                             />
                         </div>

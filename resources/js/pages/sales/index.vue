@@ -11,39 +11,33 @@
                 <q-item-section>
                     <q-card>
                         <q-card-section class="no-padding">
-                            <q-item style="padding: 0">
-                                <q-item-section avatar>
-                                    <section
-                                        class="q-my-xs q-mr-sm cursor-pointer text-subtitle1"
+                            <q-toolbar
+                                class="q-toolbar row no-wrap items-center"
+                            >
+                                <section
+                                    class="q-my-xs q-mr-sm cursor-pointer text-subtitle1"
+                                >
+                                    <div
+                                        class="doc-card-title bg-primary text-white"
                                     >
-                                        <div
-                                            class="doc-card-title bg-primary text-white"
-                                        >
-                                            <q-icon
-                                                name="mdi-cart-variant"
-                                                size="22px"
-                                            />
-                                            mis compras
-                                        </div>
-                                    </section>
-                                </q-item-section>
+                                        <q-icon
+                                            name="mdi-cart-variant"
+                                            size="22px"
+                                        />
+                                        mis compras
+                                    </div>
+                                </section>
                                 <q-space />
-                                <q-item-section avatar>
-                                    <btn-heart-component
-                                        tooltips="mis deseos"
-                                    />
-                                </q-item-section>
-                                <q-item-section avatar>
-                                    <q-btn-component
-                                        icon="mdi-basket-outline"
-                                        tooltips="cesta en proceso de compra"
-                                        @click="showMenu = true"
-                                        ><q-badge color="black" floating
-                                            >1</q-badge
-                                        ></q-btn-component
-                                    >
-                                </q-item-section>
-                            </q-item>
+                                <btn-heart-component tooltips="mis deseos" />
+                                <q-btn-component
+                                    icon="mdi-basket-outline"
+                                    tooltips="cesta en proceso de compra"
+                                    @click="showMenu = true"
+                                    ><q-badge color="black" floating
+                                        >1</q-badge
+                                    ></q-btn-component
+                                >
+                            </q-toolbar>
                             <q-separator />
                             <q-item style="padding: 0">
                                 <q-item-section>

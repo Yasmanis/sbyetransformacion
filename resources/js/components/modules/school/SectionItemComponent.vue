@@ -144,7 +144,7 @@ import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnDownUpComponent from "../../btn/BtnDownUpComponent.vue";
 import VideoComponent from "./VideoComponent.vue";
 import ConfirmComponent from "../../base/ConfirmComponent.vue";
-import { router } from "@inertiajs/vue3";
+import { router, usePage } from "@inertiajs/vue3";
 import { Dark } from "quasar";
 import { info } from "../../../helpers/notifications";
 
@@ -210,6 +210,9 @@ const updateViewSection = () => {
 };
 
 const othersCompleted = (first, last) => {
+    if (usePage().props.auth.user.sa) {
+        return true;
+    }
     const topics = props.topics;
     const firstIndex = topics.findIndex((t) => t.id === first.id);
     const lastIndex = topics.findIndex((t) => t.id === last.id);

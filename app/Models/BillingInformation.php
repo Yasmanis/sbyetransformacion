@@ -11,9 +11,9 @@ class BillingInformation extends Model
 
     protected $table = 'users_billing_information';
 
-    protected $fillable = ['nif_cif', 'road', 'address', 'postal_code', 'province', 'country_id', 'predetermined'];
+    protected $fillable = ['name', 'surname', 'nif_cif', 'road', 'address', 'postal_code', 'province', 'country_id', 'predetermined'];
 
-    protected $appends = ['country_str'];
+    protected $appends = ['country_str', 'full_name'];
 
     protected $casts = [
         'predetermined' => 'boolean'
@@ -46,6 +46,11 @@ class BillingInformation extends Model
     public function getCountryStrAttribute()
     {
         return $this->country->name;
+    }
+
+    public function getFullNameAttribute()
+    {
+        return sprintf('%s %s', $this->name, $this->surname);
     }
 
     public function changePredetermined()

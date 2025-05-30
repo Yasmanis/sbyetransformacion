@@ -1,7 +1,13 @@
 <template>
     <Layout>
         <div class="q-pa-md q-gutter-sm">
-            <editor-field name="private" :model-value="config" :saveBtn="true" @update="onUpdate" @save="onSave" />
+            <editor-field
+                name="private"
+                :model-value="config"
+                :saveBtn="true"
+                @update="onUpdate"
+                @save="onSave"
+            />
         </div>
     </Layout>
 </template>
@@ -17,24 +23,25 @@ defineOptions({
     name: "PrivatePage",
 });
 
-const config = ref('');
+const config = ref("");
 
 const onUpdate = (name, val) => {
     config.value = val;
-}
+};
 
 const onSave = (name, val) => {
-    router.post('/admin/configuration/save', {
-        keyName: 'private',
-        keyValue: config.value
+    router.post("/admin/configuration/save", {
+        keyName: "private",
+        keyValue: config.value,
     });
-}
+};
 
 onBeforeMount(() => {
-    axios.get('/admin/configuration/index/private').then((data) => {
-        config.value = data.data.value ?? '';
-    }).catch(() => {
-
-    });
+    axios
+        .get("/admin/configuration/index/private")
+        .then((data) => {
+            config.value = data.data.value ?? "";
+        })
+        .catch(() => {});
 });
 </script>

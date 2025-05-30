@@ -47,10 +47,8 @@
                                 :leftDirection="false"
                                 :disable="
                                     totalSections === index + 1 ||
-                                    (topic?.percent < 95 &&
-                                        segment === 'learning' &&
-                                        topic?.has_principal_video &&
-                                        !topic?.skip)
+                                    (segment === 'learning' &&
+                                        !allTopicsCompleted())
                                 "
                                 @click="emits('change-section', index + 1)"
                             />
@@ -240,5 +238,19 @@ const startVideo = (video) => {
     } else {
         //showNoAccess.value = true;
     }
+};
+
+const allTopicsCompleted = () => {
+    if (page.props.auth.user.sa) {
+        return true;
+    }
+    const topics = props?.section?.topics ?? [];
+    for (let i = 0; i < topics.length; i++) {
+        const temp = topics[i];
+        if (temp.percent < 95 && temp.has_principal_video && !temp.skip) {
+            return false;
+        }
+    }
+    return true;
 };
 </script>

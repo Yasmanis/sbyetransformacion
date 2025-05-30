@@ -1,5 +1,11 @@
 <template>
     <Layout>
+        <div class="row bg-red q-pa-md text-h5 text-white q-my-sm">
+            <div class="col text-center">
+                esta pagina no funciona correctamente dado que está en
+                desarrollo
+            </div>
+        </div>
         <div class="banner bg-primary">
             <div class="row">
                 <div
@@ -208,46 +214,404 @@
                     haz clic aqui para unirte ahora y comenzar tu transformacion
                     👇️
                 </p>
+                <q-card style="border: 1px solid #000; width: 300px">
+                    <q-card-section class="no-padding">
+                        <q-list dense>
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label class="text-center q-pt-md">
+                                        🌱
+                                    </q-item-label>
+                                </q-item-section>
+                            </q-item>
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label class="text-center q-pb-sm">
+                                        plan basico
+                                    </q-item-label></q-item-section
+                                >
+                            </q-item>
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label class="text-center">
+                                        🎓️ curso completo
+                                    </q-item-label></q-item-section
+                                >
+                            </q-item>
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label class="text-center">
+                                        💬 acompañamiento por chat
+                                    </q-item-label></q-item-section
+                                >
+                            </q-item>
+                            <q-item style="padding: 0">
+                                <q-item-section
+                                    class="text-center bg-black text-white q-py-xs q-my-md"
+                                >
+                                    <q-item-label> 19 € </q-item-label>
+                                    <q-item-label>
+                                        precio de lanzamiento
+                                    </q-item-label></q-item-section
+                                >
+                            </q-item>
+                        </q-list>
+                    </q-card-section>
+                </q-card>
+                <p class="q-pt-md">con tu testimonio en 30 dias</p>
+                <p>🎁 accedes al...</p>
+                <q-card style="border: 1px solid #000; width: 300px">
+                    <q-card-section class="no-padding">
+                        <q-list dense>
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label class="text-center q-pt-md">
+                                        🌺
+                                    </q-item-label>
+                                </q-item-section>
+                            </q-item>
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label class="text-center q-pb-sm">
+                                        plan premium
+                                    </q-item-label></q-item-section
+                                >
+                            </q-item>
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label class="text-center">
+                                        🎓️ curso completo
+                                    </q-item-label></q-item-section
+                                >
+                            </q-item>
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label class="text-center">
+                                        💬 acompañamiento por chat
+                                    </q-item-label></q-item-section
+                                >
+                            </q-item>
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label class="text-center">
+                                        + 3 respuestas personalizadas en video
+                                    </q-item-label></q-item-section
+                                >
+                            </q-item>
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label class="text-center">
+                                        👥 1 sesion individual de 1h
+                                    </q-item-label></q-item-section
+                                >
+                            </q-item>
+                            <q-item style="padding: 0">
+                                <q-item-section>
+                                    <q-item-label
+                                        class="text-white bg-black text-center q-py-sm q-my-lg"
+                                    >
+                                        ✨️ sin coste adicional
+                                    </q-item-label></q-item-section
+                                >
+                            </q-item>
+                        </q-list>
+                    </q-card-section>
+                </q-card>
+                <div class="col-12 text-center q-mt-md">
+                    <q-btn color="black" label="empezar ahora" no-caps rounded>
+                        <q-icon
+                            name="fa fa-long-arrow-right"
+                            size="xs"
+                            class="q-ml-md"
+                        />
+                    </q-btn>
+                </div>
             </div>
         </div>
-        <div class="row container bg-primary text-white q-pa-lg" id="suscribe">
-            <div class="col-md-6">
-                <h6 class="q-mx-sm q-my-none text-white">
-                    DESCUBRE LAS CLAVES PARA VIVIR EN PLENITUD
-                </h6>
-                <p class="q-mx-sm q-mt-md text-justify">
-                    📩 suscribete a mi newsletter exclusiva y accede a
-                    reflexiones profundas, enseñanzas ineditas y herramientas
-                    practicas para liberarte emocionalmente y conectar con la
-                    guia de dios en tu dia a dia
+        <div class="container bg-primary q-py-lg">
+            <div class="row">
+                <div class="col">
+                    <p class="text-h6 text-white">PRECIOS Y PLANES</p>
+                </div>
+            </div>
+            <div class="row">
+                <div
+                    class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12"
+                    :class="screen.xs ? 'q-py-sm' : 'q-pr-md'"
+                >
+                    <q-card style="border: 1px solid #000">
+                        <q-card-section class="no-padding">
+                            <q-list dense>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label
+                                            class="text-center q-pt-md"
+                                        >
+                                            🌱
+                                        </q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label
+                                            class="text-center q-pb-sm"
+                                        >
+                                            plan basico
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label class="text-center">
+                                            🎓️ curso completo
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label class="text-center">
+                                            💬 acompañamiento por chat
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item />
+                                <q-item />
+                                <q-item style="padding: 0">
+                                    <q-item-section>
+                                        <q-item-label
+                                            class="text-white bg-black text-center q-py-sm q-my-lg"
+                                        >
+                                            45 €
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                            </q-list>
+                        </q-card-section>
+                    </q-card>
+                </div>
+                <div
+                    class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12"
+                    :class="screen.xs ? 'q-py-sm' : null"
+                >
+                    <q-card style="border: 1px solid #000">
+                        <q-card-section class="no-padding">
+                            <q-list dense>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label
+                                            class="text-center q-pt-md"
+                                        >
+                                            🌿
+                                        </q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label
+                                            class="text-center q-pb-sm"
+                                        >
+                                            plan esencial
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label class="text-center">
+                                            🎓️ curso completo
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label class="text-center">
+                                            💬 acompañamiento por chat
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label class="text-center">
+                                            + 3 respuestas personalizadas en
+                                            video
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item />
+                                <q-item style="padding: 0">
+                                    <q-item-section>
+                                        <q-item-label
+                                            class="text-white bg-black text-center q-py-sm q-my-lg"
+                                        >
+                                            75 €
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                            </q-list>
+                        </q-card-section>
+                    </q-card>
+                </div>
+                <div
+                    class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12"
+                    :class="
+                        screen.xs
+                            ? 'q-py-sm'
+                            : screen.sm
+                            ? 'q-py-md q-pr-md'
+                            : 'q-pl-md'
+                    "
+                >
+                    <q-card style="border: 1px solid #000">
+                        <q-card-section class="no-padding">
+                            <q-list dense>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label
+                                            class="text-center q-pt-md"
+                                        >
+                                            🌺
+                                        </q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label
+                                            class="text-center q-pb-sm"
+                                        >
+                                            plan premium
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label class="text-center">
+                                            🎓️ curso completo
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label class="text-center">
+                                            💬 acompañamiento por chat
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label class="text-center">
+                                            + 3 respuestas personalizadas en
+                                            video
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label class="text-center">
+                                            👥 1 sesion individual de 1h
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                                <q-item style="padding: 0">
+                                    <q-item-section>
+                                        <q-item-label
+                                            class="text-white bg-black text-center q-py-sm q-my-lg"
+                                        >
+                                            150 €
+                                        </q-item-label></q-item-section
+                                    >
+                                </q-item>
+                            </q-list>
+                        </q-card-section>
+                    </q-card>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p class="text-white q-pt-md">
+                        🎁 todos los planes incluyen prioridad de acceso al
+                        taller grupal online de 3 meses
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row bg-white container q-py-lg">
+            <p class="text-h6">EL SIGUIENTE PASO: TALLER ONLINE DE 3 MESES</p>
+            <p>
+                si tras realizar el minicurso deseas profundizar, podras sumarte
+                al programa grupal intensivo
+            </p>
+            <ul class="q-pl-lg">
+                <p style="margin-left: -20px; margin-bottom: 5px">
+                    <b>incluye</b>
                 </p>
-                <p class="q-mx-sm q-mt-md">
-                    <b>que recibiras?</b><br />
-                    nuevas perspectivas sobre los temas de mi libro<i>
-                        liberacion emocional</i
-                    ><br />
-                    mensajes y enseñanzas que no comparto en redes<br />
-                    claves esenciales para vivir en plenitud y reconocer la
-                    intervencion de dios en tu vida
-                </p>
-                <p class="q-mx-sm q-mt-md">
-                    <b>regalo por suscripcion</b><br />
-                    🎁 un <b>test rapido</b> para identificar tus enemigos del
-                    aprendizaje<br />
-                    🎁 una <b>guia en PDF</b> con estrategias para liberar tu
-                    mente y aprender sin miedo<br />
-                    🎁 acceso exclusivo a <b>contenido indito de mi libro</b>
-                    <i> liberación emocional</i>
-                </p>
-                <p class="q-mx-sm q-mt-md">
-                    unete ahora y empieza tu camino hacia la plenitud!
+                <li>
+                    2 sesiones semanales en grupo para revisar ejercicios y
+                    resolver dudas
+                </li>
+                <li>seguimiento personal y practica guiada con el grupo</li>
+                <li>
+                    1 consulta individual conmigo, con informe final
+                    personalizado
+                </li>
+                <li>acompañamiento para tu transformacion integral</li>
+            </ul>
+            <p class="q-mt-lg">
+                <i>
+                    tiene prioridad quienes hayan realizado un minicurso o leido
+                    el libro
+                </i>
+            </p>
+        </div>
+        <div class="row bg-primary text-white container q-py-lg">
+            <p class="text-h6">LO QUE DICEN DE MI TRABAJO</p>
+            <p class="text-justify">
+                cada persona que he acompañado me ha mostrado que, cuando
+                alguien se atreve a mirar dentro, el cambio es inevitable
+            </p>
+            <p class="text-justify">
+                estas son algunas voces reales que han vivido esta
+                transformacion a traves de sesiones, de mi libro o de mis
+                conferencias
+            </p>
+            <hr style="width: 100%; height: 1px; background: #fff" />
+            <p class="text-h6 q-pt-md">video testimonio destacado</p>
+            <div class="row items-center">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    imagen
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <p class="text-justify">
+                        ella vivio un proceso de liberacion emocional durante
+                        varios dias de trabajo intensivo. lo que cuenta es parte
+                        de lo que tambien puedes empezar a vivir en este
+                        minicurso
+                    </p>
+                </div>
+            </div>
+            <hr style="width: 100%; height: 1px; background: #fff" />
+            <p class="text-h6 q-pt-md">testimonios destacados</p>
+        </div>
+        <div class="row bg-white container q-py-lg">
+            <div class="col-12">
+                <p class="text-h6">EMPIEZA HOY</p>
+                <p class="q-py-md">tu alma ya sabe que estas listo</p>
+                <p>
+                    si lo sientes, haz clic abajo y empieza este camino de
+                    regreso a ti mismo
                 </p>
             </div>
-            <div
-                class="col-md-6"
-                :class="!screen.xs && !screen.sm ? 'q-pl-xl' : ''"
-            >
-                <form-subscription-component />
+            <div class="col-12 text-center q-mt-md">
+                <q-btn
+                    color="black"
+                    label="quiero empezar ahora"
+                    no-caps
+                    rounded
+                >
+                    <q-icon
+                        name="fa fa-long-arrow-right"
+                        size="xs"
+                        class="q-ml-md"
+                    />
+                </q-btn>
             </div>
         </div>
     </Layout>
@@ -256,9 +620,7 @@
 <script setup>
 import Layout from "../../layouts/MainLayout.vue";
 import { ref, computed } from "vue";
-import { router } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
-import FormSubscriptionComponent from "../../components/landing/FormSubscriptionComponent.vue";
 
 defineOptions({
     name: "VivirEnPlenitud",
@@ -269,9 +631,6 @@ const $q = useQuasar();
 const screen = computed(() => {
     return $q.screen;
 });
-const more_book1 = ref(false);
-const more_book2 = ref(false);
-const more_book3 = ref(false);
 </script>
 <style scope>
 .wave {
