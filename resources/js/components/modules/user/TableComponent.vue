@@ -188,6 +188,7 @@
                         size="sm"
                         v-if="updateFields.length > 0 && has_edit"
                     />
+                    <!-- <user-card-component /> -->
                     <book-info-component
                         :has_edit="has_edit"
                         :object="props.row"
@@ -280,6 +281,7 @@
                                                 has_edit
                                             "
                                         />
+                                        <!-- <user-card-component /> -->
                                         <book-info-component
                                             :has_edit="has_edit"
                                             :object="props.row"
@@ -327,6 +329,7 @@ import LockUnlockComponent from "./LockUnlockComponent.vue";
 import ChangePasswordComponent from "./ChangePasswordComponent.vue";
 import BookInfoComponent from "./BookInfoComponent.vue";
 import ProgressComponent from "./ProgressComponent.vue";
+import UserCardComponent from "./UserCardComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
 

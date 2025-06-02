@@ -65,6 +65,7 @@ class SchoolTopicsController extends Controller
             $repository = new SchoolTopicRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
             $data['visible_after_testimony'] = $request->visible_after_testimony == 'true' ? true : false;
+            $data['skip'] = $request->skip == 'true' ? true : false;
             if ($request->hasFile('coverImage')) {
                 $properties = $this->getPropertiesFromFile($request->file('coverImage'));
                 $data['coverImage'] = $properties['path'];
@@ -118,6 +119,7 @@ class SchoolTopicsController extends Controller
             $repository = new SchoolTopicRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
             $data['visible_after_testimony'] = $request->visible_after_testimony == 'true' ? true : false;
+            $data['skip'] = $request->skip == 'true' ? true : false;
             if ($request->hasFile('coverImage')) {
                 $properties = $this->getPropertiesFromFile($request->file('coverImage'));
                 $data['coverImage'] = $properties['path'];
