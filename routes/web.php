@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BillingInformationController;
 use App\Http\Controllers\BrevoController;
 use App\Http\Controllers\BriefIdeasController;
@@ -143,12 +144,19 @@ Route::get('/private', function () {
     return Inertia('landing/private', ['config' => $config]);
 });
 
+Route::get('/contracting', function () {
+    $config = Configuration::where('key', 'contracting')->first();
+    return Inertia('landing/contracting', ['config' => $config]);
+});
+
 Route::post('/contacts/store', [ContactsController::class, 'store']);
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/authenticate', [AuthController::class, 'authenticate']);
 Route::post('/getPassword', [AuthController::class, 'getPassword']);
 Route::post('/buyer-register', [AuthController::class, 'buyerRegister']);
+Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])->middleware('guest')->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('guest');
 
 Route::get('/shared-file/{id}', function ($id) {
     $id = base64_decode($id);

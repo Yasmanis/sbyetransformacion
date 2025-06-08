@@ -7,6 +7,7 @@ use App\Models\Contact;
 use App\Models\Role;
 use App\Repositories\ContactRepository;
 use App\Repositories\UserRepository;
+use App\Services\BrevoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Nette\Utils\Arrays;
@@ -66,6 +67,16 @@ class ContactsController extends Controller
         $r = Role::firstWhere('name', 'like', 'Usuario');
         if ($r != null) {
             $user->roles()->syncWithoutDetaching([$r->id]);
+        }
+        try {
+            $brevo = new BrevoService();
+            $params = [
+                'email' => $user->email,
+                'name' => $user->full_name
+            ];
+            $brevo->sendEmail('AVISO - nuevo usuario', 'admin.contacts', $params);
+        } catch (\Throwable $th) {
+            //throw $th;
         }
         return redirect()->back()->with('success', 'su informacion ha sido registrada correctamente');
     }

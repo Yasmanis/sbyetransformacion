@@ -22,3 +22,17 @@ export const logout = () => {
     Loading.show();
     location.href = "/logout";
 };
+
+export const forgotPassword = (email) => {
+    const form = useForm({
+        email: email,
+    });
+    form.post("/forgot-password", {
+        onSuccess: () => {
+            return true;
+        },
+        onError:()=>{
+            return false;
+        }
+    });
+};

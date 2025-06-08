@@ -10,14 +10,18 @@ use App\Notifications\StandardNotification;
 use App\Repositories\BuyerRepository;
 use App\Repositories\ContactRepository;
 use App\Repositories\UserRepository;
+use App\Services\BrevoService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Pusher\PushNotifications\PushNotifications;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -62,17 +66,18 @@ class AuthController extends Controller
     {
         $user = User::firstWhere('email', $request->email);
         if ($user != null) {
-            $users = User::where('sa', true)->get();
-            $pass = new UserNotifications();
-            $pass->title = 'cambio de contraseña';
-            $pass->priority = 'Alta';
-            $pass->user_id = $user->id;
-            $pass->code = 'password_change';
-            $pass->model = 'User';
-            $pass->model_id = $user->id;
-            $pass->description = 'el usuario con correo <b>' . $request->email . '</b> ha solicitado el cambio de contraseña';
-            $pass->save();
-            Notification::send($users, new StandardNotification($pass));
+            $token = Password::createToken($user);
+            // $users = User::where('sa', true)->get();
+            // $pass = new UserNotifications();
+            // $pass->title = 'cambio de contraseña';
+            // $pass->priority = 'Alta';
+            // $pass->user_id = $user->id;
+            // $pass->code = 'password_change';
+            // $pass->model = 'User';
+            // $pass->model_id = $user->id;
+            // $pass->description = 'el usuario con correo <b>' . $request->email . '</b> ha solicitado el cambio de contraseña';
+            // $pass->save();
+            // Notification::send($users, new StandardNotification($pass));
         }
         return back()->with(['success' => 'se ha solicitado el cambio de su contraseña. espere un correo con los detalles', 'ok' => true]);
     }
@@ -217,5 +222,66 @@ class AuthController extends Controller
         $users = User::isAdmin()->get();
         Notification::send($users, new StandardNotification($notification));
         return redirect()->back()->with('success', 'registro realizado correctamente; espere un correo especificando los detalles de su cuenta');
+    }
+
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+        $user = User::where('email', $request->email)->first();
+        try {
+            if ($user) {
+                if ($user->active) {
+                    $token = Password::createToken($user);
+                    $to = [
+                        'email' => $user->email,
+                        'name' => $user->full_name
+                    ];
+                    $brevoService = new BrevoService();
+                    $result = $brevoService->sendEmail('Solicitud de cambio de contraseña', 'users.password_reset', ['token' => $token], $to);
+                    if ($result['success']) {
+                        return back()->with(['success' => 'hemos enviado un token al correo proporcionado para restablecer tu contraseña']);
+                    }
+                    return back()->with(['error' => $result['error']]);
+                } else {
+                    return back()->with(['error' => 'su cuenta esta bloqueada; no puede acceder a este servicio']);
+                }
+            } else {
+                return back()->withErrors(['email' => ['no hemos encontrado un usuario con este correo']]);
+            }
+        } catch (\Throwable $th) {
+            return back()->with(['error' => $th]);
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+                $user->save();
+            }
+        );
+
+        $withErrors = true;
+        $field = 'email';
+        if ($status == Password::PASSWORD_RESET) {
+            $withErrors = false;
+        } else if ($status == Password::INVALID_USER) {
+            $field = 'email';
+        } else if ($status == Password::INVALID_TOKEN || $status == Password::RESET_THROTTLED) {
+            $field = 'token';
+        }
+        return !$withErrors
+            ? redirect()->route('login')->with('success', __($status))
+            : back()->withErrors([$field => [__($status)]]);
     }
 }

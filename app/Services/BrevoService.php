@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\View;
 
 class BrevoService
 {
@@ -13,10 +14,12 @@ class BrevoService
         $this->apiKey = env('BREVO_API_KEY');
     }
 
-    public function sendEmail($to, $templateId, $params)
+    public function sendEmail($subject, $view, $params, $to = null)
     {
         $url = 'https://api.brevo.com/v3/smtp/email';
-
+        $html = View::make(sprintf('emails.%s', $view), $params)->render();
+        $html = preg_replace('/>\s+</', '><', $html);
+        $html = trim($html);
         $data = [
             'sender' => [
                 'name' => env('APP_NAME'),
@@ -24,19 +27,18 @@ class BrevoService
             ],
             'to' => [
                 [
-                    'email' => $to['email'],
-                    'name' => $to['name'],
+                    'email' => $to['email'] ?? env('MAIL_ADMIN'),
+                    'name' => $to['name'] ?? env('NAME_ADMIN'),
                 ],
             ],
-            'templateId' => $templateId,
-            'params' => $params,
+            'subject' => $subject,
+            'htmlContent' => $html,
+            'tags' => ['transactional']
         ];
-
         $response = Http::withHeaders([
             'api-key' => $this->apiKey,
             'Content-Type' => 'application/json',
-        ])->post($url, $data);
-
+        ])->withOptions(['verify' => false])->post($url, $data);
         if ($response->successful()) {
             return ['success' => true, 'data' => $response->json()];
         } else {

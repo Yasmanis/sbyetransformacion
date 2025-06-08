@@ -32,15 +32,18 @@ Route::post('/test-next-date', function (Request $request) {
 });
 
 Route::get('/send-email', function (Request $request) {
+    $params = [
+        'name' => 'name',
+        'surname' => 'surname',
+        'email' => 'email',
+    ];
     $to = [
         'email' => 'yfdezmerino91@gmail.com',
         'name' => 'yfdezmerino91',
     ];
-
-    $templateId = 11; // Reemplaza con el ID de tu plantilla
-    $params = null;
+    $templateId = 51; // Reemplaza con el ID de tu plantilla
     $service = new BrevoService();
-    $result = $service->sendEmail($to, $templateId, $params);
+    $result = $service->sendEmail('subject', 'admin.subscription', $params, $to);
 
     if ($result['success']) {
         return response()->json(['message' => 'Correo enviado exitosamente', 'data' => $result['data']]);

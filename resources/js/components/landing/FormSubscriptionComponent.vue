@@ -86,6 +86,18 @@
                             />
                         </div>
                         <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md text-white"
+                        >
+                            <q-checkbox
+                                v-model="form.privated"
+                                class="text-white checkbox-white"
+                                checked-icon="mdi-circle"
+                                unchecked-icon="mdi-circle-outline"
+                                dense
+                                label="he leido y acepto las condiciones generales de contratacion y la politica de privacidad"
+                            />
+                        </div>
+                        <div
                             class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
                         >
                             <small>
@@ -156,6 +168,7 @@ const form = useForm({
     name: null,
     surname: null,
     conditions: false,
+    privated: false,
 });
 
 const google_key = import.meta.env.VITE_GOOGLE_CAPTCHA;
@@ -165,6 +178,10 @@ const onSubmit = () => {
         if (success) {
             if (!form.conditions) {
                 error("debe especificar las condiciones");
+            } else if (!form.privated) {
+                error(
+                    "debe aceptar las condiciones generales de contratacion y la politica de privacidad"
+                );
             } else if (!recaptchaResponse.value) {
                 error("debe confirmar que usted no es un robot");
             } else {

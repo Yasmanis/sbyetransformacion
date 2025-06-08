@@ -4,6 +4,7 @@ use App\Models\Contact;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Nette\Utils\Random;
 
@@ -45,7 +46,7 @@ return new class extends Migration
         });
 
         Schema::table('contacts', function (Blueprint $table) {
-            $table->renameColumn('ticket_temp', 'ticket');
+            DB::statement('alter table contacts change ticket_temp ticket varchar(255)');
         });
     }
 

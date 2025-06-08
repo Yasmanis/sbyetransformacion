@@ -131,6 +131,9 @@
                 <Link href="/private" class="text-white q-ml-md">
                     privacidad
                 </Link>
+                <Link href="/contracting" class="text-white q-ml-md">
+                    condiciones de contratacion
+                </Link>
             </div>
             <div class="text-center">&#169;2024 sbye salud s.l.</div>
         </q-footer>
@@ -178,10 +181,6 @@ const links = ref([
     {
         title: "maria",
         url: "/maria",
-    },
-    {
-        title: "liberacion emocional",
-        url: "/free_learning",
     },
     {
         title: "consulta individual",

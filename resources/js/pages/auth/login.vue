@@ -11,82 +11,20 @@
                                 :src="`${$page.props.public_path}images/logo/1.png`"
                             />
                         </q-card-section>
-                        <q-card-section>
-                            <q-form class="q-px-sm" ref="formRef" greedy>
-                                <q-input
-                                    square
-                                    clearable
-                                    dense
-                                    v-model="form.email"
-                                    type="email"
-                                    label="correo"
-                                    :error="errors.email !== undefined"
-                                    :error-message="errors.email"
-                                    :rules="[
-                                        (val) =>
-                                            !!val || 'el correo es requerido',
-                                        (val, rules) =>
-                                            rules.email(val) ||
-                                            'correo no valido',
-                                    ]"
-                                    @keydown.enter.prevent="authenticate"
-                                >
-                                    <template v-slot:prepend>
-                                        <q-icon name="email" />
-                                    </template>
-                                </q-input>
-                                <q-input
-                                    square
-                                    dense
-                                    clearable
-                                    v-model="form.password"
-                                    :type="isPwd ? 'password' : 'text'"
-                                    label="contrase&ntilde;a"
-                                    :error="errors.password !== undefined"
-                                    :error-message="errors.password"
-                                    :rules="[
-                                        (val) =>
-                                            (val && val.length > 0) ||
-                                            'la contraseña es requerido',
-                                    ]"
-                                    @keydown.enter.prevent="authenticate"
-                                    v-if="!lostPassword"
-                                >
-                                    <template v-slot:append>
-                                        <q-icon
-                                            class="cursor-pointer"
-                                            :name="
-                                                isPwd
-                                                    ? 'visibility_off'
-                                                    : 'visibility'
-                                            "
-                                            @click="isPwd = !isPwd"
-                                        />
-                                    </template>
-                                    <template v-slot:prepend>
-                                        <q-icon name="lock" />
-                                    </template>
-                                </q-input>
-                                <q-checkbox
-                                    v-model="form.rememberme"
-                                    label="recordarme"
-                                    v-if="!lostPassword"
-                                ></q-checkbox>
-                            </q-form>
-                        </q-card-section>
-                        <q-card-section class="q-px-lg q-pt-none">
-                            <q-btn
-                                size="md"
-                                color="black"
-                                class="full-width text-white"
-                                :label="
-                                    lostPassword
-                                        ? 'cambio de contraseña'
-                                        : 'acceder'
-                                "
-                                @click="authenticate"
-                            />
-                        </q-card-section>
+                        <form-forgot-password-component
+                            v-if="lostPassword"
+                            @reset="
+                                (val) => {
+                                    email = val;
+                                    lostPassword = false;
+                                }
+                            "
+                            @cancel="lostPassword = false"
+                        />
+                        <form-login-component
+                            :email="email"
+                            v-if="!lostPassword"
+                        />
                         <q-card-section
                             class="text-center q-pt-none cursor-pointer"
                         >
@@ -172,51 +110,12 @@ import { usePage } from "@inertiajs/vue3";
 import { login, getPassword } from "../../services/auth";
 import { errorValidation } from "../../helpers/notifications";
 import QBtnComponent from "../../components/base/QBtnComponent.vue";
+import FormForgotPasswordComponent from "../../components/auth/FormForgotPasswordComponent.vue";
+import FormLoginComponent from "../../components/auth/FormLoginComponent.vue";
 defineOptions({
     name: "Login",
 });
 
-const form = ref({
-    email: null,
-    password: null,
-    rememberme: false,
-});
-
-const formRef = ref(null);
-
-const isPwd = ref(true);
 const lostPassword = ref(false);
-
-watch(lostPassword, (n) => {
-    form.value = {
-        email: null,
-        password: null,
-        rememberme: false,
-    };
-});
-
-const errors = computed(() => {
-    return usePage().props.errors;
-});
-
-const authenticate = async () => {
-    formRef.value.validate().then(async (success) => {
-        if (success) {
-            let { email, password, rememberme } = form.value;
-            if (lostPassword.value) {
-                getPassword(email);
-            } else {
-                login(email, password, rememberme);
-            }
-        } else {
-            errorValidation();
-        }
-    });
-};
-
-watch(errors, (n, o) => {
-    if (Object.keys(n).length > 0) {
-        errorValidation();
-    }
-});
+const email = ref(null);
 </script>

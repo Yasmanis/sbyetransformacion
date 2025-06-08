@@ -301,10 +301,6 @@ const links = ref([
         url: "/maria",
     },
     {
-        title: "liberacion emocional",
-        url: "/free_learning",
-    },
-    {
         title: "consulta individual",
         url: "/consulta_individual",
     },

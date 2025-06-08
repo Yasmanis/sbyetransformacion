@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BrevoService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -25,6 +26,7 @@ class BrevoController extends Controller
         ];
         $client = new Client([
             'base_uri' => 'https://api.brevo.com/v3/contacts',
+            'verify' => false,
             'headers' => [
                 'api-key' => env('BREVO_API_KEY'),
                 'Content-Type' => 'application/json',
@@ -35,6 +37,17 @@ class BrevoController extends Controller
             $response = $client->post('contacts', [
                 'json' => $data,
             ]);
+            try {
+                $service = new BrevoService();
+                $params = [
+                    'name' => $request->name,
+                    'surname' => $request->surname,
+                    'email' => $request->email
+                ];
+                $service->sendEmail('AVISO - nuevo usuario', 'admin.subscription', $params);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
             return redirect()->back()->with(
                 'object',
                 $response->getBody()->getContents()
