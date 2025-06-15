@@ -183,6 +183,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    duplicate: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const emits = defineEmits(["created", "updated", "cancel", "show-preview"]);
@@ -193,6 +197,7 @@ const loadingPreviewBtn = ref(false);
 const formData = ref({});
 
 onBeforeMount(() => {
+    formData.value["duplicated"] = props.duplicate ? 1 : 0;
     setDefaultData();
 });
 
@@ -261,10 +266,10 @@ const onUpdateUsers = (name, val) => {
 const save = async (hide) => {
     form.value.validate().then((success) => {
         if (success) {
-            if (props.object) {
-                update();
-            } else {
+            if (!props.object || props.duplicate) {
                 store(hide);
+            } else {
+                update();
             }
         } else {
             errorValidation();

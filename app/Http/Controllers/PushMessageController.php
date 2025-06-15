@@ -6,6 +6,7 @@ use App\Repositories\PushMessageRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PushMessageController extends Controller
 {
@@ -40,14 +41,41 @@ class PushMessageController extends Controller
             if ($request->hasFile('logo')) {
                 $path = $request->logo->store('pushmessage', 'public');
                 $data['logo'] = $path;
+            } else if ((int)$request->duplicated === 1 && isset($request->logo)) {
+                $newName = sprintf('pushmessage/%s.%s', Str::uuid(), last(explode('.', $request->logo)));
+                Storage::copy(
+                    sprintf('public/%s', Str::substr($request->logo, 8)),
+                    sprintf('public/%s', $newName)
+                );
+                $data['logo'] = $newName;
+            } else {
+                unset($data['logo']);
             }
             if ($request->hasFile('image')) {
                 $path = $request->image->store('pushmessage', 'public');
                 $data['image'] = $path;
+            } else if ((int)$request->duplicated === 1 && isset($request->image)) {
+                $newName = sprintf('pushmessage/%s.%s', Str::uuid(), last(explode('.', $request->image)));
+                Storage::copy(
+                    sprintf('public/%s', $request->image),
+                    sprintf('public/%s', $newName)
+                );
+                $data['image'] = $newName;
+            } else {
+                unset($data['image']);
             }
             if ($request->hasFile('video')) {
                 $path = $request->video->store('pushmessage', 'public');
                 $data['video'] = $path;
+            } else if ((int)$request->duplicated === 1 && isset($request->video)) {
+                $newName = sprintf('pushmessage/%s.%s', Str::uuid(), last(explode('.', $request->video)));
+                Storage::copy(
+                    sprintf('public/%s', $request->video),
+                    sprintf('public/%s', $newName)
+                );
+                $data['video'] = $newName;
+            } else {
+                unset($data['video']);
             }
             $object = $repository->create($data);
             if (isset($request->sections_id)) {

@@ -77,25 +77,21 @@
                             class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md text-white"
                         >
                             <q-checkbox
-                                v-model="form.conditions"
-                                class="text-white checkbox-white"
-                                checked-icon="mdi-circle"
-                                unchecked-icon="mdi-circle-outline"
-                                dense
-                                label="acepto las condiciones y recibir tus newsletters"
-                            />
-                        </div>
-                        <div
-                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md text-white"
-                        >
-                            <q-checkbox
                                 v-model="form.privated"
                                 class="text-white checkbox-white"
                                 checked-icon="mdi-circle"
                                 unchecked-icon="mdi-circle-outline"
                                 dense
-                                label="he leido y acepto las condiciones generales de contratacion y la politica de privacidad"
-                            />
+                            >
+                                he leido y acepto las
+                                <Link href="/legal" class="text-black"
+                                    >condiciones generales</Link
+                                >
+                                y la
+                                <Link href="/private" class="text-black"
+                                    >politica de privacidad</Link
+                                >
+                            </q-checkbox>
                         </div>
                         <div
                             class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
@@ -141,7 +137,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, Link } from "@inertiajs/vue3";
 import { errorValidation, error, error500 } from "../../helpers/notifications";
 import { useQuasar, Notify } from "quasar";
 import SubscriptionTest from "./SubscriptionTest.vue";
@@ -167,7 +163,6 @@ const form = useForm({
     email: null,
     name: null,
     surname: null,
-    conditions: false,
     privated: false,
 });
 
@@ -176,11 +171,9 @@ const google_key = import.meta.env.VITE_GOOGLE_CAPTCHA;
 const onSubmit = () => {
     formRef.value.validate().then((success) => {
         if (success) {
-            if (!form.conditions) {
-                error("debe especificar las condiciones");
-            } else if (!form.privated) {
+            if (!form.privated) {
                 error(
-                    "debe aceptar las condiciones generales de contratacion y la politica de privacidad"
+                    "debe aceptar las condiciones generales y la politica de privacidad"
                 );
             } else if (!recaptchaResponse.value) {
                 error("debe confirmar que usted no es un robot");

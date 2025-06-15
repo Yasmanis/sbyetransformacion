@@ -1,6 +1,6 @@
 <template>
     <q-layout view="hHh lpR fff">
-        <q-header class="bg-primary text-white container">
+        <q-header class="bg-primary text-white container" v-if="header">
             <q-toolbar class="q-px-none q-pt-md">
                 <q-toolbar-title :shrink="!screen.xs && !screen.sm">
                     <img
@@ -161,6 +161,10 @@ defineOptions({
 
 const props = defineProps({
     title: String,
+    header: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const $q = useQuasar();

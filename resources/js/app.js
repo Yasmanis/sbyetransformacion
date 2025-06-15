@@ -2,6 +2,7 @@ import "@quasar/extras/material-icons/material-icons.css";
 import "@quasar/extras/mdi-v6/mdi-v6.css";
 import "@quasar/extras/fontawesome-v6/fontawesome-v6.css";
 import "@quasar/extras/animate/animate-list.js";
+import "@quasar/extras/animate/fadeInLeft.css";
 import "quasar/src/css/index.sass";
 import "../css/app.css";
 import { createInertiaApp, router, usePage } from "@inertiajs/vue3";

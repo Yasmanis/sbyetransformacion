@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\DateUtils;
+use Illuminate\Support\Facades\Storage;
 
 class PushMessage extends Model
 {
@@ -13,7 +14,7 @@ class PushMessage extends Model
 
     protected $fillable = ['title', 'message', 'status', 'url', 'campaign_id', 'action_button_url', 'action_button_title', 'start_at', 'end_at', 'periodicity', 'image', 'video', 'logo'];
 
-    protected $appends = ['sections_id', 'sections_str', 'campaign_str', 'logo', 'is_fixed', 'notification_config'];
+    protected $appends = ['sections_id', 'sections_str', 'campaign_str', 'is_fixed', 'notification_config'];
 
     protected $casts = [
         'periodicity' => 'json',
@@ -26,6 +27,9 @@ class PushMessage extends Model
         parent::boot();
         static::creating(function ($obj) {
             $obj->created_by = auth()->user()->id;
+        });
+        static::deleting(function ($obj) {
+            $obj->deleteFilesFromDisk();
         });
     }
 
@@ -85,9 +89,9 @@ class PushMessage extends Model
         return isset($v) ? Carbon::parse($v)->format('d/m/Y h:i A') : null;
     }
 
-    public function getLogoAttribute()
+    public function getLogoAttribute($val)
     {
-        return isset($this->campaign->logo) ? sprintf('storage/%s', $this->campaign->logo) : 'images/logo/2.png';
+        return isset($val) ? sprintf('storage/%s', $val) : (isset($this->campaign->logo) ? sprintf('storage/%s', $this->campaign->logo) : 'images/logo/2.png');
     }
 
     public function getIsFixedAttribute()
@@ -98,5 +102,18 @@ class PushMessage extends Model
     public function getNotificationConfigAttribute()
     {
         return $this->config()->where('user_id', auth()->user()->id)->first()->data ?? null;
+    }
+
+    public function deleteFilesFromDisk()
+    {
+        if (isset($this->logo)) {
+            Storage::delete('public/' . $this->logo);
+        }
+        if (isset($this->image)) {
+            Storage::delete('public/' . $this->image);
+        }
+        if (isset($this->video)) {
+            Storage::delete('public/' . $this->video);
+        }
     }
 }

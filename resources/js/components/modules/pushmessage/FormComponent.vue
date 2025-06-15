@@ -1,5 +1,10 @@
 <template>
-    <btn-add-component @click="showDialog = true" v-if="!object" />
+    <btn-copy-component
+        tooltips="duplicar"
+        @click="showDialog = true"
+        v-if="duplicate"
+    />
+    <btn-add-component @click="showDialog = true" v-else-if="!object" />
     <btn-edit-component @click="showDialog = true" v-else />
     <q-dialog
         v-model="showDialog"
@@ -11,15 +16,7 @@
         @hide="onHide"
     >
         <q-card class="scroll">
-            <dialog-header-component
-                :icon="icon"
-                :title="
-                    object
-                        ? `editar ${object[module.to_str]}`
-                        : `adicionar ${module.singular_label.toLowerCase()}`
-                "
-                closable
-            />
+            <dialog-header-component :icon="icon" :title="fullTitle" closable />
             <form-body
                 ref="formBody"
                 :object="object"
@@ -27,6 +24,7 @@
                 :module="module"
                 :post-on-update="postOnUpdate"
                 :new-on-create="newOnCreate"
+                :duplicate="duplicate"
                 @created="onCreated"
                 @updated="showDialog = false"
                 @cancel="showDialog = false"
@@ -97,6 +95,7 @@ import { ref, onMounted } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import BtnAddComponent from "../../btn/BtnAddComponent.vue";
 import BtnEditComponent from "../../btn/BtnEditComponent.vue";
+import BtnCopyComponent from "../../btn/BtnCopyComponent.vue";
 import FormBody from "./FormBody.vue";
 import { usePage } from "@inertiajs/vue3";
 import { error } from "../../../helpers/notifications";
@@ -150,6 +149,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    duplicate: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const formBody = ref(null);
@@ -169,13 +172,16 @@ const blobVideo = ref(false);
 const data = ref(null);
 
 onMounted(() => {
-    if (props.object != null) {
-        fullTitle.value = `Editar ${props.title}`;
+    if (props.duplicate) {
+        fullTitle.value = `duplicar ${props.title}`;
+        icon.value = "mdi-content-copy";
+    } else if (props.object != null) {
+        fullTitle.value = `editar ${props.title}`;
         icon.value = `img:${page.props.public_path}images/icon/${
             Dark.isActive ? "white" : "black"
         }-edit.png`;
     } else {
-        fullTitle.value = `Adicionar ${props.title}`;
+        fullTitle.value = `adicionar ${props.title}`;
         icon.value = "mdi-plus";
     }
 });
@@ -253,8 +259,12 @@ const showPreview = async (timeout = 0) => {
                     : URL.createObjectURL(image);
             imgView = `<q-item-section><img src='${image}' width="120px" style="float: left;" class="q-mr-md"/></q-item-section>`;
         }
+        let title_view = "";
+        if (action_button_title) {
+            title_view = `<q-item-label><a href="${action_button_url}" target="_blank" class="q-btn q-pa-sm q-mb-md q-btn-item q-btn--rectangle bg-black q-btn--no-uppercase text-white cursor-pointer" style="text-decoration:none;min-width: 120px;">${action_button_title}</a></q-item-label>`;
+        }
         const notification = await Notify.create({
-            message: `<q-item>${imgView}<q-item-section><q-item-label class='text-h6 q-mb-none'>${title}</q-item-label> <q-item-label>${message}<q-item-label></q-item-section></q-item><div class="row"><div class="col self-center" style="opacity: 0.7">${date.formatDate(
+            message: `<q-item>${imgView}<q-item-section><q-item-label class='text-h6 q-mb-none'>${title}</q-item-label> <q-item-label>${message}<q-item-label>${title_view}</q-item-section></q-item><div class="row"><div class="col self-center" style="opacity: 0.7">${date.formatDate(
                 new Date(),
                 "MMMM DD, YYYY"
             )}</div><div class="col text-center"><img src='${logo}' width="80px"/></div><div class="col self-center text-right" style="font-size: 24px;">${
@@ -288,16 +298,18 @@ const showPreview = async (timeout = 0) => {
         });
 
         let videoBtn = document.getElementById("video-btn");
-        videoBtn.addEventListener("click", (ev) => {
-            if (typeof video === "string") {
-                urlVideo.value = `${page.props.public_path}storage/${video}`;
-                blobVideo.value = true;
-            } else {
-                urlVideo.value = URL.createObjectURL(video);
-                blobVideo.value = true;
-            }
-            dialogVideo.value = true;
-        });
+        if (videoBtn) {
+            videoBtn.addEventListener("click", (ev) => {
+                if (typeof video === "string") {
+                    urlVideo.value = `${page.props.public_path}storage/${video}`;
+                    blobVideo.value = true;
+                } else {
+                    urlVideo.value = URL.createObjectURL(video);
+                    blobVideo.value = true;
+                }
+                dialogVideo.value = true;
+            });
+        }
     }
 };
 

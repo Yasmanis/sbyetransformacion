@@ -189,6 +189,69 @@
                             />
                         </div>
                     </div>
+                    <div class="row q-col-gutter-x-lg">
+                        <div
+                            class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-xs-12"
+                        >
+                            <phone-field />
+                        </div>
+                        <div
+                            class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-xs-12"
+                        >
+                            <text-field
+                                name="province"
+                                label="provincia"
+                                :model-value="formData.province"
+                                :othersProps="{
+                                    required: true,
+                                }"
+                            />
+                        </div>
+                        <div
+                            class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-xs-12"
+                        >
+                            <text-field
+                                name="email"
+                                :model-value="formData.email"
+                                label="email"
+                                :othersProps="{
+                                    required: true,
+                                    type: 'email',
+                                }"
+                            />
+                        </div>
+                        <div
+                            class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12"
+                        >
+                            <text-field
+                                name="nif_cif"
+                                :model-value="formData.nif_cif"
+                                label="nif/cif"
+                                :othersProps="{
+                                    required: true,
+                                }"
+                            />
+                        </div>
+                        <div
+                            class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12"
+                        >
+                            <text-field
+                                name="gestor"
+                                :model-value="formData.gestor"
+                                label="gestor"
+                                readonly
+                                :othersProps="{
+                                    required: true,
+                                }"
+                                ><template #after>
+                                    <q-btn-component
+                                        icon="mdi-account-tie"
+                                        tooltips="seleccionar"
+                                    />
+                                    <btn-basket-component /> </template
+                            ></text-field>
+                        </div>
+                    </div>
                 </q-form>
             </q-card-section>
             <q-card-actions align="right">
@@ -207,6 +270,8 @@ import TextField from "../../form/input/TextField.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import DateField from "../../form/input/DateField.vue";
 import CountryField from "../../form/input/CountryField.vue";
+import PhoneField from "../../form/input/PhoneField.vue";
+import BtnBasketComponent from "../../btn/BtnBasketComponent.vue";
 import { useForm } from "@inertiajs/vue3";
 defineOptions({
     name: "UserCardComponent",

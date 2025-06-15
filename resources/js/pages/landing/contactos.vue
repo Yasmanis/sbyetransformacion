@@ -299,6 +299,26 @@
                                     hide-bottom-space
                                 />
                             </div>
+                            <div
+                                class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md text-white"
+                            >
+                                <q-checkbox
+                                    v-model="form.privated"
+                                    class="text-white checkbox-white"
+                                    checked-icon="mdi-circle"
+                                    unchecked-icon="mdi-circle-outline"
+                                    dense
+                                >
+                                    he leido y acepto las
+                                    <Link href="/legal" class="text-black"
+                                        >condiciones generales</Link
+                                    >
+                                    y la
+                                    <Link href="/private" class="text-black"
+                                        >politica de privacidad</Link
+                                    >
+                                </q-checkbox>
+                            </div>
                         </div>
                         <div
                             class="row q-pt-md"
@@ -394,7 +414,7 @@
 <script setup>
 import Layout from "../../layouts/MainLayout.vue";
 import { ref, watch, computed, onMounted } from "vue";
-import { useForm, usePage } from "@inertiajs/vue3";
+import { useForm, usePage, Link } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import { error, errorValidation } from "../../helpers/notifications.js";
 defineOptions({
@@ -425,6 +445,7 @@ const form = useForm({
     other_people: null,
     attachments: null,
     ticket: null,
+    privated: false,
 });
 const user = ref(null);
 
@@ -469,26 +490,32 @@ const showExplorerTicket = () => {
 const onSubmit = () => {
     formRef.value.validate().then((success) => {
         if (success) {
-            sending.value = true;
-            form.post("/contacts/store", {
-                preserveScroll: true,
-                onSuccess: () => {
-                    sending.value = false;
-                    iAmNot.value = false;
-                    contactPrivateArea.value = false;
-                    book_date.value = "text";
-                    form.reset();
-                    formRef.value.reset();
-                    if (user.value) {
-                        form.name = user.value.name;
-                        form.surname = user.value.surname;
-                        form.email = user.value.email;
-                    }
-                },
-                onError: () => {
-                    sending.value = false;
-                },
-            });
+            if (!form.privated) {
+                error(
+                    "debe aceptar las condiciones generales y la politica de privacidad"
+                );
+            } else {
+                sending.value = true;
+                form.post("/contacts/store", {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        sending.value = false;
+                        iAmNot.value = false;
+                        contactPrivateArea.value = false;
+                        book_date.value = "text";
+                        form.reset();
+                        formRef.value.reset();
+                        if (user.value) {
+                            form.name = user.value.name;
+                            form.surname = user.value.surname;
+                            form.email = user.value.email;
+                        }
+                    },
+                    onError: () => {
+                        sending.value = false;
+                    },
+                });
+            }
         } else {
             errorValidation();
         }

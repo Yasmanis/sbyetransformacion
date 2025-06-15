@@ -178,6 +178,11 @@
                             :label="props.value ? 'Si' : 'No'"
                         />
                     </template>
+                    <template v-else-if="props.col.name === 'message'">
+                        <q-item-label lines="5">
+                            <span v-html="props.row[props.col.field]"> </span>
+                        </q-item-label>
+                    </template>
                     <template v-else>
                         <span v-html="props.row[props.col.field]"> </span>
                     </template>
@@ -202,6 +207,20 @@
                         :post-on-update="postOnUpdate"
                         size="sm"
                         v-if="updateFields.length > 0 && has_edit"
+                    />
+                    <form-component
+                        :object="props.row"
+                        :title="current_module.singular_label"
+                        :fields="updateFields"
+                        :module="current_module"
+                        :post-on-update="postOnUpdate"
+                        duplicate
+                        size="sm"
+                        v-if="
+                            updateFields.length > 0 &&
+                            has_edit &&
+                            segment === 'push-messages'
+                        "
                     />
                     <view-brief-idea-component
                         :data="props.row"

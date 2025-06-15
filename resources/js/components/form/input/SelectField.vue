@@ -31,9 +31,14 @@
             <span class="text-red" v-if="othersProps?.required">*</span>
         </template>
         <template v-slot:selected-item="scope">
-            <q-item-label lines="1" style="margin-top: 5px">{{
-                scope.opt.label
-            }}</q-item-label>
+            <q-item-label lines="1" style="margin-top: 5px">
+                <q-chip
+                    removable
+                    @remove="scope.removeAtIndex(scope.index)"
+                    :tabindex="scope.tabindex"
+                    >{{ scope.opt.label }}</q-chip
+                >
+            </q-item-label>
         </template>
         <template v-slot:after v-if="$slots.after">
             <slot name="after"></slot>

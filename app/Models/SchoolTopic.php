@@ -15,7 +15,8 @@ class SchoolTopic extends Model
         'has_resources',
         'has_principal_video',
         'has_access',
-        'has_access_by_volume'
+        'has_access_by_volume',
+        'has_access_by_conference'
     ];
 
     protected $casts = [
@@ -70,14 +71,19 @@ class SchoolTopic extends Model
     public function getHasAccessAttribute()
     {
         $user = auth()->user();
-        return $user->sa || $user->has_testimony || !$this->visible_after_testimony;
+        return $this->has_access_by_conference || $user->sa || $user->has_testimony || !$this->visible_after_testimony;
     }
 
     public function getHasAccessByVolumeAttribute()
     {
         $user = auth()->user();
         $volumes = $user->book_volumes ? $user->book_volumes : [];
-        return $user->sa || in_array($this->book_volume, $volumes);
+        return $this->has_access_by_conference || $user->sa || in_array($this->book_volume, $volumes);
+    }
+
+    public function getHasAccessByConferenceAttribute()
+    {
+        return $this->section()->first()->category === 'conference';
     }
 
     public function getHasPrincipalVideoAttribute()
@@ -87,7 +93,7 @@ class SchoolTopic extends Model
 
     public function section()
     {
-        return $this->belongsTo(SchoolSection::class);
+        return $this->belongsTo(SchoolSection::class, 'section_id');
     }
 
     public function resources()

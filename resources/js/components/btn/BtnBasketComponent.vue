@@ -5,7 +5,7 @@
 <script setup>
 import QBtnComponent from "../base/QBtnComponent.vue";
 defineOptions({
-    name: "BtnNoteComponent",
+    name: "BtnBasketComponent",
 });
 
 const props = defineProps({

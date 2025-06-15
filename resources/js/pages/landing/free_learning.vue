@@ -1,19 +1,21 @@
 <template>
-    <Layout>
-        <div class="row bg-red q-pa-md text-h5 text-white q-my-sm">
-            <div class="col text-center">
-                esta pagina no funciona correctamente dado que está en
-                desarrollo
+    <Layout :header="false">
+        <div class="banner bg-primary q-pt-lg">
+            <div class="row">
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                    <img
+                        :src="`${$page.props.public_path}images/logo/1.png`"
+                        width="180px"
+                    />
+                </div>
             </div>
-        </div>
-        <div class="banner bg-primary">
             <div class="row">
                 <div
                     class="col-md-5 col-sm-12 col-xs-12 text-center"
                     style="z-index: 1"
                 >
                     <img
-                        :src="`${$page.props.public_path}images/team/maria-vivir-en-plenitud.png`"
+                        :src="`${$page.props.public_path}images/others/free_learning_header.webp`"
                         style="width: 50%; z-index: 9999 !important"
                     />
                 </div>
@@ -34,7 +36,7 @@
             <div
                 class="wave overflow-hidden"
                 :style="{
-                    'margin-top': !screen.xs && !screen.sm ? '-100px' : '',
+                    'margin-top': !screen.xs && !screen.sm ? '-130px' : '',
                 }"
             >
                 <svg
@@ -87,9 +89,9 @@
             </div>
             <div class="col-md-6 col-sm-12 text-center">
                 <img
-                    :src="`${$page.props.public_path}images/books/tree-books.png`"
+                    :src="`${$page.props.public_path}images/others/free_learning_book.webp`"
                     alt="group-image"
-                    style="width: 80%"
+                    style="width: 50%"
                 />
             </div>
         </div>
@@ -117,7 +119,13 @@
             <div
                 class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12 q-py-md text-center"
             >
-                imagen
+                <video-player
+                    :src="`${$page.props.public_path}media/mi-historia-liberacion-emocional.mp4`"
+                    :poster="`${$page.props.public_path}images/others/free-learning-poster-maria.webp`"
+                    controls
+                    :volume="0.6"
+                    aspectRatio="16:9"
+                />
             </div>
         </div>
         <div class="row container q-py-lg">
@@ -133,6 +141,44 @@
                         interna</i
                     >
                 </p>
+            </div>
+        </div>
+
+        <div
+            class="row container q-mb-sm"
+            v-for="(img, indexImg) in images"
+            :key="`image-${indexImg}`"
+        >
+            <div class="col self-center">
+                <div class="image-with-text-container">
+                    <q-img
+                        :src="`${$page.props.public_path}images/others/${img.image}`"
+                        class="responsive-image"
+                        fit="fill"
+                        height="160px"
+                        :id="`image-${indexImg + 1}`"
+                    >
+                        <div
+                            class="text-overlay"
+                            :id="`background-${indexImg + 1}`"
+                        >
+                            <h2 class="text-h5 text-bold" :class="img.color">
+                                {{ img.title }}
+                            </h2>
+                            <span
+                                class="text-body1"
+                                :class="img.color"
+                                v-html="img.description"
+                            >
+                            </span>
+                        </div>
+                    </q-img>
+                </div>
+            </div>
+        </div>
+
+        <div class="row container q-py-lg">
+            <div class="col">
                 <p>
                     <img
                         :src="`${$page.props.public_path}images/icon/double-time.png`"
@@ -534,32 +580,36 @@
             </div>
         </div>
         <div class="row bg-white container q-py-lg">
-            <p class="text-h6">EL SIGUIENTE PASO: TALLER ONLINE DE 3 MESES</p>
-            <p>
-                si tras realizar el minicurso deseas profundizar, podras sumarte
-                al programa grupal intensivo
-            </p>
-            <ul class="q-pl-lg">
-                <p style="margin-left: -20px; margin-bottom: 5px">
-                    <b>incluye</b>
+            <div class="col">
+                <p class="text-h6">
+                    EL SIGUIENTE PASO: TALLER ONLINE DE 3 MESES
                 </p>
-                <li>
-                    2 sesiones semanales en grupo para revisar ejercicios y
-                    resolver dudas
-                </li>
-                <li>seguimiento personal y practica guiada con el grupo</li>
-                <li>
-                    1 consulta individual conmigo, con informe final
-                    personalizado
-                </li>
-                <li>acompañamiento para tu transformacion integral</li>
-            </ul>
-            <p class="q-mt-lg">
-                <i>
-                    tiene prioridad quienes hayan realizado un minicurso o leido
-                    el libro
-                </i>
-            </p>
+                <p>
+                    si tras realizar el minicurso deseas profundizar, podras
+                    sumarte al programa grupal intensivo
+                </p>
+                <ul class="q-pl-lg">
+                    <p style="margin-left: -20px; margin-bottom: 5px">
+                        <b>incluye</b>
+                    </p>
+                    <li>
+                        2 sesiones semanales en grupo para revisar ejercicios y
+                        resolver dudas
+                    </li>
+                    <li>seguimiento personal y practica guiada con el grupo</li>
+                    <li>
+                        1 consulta individual conmigo, con informe final
+                        personalizado
+                    </li>
+                    <li>acompañamiento para tu transformacion integral</li>
+                </ul>
+                <p class="q-mt-lg">
+                    <i>
+                        tiene prioridad quienes hayan realizado un minicurso o
+                        leido el libro
+                    </i>
+                </p>
+            </div>
         </div>
         <div class="row bg-primary text-white container q-py-lg">
             <p class="text-h6">LO QUE DICEN DE MI TRABAJO</p>
@@ -619,18 +669,86 @@
 
 <script setup>
 import Layout from "../../layouts/MainLayout.vue";
-import { ref, computed } from "vue";
-import { useQuasar } from "quasar";
+import { ref, computed, watch, onMounted } from "vue";
+import { useQuasar, dom } from "quasar";
+
+import { VideoPlayer } from "@videojs-player/vue";
+import "video.js/dist/video-js.css";
 
 defineOptions({
     name: "VivirEnPlenitud",
 });
 
 const $q = useQuasar();
+const { height, css } = dom;
+
+const inView = ref(Array.apply(null, Array(50)).map((_) => false));
+const images = [];
+/*const images = [
+    {
+        title: "🌪️ ETAPA 1: LIBERAR EMOCIONES INTENSAS",
+        description:
+            "aprende a soltar emociones como la rabia, la tristeza o la frustracion <br>ejercicios fisicos y expresivos para liberar lo que el cuerpo guarda",
+        image: "background_1.png",
+        color: "text-white",
+    },
+    {
+        title: "🌫️ ETAPA 2: LIBERAR EMOCIONES SUTILES",
+        description:
+            "conecta con lo que te molesta sin saber por que<br>introspeccion guiada para reconocer señales internas que suelen pasar desapercibidas",
+        image: "background_2.png",
+        color: "text-black",
+    },
+    {
+        title: "🧬 ETAPA 3: LIBERAR EMOCIONES INCONSCIENTES",
+        description:
+            "descubre lo que te duele y aun no sabias<br>herramientas de autoexploracion emocional y regresiva para liberar patrones antiguos",
+        image: "background_3.png",
+        color: "text-white",
+    },
+    {
+        title: "🧠 ETAPA 4: DESPROGRAMAR EL EGO",
+        description:
+            "identifica las creencias que sostienen tu dolor y empieza a soltarlas<br>transforma tu forma de pensar, sentir y actuar desde una mayor conciencia",
+        image: "background_4.png",
+        color: "text-black",
+    },
+    {
+        title: "💫 ETAPA 5: VIVIR DESDE TU ESENCIA",
+        description:
+            "aprende a confiar, a fluir y a vivir sin miedo ni mascaras<br>accede a tu guia interior (llamala intuicion, claridad o dios) y actua en coherencia contigo",
+        image: "background_5.png",
+        color: "text-black",
+    },
+];
+*/
+watch(
+    () => $q.screen.width,
+    () => {
+        setImagesSize();
+    }
+);
+
+onMounted(() => {
+    setImagesSize();
+});
 
 const screen = computed(() => {
     return $q.screen;
 });
+
+const setImagesSize = () => {
+    let div, image;
+    for (let i = 1; i <= 5; i++) {
+        div = document.getElementById(`background-${i}`);
+        image = document.getElementById(`image-${i}`);
+        if (div) {
+            css(image, {
+                height: `${height(div) + 50}px`,
+            });
+        }
+    }
+};
 </script>
 <style scope>
 .wave {
@@ -673,5 +791,33 @@ svg {
     fill: #fff;
     transform-origin: center;
     transform: rotateY(0deg);
+}
+
+.image-with-text-container {
+    position: relative;
+    width: 100%;
+}
+
+.responsive-image {
+    width: 100%;
+    display: block;
+}
+
+.text-overlay {
+    position: absolute;
+    top: 20px;
+    left: 50px;
+    right: 50px;
+    padding: 16px;
+    background: transparent !important;
+}
+
+.text-overlay-centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 80%;
 }
 </style>
