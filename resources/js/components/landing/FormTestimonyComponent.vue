@@ -232,6 +232,47 @@
                             class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
                         >
                             <span class="text-white"
+                                >seleccione el tomo al cual va dirigido el
+                                testimonio</span
+                            >
+                            <div class="q-gutter-sm text-white">
+                                <q-radio
+                                    v-model="form.book_volume"
+                                    val="tomo_1"
+                                    label="tomo I"
+                                    color="white"
+                                    class="checkbox-white"
+                                    checked-icon="mdi-circle"
+                                    unchecked-icon="mdi-circle-outline"
+                                    dense
+                                />
+                                <q-radio
+                                    v-model="form.book_volume"
+                                    val="tomo_2"
+                                    label="tomo II"
+                                    color="white"
+                                    class="checkbox-white"
+                                    checked-icon="mdi-circle"
+                                    unchecked-icon="mdi-circle-outline"
+                                    dense
+                                />
+                                <q-radio
+                                    v-model="form.book_volume"
+                                    val="tomo_3"
+                                    label="tomo III"
+                                    color="white"
+                                    class="checkbox-white"
+                                    checked-icon="mdi-circle"
+                                    unchecked-icon="mdi-circle-outline"
+                                    dense
+                                />
+                            </div>
+                        </div>
+
+                        <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 q-mt-md"
+                        >
+                            <span class="text-white"
                                 >necesitas aclararnos algo o hablar con nosotros
                                 para ayudarte?</span
                             >
@@ -362,7 +403,23 @@ const form = useForm({
     testimonyVideo: null,
     sendAdmMsg: false,
     msg_to_admin: null,
+    book_volume: null,
 });
+
+const options = ref([
+    {
+        label: "Tomo I",
+        value: "tomo_1",
+    },
+    {
+        label: "Tomo II",
+        value: "tomo_2",
+    },
+    {
+        label: "Tomo III",
+        value: "tomo_3",
+    },
+]);
 
 onMounted(() => {
     const hash = window.location.hash;
@@ -425,10 +482,19 @@ const onSubmit = () => {
                 error(
                     "debe al menos especificar un tipo de testimonio; escrito o video"
                 );
+            } else if (!form.book_volume) {
+                error(
+                    "debe seleccionar el tomo al cual va dirigido el testimonio"
+                );
             } else if (form.anonimous) {
                 confirm.value = true;
             } else {
-                submit();
+                const volumes = usePage().props?.auth?.user?.book_volumes;
+                if (volumes && volumes.includes(form.book_volume)) {
+                    submit();
+                } else {
+                    error("usted no tiene registrado el volumen seleccionado");
+                }
             }
         } else {
             errorValidation();

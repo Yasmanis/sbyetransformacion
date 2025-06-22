@@ -310,11 +310,17 @@
                                     dense
                                 >
                                     he leido y acepto las
-                                    <Link href="/legal" class="text-black"
+                                    <Link
+                                        href="/legal"
+                                        class="text-white"
+                                        style="text-decoration: underline"
                                         >condiciones generales</Link
                                     >
                                     y la
-                                    <Link href="/private" class="text-black"
+                                    <Link
+                                        href="/private"
+                                        class="text-white"
+                                        style="text-decoration: underline"
                                         >politica de privacidad</Link
                                     >
                                 </q-checkbox>

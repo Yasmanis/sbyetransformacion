@@ -80,7 +80,7 @@ Route::get('/', function () {
     return Inertia('landing/vivir_en_plenitud');
 });
 
-Route::get('/free_learning', function () {
+Route::get('/liberacion_emocional', function () {
     return Inertia('landing/free_learning');
 });
 
@@ -210,6 +210,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/testimony/sort', [TestimonyController::class, 'sort']);
 
     Route::resource('/admin/push-messages', PushMessageController::class);
+    Route::get('/admin/push-messages/change-status/{id}', [PushMessageController::class, 'changeStatus']);
     Route::resource('/admin/campaigns', CampaignController::class);
     Route::resource('/admin/countries', CountryController::class);
     Route::resource('/admin/reason-for-return', ReasonForReturnController::class);

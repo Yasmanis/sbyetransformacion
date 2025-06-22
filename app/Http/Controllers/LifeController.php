@@ -18,7 +18,7 @@ class LifeController extends Controller
     {
         $user = auth()->user();
         $segment = $this->segment();
-        if ($user->hasView($segment)) {
+        if ($user->hasView($segment) || ($segment == 'school' && $user->hasPerm('full_school')) || ($segment == 'learning' && $user->hasPerm('full_learning'))) {
             $repository = new SchoolSectionsRepository();
             return Inertia::render($repository->component(), [
                 'sections' => $user->getSections($segment),

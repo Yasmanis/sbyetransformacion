@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PushMessage;
 use App\Repositories\PushMessageRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -159,6 +160,17 @@ class PushMessageController extends Controller
                 $repository->deleteMultipleById($ids);
             }
             return redirect()->back()->with('success', count($ids) == 1 ? sprintf('%s correctamente', $this->segment() == 'pushmessage' ? 'mensaje eliminado' : 'idea breve eliminada') : sprintf('%s correctamente', $this->segment() == 'pushmessage' ? 'mensajes eliminados' : 'ideas breves eliminadas'));
+        }
+        return $this->deny_access($request);
+    }
+
+    public function changeStatus(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate($this->segment())) {
+            $object = PushMessage::find($id);
+            $object->status = $object->status == 'activo' ? 'inactivo' : 'activo';
+            $object->save();
+            return redirect()->back()->with('success', 'mensaje cambiado de estado correctamente');
         }
         return $this->deny_access($request);
     }

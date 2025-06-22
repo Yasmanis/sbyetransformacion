@@ -1,37 +1,9 @@
 <template>
-    <btn-copy-component
-        tooltips="duplicar"
-        @click="showDialog = true"
-        v-if="duplicate"
+    <q-btn-component
+        icon="mdi-eye-outline"
+        tooltips="vista previa"
+        @click="showPreview"
     />
-    <btn-add-component @click="showDialog = true" v-else-if="!object" />
-    <btn-edit-component @click="showDialog = true" v-else />
-    <q-dialog
-        v-model="showDialog"
-        persistent
-        allow-focus-outside
-        :position="position"
-        :full-hight="fullHeight"
-        @show="onShow"
-        @hide="onHide"
-    >
-        <q-card class="scroll">
-            <dialog-header-component :icon="icon" :title="fullTitle" closable />
-            <form-body
-                ref="formBody"
-                :object="object"
-                :fields="fields"
-                :module="module"
-                :post-on-update="postOnUpdate"
-                :new-on-create="newOnCreate"
-                :duplicate="duplicate"
-                @created="onCreated"
-                @updated="showDialog = false"
-                @cancel="showDialog = false"
-                @show-preview="onShowPreview"
-            />
-        </q-card>
-    </q-dialog>
 
     <q-dialog
         v-model="dialogImage"
@@ -87,80 +59,20 @@
 </template>
 
 <script setup>
-defineOptions({
-    name: "FormComponent",
-});
-
-import { ref, onMounted } from "vue";
-import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
-import BtnAddComponent from "../../btn/BtnAddComponent.vue";
-import BtnEditComponent from "../../btn/BtnEditComponent.vue";
-import BtnCopyComponent from "../../btn/BtnCopyComponent.vue";
-import FormBody from "./FormBody.vue";
-import { usePage } from "@inertiajs/vue3";
-import { error } from "../../../helpers/notifications";
+import QBtnComponent from "../../../base/QBtnComponent.vue";
+import { onMounted, ref } from "vue";
 import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
-import axios from "axios";
+import { usePage } from "@inertiajs/vue3";
 import { Dark, Notify, date } from "quasar";
 
-const props = defineProps({
-    module: {
-        type: Object,
-        default: () => {},
-    },
-    fields: {
-        type: Array,
-        default: () => [],
-    },
-    size: {
-        type: String,
-        default: "xs",
-    },
-    object: {
-        type: Object,
-        default: null,
-    },
-    fieldToStr: {
-        type: String,
-        default: "id",
-    },
-    title: {
-        type: String,
-        default: "Object",
-    },
-    fields: {
-        type: Array,
-        default: () => [],
-    },
-    position: {
-        type: String,
-        default: "right",
-    },
-    fullHeight: {
-        type: Boolean,
-        default: true,
-    },
-    postOnUpdate: {
-        type: Boolean,
-        default: false,
-    },
-    newOnCreate: {
-        type: Boolean,
-        default: true,
-    },
-    duplicate: {
-        type: Boolean,
-        default: false,
-    },
+defineOptions({
+    name: "ViewPushMessageComponent",
 });
 
-const formBody = ref(null);
-const fullTitle = ref(null);
-const icon = ref(null);
-const showDialog = ref(false);
-const setDefault = ref(false);
-const page = usePage();
+const props = defineProps({
+    data: Object,
+});
 
 const dialogImage = ref(false);
 const dialogVideo = ref(false);
@@ -168,46 +80,7 @@ const urlImage = ref(null);
 const urlVideo = ref(null);
 let showing = false;
 const blobVideo = ref(false);
-
-const data = ref(null);
-
-onMounted(() => {
-    if (props.duplicate) {
-        fullTitle.value = `duplicar ${props.title}`;
-        icon.value = "mdi-content-copy";
-    } else if (props.object != null) {
-        fullTitle.value = `editar ${props.title}`;
-        icon.value = `img:${page.props.public_path}images/icon/${
-            Dark.isActive ? "white" : "black"
-        }-edit.png`;
-    } else {
-        fullTitle.value = `adicionar ${props.title}`;
-        icon.value = "mdi-plus";
-    }
-});
-
-const onShow = () => {
-    setDefault.value = !setDefault.value;
-};
-
-const onHide = () => {
-    setDefault.value = !setDefault.value;
-    page.props.errors = {};
-    if (showing) {
-        showPreview(1);
-    }
-};
-
-const onCreated = (object, close) => {
-    if (close) {
-        showDialog.value = false;
-    }
-};
-
-const onShowPreview = (d) => {
-    data.value = d;
-    showPreview();
-};
+const page = usePage();
 
 const getLogo = async (campaign) => {
     let result = `${page.props.public_path}images/logo/1.png`;
@@ -237,7 +110,7 @@ const showPreview = async (timeout = 0) => {
         video,
         action_button_title,
         action_button_url,
-    } = data.value;
+    } = props.data;
     if (title === null || title.trim() === "") {
         error("debe especificar el titulo");
     } else if (message === null || message.trim() === "") {
@@ -286,11 +159,9 @@ const showPreview = async (timeout = 0) => {
                 showing = false;
                 dialogVideo.value = false;
                 dialogImage.value = false;
-                formBody.value?.disablePreview(false);
             },
         });
         showing = true;
-        formBody.value?.disablePreview(true);
 
         let closeBtn = document.getElementById("notification-close");
         closeBtn.addEventListener("click", (ev) => {

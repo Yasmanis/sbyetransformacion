@@ -20,13 +20,13 @@
                     />
                 </div>
                 <div class="col-md-7 col-sm-12 col-xs-12 text-center">
-                    <p class="text-h5 no-margin text-white">
+                    <p class="text-h4 no-margin text-white">
                         LIBERACION EMOCIONAL
                     </p>
-                    <p class="text-white">
+                    <p class="text-h6 text-white">
                         el primer paso hacia tu transformacion interior
                     </p>
-                    <p class="text-white q-mt-xl">
+                    <p class="text-white text-h6 q-mt-xl">
                         y si pudieras dejar atras <br />
                         el dolor, las heridas y los bloqueos…<br />
                         y empezar a vivir desde tu verdad mas profunda?
@@ -144,18 +144,28 @@
             </div>
         </div>
 
-        <div
+        <!-- <div
             class="row container q-mb-sm"
             v-for="(img, indexImg) in images"
             :key="`image-${indexImg}`"
+            ref="imageContainers"
         >
             <div class="col self-center">
                 <div class="image-with-text-container">
                     <q-img
                         :src="`${$page.props.public_path}images/others/${img.image}`"
                         class="responsive-image"
+                        :class="
+                            img.visible
+                                ? indexImg % 2 === 0
+                                    ? 'animate__animated animate__slower animate__slideInLeft opacity-animation'
+                                    : 'animate__animated animate__slower animate__slideInRight opacity-animation'
+                                : null
+                        "
                         fit="fill"
-                        height="160px"
+                        :height="
+                            Screen.xs ? '300px' : Screen.sm ? '200px' : '160px'
+                        "
                         :id="`image-${indexImg + 1}`"
                     >
                         <div
@@ -175,7 +185,7 @@
                     </q-img>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <div class="row container q-py-lg">
             <div class="col">
@@ -669,8 +679,8 @@
 
 <script setup>
 import Layout from "../../layouts/MainLayout.vue";
-import { ref, computed, watch, onMounted } from "vue";
-import { useQuasar, dom } from "quasar";
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
+import { useQuasar, dom, Screen } from "quasar";
 
 import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
@@ -680,17 +690,16 @@ defineOptions({
 });
 
 const $q = useQuasar();
-const { height, css } = dom;
+const { height, css, ready } = dom;
 
-const inView = ref(Array.apply(null, Array(50)).map((_) => false));
-const images = [];
-/*const images = [
+const images = ref([
     {
         title: "🌪️ ETAPA 1: LIBERAR EMOCIONES INTENSAS",
         description:
             "aprende a soltar emociones como la rabia, la tristeza o la frustracion <br>ejercicios fisicos y expresivos para liberar lo que el cuerpo guarda",
         image: "background_1.png",
         color: "text-white",
+        visible: false,
     },
     {
         title: "🌫️ ETAPA 2: LIBERAR EMOCIONES SUTILES",
@@ -698,6 +707,7 @@ const images = [];
             "conecta con lo que te molesta sin saber por que<br>introspeccion guiada para reconocer señales internas que suelen pasar desapercibidas",
         image: "background_2.png",
         color: "text-black",
+        visible: false,
     },
     {
         title: "🧬 ETAPA 3: LIBERAR EMOCIONES INCONSCIENTES",
@@ -705,6 +715,7 @@ const images = [];
             "descubre lo que te duele y aun no sabias<br>herramientas de autoexploracion emocional y regresiva para liberar patrones antiguos",
         image: "background_3.png",
         color: "text-white",
+        visible: false,
     },
     {
         title: "🧠 ETAPA 4: DESPROGRAMAR EL EGO",
@@ -712,6 +723,7 @@ const images = [];
             "identifica las creencias que sostienen tu dolor y empieza a soltarlas<br>transforma tu forma de pensar, sentir y actuar desde una mayor conciencia",
         image: "background_4.png",
         color: "text-black",
+        visible: false,
     },
     {
         title: "💫 ETAPA 5: VIVIR DESDE TU ESENCIA",
@@ -719,9 +731,20 @@ const images = [];
             "aprende a confiar, a fluir y a vivir sin miedo ni mascaras<br>accede a tu guia interior (llamala intuicion, claridad o dios) y actua en coherencia contigo",
         image: "background_5.png",
         color: "text-black",
+        visible: false,
     },
-];
-*/
+]);
+
+const imageContainers = ref([]);
+
+onMounted(() => {
+    const observer = setupObservers();
+
+    onUnmounted(() => {
+        observer.disconnect();
+    });
+});
+
 watch(
     () => $q.screen.width,
     () => {
@@ -729,28 +752,67 @@ watch(
     }
 );
 
-onMounted(() => {
-    setImagesSize();
-});
-
-const screen = computed(() => {
-    return $q.screen;
-});
-
-const setImagesSize = () => {
+ready(function () {
     let div, image;
     for (let i = 1; i <= 5; i++) {
         div = document.getElementById(`background-${i}`);
         image = document.getElementById(`image-${i}`);
         if (div) {
+            console.log(height(div) + 50);
+
             css(image, {
-                height: `${height(div) + 50}px`,
+                height: `${height(div) + 50}px !important`,
             });
         }
     }
+});
+
+const setupObservers = () => {
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                const index =
+                    [...entry.target.parentElement.children].indexOf(
+                        entry.target
+                    ) - 4;
+                if (index !== -1) {
+                    if (entry.isIntersecting) {
+                        images.value[index].visible = true;
+                    }
+                }
+            });
+        },
+        { threshold: 0.1 }
+    );
+
+    // Observa cada contenedor de imagen
+    imageContainers.value.forEach((el) => {
+        if (el) observer.observe(el);
+    });
+
+    return observer;
 };
+
+const screen = computed(() => {
+    return $q.screen;
+});
+
+function setImagesSize() {
+    let div, image;
+    for (let i = 1; i <= 5; i++) {
+        div = document.getElementById(`background-${i}`);
+        image = document.getElementById(`image-${i}`);
+        if (div) {
+            console.log(height(div) + 50);
+
+            css(image, {
+                height: `${height(div) + 50}px !important`,
+            });
+        }
+    }
+}
 </script>
-<style scope>
+<style scoped>
 .wave {
     left: 0;
     line-height: 0;
@@ -819,5 +881,36 @@ svg {
     transform: translate(-50%, -50%);
     text-align: center;
     width: 80%;
+}
+
+.animate__slideInLeft.opacity-animation {
+    animation-name: customSlideInLeft;
+}
+
+@keyframes customSlideInLeft {
+    from {
+        transform: translate3d(-100%, 0, 0);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+
+/* Para la animación slideInRight con opacidad */
+.animate__slideInRight.opacity-animation {
+    animation-name: customSlideInRight;
+}
+
+@keyframes customSlideInRight {
+    from {
+        transform: translate3d(100%, 0, 0);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
 }
 </style>

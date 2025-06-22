@@ -222,6 +222,21 @@
                             segment === 'push-messages'
                         "
                     />
+                    <btn-public-component
+                        titlePublic="activar"
+                        titleHide="desactivar"
+                        :public="props.row.status === 'activo'"
+                        @click="
+                            router.get(
+                                `/admin/push-messages/change-status/${props.row.id}`
+                            )
+                        "
+                        v-if="has_edit && segment === 'push-messages'"
+                    />
+                    <view-push-message-component
+                        :data="props.row"
+                        v-if="has_edit && segment === 'push-messages'"
+                    />
                     <view-brief-idea-component
                         :data="props.row"
                         v-if="segment === 'briefideas'"
@@ -319,6 +334,29 @@
                                                 has_edit
                                             "
                                         />
+                                        <btn-public-component
+                                            titlePublic="activar"
+                                            titleHide="desactivar"
+                                            :public="
+                                                props.row.status === 'activo'
+                                            "
+                                            @click="
+                                                router.get(
+                                                    `/admin/push-messages/change-status/${props.row.id}`
+                                                )
+                                            "
+                                            v-if="
+                                                has_edit &&
+                                                segment === 'push-messages'
+                                            "
+                                        />
+                                        <view-push-message-component
+                                            :data="props.row"
+                                            v-if="
+                                                has_edit &&
+                                                segment === 'push-messages'
+                                            "
+                                        />
                                         <view-brief-idea-component
                                             :data="props.row"
                                             v-if="segment === 'briefideas'"
@@ -360,8 +398,10 @@ import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";
 import FixedBriefIdeaComponent from "./components/FixedBriefIdeaComponent.vue";
 import ViewBriefIdeaComponent from "./components/ViewBriefIdeaComponent.vue";
+import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
+import ViewPushMessageComponent from "./components/ViewPushMessageComponent.vue";
 
 defineOptions({
     name: "TableComponent",

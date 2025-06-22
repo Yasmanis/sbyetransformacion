@@ -83,13 +83,21 @@
                                 unchecked-icon="mdi-circle-outline"
                                 dense
                             >
-                                he leido y acepto las
-                                <Link href="/legal" class="text-black"
-                                    >condiciones generales</Link
-                                >
-                                y la
-                                <Link href="/private" class="text-black"
-                                    >politica de privacidad</Link
+                                <small
+                                    >he leido y acepto las
+                                    <Link
+                                        href="/legal"
+                                        class="text-white"
+                                        style="text-decoration: underline"
+                                        >condiciones generales</Link
+                                    >
+                                    y la
+                                    <Link
+                                        href="/private"
+                                        class="text-white"
+                                        style="text-decoration: underline"
+                                        >politica de privacidad</Link
+                                    ></small
                                 >
                             </q-checkbox>
                         </div>

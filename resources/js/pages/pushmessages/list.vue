@@ -20,6 +20,7 @@
 import { computed, onBeforeMount } from "vue";
 import Layout from "../../layouts/AdminLayout.vue";
 import TableComponent from "../../components/modules/pushmessage/TableComponent.vue";
+import { usePage } from "@inertiajs/vue3";
 
 defineOptions({
     name: "ListPage",
@@ -244,7 +245,9 @@ onBeforeMount(() => {
             label: "proxima",
             align: "left",
         });
-        columns.push(state);
+        if (usePage().props.auth.user.sa) {
+            columns.push(state);
+        }
         columns.push(campaign_str);
     }
     columns.push(sections_str);
@@ -253,7 +256,7 @@ onBeforeMount(() => {
         name: "actions",
         label: "Acciones",
         type: "actions",
-        width: "160px",
+        width: "200px",
     });
 });
 </script>

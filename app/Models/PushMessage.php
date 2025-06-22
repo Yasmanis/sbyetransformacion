@@ -116,4 +116,19 @@ class PushMessage extends Model
             Storage::delete('public/' . $this->video);
         }
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'activo');
+    }
+
+    public function scopeInactive($query)
+    {
+        return $query->where('status', 'inactivo');
+    }
+
+    public function scopePublicated($query)
+    {
+        return $query->where('start_at', '<=', Carbon::now()->format('Y-m-d'));
+    }
 }

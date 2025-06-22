@@ -5,6 +5,7 @@ import "@quasar/extras/animate/animate-list.js";
 import "@quasar/extras/animate/fadeInLeft.css";
 import "quasar/src/css/index.sass";
 import "../css/app.css";
+import "animate.css";
 import { createInertiaApp, router, usePage } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { CkeditorPlugin } from "@ckeditor/ckeditor5-vue";
