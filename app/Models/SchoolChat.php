@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\StandardNotification;
+use App\Services\BrevoService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Notification;
@@ -16,6 +17,23 @@ class SchoolChat extends Model
     protected $casts = [
         'from_visible' => 'boolean'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($obj) {
+            $brevo = new BrevoService();
+            $user = auth()->user();
+            $params = [
+                'email' => $user->email,
+                'name' => $user->full_name,
+                'course' => $obj->topic->section->getNameByCategory(),
+                'url' => sprintf('%s/admin/school/#chat-%s-%s-%s', env('APP_URL'), $obj->id, $obj->topic_id, $obj->topic->section_id)
+            ];
+            $brevo->sendEmail('AVISO – contestar NUEVO MENSAJE DE CHAT', 'admin.chat', $params);
+        });
+    }
 
     public function getFromNameAttribute()
     {

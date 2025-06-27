@@ -61,7 +61,26 @@
                         class="text-center section-title text-h6 q-mt-none"
                     >
                         <q-item-label>
+                            <btn-left-right-component
+                                :disable="getIndexFromCurrentTopic() - 1 < 0"
+                                @click="
+                                    emits(
+                                        'change-topic',
+                                        getIndexFromCurrentTopic() - 1
+                                    )
+                                "
+                            />
                             {{ topic?.name }}
+                            <btn-left-right-component
+                                :leftDirection="false"
+                                :disable="
+                                    getIndexFromCurrentTopic() + 1 ===
+                                        section?.topics?.length ||
+                                    (segment === 'learning' &&
+                                        !allTopicsCompleted())
+                                "
+                                @click="changeTopic"
+                            />
                         </q-item-label>
                     </q-item-section>
                 </q-item>
@@ -174,6 +193,19 @@
         @hide="showNoAccess = false"
         @ok="router.get('/admin/testimony')"
     />
+
+    <confirm-component
+        width="435px"
+        :show="showNoAccessByVolume"
+        :header="false"
+        :question="null"
+        icon-confirm="mdi-checkbox-marked-circle-outline"
+        icon-confirm-size="18px"
+        icon-confirm-tooltips="ir a testimonios"
+        :message="`para ver el contenido de este tomo debes <br> adquirido <a class='text-bold cursor-pointer text-black' href='https://www.amazon.es/dp/B0DJG45MMK?binding=paperback&ref=dbs_dp_sirpi'>aqui</a> y enviarnos a traves del <a class='text-bold cursor-pointer text-black' href='/contactame'>formulario <br> de contacto</a> los datos que se te requieren para darte de alta en el area privada`"
+        @hide="showNoAccessByVolume = false"
+        @ok="showNoAccessByVolume = false"
+    />
 </template>
 
 <script setup>
@@ -225,6 +257,7 @@ const emits = defineEmits(["change-section", "change-topic"]);
 const currentVideo = ref(null);
 const showVideo = ref(false);
 const showNoAccess = ref(false);
+const showNoAccessByVolume = ref(false);
 const page = usePage();
 
 const principalVideo = computed(() => {
@@ -252,5 +285,48 @@ const allTopicsCompleted = () => {
         }
     }
     return true;
+};
+
+const getIndexFromCurrentTopic = () => {
+    if (!props.section || !props.topic) {
+        return -1;
+    }
+    return props.section.topics.findIndex((t) => t.id === props.topic.id);
+};
+
+const othersCompleted = (first, last) => {
+    if (usePage().props.auth.user.sa) {
+        return true;
+    }
+    const topics = props.section.tooltips;
+    const firstIndex = topics.findIndex((t) => t.id === first.id);
+    const lastIndex = topics.findIndex((t) => t.id === last.id);
+    if (firstIndex > lastIndex) {
+        return true;
+    }
+    for (let i = firstIndex; i < lastIndex; i++) {
+        const temp = topics[i];
+        if (temp.percent < 95 && temp.has_principal_video && !temp.skip) {
+            return false;
+        }
+    }
+    return true;
+};
+
+const changeTopic = () => {
+    const t = props.topic;
+    const index = getIndexFromCurrentTopic() + 1;
+    const topic = props.section.topics[index];
+    if (topic.has_access && topic.has_access_by_volume) {
+        if (props.segment === "learning" && !othersCompleted(t, topic)) {
+            info("no se puede pasar a este tema sin completar los anteriores");
+        } else {
+            emits("change-topic", index);
+        }
+    } else if (!topic.has_access_by_volume) {
+        showNoAccessByVolume.value = true;
+    } else {
+        showNoAccess.value = true;
+    }
 };
 </script>

@@ -81,7 +81,8 @@ Route::get('/', function () {
 });
 
 Route::get('/liberacion_emocional', function () {
-    return Inertia('landing/free_learning');
+    $testimonies = Testimony::active()->type('text')->get();
+    return Inertia('landing/free_learning', ['testimonies' => $testimonies]);
 });
 
 Route::get('/consulta_individual', function () {

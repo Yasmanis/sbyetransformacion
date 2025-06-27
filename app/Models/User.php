@@ -142,7 +142,7 @@ class User extends Authenticatable implements CanResetPassword
         return $query->where('sa', true)->where('active', true);
     }
 
-    public function personalSbyeTransformacion($query)
+    public function scopePersonalSbyeTransformacion($query)
     {
         return $query->where('sa', true)->where('active', true);
     }

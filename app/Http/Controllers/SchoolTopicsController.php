@@ -10,6 +10,7 @@ use App\Models\SchoolTopic;
 use App\Models\SchoolUserVideo;
 use App\Models\User;
 use App\Repositories\SchoolTopicRepository;
+use App\Services\BrevoService;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -217,7 +218,7 @@ class SchoolTopicsController extends Controller
         } else if ($request->to === 'todos') {
             $users = User::where('id', '!=', $user->id)->pluck('id');
         } else {
-            $users = User::where('id', '!=', $user->id)/*->personalSbyeTransformacion()*/->pluck('id');
+            $users = User::where('id', '!=', $user->id)->personalSbyeTransformacion()->pluck('id');
         }
         $msg = new SchoolChat();
         $msg->message = $request->message;
@@ -230,6 +231,7 @@ class SchoolTopicsController extends Controller
         $msg->save();
         $msg->users()->attach($users);
         $msg->sendNotifications(false);
+
         return $msg;
     }
 

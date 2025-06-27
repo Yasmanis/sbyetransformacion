@@ -38,6 +38,11 @@ class Testimony extends Model
         return $query->where('publicated', true);
     }
 
+    public function scopeType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+
     public function getUserNameAttribute()
     {
         return $this->user->full_name;

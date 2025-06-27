@@ -85,7 +85,7 @@
                 >.
             </div>
 
-            <!-- <p style="margin-top: 2em">
+            <p style="margin-top: 2em">
                 esta documentacion se encuentra actualizada conforme a la
                 normativa vigente en materia de comercio electronico y
                 proteccion de datos en españa y la ue.
@@ -93,7 +93,7 @@
             <p>
                 maria garriga dominguez <br />
                 ultima actualizacion: junio 2025
-            </p> -->
+            </p>
         </div>
     </Layout>
 </template>

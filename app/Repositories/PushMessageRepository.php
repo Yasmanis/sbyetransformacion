@@ -9,7 +9,8 @@ class PushMessageRepository extends BaseRepository
     public function __construct()
     {
         $this->makeModel();
-        if (!auth()->user()->sa) {
+        $segment = last(request()->segments());
+        if (($segment && $segment === 'briefideas') || !auth()->user()->sa) {
             $this->scopes = [array(
                 'method' => 'active',
                 'args' => null

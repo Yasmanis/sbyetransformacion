@@ -144,7 +144,7 @@
             </div>
         </div>
 
-        <!-- <div
+        <div
             class="row container q-mb-sm"
             v-for="(img, indexImg) in images"
             :key="`image-${indexImg}`"
@@ -185,7 +185,7 @@
                     </q-img>
                 </div>
             </div>
-        </div> -->
+        </div>
 
         <div class="row container q-py-lg">
             <div class="col">
@@ -314,7 +314,34 @@
                         </q-list>
                     </q-card-section>
                 </q-card>
-                <p class="q-pt-md">con tu testimonio en 30 dias</p>
+
+                <p class="q-pt-md">
+                    <img
+                        :src="`${$page.props.public_path}images/others/right-arrow.png`"
+                        class="animate__animated animate__slower opacity-animation"
+                        :class="arrowsVisible ? ' animate__fadeIn' : null"
+                        style="width: 70px; margin-bottom: -20px"
+                    />
+                    <span
+                        class="q-mx-lg animate__animated animate__slower opacity-animation animate__delay-1s"
+                        :class="arrowsVisible ? ' animate__fadeIn' : null"
+                        >con tu testimonio en 30 dias</span
+                    >
+                    <img
+                        :src="`${$page.props.public_path}images/others/down-arrow.png`"
+                        class="q-mt-lg animate__animated animate__slower opacity-animation animate__delay-2s"
+                        :class="arrowsVisible ? ' animate__fadeIn' : null"
+                        style="width: 50px; margin-bottom: -30px"
+                    />
+                </p>
+                <img
+                    ref="arrowsContainer"
+                    :src="`${$page.props.public_path}images/others/level-up.png`"
+                    class="q-ml-xl q-mt-sm animate__animated animate__slower opacity-animation animate__delay-3s"
+                    :class="arrowsVisible ? ' animate__fadeIn' : null"
+                    style="width: 35%"
+                />
+
                 <p>🎁 accedes al...</p>
                 <q-card style="border: 1px solid #000; width: 300px">
                     <q-card-section class="no-padding">
@@ -647,9 +674,147 @@
                     </p>
                 </div>
             </div>
-            <hr style="width: 100%; height: 1px; background: #fff" />
-            <p class="text-h6 q-pt-md">testimonios destacados</p>
+
+            <div class="row">
+                <div class="col-12">
+                    <hr style="width: 100%; height: 1px; background: #fff" />
+                    <p class="text-h6 q-pt-md q-mb-none">
+                        testimonios destacados
+                    </p>
+                    <br />
+                </div>
+                <div class="col-12 text-black self-center">
+                    <q-carousel
+                        v-model="slide"
+                        transition-prev="slide-right"
+                        transition-next="slide-left"
+                        swipeable
+                        animated
+                        control-color="black"
+                        arrows
+                        class="bg-primary q-pa-none"
+                        style="height: 280px"
+                    >
+                        <q-carousel-slide
+                            v-for="(slideGroup, index) in groupedSlides"
+                            :key="index"
+                            :name="index"
+                            class="row no-wrap q-pa-none"
+                        >
+                            <q-card
+                                v-for="(t, imgIndex) in slideGroup"
+                                :key="imgIndex"
+                                bordered
+                                class="my-card q-ma-sm rounded"
+                                style="
+                                    border: 1px solid rgb(64, 116, 146);
+                                    width: 300px;
+                                    height: 250px;
+                                "
+                            >
+                                <q-card-section
+                                    class="q-pa-sm q-pa-none text-center"
+                                >
+                                    <q-img
+                                        :src="`${$page.props.public_path}images/icon/heart.png`"
+                                        fit="fill"
+                                        width="50px"
+                                    />
+                                </q-card-section>
+                                <q-card-section
+                                    class="q-pa-sm q-pa-none text-center text-black"
+                                >
+                                    <span v-html="t.description"></span>
+                                </q-card-section>
+                                <q-card-section class="text-center">
+                                    <q-item-label>
+                                        {{ t.user }}
+                                    </q-item-label>
+                                </q-card-section>
+                            </q-card>
+                        </q-carousel-slide>
+                    </q-carousel>
+                </div>
+                <template v-if="rowsTestimonies > 0">
+                    <div class="col-12">
+                        <div class="row text-black">
+                            <div
+                                v-for="(
+                                    t, indexWebTestimony
+                                ) in webTestimonies.slice(
+                                    0,
+                                    rowsTestimonies * slidesPerView
+                                )"
+                                :key="indexWebTestimony"
+                                class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+                            >
+                                <q-card
+                                    bordered
+                                    class="my-card q-ma-sm rounded"
+                                    style="
+                                        border: 1px solid rgb(64, 116, 146);
+                                        width: 300px;
+                                    "
+                                >
+                                    <q-card-section
+                                        class="q-pa-sm q-pa-none text-center"
+                                    >
+                                        <q-img
+                                            :src="`${$page.props.public_path}images/icon/heart.png`"
+                                            fit="fill"
+                                            width="50px"
+                                        />
+                                    </q-card-section>
+                                    <q-card-section
+                                        class="q-pa-sm q-pa-none text-center text-black"
+                                    >
+                                        <span v-html="t.message"></span>
+                                    </q-card-section>
+                                    <q-card-section class="text-center">
+                                        <q-card-section class="text-center">
+                                            <q-item-label v-if="t.anonimous">
+                                                <i>publicado como anonimo</i>
+                                            </q-item-label>
+                                            <q-item-label
+                                                v-else-if="t.name_to_show"
+                                            >
+                                                {{ t.name_to_show }}
+                                            </q-item-label>
+                                            <q-item-label v-else>
+                                                {{ t.user.full_name }}
+                                            </q-item-label>
+                                        </q-card-section>
+                                    </q-card-section>
+                                </q-card>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <div class="col-12 text-center q-mt-xl">
+                    <q-btn
+                        color="black"
+                        no-caps
+                        rounded
+                        :disable="
+                            rowsTestimonies * slidesPerView >=
+                                webTestimonies.length ||
+                            webTestimonies.length === 0
+                        "
+                        @click="rowsTestimonies++"
+                    >
+                        ver mas testimonios <br />
+                        de personas que han <br />
+                        vivido este proceso
+                        <q-icon
+                            name="fa fa-long-arrow-down"
+                            size="md"
+                            class="q-ml-md"
+                        />
+                    </q-btn>
+                </div>
+            </div>
         </div>
+
         <div class="row bg-white container q-py-lg">
             <div class="col-12">
                 <p class="text-h6">EMPIEZA HOY</p>
@@ -679,11 +844,12 @@
 
 <script setup>
 import Layout from "../../layouts/MainLayout.vue";
-import { ref, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { useQuasar, dom, Screen } from "quasar";
 
 import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
+import { useForm, usePage } from "@inertiajs/vue3";
 
 defineOptions({
     name: "VivirEnPlenitud",
@@ -735,22 +901,80 @@ const images = ref([
     },
 ]);
 
+const webTestimonies = ref([]);
+
+const staticTestimonies = [
+    {
+        user: "Rosa",
+        description:
+            "me habló directo a mí, como si alguien al fin pusiera en palabras muchas cosas que había sentido pero no sabía cómo entender.",
+    },
+    {
+        user: "Cristina",
+        description:
+            "desde el principio sentí que este libro hablaba de mí. ya me ha removido muchas cosas y quiero seguir con los otros tomos.",
+    },
+    {
+        user: "Mariluz",
+        description:
+            "compré el libro tras una conferencia y me encantó. es diferente a todo lo que he leído. además, los vídeos ayudan muchísimo.",
+    },
+    {
+        user: "Silvia",
+        description:
+            "este libro me abrió a reflexionar sobre aspectos de la vida que nunca había considerado. tengo muchas ganas de seguir con los siguientes",
+    },
+    {
+        user: "Marcos López Garriga",
+        description:
+            "aunque no lo he leído entero, sé que dice la verdad. lo he vivido en carne propia, y este libro refleja esa voz que me ha transformado",
+    },
+    {
+        user: "testimonio de sesión intensiva (video anterior)",
+        description:
+            "me ayudó a ver cómo mis emociones están ligadas a mi cuerpo. hoy sé reconocer lo que siento y liberarlo",
+    },
+];
+
 const imageContainers = ref([]);
+const arrowsContainer = ref(null);
+const arrowsVisible = ref(false);
+const slide = ref(0);
+const slidesPerView = ref(4);
+const rowsTestimonies = ref(0);
 
 onMounted(() => {
     const observer = setupObservers();
+    const arrows = arrowsObservers();
+    setTestimonyWidth();
+    webTestimonies.value = usePage().props.testimonies;
 
     onUnmounted(() => {
         observer.disconnect();
+        arrows.disconnect();
     });
 });
 
 watch(
     () => $q.screen.width,
-    () => {
+    (w) => {
         setImagesSize();
+        setTestimonyWidth();
     }
 );
+
+const setTestimonyWidth = () => {
+    slidesPerView.value =
+        $q.screen.width < 350 ? 1 : parseInt($q.screen.width / 350);
+};
+
+const groupedSlides = computed(() => {
+    const groups = [];
+    for (let i = 0; i < staticTestimonies.length; i += slidesPerView.value) {
+        groups.push(staticTestimonies.slice(i, i + slidesPerView.value));
+    }
+    return groups;
+});
 
 ready(function () {
     let div, image;
@@ -758,8 +982,6 @@ ready(function () {
         div = document.getElementById(`background-${i}`);
         image = document.getElementById(`image-${i}`);
         if (div) {
-            console.log(height(div) + 50);
-
             css(image, {
                 height: `${height(div) + 50}px !important`,
             });
@@ -793,6 +1015,29 @@ const setupObservers = () => {
     return observer;
 };
 
+const arrowsObservers = () => {
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                const index =
+                    [...entry.target.parentElement.children].indexOf(
+                        entry.target
+                    ) - 4;
+                if (index !== -1) {
+                    if (entry.isIntersecting) {
+                        arrowsVisible.value = true;
+                    }
+                }
+            });
+        },
+        { threshold: 0.1 }
+    );
+
+    observer.observe(arrowsContainer.value);
+
+    return observer;
+};
+
 const screen = computed(() => {
     return $q.screen;
 });
@@ -803,8 +1048,6 @@ function setImagesSize() {
         div = document.getElementById(`background-${i}`);
         image = document.getElementById(`image-${i}`);
         if (div) {
-            console.log(height(div) + 50);
-
             css(image, {
                 height: `${height(div) + 50}px !important`,
             });

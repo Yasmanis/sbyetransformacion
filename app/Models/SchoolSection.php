@@ -84,4 +84,21 @@ class SchoolSection extends Model
         if ($time_access == 0 && $total_time > 0) return 0;
         return ($time_view / $total_time) * 100;
     }
+
+    public function getNameByCategory()
+    {
+        $name = $this->category;
+        switch ($name) {
+            case 'conference':
+                $name = 'conferencia';
+                break;
+            case 'learning':
+                $name = 'aprender a liberar';
+                break;
+            default:
+                $name = 'vivir en plenitud';
+                break;
+        }
+        return $name;
+    }
 }
