@@ -58,7 +58,7 @@
             class="row items-center container q-py-xl bg-white"
             style="margin-top: -5px"
         >
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-6 col-sm-12 col-xs-12">
                 <p>
                     este minicurso te guia en un proceso practico y profundo
                     para liberar las emociones que aun te atan al pasado,
@@ -72,7 +72,7 @@
                     forma de vivir. todo desde una guia clara, sencilla, amorosa
                     y profundamente conectada con dios y con tu alma
                 </p>
-                <div class="col text-center q-mt-xl">
+                <div class="text-center q-my-xl">
                     <q-btn
                         color="black"
                         label="quiero empezar ahora"
@@ -87,7 +87,7 @@
                     </q-btn>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-12 text-center">
+            <div class="col-md-6 col-sm-12 col-xs-12 text-center">
                 <img
                     :src="`${$page.props.public_path}images/others/free_learning_book.png`"
                     alt="group-image"
