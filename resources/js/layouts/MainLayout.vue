@@ -237,6 +237,15 @@ h6 {
     line-height: 1.22;
 }
 
+.ck-editor h1,
+.ck-editor h2,
+.ck-editor h3,
+.ck-editor h4 {
+    line-height: inherit !important;
+    margin: inherit !important;
+    margin-bottom: 5px !important;
+}
+
 .rounded {
     border-radius: 25px !important;
 }

@@ -89,7 +89,7 @@
             </div>
             <div class="col-md-6 col-sm-12 text-center">
                 <img
-                    :src="`${$page.props.public_path}images/others/free_learning_book.webp`"
+                    :src="`${$page.props.public_path}images/others/free_learning_book.png`"
                     alt="group-image"
                     style="width: 50%"
                 />
@@ -135,7 +135,7 @@
                     un recorrido practico y profundo en 5 etapas, para que
                     liberes tu carga emocional y transformes tu forma de sentir,
                     pensar y vivir puedes hacerlo a tu ritmo. cada etapa te
-                    invita a soltar una capa mas de lo que ya no te sirve
+                    invita a soltar una capa mas de lo que ya no te sirve.
                     <i
                         >cada paso es un escalon hacia una mayor libertad
                         interna</i
@@ -143,7 +143,6 @@
                 </p>
             </div>
         </div>
-
         <div
             class="row container q-mb-sm"
             v-for="(img, indexImg) in images"
@@ -163,9 +162,7 @@
                                 : null
                         "
                         fit="fill"
-                        :height="
-                            Screen.xs ? '300px' : Screen.sm ? '200px' : '160px'
-                        "
+                        :height="getHeight(indexImg + 1)"
                         :id="`image-${indexImg + 1}`"
                     >
                         <div
@@ -194,8 +191,11 @@
                         :src="`${$page.props.public_path}images/icon/double-time.png`"
                         style="position: absolute"
                     />
-                    cada modulo incluye ejemplos reales, ejercicios practicos y
-                    reflexiones que te acompañaran de forma sencilla y cercana
+                    <span style="margin-left: 40px"
+                        >cada modulo incluye ejemplos reales, ejercicios
+                        practicos y reflexiones que te acompañaran de forma
+                        sencilla y cercana</span
+                    >
                 </p>
             </div>
         </div>
@@ -661,12 +661,20 @@
             </p>
             <hr style="width: 100%; height: 1px; background: #fff" />
             <p class="text-h6 q-pt-md">video testimonio destacado</p>
-            <div class="row items-center">
+            <div class="row q-col-gutter-sm items-center">
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    imagen
+                    <video-player
+                        :src="`${$page.props.public_path}media/testimonio-destacado.mp4`"
+                        controls
+                        :volume="0.6"
+                        aspectRatio="16:9"
+                    />
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <p class="text-justify">
+                    <p
+                        class="text-justify"
+                        :class="!Screen.xs ? 'q-px-xl' : null"
+                    >
                         ella vivio un proceso de liberacion emocional durante
                         varios dias de trabajo intensivo. lo que cuenta es parte
                         de lo que tambien puedes empezar a vivir en este
@@ -1007,7 +1015,6 @@ const setupObservers = () => {
         { threshold: 0.1 }
     );
 
-    // Observa cada contenedor de imagen
     imageContainers.value.forEach((el) => {
         if (el) observer.observe(el);
     });
@@ -1054,6 +1061,11 @@ function setImagesSize() {
         }
     }
 }
+
+const getHeight = (id) => {
+    let div = document.getElementById(`background-${id}`);
+    return div ? `${height(div) + 50}px` : "160px";
+};
 </script>
 <style scoped>
 .wave {

@@ -8,12 +8,18 @@
         class="no-padding"
         selection="multiple"
         v-model:selected="selected"
-        hide-pagination
+        v-model:pagination="pagination"
+        :rows-per-page-options="[10, 20, 30, 50, 100]"
     >
-        <template v-slot:top="props" class="no-padding">
+        <template v-slot:top>
             <q-toolbar dense>
                 <q-space />
                 <div class="col-auto q-gutter-sm">
+                    <btn-clear-component
+                        tooltips="quitar resaltado"
+                        @click="onClear"
+                        v-if="highlightedId"
+                    />
                     <btn-show-hide-component
                         titlePublic="marcar todas las notificaciones como leida"
                         :public="false"
@@ -40,26 +46,10 @@
                     />
                 </div>
             </q-toolbar>
-            <!-- <div
-                    class="row"
-                    style="
-                        width: 100%;
-                        border-top: 1px solid rgba(0, 0, 0, 0.12);
-                        padding: 10px;
-                    "
-                    v-if="searchFields.length > 0 || filterFields.length > 0"
-                >
-                    <div class="col" v-if="searchFields.length > 0">
-                        <search-component
-                            :fields="searchFields"
-                            @refresh-data="onRefreshData"
-                        ></search-component>
-                    </div>
-                </div> -->
         </template>
         <template v-slot:body-cell-description="props">
-            <q-td>
-                <span v-html="props.row.description"></span>
+            <q-td :class="props.row.id === highlightedId ? 'text-bold' : null">
+                <span v-html="props.row.description" class="no-padding"></span>
             </q-td>
         </template>
         <template v-slot:body-cell-read="props">
@@ -110,32 +100,66 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { usePage, router } from "@inertiajs/vue3";
-import BtnDeleteComponent from "../btn/BtnDeleteComponent.vue";
 import ConfirmComponent from "../base/ConfirmComponent.vue";
 import BtnShowHideComponent from "../btn/BtnShowHideComponent.vue";
-import SearchComponent from "../table/actions/SearchComponent.vue";
-import FilterComponent from "../table/actions/FilterComponent.vue";
 import DeleteComponent from "../table/actions/DeleteComponent.vue";
+import BtnClearComponent from "../btn/BtnClearComponent.vue";
 
 defineOptions({
     name: "NotificationsManagerComponent",
 });
 
+const props = defineProps({
+    notificationFromEmail: Object,
+});
 const confirm = ref(false);
 const noti_id = ref(null);
 const selected = ref([]);
+const highlightedId = ref(false);
+
+const pagination = ref({
+    page: 1,
+    rowsPerPage: 10,
+});
+
+onMounted(() => {
+    if (props.notificationFromEmail) {
+        const { model, id } = props.notificationFromEmail;
+        console.log(model, id, notifications.value);
+
+        const foundRecord = notifications.value.find(
+            (record) => record.model === model && record.model_id === id
+        );
+        if (foundRecord) {
+            const rowsPerPage = pagination.value.rowsPerPage;
+            const recordIndex = notifications.value.findIndex(
+                (record) => record.model === model && record.model_id === id
+            );
+
+            const targetPage = Math.floor(recordIndex / rowsPerPage) + 1;
+
+            pagination.value.page = targetPage;
+
+            highlightedId.value = foundRecord.id;
+        }
+        console.log(foundRecord);
+    }
+});
 
 const notifications = computed(() => {
     let notifications = [];
     usePage().props.auth.user.notifications.forEach((n) => {
+        const { title, priority, description, model, model_id } = n.data[0];
         notifications.push({
             id: n.id,
             type: n.type,
-            title: n.data[0].title,
-            priority: n.data[0].priority,
-            description: n.data[0].description,
+            title,
+            priority,
+            description,
+            model,
+            model_id,
             time: n.time,
             user: n.user,
             read: n.read_at !== null,
@@ -150,42 +174,73 @@ const columns = ref([
         name: "title",
         label: "titulo",
         align: "left",
+        classes: (row) => {
+            return row.id === highlightedId.value ? "text-bold" : null;
+        },
     },
     {
         field: "priority",
         name: "priority",
         label: "prioridad",
         align: "left",
+        classes: (row) => {
+            return row.id === highlightedId.value ? "text-bold" : null;
+        },
     },
     {
         field: "description",
         name: "description",
         label: "mensaje",
         align: "left",
+        classes: (row) => {
+            return row.id === highlightedId.value ? "text-bold" : null;
+        },
     },
     {
         field: "time",
         name: "time",
         label: "desde",
         align: "left",
+        classes: (row) => {
+            return row.id === highlightedId.value ? "text-bold" : null;
+        },
     },
     {
         field: "user",
         name: "user",
         label: "usuario",
         align: "left",
+        classes: (row) => {
+            return row.id === highlightedId.value ? "text-bold" : null;
+        },
     },
     {
         field: "read",
         name: "read",
         label: "leida",
         align: "left",
+        classes: (row) => {
+            return row.id === highlightedId.value ? "text-bold" : null;
+        },
     },
     {
         field: "actions",
         name: "actions",
         label: "",
         align: "center",
+        classes: (row) => {
+            return row.id === highlightedId.value ? "text-bold" : null;
+        },
     },
 ]);
+
+const onClear = () => {
+    highlightedId.value = null;
+    window.location.hash = "";
+};
 </script>
+<style>
+span.no-padding p {
+    margin: 0px !important;
+}
+</style>

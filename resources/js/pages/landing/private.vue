@@ -1,6 +1,6 @@
 <template>
     <Layout title="privacidad">
-        <div class="container q-pt-md">
+        <div class="container q-pt-md ck-editor">
             <div v-html="$page.props.config?.value"></div>
 
             <div>

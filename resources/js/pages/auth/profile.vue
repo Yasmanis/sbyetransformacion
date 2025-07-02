@@ -57,7 +57,9 @@
                 </q-tab-panel>
 
                 <q-tab-panel name="notifications" class="no-padding">
-                    <notifications-manager-component />
+                    <notifications-manager-component
+                        :notification-from-email="notificationFromEmail"
+                    />
                 </q-tab-panel>
 
                 <q-tab-panel name="password">
@@ -96,7 +98,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import Layout from "../../layouts/AdminLayout.vue";
 import PasswordField from "../../components/form/input/PasswordField.vue";
 import BtnAddComponent from "../../components/btn/BtnAddComponent.vue";
@@ -119,6 +121,22 @@ const formDataPassword = useForm({
 });
 const passwordRef = ref(null);
 const newBook = ref(false);
+const notificationFromEmail = ref(null);
+
+onBeforeMount(() => {
+    let hash = window.location.hash;
+    if (hash && hash.trim() !== "") {
+        hash = atob(hash.substring(1));
+        const temp = hash.split("-");
+        if (temp[0] === "notifications") {
+            notificationFromEmail.value = {
+                model: temp[1],
+                id: parseInt(temp[2]),
+            };
+            tab.value = "notifications";
+        }
+    }
+});
 
 const onUpdateField = (name, val) => {
     formDataPassword[name] = val;
