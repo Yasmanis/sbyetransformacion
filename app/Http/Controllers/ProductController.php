@@ -36,7 +36,10 @@ class ProductController extends Controller
                 $properties = $this->getPropertiesFromFile($request->file('image_path'), 'products');
                 $data['image'] = $properties['path'];
             }
-            $repository->create($data);
+            $product = $repository->create($data);
+            if (isset($request->categories_id)) {
+                $product->categories()->attach($request->categcategories_idories);
+            }
             return redirect()->back()->with('success', 'producto adicionado correctamente');
         }
         return $this->deny_access($request);
@@ -57,7 +60,12 @@ class ProductController extends Controller
                 $object = $repository->getById($id);
                 $old_file = $object->image;
             }
-            $repository->updateById($id, $data);
+            $product = $repository->updateById($id, $data);
+            if (isset($request->categories_id)) {
+                $product->categories()->sync($request->categories_id);
+            } else {
+                $product->categories()->detach();
+            }
             if ($old_file) {
                 Storage::delete('public/' . $old_file);
             }

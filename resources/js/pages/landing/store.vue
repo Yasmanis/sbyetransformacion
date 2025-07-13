@@ -16,10 +16,17 @@
                     <btn-list-component size="lg" />
                 </q-item-section>
                 <q-item-section avatar>
-                    <select-field label="categoria" />
+                    <select-field
+                        label="categoria"
+                        name="category"
+                        :others-props="{
+                            url_to_options: '/product-categories',
+                        }"
+                        style="width: 300px !important"
+                    />
                 </q-item-section>
                 <q-item-section avatar>
-                    <text-field label="buscar">
+                    <text-field label="buscar" name="search">
                         <template #append>
                             <q-btn-component icon="search" />
                         </template>
@@ -52,7 +59,7 @@
             </q-item>
             <q-item dense>
                 <q-item-section>
-                    <store-component />
+                    <store-component :products="products" />
                 </q-item-section>
                 <q-item-section
                     avatar
@@ -83,10 +90,15 @@ import QBtnComponent from "../../components/base/QBtnComponent.vue";
 import BtnHeartComponent from "../../components/btn/BtnHeartComponent.vue";
 import BtnBasketComponent from "../../components/btn/BtnBasketComponent.vue";
 import MyWishesComponent from "../../components/modules/store/MyWishesComponent.vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { usePage } from "@inertiajs/vue3";
 defineOptions({
     name: "ConsultaIndividual",
 });
 
 const showBasket = ref(false);
+
+const products = computed(() => {
+    return usePage().props.products;
+});
 </script>

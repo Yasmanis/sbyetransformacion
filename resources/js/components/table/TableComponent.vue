@@ -158,7 +158,11 @@
                             <q-img :src="props.value" loading="lazy" />
                         </q-avatar>
                         <q-img
-                            :src="props.value"
+                            :src="
+                                props.value ??
+                                props.col.othersProps?.default ??
+                                null
+                            "
                             loading="lazy"
                             width="70px"
                             v-else
@@ -176,7 +180,9 @@
                         />
                     </template>
                     <template v-else>
-                        <span v-html="props.row[props.col.field]"> </span>
+                        <q-item-label lines="5">
+                            <span v-html="props.row[props.col.field]"> </span>
+                        </q-item-label>
                     </template>
                 </q-td>
             </template>

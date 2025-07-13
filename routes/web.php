@@ -21,8 +21,10 @@ use App\Http\Controllers\ContactAdminController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PrivateMsgController;
+use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\ReasonForReturnController;
@@ -34,6 +36,7 @@ use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
 use App\Models\PaymentMethod;
+use App\Models\Product;
 use App\Models\Testimony;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -98,7 +101,10 @@ Route::get('/maria', function () {
 });
 
 Route::get('/store', function () {
-    return Inertia('landing/store');
+    $products = Product::all();
+    return Inertia('landing/store', [
+        'products' => $products
+    ]);
 });
 
 Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
@@ -174,6 +180,14 @@ Route::get('/not-found', function () {
     return Inertia('errors/notFound');
 })->name('not-found');
 
+Route::get('/checkout', function () {
+    return Inertia('payments/checkout');
+})->name('checkout');
+
+Route::post('/create-payment', [PaymentController::class, 'createPayment'])->name('create.payment');
+Route::get('/payment/success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+Route::get('/payment/cancel', [PaymentController::class, 'paymentCancel'])->name('payment.cancel');
+
 Route::middleware(['auth', 'auth.session'])->group(function () {
 
     Route::post('/pusher/auth', function (Request $request) {
@@ -216,6 +230,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/countries', CountryController::class);
     Route::resource('/admin/reason-for-return', ReasonForReturnController::class);
     Route::resource('/admin/products', ProductController::class);
+    Route::resource('/admin/product-categories', ProductCategoryController::class);
     Route::resource('/admin/users/payment-methods', PaymentMethodController::class)->except('index');
     Route::resource('/admin/users/billing-information', BillingInformationController::class)->except('index');
     Route::post('/admin/users/billing-information/predetermined/{id}', [BillingInformationController::class, 'predetermined']);
@@ -282,3 +297,4 @@ Route::get('/countries', [SelectsController::class, 'countries']);
 Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
 Route::get('/download/{id}', [FileController::class, 'download']);
 Route::post('/subscribe', [BrevoController::class, 'subscribe']);
+Route::get('/product-categories', [SelectsController::class, 'productCategories']);

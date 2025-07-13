@@ -19,7 +19,9 @@ class Product extends Model
     ];
 
     protected $appends = [
-        'image_path'
+        'image_path',
+        'categories_id',
+        'categories_str'
     ];
 
     protected static function booted()
@@ -37,5 +39,20 @@ class Product extends Model
     public function deleteFileFromDisk()
     {
         Storage::delete('public/' . $this->image);
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(ProductCategory::class, 'products_categories', 'product_id', 'category_id');
+    }
+
+    public function getCategoriesIdAttribute()
+    {
+        return $this->categories()->get()->pluck('id');
+    }
+
+    public function getCategoriesStrAttribute()
+    {
+        return $this->categories()->get()->pluck('name');
     }
 }

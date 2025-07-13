@@ -16,6 +16,8 @@
 <script setup>
 import Layout from "../../layouts/AdminLayout.vue";
 import TableComponent from "../../components/table/TableComponent.vue";
+import { usePage } from "@inertiajs/vue3";
+import { Dark } from "quasar";
 
 defineOptions({
     name: "ListPage",
@@ -93,7 +95,7 @@ const description = {
     label: "descripcion",
     align: "left",
     sortable: true,
-    type: "text",
+    type: "editor",
     autogrow: true,
 };
 
@@ -103,6 +105,17 @@ const image = {
     label: "imagen",
     align: "left",
     type: "image",
+};
+
+const categories = {
+    field: "categories_id",
+    name: "categories_id",
+    label: "categorias",
+    type: "select",
+    othersProps: {
+        multiple: true,
+        url_to_options: "/product-categories",
+    },
 };
 
 const searchFields = [name];
@@ -116,6 +129,11 @@ const columns = [
         align: "center",
         sortable: false,
         width: "100px",
+        othersProps: {
+            default: `${usePage().props.public_path}images/logo/${
+                Dark.isActive ? "1" : "2"
+            }.png`,
+        },
     },
     name,
     price,
@@ -123,6 +141,13 @@ const columns = [
     firstPayment,
     totalPayments,
     description,
+    {
+        field: "categories_str",
+        name: "categories_str",
+        label: "categorias",
+        align: "left",
+        type: "text",
+    },
     {
         field: "actions",
         name: "actions",
@@ -140,5 +165,6 @@ const fields = [
     totalPayments,
     description,
     image,
+    categories,
 ];
 </script>

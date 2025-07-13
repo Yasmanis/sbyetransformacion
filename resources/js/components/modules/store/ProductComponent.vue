@@ -12,14 +12,7 @@
             }}</q-item-label>
         </q-card-section>
         <q-card-section class="q-pa-none">
-            <q-btn-component
-                label="toda la informacion"
-                class="full-width"
-                :flat="false"
-                :round="false"
-                :color="Dark.isActive ? 'primary' : ''"
-                square
-            />
+            <product-information :product="product" />
             <div class="column items-center">
                 <q-btn-component
                     label="alguna duda? preguntanos"
@@ -47,6 +40,7 @@
 import { ref } from "vue";
 import BtnShareComponent from "../../btn/BtnShareComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
+import ProductInformation from "../shopping/ProductInformation.vue";
 import { Dark } from "quasar";
 defineOptions({
     name: "ProductComponent",

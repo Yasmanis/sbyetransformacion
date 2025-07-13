@@ -36,8 +36,12 @@
                     removable
                     @remove="scope.removeAtIndex(scope.index)"
                     :tabindex="scope.tabindex"
+                    v-if="multiple"
                     >{{ scope.opt.label }}</q-chip
                 >
+                <span v-else>
+                    {{ scope.opt.label }}
+                </span>
             </q-item-label>
         </template>
         <template v-slot:after v-if="$slots.after">
