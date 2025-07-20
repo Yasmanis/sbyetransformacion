@@ -3,7 +3,8 @@
         :tooltips="tooltips"
         :icon="list ? 'mdi-format-list-bulleted' : 'mdi-menu'"
         @click="onClick"
-    />
+        ><slot></slot
+    ></q-btn-component>
 </template>
 
 <script setup>

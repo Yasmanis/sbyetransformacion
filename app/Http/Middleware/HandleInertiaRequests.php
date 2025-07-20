@@ -59,7 +59,8 @@ class HandleInertiaRequests extends Middleware
                 'exclude' => $request->session()->get('exclude_loading'),
                 'message' => $request->session()->get('loading_msg')
             ],
-            'object' => $request->session()->get('object')
+            'object' => $request->session()->get('object'),
+            'products_to_car' => []
         ]);
     }
 }

@@ -1,5 +1,7 @@
 <template>
-    <q-btn-component :tooltips="tooltips" icon="mdi-basket" @click="onClick" />
+    <q-btn-component :tooltips="tooltips" icon="mdi-basket" @click="onClick">
+        <slot></slot>
+    </q-btn-component>
 </template>
 
 <script setup>

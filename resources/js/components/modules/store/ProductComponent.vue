@@ -12,7 +12,10 @@
             }}</q-item-label>
         </q-card-section>
         <q-card-section class="q-pa-none">
-            <product-information :product="product" />
+            <product-information
+                :product="product"
+                @add-product="emits('add-product', product)"
+            />
             <div class="column items-center">
                 <q-btn-component
                     label="alguna duda? preguntanos"
@@ -49,6 +52,8 @@ defineOptions({
 const props = defineProps({
     product: Object,
 });
+
+const emits = defineEmits(["add-product"]);
 
 const rating = ref(0);
 </script>

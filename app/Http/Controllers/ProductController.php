@@ -38,7 +38,7 @@ class ProductController extends Controller
             }
             $product = $repository->create($data);
             if (isset($request->categories_id)) {
-                $product->categories()->attach($request->categcategories_idories);
+                $product->categories()->attach($request->categories_id);
             }
             return redirect()->back()->with('success', 'producto adicionado correctamente');
         }

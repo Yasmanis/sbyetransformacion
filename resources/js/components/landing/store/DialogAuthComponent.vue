@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import FormLoginComponent from "./FormLoginComponent.vue";
 import FormRegisterComponent from "./FormRegisterComponent.vue";
@@ -55,10 +55,25 @@ import { usePage } from "@inertiajs/vue3";
 defineOptions({
     name: "DialogAuthComponent",
 });
+
+const props = defineProps({
+    show: Boolean,
+});
+
+const emits = defineEmits(["hide"]);
+
 const showDialog = ref(false);
+
+watch(
+    () => props.show,
+    (n) => {
+        showDialog.value = n;
+    }
+);
 
 const onHide = () => {
     usePage().props.errors = {};
+    emits("hide");
 };
 
 const authenticated = computed(() => {
