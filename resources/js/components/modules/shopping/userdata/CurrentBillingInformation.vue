@@ -10,21 +10,33 @@
         <q-item>
             <q-item-section>
                 <q-item-label>
-                    {{ billingInformation.full_name }}
+                    {{
+                        currentBilling?.full_name ??
+                        billingInformation?.full_name ??
+                        "-"
+                    }}
                 </q-item-label>
             </q-item-section>
         </q-item>
         <q-item>
             <q-item-section>
                 <q-item-label>
-                    {{ billingInformation?.nif_cif ?? "-" }}
+                    {{
+                        currentBilling?.nif_cif ??
+                        billingInformation?.nif_cif ??
+                        "-"
+                    }}
                 </q-item-label>
             </q-item-section>
         </q-item>
         <q-item>
             <q-item-section>
                 <q-item-label>
-                    {{ billingInformation?.address ?? "-" }}
+                    {{
+                        currentBilling?.address ??
+                        billingInformation?.address ??
+                        "-"
+                    }}
                 </q-item-label>
             </q-item-section>
         </q-item>
@@ -36,16 +48,29 @@
         <q-item>
             <q-item-section>
                 <q-item-label>
-                    {{ billingInformation?.postal_code ?? "-" }}
+                    {{
+                        currentBilling?.postal_code ??
+                        billingInformation?.postal_code ??
+                        "-"
+                    }}
                     –
-                    {{ billingInformation?.province ?? "-" }}
-                    ({{ billingInformation?.country_str ?? "-" }})
+                    {{
+                        currentBilling?.province ??
+                        billingInformation?.province ??
+                        "-"
+                    }}
+                    ({{
+                        currentBilling?.country_str ??
+                        billingInformation?.country_str ??
+                        "-"
+                    }})
                 </q-item-label>
             </q-item-section>
             <q-item-section avatar>
                 <list-billing-information
                     :current="billingInformation"
-                    @confirm="onBillingConfirm"
+                    :predetermined="predetermined"
+                    @change="onChangeBilling"
                 />
             </q-item-section>
         </q-item>
@@ -53,7 +78,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import ListBillingInformation from "./ListBillingInformation.vue";
 
@@ -61,25 +86,34 @@ defineOptions({
     name: "CurrentBillingInformation",
 });
 
+const props = defineProps({
+    current: { Number, default: 0 },
+    predetermined: Boolean,
+});
+
+const emits = defineEmits(["change"]);
+
+const currentBilling = ref(null);
+
 const user = computed(() => {
     return usePage().props.auth.user;
 });
 
 const billingInformation = computed(() => {
+    let billing = null;
     const billings = user.value.billings_information;
     if (billings.length > 0) {
-        return billings.find((b) => b.predetermined) ?? billings[0];
+        billing =
+            props.current > 0
+                ? billings.find((b) => b.id === props.current)
+                : billings.find((b) => b.predetermined) ?? billings[0];
     }
-    return null;
+    emits("change", billing);
+    return billing;
 });
 
-const onBillingConfirm = (billing) => {
-    user.value.billings_information.forEach((b) => {
-        if (b.id === billing.id) {
-            b.predetermined = true;
-        } else {
-            b.predetermined = false;
-        }
-    });
+const onChangeBilling = (b) => {
+    emits("change", b);
+    currentBilling.value = b;
 };
 </script>

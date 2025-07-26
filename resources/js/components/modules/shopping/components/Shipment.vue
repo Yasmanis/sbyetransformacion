@@ -33,6 +33,7 @@
                         <q-item style="padding: 0px 0px">
                             <q-item-section>
                                 <checkbox-field
+                                    name="change_address"
                                     label="direccion nueva para este envio"
                                 />
                             </q-item-section>
@@ -47,7 +48,7 @@
                         </q-item>
                         <q-item style="padding: 10px 0px">
                             <q-item-section>
-                                <text-field type="textarea" />
+                                <text-field type="textarea" name="address" />
                             </q-item-section>
                         </q-item>
                     </q-list>
@@ -63,19 +64,25 @@
                     <q-list dense>
                         <q-item class="bg-primary text-white">
                             <q-item-section> subtotal: </q-item-section>
-                            <q-item-section avatar> 270 € </q-item-section>
+                            <q-item-section avatar>
+                                {{ subtotalAmount }} €
+                            </q-item-section>
                         </q-item>
-                        <q-item>
+                        <!-- <q-item>
                             <q-item-section> envio MRW </q-item-section>
                             <q-item-section avatar> 4,95 € </q-item-section>
                         </q-item>
                         <q-item class="text-bold">
                             <q-item-section> total </q-item-section>
-                            <q-item-section avatar> 274,95 € </q-item-section>
-                        </q-item>
+                            <q-item-section avatar>
+                                {{ subtotalAmount - 4.95 }} €
+                            </q-item-section>
+                        </q-item> -->
                         <q-item>
                             <q-item-section> pagos pendientes: </q-item-section>
-                            <q-item-section avatar> 520 € </q-item-section>
+                            <q-item-section avatar>
+                                {{ pendingAmount }} €
+                            </q-item-section>
                         </q-item>
                         <q-item>
                             <q-item-section>
@@ -95,79 +102,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import CheckboxField from "../../../form/input/CheckboxField.vue";
 import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
 import TextField from "../../../form/input/TextField.vue";
 import { Screen } from "quasar";
+import { subtotalAmount, pendingAmount } from "../../../../services/shopping";
 
 defineOptions({
     name: "Shipment",
 });
-
-const step = ref(1);
-
-const columns = ref([
-    {
-        name: "date",
-        field: "date",
-        label: "fecha",
-        headerClasses: "bg-primary text-white",
-        align: "left",
-    },
-    {
-        name: "summary",
-        field: "summary",
-        label: "resumen",
-        headerClasses: "bg-primary text-white",
-        align: "left",
-    },
-    {
-        name: "cost",
-        field: "cost",
-        label: "importe",
-        headerClasses: "bg-primary text-white",
-        align: "right",
-    },
-    {
-        name: "amount",
-        field: "amount",
-        label: "pagado a la fecha",
-        headerClasses: "bg-primary text-white text-body1",
-        align: "right",
-    },
-]);
-
-const rows = ref([
-    {
-        date: "01-05-2023",
-        summary: "primer pago con la compra",
-        cost: "270 €",
-        amount: "270 €",
-    },
-    {
-        date: "01-06-2023",
-        summary: "segundo pago",
-        cost: "130 €",
-        amount: "400 €",
-    },
-    {
-        date: "01-07-2023",
-        summary: "tercer pago",
-        cost: "130 €",
-        amount: "530 €",
-    },
-    {
-        date: "01-08-2023",
-        summary: "cuarto pago",
-        cost: "130 €",
-        amount: "660 €",
-    },
-    {
-        date: "01-09-2023",
-        summary: "quinto pago",
-        cost: "130 €",
-        amount: "790 €",
-    },
-]);
 </script>

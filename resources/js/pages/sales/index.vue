@@ -29,13 +29,19 @@
                                 </section>
                                 <q-space />
                                 <btn-heart-component tooltips="mis deseos" />
-                                <q-btn-component
-                                    icon="mdi-basket-outline"
+                                <btn-basket-component
                                     tooltips="cesta en proceso de compra"
                                     @click="showMenu = true"
-                                    ><q-badge color="black" floating
-                                        >1</q-badge
-                                    ></q-btn-component
+                                >
+                                    <q-badge
+                                        floating
+                                        style="
+                                            margin-top: -3px;
+                                            margin-right: -5px;
+                                        "
+                                        v-if="selectedProducts.length > 0"
+                                        >{{ selectedProducts.length }}</q-badge
+                                    ></btn-basket-component
                                 >
                             </q-toolbar>
                             <q-separator />
@@ -112,21 +118,19 @@
 <script setup>
 import { ref } from "vue";
 import Layout from "../../layouts/AdminLayout.vue";
-import QBtnComponent from "../../components/base/QBtnComponent.vue";
 import ShoppingComponent from "../../components/modules/shopping/ShoppingComponent.vue";
-import BtnEditComponent from "../../components/btn/BtnEditComponent.vue";
 import BtnHeartComponent from "../../components/btn/BtnHeartComponent.vue";
 import BtnListComponent from "../../components/btn/BtnListComponent.vue";
-import CarComponent from "../../components/landing/store/CarComponent.vue";
+import CarComponent from "../../components/modules/shopping/components/CarComponent.vue";
 import SalesDatesComponent from "../../components/modules/shopping/userdata/SalesDatesComponent.vue";
+import BtnBasketComponent from "../../components/btn/BtnBasketComponent.vue";
+import { products as selectedProducts } from "../../services/shopping";
 
 defineOptions({
     name: "SalesPage",
 });
 
 const showMenu = ref(false);
-
-const active = ref("store");
 
 const items = [
     "el nivel 1 dentro de la metodologia sbyetransformacion",

@@ -76,15 +76,20 @@
                                     ><ul style="padding-left: 20px; margin: 0">
                                         <li>
                                             pago inicial
-                                            {{ prod.first_payment }} €
+                                            {{
+                                                prod.total_to_car *
+                                                prod.first_payment
+                                            }}
+                                            €
                                         </li>
                                         <li>
                                             {{ prod.total_payments }} pagos
                                             menusales de
                                             {{
-                                                (prod.price -
+                                                prod.total_to_car *
+                                                ((prod.price -
                                                     prod.first_payment) /
-                                                prod.total_payments
+                                                    prod.total_payments)
                                             }}
                                             €
                                         </li>
@@ -125,7 +130,7 @@
                         </div>
                     </div>
                 </q-card-section>
-                <q-card-actions v-if="authBtn"
+                <q-card-actions
                     ><q-btn-component
                         label="formalizar"
                         class="full-width"
@@ -135,24 +140,33 @@
                         :disable="products.length === 0"
                         padding="5px"
                         @click="emits('show-auth')"
-                /></q-card-actions>
+                        v-if="authBtn && !user"
+                    />
+                    <basket-sale-component
+                        label="pagar"
+                        class="full-width"
+                        v-if="user && products.length > 0"
+                    />
+                </q-card-actions>
             </q-card>
         </q-menu>
     </q-btn>
 </template>
 
 <script setup>
-import { onBeforeMount, ref, watch } from "vue";
-import QBtnComponent from "../../base/QBtnComponent.vue";
-import BtnLeftRightComponent from "../../btn/BtnLeftRightComponent.vue";
-import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
-import ProductInformation from "../../modules/shopping/ProductInformation.vue";
+import { computed, onBeforeMount, ref, watch } from "vue";
+import QBtnComponent from "../../../base/QBtnComponent.vue";
+import BtnLeftRightComponent from "../../../btn/BtnLeftRightComponent.vue";
+import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
+import ProductInformation from "../ProductInformation.vue";
+import BasketSaleComponent from "../BasketSaleComponent.vue";
+import { usePage } from "@inertiajs/vue3";
 
 import {
     products,
     removeProductFromStorage,
     loadProductsFromStorage,
-} from "../../../services/shopping";
+} from "../../../../services/shopping";
 
 defineOptions({
     name: "CarComponent",
@@ -169,9 +183,14 @@ const props = defineProps({
 
 const emits = defineEmits(["show", "hide", "remove-product", "show-auth"]);
 const menu = ref(false);
+const page = usePage();
 
 onBeforeMount(() => {
     loadProductsFromStorage();
+});
+
+const user = computed(() => {
+    return page.props.auth?.user ?? null;
 });
 
 watch(

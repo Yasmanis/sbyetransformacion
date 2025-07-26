@@ -12,7 +12,7 @@ class PaymentMethod extends Model
 
     protected $table = 'users_payment_methods';
 
-    protected $fillable = ['name', 'number', 'defeat', 'predetermined'];
+    protected $fillable = ['name', 'number', 'defeat', 'predetermined', 'billing_information_id'];
 
     protected $casts = [
         'predetermined' => 'boolean'
@@ -30,7 +30,7 @@ class PaymentMethod extends Model
             $obj->changePredetermined();
         });
         static::updated(function ($obj) {
-           $obj->changePredetermined();
+            $obj->changePredetermined();
         });
     }
 
@@ -45,7 +45,8 @@ class PaymentMethod extends Model
         return $date->lt(Carbon::now());
     }
 
-    public function changePredetermined(){
+    public function changePredetermined()
+    {
         if ($this->predetermined) {
             $object = PaymentMethod::where('predetermined', true)->where('id', '!=', $this->id)->first();
             if ($object) {

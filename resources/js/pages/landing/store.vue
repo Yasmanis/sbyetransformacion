@@ -143,7 +143,7 @@
 <script setup>
 import Layout from "../../layouts/MainLayout.vue";
 import DialogAuthComponent from "../../components/landing/store/DialogAuthComponent.vue";
-import CarComponent from "../../components/landing/store/CarComponent.vue";
+import CarComponent from "../../components/modules/shopping/components/CarComponent.vue";
 import StoreComponent from "../../components/modules/store/StoreComponent.vue";
 import BtnListComponent from "../../components/btn/BtnListComponent.vue";
 import SelectField from "../../components/form/input/SelectField.vue";

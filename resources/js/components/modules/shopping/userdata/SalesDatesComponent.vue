@@ -59,7 +59,7 @@
                     <div
                         class="col-xs-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 q-pa-sm"
                     >
-                        <current-billing-information />
+                        <current-billing-information :predetermined="true" />
                     </div>
                 </div>
                 <div class="row">
@@ -74,7 +74,7 @@
                             </q-item>
                             <q-item
                                 class="q-py-sm"
-                                v-for="(method, indexMethod) in paymentMethods"
+                                v-for="(method, indexMethod) in paymentsMethods"
                                 :key="`method-${indexMethod}`"
                             >
                                 <q-item-section avatar>
@@ -126,7 +126,13 @@
                                     <payment-method :object="method" />
                                 </q-item-section>
                             </q-item>
-                            <q-item>
+                            <q-item
+                                :class="
+                                    paymentsMethods.length === 0
+                                        ? 'q-mt-sm no-padding'
+                                        : null
+                                "
+                            >
                                 <q-item-section avatar>
                                     <card-component />
                                 </q-item-section>
@@ -162,6 +168,7 @@ import PaymentMethod from "./PaymentMethod.vue";
 import ConfirmComponent from "../../../base/ConfirmComponent.vue";
 import CurrentBillingInformation from "./CurrentBillingInformation.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
+import { paymentsMethods } from "../../../../services/shopping";
 defineOptions({
     name: "SalesDatesComponent",
 });
@@ -173,10 +180,6 @@ const props = defineProps({
 const showDialog = ref(false);
 const showConfirm = ref(false);
 const currentPaymentMethod = ref(null);
-
-const paymentMethods = computed(() => {
-    return usePage().props.auth.user.payment_methods;
-});
 
 const destroyPaymentMethod = () => {
     const send = useForm({});

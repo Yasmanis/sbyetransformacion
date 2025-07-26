@@ -269,7 +269,7 @@
 
 <script setup>
 import { ref, computed, watch } from "vue";
-import CarComponent from "./CarComponent.vue";
+import CarComponent from "../../modules/shopping/components/CarComponent.vue";
 import TextField from "../../form/input/TextField.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import DateField from "../../form/input/DateField.vue";

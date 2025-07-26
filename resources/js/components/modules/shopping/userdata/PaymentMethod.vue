@@ -64,7 +64,14 @@
                     <div
                         class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 q-pa-sm"
                     >
-                        <current-billing-information />
+                        <current-billing-information
+                            :current="object.billing_information_id"
+                            @change="
+                                (b) =>
+                                    (formData.billing_information_id =
+                                        b?.id ?? null)
+                            "
+                        />
                     </div>
                 </div>
             </q-card-section>
@@ -103,6 +110,11 @@ const formData = useForm({
     name: null,
     defeat: null,
     predetermined: false,
+    billing_information_id: null,
+});
+
+const billings_information = computed(() => {
+    return usePage().props.auth.user.billings_information;
 });
 
 const onBeforeShow = () => {
@@ -133,6 +145,5 @@ const update = async () => {
 
 const onHide = () => {
     formData.reset();
-    form.value.resetValidation();
 };
 </script>

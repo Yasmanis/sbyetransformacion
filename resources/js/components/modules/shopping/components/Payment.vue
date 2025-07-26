@@ -10,47 +10,61 @@
                         ><q-item class="bg-primary text-white">
                             <q-item-section>
                                 1. SELECCIONA EL METODO DE PAGO
-                            </q-item-section> </q-item
-                        ><q-item clickable>
+                            </q-item-section>
+                        </q-item>
+                        <q-item
+                            style="padding: 0"
+                            v-for="(method, indexMethod) in methods"
+                            :key="`method-${indexMethod}`"
+                            clickable
+                            @click="onChangeMethod(method)"
+                        >
                             <q-item-section avatar>
-                                <checkbox-field /> </q-item-section
-                            ><q-item-section avatar>
-                                <q-icon
-                                    name="mdi-credit-card-outline"
-                                /> </q-item-section
-                            ><q-item-section>
-                                <q-item-label>tarjeta bancaria</q-item-label>
-                            </q-item-section> </q-item
-                        ><q-item clickable>
+                                <checkbox-field
+                                    :dense="false"
+                                    name="predetermined"
+                                    :model-value="method.predetermined"
+                                    @update="onChangeMethod(method)"
+                                />
+                            </q-item-section>
                             <q-item-section avatar>
-                                <checkbox-field /> </q-item-section
-                            ><q-item-section avatar>
-                                <q-icon name="mdi-cellphone" /> </q-item-section
-                            ><q-item-section>
-                                <q-item-label>bizum</q-item-label>
-                            </q-item-section> </q-item
-                        ><q-item class="bg-primary text-white q-mt-md">
+                                <q-img
+                                    :src="`${$page.props.public_path}images/logo/2.png`"
+                                    :ratio="16 / 9"
+                                    width="80px"
+                                    fit="fill"
+                                />
+                            </q-item-section>
+                            <q-item-section>
+                                <q-item-label>
+                                    {{ method.name }}
+                                </q-item-label>
+                                <q-item-label>
+                                    tarjeta de credito que termina en ••••
+                                    {{ method.number.split(" ")[3] }}
+                                </q-item-label>
+                                <q-item-label
+                                    class="text-red"
+                                    v-if="method.expired"
+                                >
+                                    <q-icon
+                                        name="mdi-alert-outline"
+                                        size="md"
+                                    />
+                                    tu medio de pago ha expirado
+                                </q-item-label>
+                            </q-item-section>
+                        </q-item>
+                        <q-item class="bg-primary text-white q-mt-md">
                             <q-item-section>
                                 2. DIRECCION DE FACTURACION
                             </q-item-section>
                         </q-item>
-                        <q-item style="padding: 10px 0px">
-                            <q-item-section>
-                                <q-item-label>
-                                    nombre apellido apellido
-                                </q-item-label>
-                                <q-item-label>
-                                    direccion completa
-                                </q-item-label>
-                                <q-item-label> pueblo – ciudad </q-item-label>
-                                <q-item-label>
-                                    cp – provincia (pais)
-                                </q-item-label>
-                            </q-item-section>
-                        </q-item>
+                        <address-card :object="currentBillingInformation" />
                         <q-item style="padding: 0px 0px">
                             <q-item-section>
                                 <checkbox-field
+                                    name="change_address"
                                     label="direccion nueva para este envio"
                                 />
                             </q-item-section>
@@ -71,11 +85,15 @@
                     <q-list dense>
                         <q-item class="bg-primary text-white">
                             <q-item-section> subtotal: </q-item-section>
-                            <q-item-section avatar> 270 € </q-item-section>
+                            <q-item-section avatar>
+                                {{ subtotalAmount }} €
+                            </q-item-section>
                         </q-item>
                         <q-item>
                             <q-item-section> pagos pendientes: </q-item-section>
-                            <q-item-section avatar> 520 € </q-item-section>
+                            <q-item-section avatar>
+                                {{ pendingAmount }} €
+                            </q-item-section>
                         </q-item>
                         <q-item>
                             <q-item-section>
@@ -95,78 +113,63 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 import CheckboxField from "../../../form/input/CheckboxField.vue";
 import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
+import AddressCard from "./AddressCard.vue";
 import { Screen } from "quasar";
+import {
+    subtotalAmount,
+    pendingAmount,
+    paymentsMethods,
+    currentPaymentMethod,
+    billingsInformation,
+    currentBillingInformation,
+} from "../../../../services/shopping";
 
 defineOptions({
     name: "Payment",
 });
 
-const step = ref(1);
+const methods = ref([]);
 
-const columns = ref([
-    {
-        name: "date",
-        field: "date",
-        label: "fecha",
-        headerClasses: "bg-primary text-white",
-        align: "left",
-    },
-    {
-        name: "summary",
-        field: "summary",
-        label: "resumen",
-        headerClasses: "bg-primary text-white",
-        align: "left",
-    },
-    {
-        name: "cost",
-        field: "cost",
-        label: "importe",
-        headerClasses: "bg-primary text-white",
-        align: "right",
-    },
-    {
-        name: "amount",
-        field: "amount",
-        label: "pagado a la fecha",
-        headerClasses: "bg-primary text-white text-body1",
-        align: "right",
-    },
-]);
+onBeforeMount(() => {
+    paymentsMethods.value.forEach((m) => {
+        methods.value.push({ ...m });
+    });
+    let predetermined = methods.value.find((m) => m.predetermined);
+    if (
+        currentPaymentMethod.value &&
+        currentPaymentMethod.id !== predetermined.id
+    ) {
+        predetermined.predetermined = false;
+        predetermined = methods.value.find(
+            (m) => m.id === currentPaymentMethod.value.id
+        );
+        predetermined.predetermined = true;
+    } else {
+        currentPaymentMethod.value = predetermined;
+    }
+});
 
-const rows = ref([
-    {
-        date: "01-05-2023",
-        summary: "primer pago con la compra",
-        cost: "270 €",
-        amount: "270 €",
+watch(
+    currentPaymentMethod,
+    (n) => {
+        currentBillingInformation.value = billingsInformation.value.find(
+            (b) => b.id === n.billing_information_id
+        );
     },
     {
-        date: "01-06-2023",
-        summary: "segundo pago",
-        cost: "130 €",
-        amount: "400 €",
-    },
-    {
-        date: "01-07-2023",
-        summary: "tercer pago",
-        cost: "130 €",
-        amount: "530 €",
-    },
-    {
-        date: "01-08-2023",
-        summary: "cuarto pago",
-        cost: "130 €",
-        amount: "660 €",
-    },
-    {
-        date: "01-09-2023",
-        summary: "quinto pago",
-        cost: "130 €",
-        amount: "790 €",
-    },
-]);
+        deep: true,
+    }
+);
+
+const onChangeMethod = (m) => {
+    m.predetermined = !m.predetermined;
+    let current = methods.value.find((p) => p.predetermined && p.id != m.id);
+    if (current) {
+        current.predetermined = false;
+    }
+    currentPaymentMethod.value = m.predetermined ? m : null;
+};
 </script>

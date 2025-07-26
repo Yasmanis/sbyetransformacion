@@ -20,20 +20,11 @@
                                 :dense="false"
                                 :model-value="item.predetermined"
                                 name="predetermined"
-                                @update="
-                                    (name, val) =>
-                                        onUpdatePredetermined(name, val, item)
-                                "
+                                @update="onUpdatePredetermined(item)"
                             />
                         </q-item-section>
                         <q-item-section
-                            @click="
-                                onUpdatePredetermined(
-                                    'predetermined',
-                                    item.predetermined,
-                                    item
-                                )
-                            "
+                            @click="onUpdatePredetermined(item)"
                             class="cursor-pointer"
                         >
                             <q-item-label>
@@ -49,8 +40,18 @@
                         </q-item-section>
                     </q-item>
                     <q-item style="padding: 0">
-                        <q-item-section avatar> </q-item-section>
-                        <q-item-section avatar class="q-pl-lg"
+                        <q-item-section
+                            avatar
+                            v-if="billingsInformation.length > 0"
+                        >
+                        </q-item-section>
+                        <q-item-section
+                            avatar
+                            :class="
+                                billingsInformation.length === 0
+                                    ? 'no-padding'
+                                    : 'q-pl-lg'
+                            "
                             ><form-billing-information @created="onBeforeShow"
                         /></q-item-section>
                     </q-item>
@@ -58,7 +59,10 @@
             </q-card-section>
             <q-separator />
             <q-card-actions align="right">
-                <btn-confirm-component @click="onConfirm" />
+                <btn-confirm-component
+                    @click="onConfirm"
+                    v-if="currentBilling?.predetermined"
+                />
                 <btn-cancel-component cancel @click="showDialog = false" />
             </q-card-actions>
         </q-card>
@@ -81,9 +85,10 @@ defineOptions({
 
 const props = defineProps({
     current: Object,
+    predetermined: Boolean,
 });
 
-const emits = defineEmits(["confirm"]);
+const emits = defineEmits(["change"]);
 
 const showDialog = ref(false);
 const currentBilling = ref(null);
@@ -98,30 +103,49 @@ const onBeforeShow = (billing) => {
     currentBilling.value = current;
     let billings = [];
     user.value.billings_information.forEach((b) => {
-        billings.push({ ...b });
+        let bill = { ...b };
+        if (!props.predetermined) {
+            Object.assign(bill, {
+                predetermined: b.id === current.id,
+            });
+        }
+        billings.push(bill);
     });
     billingsInformation.value = billings;
 };
 
-const onUpdatePredetermined = (name, val, item) => {
-    let old = billingsInformation.value.find((b) => b.predetermined);
+const onUpdatePredetermined = (item) => {
+    item.predetermined = !item.predetermined;
+    let old = billingsInformation.value.find(
+        (b) => b.predetermined && b.id !== item.id
+    );
     if (old) {
         old.predetermined = false;
     }
-    item.predetermined = !item.predetermined;
     currentBilling.value = item;
 };
 
-const onConfirm = () => {
-    const send = useForm({});
-    send.post(
-        `/admin/users/billing-information/predetermined/${currentBilling.value.id}`,
-        {
-            onSuccess: () => {
-                emits("confirm", currentBilling.value);
-                showDialog.value = false;
-            },
-        }
-    );
+const onConfirm = async () => {
+    if (props.predetermined) {
+        const send = useForm({});
+        await send.post(
+            `/admin/users/billing-information/predetermined/${currentBilling.value.id}`,
+            {
+                onSuccess: () => {
+                    user.value.billings_information.forEach((b) => {
+                        if (b.id === currentBilling.value.id) {
+                            b.predetermined = true;
+                        } else {
+                            b.predetermined = false;
+                        }
+                    });
+                    showDialog.value = false;
+                },
+            }
+        );
+    } else {
+        emits("change", currentBilling.value);
+        showDialog.value = false;
+    }
 };
 </script>

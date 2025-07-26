@@ -1,5 +1,6 @@
+import { usePage } from "@inertiajs/vue3";
 import { LocalStorage } from "quasar";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 export const products = ref([]);
 
@@ -33,3 +34,30 @@ export const updateProductsStorage = (prod) => {
 export const removeProductFromStorage = (prod) => {
     products.value = products.value.filter((p) => p.id !== prod.id);
 };
+
+export const subtotalAmount = computed(() => {
+    let total = 0;
+    products.value.forEach((p) => {
+        total += p.total_to_car * p.first_payment;
+    });
+    return total;
+});
+
+export const pendingAmount = computed(() => {
+    let total = 0;
+    products.value.forEach((p) => {
+        total += p.total_to_car * (p.price - p.first_payment);
+    });
+    return total;
+});
+
+export const paymentsMethods = computed(() => {
+    return usePage().props.auth?.user?.payment_methods ?? [];
+});
+
+export const billingsInformation = computed(() => {
+    return usePage().props.auth?.user?.billings_information ?? [];
+});
+
+export const currentPaymentMethod = ref(null);
+export const currentBillingInformation = ref(null);

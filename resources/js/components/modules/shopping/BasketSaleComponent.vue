@@ -3,20 +3,24 @@
         :label="label"
         :round="false"
         :flat="false"
+        :class="class"
         padding="5px 10px"
         @click="showDialog = true"
         v-if="label"
     /><q-btn-component
         icon="mdi-basket-plus-outline"
         tooltips="volver a comprar"
+        :class="class"
         @click="showDialog = true"
         v-else
     />
-    <q-dialog v-model="showDialog">
+    <q-dialog v-model="showDialog" @before-show="onBeforeShow">
         <q-card style="width: 800px; max-width: 90vw">
             <dialog-header-component
                 icon="mdi-basket"
-                title="MI CESTA (1 producto)"
+                :title="`MI CESTA (${products.length} producto${
+                    products.length > 1 ? 's' : ''
+                })`"
                 closable
             />
             <q-card-section style="max-height: 60vh" class="scroll">
@@ -35,8 +39,45 @@
                         icon="mdi-basket"
                         :done="step > 1"
                         :header-nav="step > 1"
+                        style="padding: 5px"
                     >
-                        <products />
+                        <products
+                            :object="products[0]"
+                            v-if="products.length === 1"
+                        />
+                        <q-list dense separator v-else>
+                            <q-expansion-item
+                                v-for="(p, index) in products"
+                                :key="`product-${p.id}`"
+                                group="somegroup"
+                                icon="shopping_cart_checkout"
+                                :label="p.name"
+                                :default-opened="index === 0"
+                                header-class="text-primary"
+                            >
+                                <q-card>
+                                    <q-card-section>
+                                        <products :object="p" />
+                                    </q-card-section>
+                                </q-card>
+                            </q-expansion-item>
+                        </q-list>
+
+                        <q-item>
+                            <btn-delete-component
+                                tooltips="vaciar cesta"
+                                @click="
+                                    () => {
+                                        products = [];
+                                        showDialog = false;
+                                    }
+                                "
+                                v-if="products.length > 0"
+                            />
+                            <btn-shoppin-car-component
+                                @click="showDialog = false"
+                            />
+                        </q-item>
                     </q-step>
 
                     <q-step
@@ -46,7 +87,7 @@
                         :done="step > 2"
                         :header-nav="step > 2"
                     >
-                        <shipment />
+                        <shipment :products="products" />
                     </q-step>
 
                     <q-step
@@ -71,17 +112,17 @@
             </q-card-section>
             <q-card-actions align="right">
                 <q-btn
-                    @click="$refs.stepper.next()"
-                    color="black"
-                    :label="step === 4 ? 'guardar' : 'siguiente'"
-                />
-                <q-btn
                     v-if="step > 1"
                     flat
                     color="black"
-                    @click="$refs.stepper.previous()"
+                    @click="stepper.previous()"
                     label="anterior"
                     class="q-ml-sm"
+                />
+                <q-btn
+                    @click="onStepChange"
+                    color="black"
+                    :label="step === 4 ? 'guardar' : 'siguiente'"
                 />
             </q-card-actions>
         </q-card>
@@ -92,10 +133,18 @@
 import { ref } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
+import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
+import BtnShoppinCarComponent from "../../btn/BtnShoppinCarComponent.vue";
 import Shipment from "./components/Shipment.vue";
 import Payment from "./components/Payment.vue";
 import Confirmation from "./components/Confirmation.vue";
 import Products from "./components/Products.vue";
+import {
+    products,
+    currentPaymentMethod,
+    currentBillingInformation,
+} from "../../../services/shopping";
+import { error } from "../../../helpers/notifications";
 
 defineOptions({
     name: "StepperPage",
@@ -103,8 +152,33 @@ defineOptions({
 
 const props = defineProps({
     label: String,
+    class: String,
 });
 
 const showDialog = ref(false);
 const step = ref(1);
+const stepper = ref(null);
+
+const onStepChange = () => {
+    if (step.value === 2) {
+        return;
+    }
+    if (step.value === 3 && !currentPaymentMethod.value) {
+        error("debe seleccionar el metodo de pago");
+        return;
+    } else {
+        stepper.value.next();
+    }
+};
+
+const onBeforeShow = () => {
+    step.value = 1;
+    currentPaymentMethod.value = null;
+    currentBillingInformation.value = null;
+};
 </script>
+<style>
+.q-stepper__step-inner {
+    padding: 10px 20px !important;
+}
+</style>

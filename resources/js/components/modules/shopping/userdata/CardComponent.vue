@@ -4,7 +4,12 @@
         tooltips="añadir una nueva tarjeta"
     />
 
-    <q-dialog v-model="showDialog" persistent @hide="showDialogConfirm = false">
+    <q-dialog
+        v-model="showDialog"
+        persistent
+        @hide="showDialogConfirm = false"
+        @before-show="checkBillingInformation"
+    >
         <q-card>
             <dialog-header-component
                 icon="mdi-credit-card-plus-outline"
@@ -63,7 +68,9 @@
             <q-card-section style="max-height: 50vh" class="scroll">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                        <current-billing-information />
+                        <current-billing-information
+                            @change="onChangeBilling"
+                        />
                         <q-list dense>
                             <q-item style="padding: 0">
                                 <checkbox-field
@@ -117,12 +124,16 @@
                                                 </div>
                                             </div>
                                             <q-item-label class="q-mt-md">
-                                                tarjeta de debito **** 3004
+                                                tarjeta de debito ****
+                                                {{
+                                                    formData.number.split(
+                                                        " "
+                                                    )[3]
+                                                }}
                                             </q-item-label>
-                                            <q-item-label
-                                                >nombre apellido
-                                                apellido</q-item-label
-                                            >
+                                            <q-item-label>{{
+                                                currentBilling?.full_name ?? "-"
+                                            }}</q-item-label>
                                         </q-item-section>
                                     </q-card>
                                 </q-item-section>
@@ -166,7 +177,7 @@ import BtnSaveComponent from "../../../btn/BtnSaveComponent.vue";
 import BtnConfirmComponent from "../../../btn/BtnConfirmComponent.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { Screen } from "quasar";
-import { errorValidation } from "../../../../helpers/notifications";
+import { errorValidation, info } from "../../../../helpers/notifications";
 
 import CurrentBillingInformation from "./CurrentBillingInformation.vue";
 
@@ -184,6 +195,7 @@ const props = defineProps({
 
 const showDialog = ref(false);
 const showDialogConfirm = ref(false);
+const currentBilling = ref(null);
 
 const form = ref(null);
 const formData = useForm({
@@ -191,11 +203,26 @@ const formData = useForm({
     number: null,
     defeat: null,
     predetermined: false,
+    billing_information_id: null,
 });
 
 const user = computed(() => {
     return usePage().props.auth.user;
 });
+
+const onChangeBilling = (billing) => {
+    currentBilling.value = billing;
+    formData.billing_information_id = billing?.id ?? null;
+};
+
+const checkBillingInformation = () => {
+    if (user.value.billings_information.length === 0) {
+        showDialog.value = false;
+        info(
+            "no se puede agregar un metodo de pago sin tener datos de facturacion"
+        );
+    }
+};
 
 const setDefaultData = () => {
     formData.reset();
@@ -213,14 +240,18 @@ const save = async () => {
 };
 
 const store = async () => {
-    formData.post("/admin/users/payment-methods", {
-        onSuccess: () => {
-            setDefaultData();
-            showDialog.value = false;
-        },
-        onError: () => {
-            showDialogConfirm.value = false;
-        },
-    });
+    if (formData.billing_information_id) {
+        formData.post("/admin/users/payment-methods", {
+            onSuccess: () => {
+                setDefaultData();
+                showDialog.value = false;
+            },
+            onError: () => {
+                showDialogConfirm.value = false;
+            },
+        });
+    } else {
+        info("debe especificar los datos de facturación");
+    }
 };
 </script>
