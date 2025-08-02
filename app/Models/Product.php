@@ -11,17 +11,20 @@ class Product extends Model
         'id',
         'name',
         'price',
-        'total',
-        'first_payment',
-        'total_payments',
         'description',
-        'image'
+        'image',
+        'public',
+        'valoration'
     ];
 
     protected $appends = [
         'image_path',
         'categories_id',
         'categories_str'
+    ];
+
+    protected $casts = [
+        'public' => 'boolean'
     ];
 
     protected static function booted()
@@ -54,5 +57,10 @@ class Product extends Model
     public function getCategoriesStrAttribute()
     {
         return $this->categories()->get()->pluck('name');
+    }
+
+    public function scopePublic($query)
+    {
+        return $query->where('public', true);
     }
 }

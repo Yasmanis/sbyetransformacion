@@ -4,6 +4,7 @@
             <table-component
                 :columns="columns"
                 :searchFields="searchFields"
+                :filter-fields="filterFields"
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
@@ -15,7 +16,7 @@
 
 <script setup>
 import Layout from "../../layouts/AdminLayout.vue";
-import TableComponent from "../../components/table/TableComponent.vue";
+import TableComponent from "../../components/modules/products/TableComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 import { Dark } from "quasar";
 
@@ -41,45 +42,6 @@ const price = {
     field: "price",
     name: "price",
     label: "precio",
-    align: "left",
-    sortable: true,
-    type: "number",
-    required: true,
-    othersProps: {
-        required: true,
-    },
-};
-
-const firstPayment = {
-    field: "first_payment",
-    name: "first_payment",
-    label: "pago inicial",
-    align: "left",
-    sortable: true,
-    type: "number",
-    required: true,
-    othersProps: {
-        required: true,
-    },
-};
-
-const totalPayments = {
-    field: "total_payments",
-    name: "total_payments",
-    label: "pagos totales",
-    align: "left",
-    sortable: true,
-    type: "number",
-    required: true,
-    othersProps: {
-        required: true,
-    },
-};
-
-const total = {
-    field: "total",
-    name: "total",
-    label: "cantidad",
     align: "left",
     sortable: true,
     type: "number",
@@ -118,7 +80,28 @@ const categories = {
     },
 };
 
+const valoration = {
+    field: "valoration",
+    name: "valoration",
+    label: "valoracion",
+    align: "center",
+    type: "rating",
+    othersProps: {
+        defaultValue: 5,
+    },
+};
+
+const publicF = {
+    field: "public",
+    name: "public",
+    label: "alta",
+    align: "center",
+    type: "boolean",
+};
+
 const searchFields = [name];
+
+const filterFields = [publicF];
 
 const columns = [
     {
@@ -137,9 +120,7 @@ const columns = [
     },
     name,
     price,
-    total,
-    firstPayment,
-    totalPayments,
+    valoration,
     description,
     {
         field: "categories_str",
@@ -148,23 +129,23 @@ const columns = [
         align: "left",
         type: "text",
     },
+    publicF,
     {
         field: "actions",
         name: "actions",
         label: "Acciones",
         type: "actions",
-        width: "100px",
+        width: "130px",
     },
 ];
 
 const fields = [
     name,
     price,
-    total,
-    firstPayment,
-    totalPayments,
+    valoration,
     description,
     image,
     categories,
+    publicF,
 ];
 </script>

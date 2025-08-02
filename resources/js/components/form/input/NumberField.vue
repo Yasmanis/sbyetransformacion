@@ -49,7 +49,7 @@ defineOptions({
 });
 
 const props = defineProps({
-    modelValue: String,
+    modelValue: Number,
     name: {
         type: String,
         required: true,

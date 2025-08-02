@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Repositories\ProductRepository;
 use App\Traits\FileSave;
 use Illuminate\Http\Request;
@@ -85,6 +86,18 @@ class ProductController extends Controller
                 $repository->deleteMultipleById($ids);
             }
             return redirect()->back()->with('success', count($ids) == 1 ? 'producto eliminado correctamente' : 'productos eliminados correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function public(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('product')) {
+            $repository = new ProductRepository();
+            $object = Product::find($id);
+            $object->public  = !$object->public;
+            $object->save();
+            return redirect()->back()->with('success', $object->public ? 'producto publicado correctamente' : 'se ha dejado de publicar el producto correctamente');
         }
         return $this->deny_access($request);
     }

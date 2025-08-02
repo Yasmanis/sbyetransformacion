@@ -4,12 +4,23 @@
             <div class="column items-end">
                 <btn-share-component />
             </div>
-            <q-img :src="`${$page.props.public_path}images/logo/2.png`" />
+            <q-img
+                :src="`${$page.props.public_path}${
+                    product.image_path?.substring(1) ?? 'images/logo/2.png'
+                }`"
+                :ratio="4 / 3"
+                fit="fill"
+            />
         </q-card-section>
         <q-card-section class="q-pa-md">
             <q-item-label lines="3" class="text-center text-bold">{{
                 product.name
             }}</q-item-label>
+        </q-card-section>
+        <q-card-section class="q-pa-xs">
+            <q-item-label lines="5">
+                <span v-html="product.description"></span>
+            </q-item-label>
         </q-card-section>
         <q-card-section class="q-pa-none">
             <product-information

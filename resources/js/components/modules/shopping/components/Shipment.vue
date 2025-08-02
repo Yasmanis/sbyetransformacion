@@ -68,22 +68,6 @@
                                 {{ subtotalAmount }} €
                             </q-item-section>
                         </q-item>
-                        <!-- <q-item>
-                            <q-item-section> envio MRW </q-item-section>
-                            <q-item-section avatar> 4,95 € </q-item-section>
-                        </q-item>
-                        <q-item class="text-bold">
-                            <q-item-section> total </q-item-section>
-                            <q-item-section avatar>
-                                {{ subtotalAmount - 4.95 }} €
-                            </q-item-section>
-                        </q-item> -->
-                        <q-item>
-                            <q-item-section> pagos pendientes: </q-item-section>
-                            <q-item-section avatar>
-                                {{ pendingAmount }} €
-                            </q-item-section>
-                        </q-item>
                         <q-item>
                             <q-item-section>
                                 <q-item-label caption

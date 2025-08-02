@@ -25,6 +25,15 @@
                     @update="onUpdateField"
                     v-if="f.type === 'number'"
                 />
+                <rating-field
+                    v-model="formData[f.name]"
+                    :label="f.label"
+                    :name="f.name"
+                    :modelValue="formData[f.name]"
+                    :othersProps="f.othersProps"
+                    @update="onUpdateField"
+                    v-if="f.type === 'rating'"
+                />
                 <image-field
                     v-model="formData[f.name]"
                     :label="f.label"
@@ -175,6 +184,7 @@ import HiddenField from "./input/HiddenField.vue";
 import CampaignField from "./input/CampaignField.vue";
 import PeriodicityField from "./input/PeriodicityField.vue";
 import StateField from "./input/StateField.vue";
+import RatingField from "./input/RatingField.vue";
 import UsersSelectDialogComponent from "../modules/user/UsersSelectDialogComponent.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";

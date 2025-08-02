@@ -5,42 +5,7 @@
             :class="!Screen.xs && !Screen.sm ? 'q-pr-sm' : ''"
         >
             <div class="row">
-                <div
-                    class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6"
-                    :class="!Screen.xs && !Screen.sm ? 'q-pr-md' : ''"
-                >
-                    <q-card flat>
-                        <q-card-section class="q-pa-none">
-                            <q-list dense
-                                ><q-item class="bg-primary text-white">
-                                    <q-item-section class="text-center">
-                                        DIRECCION DE ENVIO
-                                    </q-item-section>
-                                </q-item>
-                                <q-item style="padding: 10px 0px">
-                                    <q-item-section>
-                                        <q-item-label>
-                                            nombre apellido apellido
-                                        </q-item-label>
-                                        <q-item-label>
-                                            direccion completa
-                                        </q-item-label>
-                                        <q-item-label>
-                                            pueblo – ciudad
-                                        </q-item-label>
-                                        <q-item-label>
-                                            cp – provincia (pais)
-                                        </q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                            </q-list>
-                        </q-card-section>
-                    </q-card>
-                </div>
-                <div
-                    class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6"
-                    :class="!Screen.xs ? 'q-pr-xs' : ''"
-                >
+                <div class="col" :class="!Screen.xs ? 'q-pr-xs' : ''">
                     <q-card flat>
                         <q-card-section class="q-pa-none">
                             <q-list dense
@@ -59,7 +24,7 @@
             </div>
             <div class="row">
                 <div
-                    class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6"
+                    class="col"
                     :class="!Screen.xs && !Screen.sm ? 'q-pr-md' : ''"
                 >
                     <q-card flat>
@@ -104,22 +69,6 @@
                         </q-card-section>
                     </q-card>
                 </div>
-                <div
-                    class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6"
-                    :class="!Screen.xs ? 'q-pr-xs' : ''"
-                >
-                    <q-card flat>
-                        <q-card-section class="q-pa-none">
-                            <q-list dense
-                                ><q-item class="bg-primary text-white q-mt-md">
-                                    <q-item-section class="text-center">
-                                        METODO DE ENVIO
-                                    </q-item-section>
-                                </q-item>
-                            </q-list>
-                        </q-card-section>
-                    </q-card>
-                </div>
             </div>
         </div>
         <div
@@ -133,12 +82,6 @@
                             <q-item-section> subtotal: </q-item-section>
                             <q-item-section avatar>
                                 {{ subtotalAmount }} €
-                            </q-item-section>
-                        </q-item>
-                        <q-item>
-                            <q-item-section> pagos pendientes: </q-item-section>
-                            <q-item-section avatar>
-                                {{ pendingAmount }} €
                             </q-item-section>
                         </q-item>
                         <q-item>

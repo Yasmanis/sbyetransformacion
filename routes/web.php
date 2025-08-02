@@ -101,7 +101,7 @@ Route::get('/maria', function () {
 });
 
 Route::get('/store', function () {
-    $products = Product::all();
+    $products = Product::public()->get();
     return Inertia('landing/store', [
         'products' => $products
     ]);
@@ -165,11 +165,25 @@ Route::post('/buyer-register', [AuthController::class, 'buyerRegister']);
 Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])->middleware('guest')->name('password.reset');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('guest');
 
-Route::get('/shared-file/{id}', function ($id) {
+Route::get('/shared-file/{id}/{only_file?}', function ($id, $only = null) {
     $id = base64_decode($id);
     $file = File::find($id);
     if ($file != null) {
-        return Inertia('shared/file', [
+        if ($only) {
+            $filePath = public_path() . '/storage/' . $file->path;
+
+            if (!file_exists($filePath)) {
+                abort(404);
+            }
+
+            // Determinar el tipo MIME dinámicamente
+            $mime = mime_content_type($filePath);
+
+            return response()->file($filePath, [
+                'Content-Type' => $mime,
+                'Content-Disposition' => 'inline' // Para visualización en navegador
+            ]);
+        } else return Inertia('shared/file', [
             'file' => $file
         ]);
     }
@@ -230,6 +244,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/countries', CountryController::class);
     Route::resource('/admin/reason-for-return', ReasonForReturnController::class);
     Route::resource('/admin/products', ProductController::class);
+    Route::post('/admin/products/public/{id}', [ProductController::class, 'public']);
     Route::resource('/admin/product-categories', ProductCategoryController::class);
     Route::resource('/admin/users/payment-methods', PaymentMethodController::class)->except('index');
     Route::resource('/admin/users/billing-information', BillingInformationController::class)->except('index');

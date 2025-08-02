@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
+        <div class="col">
             <q-card flat>
                 <q-card-section class="q-pa-none">
                     <q-list dense>
@@ -14,48 +14,16 @@
                                     width="70px"
                                 />
                             </q-item-section>
-                            <q-item-section>
+                            <q-item-section top>
                                 <q-item-label class="text-bold">
                                     {{ product.name }}
                                 </q-item-label>
-                                <q-item-label>contado</q-item-label>
-                                <q-item-label
-                                    ><ul class="q-ma-none q-pl-md text-body2">
-                                        <li>
-                                            pago inicial
-                                            {{
-                                                product.total_to_car *
-                                                product.first_payment
-                                            }}
-                                            €
-                                        </li>
-                                        <li>
-                                            {{ product.total_payments }} pagos
-                                            mensuales de
-                                            {{ amountPerPayment }}
-                                            €
-                                        </li>
-                                    </ul></q-item-label
-                                >
-                                <q-item-label class="text-bold">
-                                    {{ product.total_to_car * product.price }} €
+                                <q-item-label>
+                                    Precio: {{ product.price }} €
                                 </q-item-label>
                             </q-item-section>
                             <q-item-section avatar top>
-                                <q-input
-                                    v-model="product.total_to_car"
-                                    dense
-                                    outlined
-                                    style="width: 50px"
-                                />
-                            </q-item-section>
-                            <q-item-section
-                                avatar
-                                top
-                                style="padding: 0px; min-width: 20px"
-                            >
                                 <btn-delete-component
-                                    class="q-ml-xs q-mt-xs"
                                     @click="removeProductFromStorage(product)"
                             /></q-item-section>
                         </q-item>
@@ -63,45 +31,7 @@
                 </q-card-section>
             </q-card>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-            <q-card flat>
-                <q-card-section class="q-pa-none">
-                    <q-list dense>
-                        <q-item class="bg-primary text-white">
-                            <q-item-section> subtotal: </q-item-section>
-                            <q-item-section avatar>
-                                {{
-                                    product.total_to_car * product.first_payment
-                                }}
-                                €
-                            </q-item-section>
-                        </q-item>
-                        <q-item>
-                            <q-item-section> pagos pendientes: </q-item-section>
-                            <q-item-section avatar>
-                                {{
-                                    product.total_to_car *
-                                    (product.price - product.first_payment)
-                                }}
-                                €
-                            </q-item-section>
-                        </q-item>
-                        <q-item>
-                            <q-item-section>
-                                <q-item-label caption
-                                    ><i
-                                        >estas realizando una compra 100%
-                                        segura</i
-                                    ></q-item-label
-                                >
-                            </q-item-section>
-                        </q-item>
-                    </q-list>
-                </q-card-section>
-            </q-card>
-        </div>
     </div>
-    <payments-table :product="object" />
 </template>
 
 <script setup>
@@ -109,7 +39,6 @@ import { computed, onBeforeMount, ref } from "vue";
 import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
 import BtnShoppinCarComponent from "../../../btn/BtnShoppinCarComponent.vue";
 import { removeProductFromStorage } from "../../../../services/shopping";
-import PaymentsTable from "./PaymentsTable.vue";
 import { date } from "quasar";
 
 defineOptions({

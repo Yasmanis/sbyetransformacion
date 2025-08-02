@@ -1,0 +1,59 @@
+<template>
+    <q-item dense style="padding: 0">
+        <q-item-section avatar v-if="label">
+            <q-item-label>
+                {{ label }}
+            </q-item-label>
+        </q-item-section>
+        <q-item-section>
+            <q-rating
+                v-model="model"
+                :max="max"
+                color="primary"
+                @update:model-value="onUpdate"
+            />
+        </q-item-section>
+    </q-item>
+</template>
+
+<script setup>
+import { onMounted, ref, watch } from "vue";
+
+defineOptions({
+    name: "RatingField",
+});
+
+const props = defineProps({
+    name: {
+        type: String,
+    },
+    label: {
+        type: String,
+    },
+    modelValue: Number,
+    max: {
+        type: Number,
+        default: 5,
+    },
+    othersProps: Object,
+});
+
+const emits = defineEmits(["update", "error"]);
+
+const model = ref(null);
+
+onMounted(() => {
+    model.value = props.modelValue;
+});
+
+watch(
+    () => props.modelValue,
+    (n) => {
+        model.value = n;
+    }
+);
+
+const onUpdate = (val) => {
+    emits("update", props.name, val);
+};
+</script>

@@ -90,12 +90,6 @@
                             </q-item-section>
                         </q-item>
                         <q-item>
-                            <q-item-section> pagos pendientes: </q-item-section>
-                            <q-item-section avatar>
-                                {{ pendingAmount }} €
-                            </q-item-section>
-                        </q-item>
-                        <q-item>
                             <q-item-section>
                                 <q-item-label caption
                                     ><i
@@ -155,9 +149,11 @@ onBeforeMount(() => {
 watch(
     currentPaymentMethod,
     (n) => {
-        currentBillingInformation.value = billingsInformation.value.find(
-            (b) => b.id === n.billing_information_id
-        );
+        currentBillingInformation.value = n
+            ? billingsInformation.value.find(
+                  (b) => b.id === n.billing_information_id
+              )
+            : null;
     },
     {
         deep: true,

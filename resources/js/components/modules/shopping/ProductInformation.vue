@@ -42,54 +42,31 @@
                                     <span v-html="product.description"></span>
                                 </div>
                             </div>
-                            <q-item class="q-mt-sm" style="padding: 0">
-                                <q-item-section
-                                    avatar
-                                    top
-                                    style="min-width: 30px; padding: 0"
-                                >
-                                    <checkbox-field name="count" />
+                            <q-item style="padding: 0">
+                                <q-item-section avatar class="text-bold">
+                                    precio: {{ product.price }} €
                                 </q-item-section>
-                                <q-item-section>
-                                    <span class="text-bold">CONTADO</span>
-                                    <ul style="padding-left: 20px; margin: 0">
-                                        <li>
-                                            pago inicial
-                                            {{ product.first_payment }} €
-                                        </li>
-                                        <li>
-                                            {{ product.total_payments }} pagos
-                                            menusales de
-                                            {{
-                                                (product.price -
-                                                    product.first_payment) /
-                                                product.total_payments
-                                            }}
-                                            €
-                                        </li>
-                                    </ul>
-                                </q-item-section>
+                                <q-item-section></q-item-section>
                                 <q-item-section avatar>
-                                    {{ product.price }} €
+                                    <q-btn
+                                        label="comprar"
+                                        :color="
+                                            Dark.isActive ? 'primary' : 'black'
+                                        "
+                                        :disable="
+                                            products
+                                                .map((p) => p.id)
+                                                .includes(product.id)
+                                        "
+                                        @click="
+                                            {
+                                                emits('add-product');
+                                                showDialog = false;
+                                            }
+                                        "
+                                    />
                                 </q-item-section>
                             </q-item>
-                        </q-item-section>
-                    </q-item>
-                    <q-item>
-                        <q-item-section avatar></q-item-section>
-                        <q-item-section></q-item-section>
-                        <q-item-section avatar>
-                            <q-btn
-                                label="comprar"
-                                :color="Dark.isActive ? 'primary' : 'black'"
-                                @click="
-                                    {
-                                        emits('add-product');
-                                        showDialog = false;
-                                    }
-                                "
-                                v-if="btn"
-                            />
                         </q-item-section>
                     </q-item>
                     <q-item>
@@ -186,12 +163,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
-import CheckboxField from "../../form/input/CheckboxField.vue";
 import { usePage } from "@inertiajs/vue3";
 import { Dark } from "quasar";
+import { products } from "../../../services/shopping";
 
 defineOptions({
     name: "ProductInformation",
@@ -213,8 +190,4 @@ const showDialog = ref(false);
 const onHide = () => {
     usePage().props.errors = {};
 };
-
-const authenticated = computed(() => {
-    return usePage().props.auth;
-});
 </script>

@@ -62,7 +62,10 @@
                         >
                             <q-item-section avatar top>
                                 <q-img
-                                    :src="`${$page.props.public_path}images/logo/2.png`"
+                                    :src="`${$page.props.public_path}${
+                                        prod.image_path?.substring(1) ??
+                                        'images/logo/2.png'
+                                    }`"
                                     fit
                                     width="70px"
                                 />
@@ -72,43 +75,12 @@
                                     {{ prod.name }}
                                 </q-item-label>
                                 <q-item-label>contado</q-item-label>
-                                <q-item-label
-                                    ><ul style="padding-left: 20px; margin: 0">
-                                        <li>
-                                            pago inicial
-                                            {{
-                                                prod.total_to_car *
-                                                prod.first_payment
-                                            }}
-                                            €
-                                        </li>
-                                        <li>
-                                            {{ prod.total_payments }} pagos
-                                            menusales de
-                                            {{
-                                                prod.total_to_car *
-                                                ((prod.price -
-                                                    prod.first_payment) /
-                                                    prod.total_payments)
-                                            }}
-                                            €
-                                        </li>
-                                    </ul></q-item-label
-                                >
                                 <q-item-label class="text-bold">
                                     {{ prod.price }} €
                                 </q-item-label>
                                 <product-information
                                     :product="prod"
                                     :btn="false"
-                                />
-                            </q-item-section>
-                            <q-item-section avatar top>
-                                <q-input
-                                    dense
-                                    outlined
-                                    style="width: 50px"
-                                    v-model="prod.total_to_car"
                                 />
                             </q-item-section>
                             <q-item-section

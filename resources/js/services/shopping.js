@@ -38,7 +38,7 @@ export const removeProductFromStorage = (prod) => {
 export const subtotalAmount = computed(() => {
     let total = 0;
     products.value.forEach((p) => {
-        total += p.total_to_car * p.first_payment;
+        total += p.total_to_car * p.price;
     });
     return total;
 });

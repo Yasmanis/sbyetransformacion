@@ -81,16 +81,6 @@
                     </q-step>
 
                     <q-step
-                        :name="2"
-                        title="ENVIO"
-                        icon="mdi-truck-fast-outline"
-                        :done="step > 2"
-                        :header-nav="step > 2"
-                    >
-                        <shipment :products="products" />
-                    </q-step>
-
-                    <q-step
                         :name="3"
                         title="PAGO"
                         icon="mdi-currency-eur"
@@ -160,9 +150,6 @@ const step = ref(1);
 const stepper = ref(null);
 
 const onStepChange = () => {
-    if (step.value === 2) {
-        return;
-    }
     if (step.value === 3 && !currentPaymentMethod.value) {
         error("debe seleccionar el metodo de pago");
         return;
