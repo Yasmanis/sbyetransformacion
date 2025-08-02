@@ -10,6 +10,7 @@
                 v-model="model"
                 :max="max"
                 color="primary"
+                size="sm"
                 @update:model-value="onUpdate"
             />
         </q-item-section>
