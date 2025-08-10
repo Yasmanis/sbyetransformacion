@@ -205,3 +205,11 @@ const filterProducts = () => {
     }
 };
 </script>
+<style>
+figure.media {
+    margin: 0px !important;
+}
+figure.media video {
+    width: 50%;
+}
+</style>

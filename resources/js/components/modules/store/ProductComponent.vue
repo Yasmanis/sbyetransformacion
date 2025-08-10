@@ -8,7 +8,7 @@
                 :src="`${$page.props.public_path}${
                     product.image_path?.substring(1) ?? 'images/logo/2.png'
                 }`"
-                :ratio="4 / 3"
+                :ratio="9 / 16"
                 fit="fill"
             />
         </q-card-section>
@@ -18,7 +18,7 @@
             }}</q-item-label>
         </q-card-section>
         <q-card-section class="q-pa-xs">
-            <q-item-label lines="5">
+            <q-item-label>
                 <span v-html="product.description"></span>
             </q-item-label>
         </q-card-section>

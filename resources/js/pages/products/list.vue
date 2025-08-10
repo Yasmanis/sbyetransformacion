@@ -99,9 +99,32 @@ const publicF = {
     type: "boolean",
 };
 
+const clientsValoration = {
+    field: "clients_valoration",
+    name: "clients_valoration",
+    label: "valoracion clientes",
+    align: "center",
+    type: "boolean",
+};
+
+const informationToLanding = {
+    field: "information_to_landing",
+    name: "information_to_landing",
+    label: "informacion en landing",
+    align: "center",
+    type: "boolean",
+};
+
+const subtitles = {
+    field: "subtitles",
+    name: "subtitles",
+    label: "subtitulos",
+    type: "subtitles",
+};
+
 const searchFields = [name];
 
-const filterFields = [publicF];
+const filterFields = [publicF, clientsValoration, informationToLanding];
 
 const columns = [
     {
@@ -121,6 +144,8 @@ const columns = [
     name,
     price,
     valoration,
+    clientsValoration,
+    informationToLanding,
     description,
     {
         field: "categories_str",
@@ -140,10 +165,28 @@ const columns = [
 ];
 
 const fields = [
+    {
+        name: "id",
+    },
     name,
     price,
+    {
+        field: "clients_valoration",
+        name: "clients_valoration",
+        label: "habilitar valoracion clientes",
+        align: "center",
+        type: "boolean",
+    },
     valoration,
     description,
+    subtitles,
+    {
+        field: "information_to_landing",
+        name: "information_to_landing",
+        label: "vincular landing a mas informacion",
+        align: "center",
+        type: "boolean",
+    },
     image,
     categories,
     publicF,

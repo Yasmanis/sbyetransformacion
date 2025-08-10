@@ -235,3 +235,7 @@
 .header-no-bold th {
     font-weight: normal !important;
 }
+
+figure.media{
+    margin: 0;
+}

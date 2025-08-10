@@ -31,7 +31,10 @@ const props = defineProps({
     label: {
         type: String,
     },
-    modelValue: Number,
+    modelValue: {
+        type: Number,
+        default: 0,
+    },
     max: {
         type: Number,
         default: 5,

@@ -23,8 +23,6 @@
         "@vitejs/plugin-vue": "^5.1.3",
         "animate.css": "^4.1.1",
         "ckeditor5": "^43.3.0",
-        "ckeditor5-full-screen": "^0.0.2",
-        "ckeditor5-line-height-latest": "^0.1.0",
         "cropperjs": "^1.6.2",
         "fabric": "^6.5.3",
         "glightbox": "^3.3.0",

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductSubtitle;
 use App\Repositories\ProductRepository;
+use App\Repositories\ProductSubtitleRepository;
 use App\Traits\FileSave;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -40,6 +42,19 @@ class ProductController extends Controller
             $product = $repository->create($data);
             if (isset($request->categories_id)) {
                 $product->categories()->attach($request->categories_id);
+            }
+            if (isset($request->subtitles)) {
+                $subtitles = [];
+                foreach ($request->subtitles as $item) {
+                    $subtitles[] = [
+                        'name' => $item['name'],
+                        'description' => $item['description'],
+                        'product_id' => $product->id
+                    ];
+                }
+                if (count($subtitles) > 0) {
+                    ProductSubtitle::insert($subtitles);
+                }
             }
             return redirect()->back()->with('success', 'producto adicionado correctamente');
         }
@@ -98,6 +113,44 @@ class ProductController extends Controller
             $object->public  = !$object->public;
             $object->save();
             return redirect()->back()->with('success', $object->public ? 'producto publicado correctamente' : 'se ha dejado de publicar el producto correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+
+
+    public function addSubtitle(Request $request)
+    {
+        if (auth()->user()->hasUpdate('product')) {
+            $repository = new ProductSubtitleRepository();
+            $object = $repository->create($request->only((new ($repository->model()))->getFillable()));
+            return redirect()->back()->with([
+                'success' => 'subtitulo adicionado correctamente',
+                'object' => $object
+            ]);
+        }
+        return $this->deny_access($request);
+    }
+
+    public function updateSubtitle(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('product')) {
+            $repository = new ProductSubtitleRepository();
+            $object = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+            return redirect()->back()->with([
+                'success' => 'subtitulo modificado correctamente',
+                'object' => $object
+            ]);
+        }
+        return $this->deny_access($request);
+    }
+
+    public function deleteSubtitle(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('product')) {
+            $repository = new ProductSubtitleRepository();
+            $repository->deleteById($id);
+            return redirect()->back()->with('success', 'subtitulo eliminado correctamente');
         }
         return $this->deny_access($request);
     }

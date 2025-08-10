@@ -244,6 +244,9 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/countries', CountryController::class);
     Route::resource('/admin/reason-for-return', ReasonForReturnController::class);
     Route::resource('/admin/products', ProductController::class);
+    Route::post('/admin/products/subtitle', [ProductController::class, 'addSubtitle']);
+    Route::put('/admin/products/subtitle/{id}', [ProductController::class, 'updateSubtitle']);
+    Route::delete('/admin/products/subtitle/{id}', [ProductController::class, 'deleteSubtitle']);
     Route::post('/admin/products/public/{id}', [ProductController::class, 'public']);
     Route::resource('/admin/product-categories', ProductCategoryController::class);
     Route::resource('/admin/users/payment-methods', PaymentMethodController::class)->except('index');

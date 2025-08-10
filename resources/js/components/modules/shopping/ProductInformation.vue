@@ -6,12 +6,12 @@
         :round="false"
         :color="Dark.isActive ? 'primary' : ''"
         square
-        @click="showDialog = true"
+        @click="showInformation"
         v-if="btn"
     />
     <q-item-label
         class="text-primary cursor-pointer"
-        @click="showDialog = true"
+        @click="showInformation"
         v-else
     >
         ver toda la informacion
@@ -42,6 +42,27 @@
                                     <span v-html="product.description"></span>
                                 </div>
                             </div>
+                            <q-item class="no-padding">
+                                <q-item-section>
+                                    <q-expansion-item
+                                        group="somegroup"
+                                        expand-separator
+                                        v-for="(
+                                            obj, indexObj
+                                        ) in product.subtitles"
+                                        :key="`subtitle-${indexObj}`"
+                                        :label="obj.name"
+                                    >
+                                        <q-card>
+                                            <q-card-section>
+                                                <span
+                                                    v-html="obj.description"
+                                                ></span>
+                                            </q-card-section>
+                                        </q-card>
+                                    </q-expansion-item>
+                                </q-item-section>
+                            </q-item>
                             <q-item style="padding: 0">
                                 <q-item-section avatar class="text-bold">
                                     precio: {{ product.price }} €
@@ -69,6 +90,7 @@
                             </q-item>
                         </q-item-section>
                     </q-item>
+
                     <q-item>
                         <q-item-section
                             avatar
@@ -167,7 +189,7 @@ import { ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import { usePage } from "@inertiajs/vue3";
-import { Dark } from "quasar";
+import { Dark, openURL } from "quasar";
 import { products } from "../../../services/shopping";
 
 defineOptions({
@@ -189,5 +211,13 @@ const showDialog = ref(false);
 
 const onHide = () => {
     usePage().props.errors = {};
+};
+
+const showInformation = () => {
+    if (props.product.information_to_landing) {
+        openURL("/liberacion_emocional", undefined);
+    } else {
+        showDialog.value = true;
+    }
 };
 </script>

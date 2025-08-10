@@ -106,8 +106,6 @@ import "ckeditor5/ckeditor5.css";
 import coreTranslations from "ckeditor5/translations/es.js";
 import EmojisMenuComponent from "./editor/EmojisMenuComponent.vue";
 import { localProviders, allDefaultProviders } from "./editor/media-providers";
-import collapse from "../../../../../public/images/icon/collapse.svg";
-import expand from "../../../../../public/images/icon/collapse.svg";
 import { usePage } from "@inertiajs/vue3";
 
 defineOptions({

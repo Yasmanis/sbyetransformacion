@@ -14,7 +14,9 @@ class Product extends Model
         'description',
         'image',
         'public',
-        'valoration'
+        'valoration',
+        'clients_valoration',
+        'information_to_landing'
     ];
 
     protected $appends = [
@@ -23,8 +25,12 @@ class Product extends Model
         'categories_str'
     ];
 
+    protected $with = ['subtitles'];
+
     protected $casts = [
-        'public' => 'boolean'
+        'public' => 'boolean',
+        'clients_valoration' => 'boolean',
+        'information_to_landing' => 'boolean'
     ];
 
     protected static function booted()
@@ -47,6 +53,11 @@ class Product extends Model
     public function categories()
     {
         return $this->belongsToMany(ProductCategory::class, 'products_categories', 'product_id', 'category_id');
+    }
+
+    public function subtitles()
+    {
+        return $this->hasMany(ProductSubtitle::class, 'product_id');
     }
 
     public function getCategoriesIdAttribute()

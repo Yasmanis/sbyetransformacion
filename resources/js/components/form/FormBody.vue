@@ -29,7 +29,7 @@
                     v-model="formData[f.name]"
                     :label="f.label"
                     :name="f.name"
-                    :modelValue="formData[f.name]"
+                    :modelValue="formData[f.name] ?? 0"
                     :othersProps="f.othersProps"
                     @update="onUpdateField"
                     v-if="f.type === 'rating'"
@@ -82,6 +82,19 @@
                     :sections="formData['sections_id']"
                     @update="onUpdateField"
                     v-else-if="f.type === 'campaign'"
+                />
+                <subtitle-field
+                    :label="f.label"
+                    :name="f.name"
+                    :objects="formData[f.name]"
+                    :parent="formData"
+                    @remove="
+                        (id) =>
+                            (formData[f.name] = formData[f.name].filter(
+                                (s) => s.id !== id
+                            ))
+                    "
+                    v-else-if="f.type === 'subtitles'"
                 />
                 <periodicity-field
                     :name="f.name"
@@ -186,6 +199,7 @@ import PeriodicityField from "./input/PeriodicityField.vue";
 import StateField from "./input/StateField.vue";
 import RatingField from "./input/RatingField.vue";
 import UsersSelectDialogComponent from "../modules/user/UsersSelectDialogComponent.vue";
+import SubtitleField from "./input/SubtitleField.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
 import BtnSaveAndNewComponent from "../btn/BtnSaveAndNewComponent.vue";
@@ -290,6 +304,8 @@ const setDefaultData = () => {
                 }
             }
             formData.value[f.name] = users;
+        } else if (f.type === "subtitles") {
+            formData.value[f.name] = props.object ? props.object[f.name] : [];
         } else {
             formData.value[f.name] = props.object
                 ? props.object[f.name]
