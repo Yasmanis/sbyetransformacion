@@ -18,6 +18,9 @@ import { ref } from "vue";
 import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
 import ConfirmComponent from "../../base/ConfirmComponent.vue";
 import { useForm } from "@inertiajs/vue3";
+import axios from "axios";
+import { Loading } from "quasar";
+import { success } from "../../../helpers/notifications";
 defineOptions({
     name: "DeleteComponent",
 });
@@ -40,19 +43,39 @@ const props = defineProps({
         type: Boolean,
         defaul: false,
     },
+    axios: Boolean,
 });
 
 const emit = defineEmits(["deleted"]);
 
 const confirm = ref(false);
 
-const handleDelete = () => {
-    const send = useForm({ ids: props.objects.map((o) => o.id) });
-    send.delete(`${props.url}/${props.objects.map((o) => o.id).toString()}`, {
-        onSuccess: () => {
-            emit("deleted");
-            confirm.value = false;
-        },
-    });
+const handleDelete = async () => {
+    if (axios) {
+        Loading.show();
+        axios
+            .delete(`${props.url}/${props.objects.map((o) => o.id).toString()}`)
+            .then((res) => {
+                emit("deleted");
+                confirm.value = false;
+                if (res.success) {
+                    success(res.message);
+                }
+            })
+            .finally(() => {
+                Loading.hide();
+            });
+    } else {
+        const send = useForm({ ids: props.objects.map((o) => o.id) });
+        send.delete(
+            `${props.url}/${props.objects.map((o) => o.id).toString()}`,
+            {
+                onSuccess: () => {
+                    emit("deleted");
+                    confirm.value = false;
+                },
+            }
+        );
+    }
 };
 </script>

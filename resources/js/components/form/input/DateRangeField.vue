@@ -17,9 +17,7 @@
                           )
                         : null
                 "
-                :others-props="{
-                    required: true,
-                }"
+                :others-props="othersProps?.start ?? { required: true }"
                 @update="onStartUpdate"
             />
         </div>
@@ -39,6 +37,7 @@
                           )
                         : null
                 "
+                :others-props="othersProps?.end ?? { required: false }"
                 @update="onEndUpdate"
             />
         </div>
@@ -75,6 +74,7 @@ const props = defineProps({
     },
     startValue: String,
     endValue: String,
+    othersProps: Object,
 });
 
 const emits = defineEmits(["update"]);
@@ -88,6 +88,20 @@ onMounted(() => {
     startDate.value = props.startValue ?? null;
     endDate.value = props.endValue ?? null;
 });
+
+watch(
+    () => props.startValue,
+    (n) => {
+        startDate.value = n;
+    }
+);
+
+watch(
+    () => props.endValue,
+    (n) => {
+        endDate.value = n;
+    }
+);
 
 const screen = computed(() => {
     return $q.screen;

@@ -217,6 +217,10 @@
                             )
                         "
                     />
+                    <offers-component
+                        :product="props.row"
+                        :has-edit="has_edit"
+                    />
                     <delete-component
                         :objects="[props.row]"
                         :url="current_module.base_url"
@@ -343,6 +347,7 @@ import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
+import OffersComponent from "./OffersComponent.vue";
 
 defineOptions({
     name: "TableComponent",

@@ -26,8 +26,9 @@
                 :module="module"
                 :post-on-update="postOnUpdate"
                 :new-on-create="newOnCreate"
+                :axios-request="axiosRequest"
                 @created="onCreated"
-                @updated="showDialog = false"
+                @updated="onUpdated"
                 @cancel="showDialog = false"
             />
         </q-card>
@@ -46,6 +47,7 @@ import BtnEditComponent from "../btn/BtnEditComponent.vue";
 import FormBody from "./FormBody.vue";
 import { usePage } from "@inertiajs/vue3";
 import { Dark } from "quasar";
+import axios from "axios";
 
 const props = defineProps({
     module: {
@@ -92,7 +94,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    axiosRequest: Boolean,
 });
+
+const emits = defineEmits(["created", "updated"]);
 
 const fullTitle = ref(null);
 const icon = ref(null);
@@ -119,8 +124,14 @@ const onHide = () => {
 };
 
 const onCreated = (object, close) => {
+    emits("created", object);
     if (close) {
         showDialog.value = false;
     }
+};
+
+const onUpdated = (object) => {
+    emits("updated", object);
+    showDialog.value = false;
 };
 </script>

@@ -210,6 +210,6 @@ figure.media {
     margin: 0px !important;
 }
 figure.media video {
-    width: 50%;
+    width: 30%;
 }
 </style>

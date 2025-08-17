@@ -14,7 +14,7 @@
         reactive-rules
         hide-bottom-space
         bottom-slots
-        v-model="model"
+        v-model.number="model"
         class="full-width"
         @update:model-value="(val) => update(val)"
     >
@@ -99,11 +99,7 @@ onMounted(() => {
 watch(
     () => props.modelValue,
     (n, o) => {
-        if (n !== null && n.trim() === "") {
-            model.value = null;
-        } else {
-            model.value = n;
-        }
+        model.value = n;
     }
 );
 

@@ -154,6 +154,17 @@
                     @update="onUpdateField"
                     v-else-if="f.type === 'datetimerangefield'"
                 />
+                <date-range-field
+                    :start-name="f.startName"
+                    :end-name="f.endName"
+                    :start-label="f.startLabel"
+                    :end-label="f.endLabel"
+                    :start-value="formData[f.startName]"
+                    :end-value="formData[f.endName]"
+                    :others-props="f.othersProps"
+                    @update="onUpdateField"
+                    v-else-if="f.type === 'daterange'"
+                />
                 <password-field
                     :label="f.label"
                     :name="f.name"
@@ -188,6 +199,7 @@ import ImageField from "./input/ImageField.vue";
 import SelectField from "./input/SelectField.vue";
 import CheckboxField from "./input/CheckboxField.vue";
 import DateField from "./input/DateField.vue";
+import DateRangeField from "./input/DateRangeField.vue";
 import DateTimeRangeField from "./input/DateTimeRangeField.vue";
 import PasswordField from "./input/PasswordField.vue";
 import UploaderField from "./input/UploaderField.vue";
@@ -204,7 +216,9 @@ import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
 import BtnSaveAndNewComponent from "../btn/BtnSaveAndNewComponent.vue";
 import { useForm } from "@inertiajs/vue3";
-import { errorValidation } from "../../helpers/notifications";
+import { errorValidation, success } from "../../helpers/notifications";
+import axios from "axios";
+import { Loading } from "quasar";
 
 const props = defineProps({
     module: {
@@ -227,6 +241,7 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    axiosRequest: Boolean,
 });
 
 const emits = defineEmits(["created", "updated", "cancel"]);
@@ -306,6 +321,13 @@ const setDefaultData = () => {
             formData.value[f.name] = users;
         } else if (f.type === "subtitles") {
             formData.value[f.name] = props.object ? props.object[f.name] : [];
+        } else if (f.type === "daterange") {
+            formData.value[f.startName] = props.object
+                ? props.object[f.startName]
+                : null;
+            formData.value[f.endName] = props.object
+                ? props.object[f.endName]
+                : null;
         } else {
             formData.value[f.name] = props.object
                 ? props.object[f.name]
@@ -339,33 +361,65 @@ const save = async (hide) => {
 };
 
 const store = async (hide) => {
-    const send = useForm(formData.value);
-    send.post(props.module.base_url, {
-        onSuccess: (data) => {
-            setDefaultData();
-            emits("created", data.props.object, hide);
-        },
-    });
-};
-
-const update = async () => {
-    if (props.postOnUpdate) {
-        formData.value["_method"] = "put";
-        const send = useForm(formData.value);
-        send.post(`${props.module.base_url}/${props.object.id}`, {
-            onSuccess: (data) => {
-                setDefaultData();
-                emits("updated", data.props.object);
-            },
-        });
+    if (props.axiosRequest) {
+        saveAxiosRequest(props.module.base_url, "post", hide);
     } else {
         const send = useForm(formData.value);
-        send.put(`${props.module.base_url}/${props.object.id}`, {
+        send.post(props.module.base_url, {
             onSuccess: (data) => {
                 setDefaultData();
-                emits("updated", data.props.object);
+                emits("created", data.props.object, hide);
             },
         });
     }
+};
+
+const update = async () => {
+    if (props.axiosRequest) {
+        saveAxiosRequest(
+            `${props.module.base_url}/${props.object.id}`,
+            "put",
+            true
+        );
+    } else {
+        if (props.postOnUpdate) {
+            formData.value["_method"] = "put";
+            const send = useForm(formData.value);
+            send.post(`${props.module.base_url}/${props.object.id}`, {
+                onSuccess: (data) => {
+                    setDefaultData();
+                    emits("updated", data.props.object);
+                },
+            });
+        } else {
+            const send = useForm(formData.value);
+            send.put(`${props.module.base_url}/${props.object.id}`, {
+                onSuccess: (data) => {
+                    setDefaultData();
+                    emits("updated", data.props.object);
+                },
+            });
+        }
+    }
+};
+
+const saveAxiosRequest = async (url, method, hide) => {
+    Loading.show();
+    await axios[method](url, formData.value)
+        .then((res) => {
+            const data = res.data;
+            if (data.success) {
+                success(data.message);
+                setDefaultData();
+                emits(
+                    method === "post" ? "created" : "updated",
+                    data.object,
+                    hide
+                );
+            }
+        })
+        .finally(() => {
+            Loading.hide();
+        });
 };
 </script>
