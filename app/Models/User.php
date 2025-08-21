@@ -255,8 +255,7 @@ class User extends Authenticatable implements CanResetPassword
             $time_access += $s->getTotalTimeAccessByUser($this);
             $total_time += $s->getTotalTime();
         }
-
-        if ($total_time == 0) return 100;
+        if ($total_time == 0) return 0;
         if ($time_access == 0 && $total_time > 0) return 0;
         return ($time_view / $total_time) * 100;
     }
@@ -271,18 +270,9 @@ class User extends Authenticatable implements CanResetPassword
         $all_sections = SchoolSection::type($type)->get();
         $topics = [];
         $sections = [];
-        $volumes = $this->book_volumes ? $this->book_volumes : [];
         foreach ($all_sections as $s) {
             foreach ($s->topics as $t) {
-                if (!$this->sa && $type != 'conference') {
-                    if (in_array($t->book_volume, $volumes)) {
-                        $topics[] = [
-                            'id' => $t->id,
-                            'name' => $t->name,
-                            'percent' => $t->getPercentByUser($this)
-                        ];
-                    }
-                } else {
+                if ($t->hasAccessForUser($this)) {
                     $topics[] = [
                         'id' => $t->id,
                         'name' => $t->name,

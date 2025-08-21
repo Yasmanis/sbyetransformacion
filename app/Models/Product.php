@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
@@ -22,7 +23,8 @@ class Product extends Model
     protected $appends = [
         'image_path',
         'categories_id',
-        'categories_str'
+        'categories_str',
+        'active_offers'
     ];
 
     protected $with = ['subtitles'];
@@ -60,6 +62,16 @@ class Product extends Model
         return $this->hasMany(ProductSubtitle::class, 'product_id');
     }
 
+    public function offers()
+    {
+        return $this->hasMany(ProductOffer::class, 'product_id');
+    }
+
+    public function discounts()
+    {
+        return $this->hasMany(ProductDiscount::class, 'product_id');
+    }
+
     public function getCategoriesIdAttribute()
     {
         return $this->categories()->get()->pluck('id');
@@ -73,5 +85,13 @@ class Product extends Model
     public function scopePublic($query)
     {
         return $query->where('public', true);
+    }
+
+    public function getActiveOffersAttribute()
+    {
+        return [
+            'offers' => $this->offers()->whereRaw('start_at <= CURDATE() AND end_at IS NULL')->orWhereRaw('CURDATE() BETWEEN start_at AND end_at')->get(),
+            'discounts' => $this->discounts()->whereRaw('start_at <= CURDATE() AND end_at IS NULL')->orWhereRaw('CURDATE() BETWEEN start_at AND end_at')->get()
+        ];
     }
 }

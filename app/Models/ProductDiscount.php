@@ -16,7 +16,8 @@ class ProductDiscount extends Model
         'income',
         'start_at',
         'end_at',
-        'product_id'
+        'product_id',
+        'description'
     ];
 
     public function product()
@@ -31,6 +32,6 @@ class ProductDiscount extends Model
 
     public function getEndAtAttribute($val)
     {
-        return Carbon::createFromFormat('Y-m-d', $val)->format('d/m/Y');
+        return $val ? Carbon::createFromFormat('Y-m-d', $val)->format('d/m/Y') : null;
     }
 }

@@ -35,15 +35,18 @@ class ProductOffersController extends Controller
             $request->validate([
                 'price' => ['required'],
                 'start_at' => ['required'],
-                'end_at' => ['required'],
                 'product_id' => ['required'],
+                'description' => ['required'],
             ]);
             $repository = new OfferRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
             $start_at = Carbon::createFromFormat('d/m/Y', $data['start_at'])->format('Y-m-d');
-            $end_at = Carbon::createFromFormat('d/m/Y', $data['end_at'])->format('Y-m-d');
+            try {
+                $data['end_at'] = Carbon::createFromFormat('d/m/Y', $data['end_at'])->format('Y-m-d');
+            } catch (\Throwable $th) {
+                $data['end_at'] = null;
+            }
             $data['start_at'] = $start_at;
-            $data['end_at'] = $end_at;
             $object = $repository->create($data);
             return response()->json([
                 'success' => true,
@@ -60,15 +63,18 @@ class ProductOffersController extends Controller
             $request->validate([
                 'price' => ['required'],
                 'start_at' => ['required'],
-                'end_at' => ['required'],
                 'product_id' => ['required'],
+                'description' => ['required'],
             ]);
             $repository = new OfferRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
             $start_at = Carbon::createFromFormat('d/m/Y', $data['start_at'])->format('Y-m-d');
-            $end_at = Carbon::createFromFormat('d/m/Y', $data['end_at'])->format('Y-m-d');
+            try {
+                $data['end_at'] = Carbon::createFromFormat('d/m/Y', $data['end_at'])->format('Y-m-d');
+            } catch (\Throwable $th) {
+                $data['end_at'] = null;
+            }
             $data['start_at'] = $start_at;
-            $data['end_at'] = $end_at;
             $object = $repository->updateById($id, $data);
             return response()->json([
                 'success' => true,

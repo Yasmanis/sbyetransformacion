@@ -29,6 +29,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductDiscountController;
 use App\Http\Controllers\ProductOffersController;
 use App\Http\Controllers\PushMessageController;
+use App\Http\Controllers\RealityController;
 use App\Http\Controllers\ReasonForReturnController;
 use App\Http\Controllers\SchoolTopicsController;
 use App\Http\Controllers\SectionsController;
@@ -269,6 +270,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/school', LifeController::class);
     Route::resource('/admin/conference', ConferenceController::class);
     Route::resource('/admin/learning', LearningController::class);
+    Route::resource('/admin/reality', RealityController::class);
     Route::resource('/admin/schooltopics', SchoolTopicsController::class);
     Route::post('/admin/schooltopics/sort-topics', [SchoolTopicsController::class, 'sortTopics']);
     Route::post('/admin/schooltopics/addResources', [SchoolTopicsController::class, 'addResource']);

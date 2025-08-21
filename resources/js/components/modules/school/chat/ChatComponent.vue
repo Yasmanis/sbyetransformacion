@@ -149,6 +149,7 @@ const props = defineProps({
         default: false,
     },
     showChat: String,
+    segment: String,
 });
 
 const showPanel = ref(false);
@@ -162,11 +163,6 @@ watch(
         showPanel.value = n !== null;
     }
 );
-
-const segment = computed(() => {
-    const pathSegments = window.location.pathname.split("/");
-    return pathSegments.pop() || pathSegments[pathSegments.length - 2];
-});
 
 const clearChat = async () => {
     showLoading.value = true;

@@ -16,7 +16,6 @@ class SchoolTopic extends Model
         'has_principal_video',
         'has_access',
         'has_access_by_volume',
-        'has_access_by_conference',
         'has_access_by_full'
     ];
 
@@ -71,28 +70,51 @@ class SchoolTopic extends Model
 
     public function getHasAccessAttribute()
     {
-        $user = auth()->user();
+        return $this->hasAccessForUser();
+    }
+
+    public function hasAccessForUser($user = null)
+    {
+        $user = $user ?? auth()->user();
         $has_testimony = Testimony::active()->where('user_id', $user->id)->where('book_volume', $this->book_volume)->first();
-        return $this->has_access_by_conference || $user->sa || ($this->has_access_by_volume && $this->visible_after_testimony && $has_testimony) || ($this->has_access_by_volume && !$this->visible_after_testimony) || $this->has_access_by_full;
+        return $user->sa ||
+            $this->hasFullAccessByUser($user) ||
+            $this->hasViewAccessForUser($user) ||
+            ($this->hasVolumeAccessForUser($user) && $this->visible_after_testimony && $has_testimony) ||
+            ($this->hasVolumeAccessForUser($user) && !$this->visible_after_testimony);
     }
 
     public function getHasAccessByVolumeAttribute()
     {
-        $user = auth()->user();
-        $volumes = $user->book_volumes ? $user->book_volumes : [];
-        return $this->has_access_by_conference || $this->has_access_by_full || $user->sa || in_array($this->book_volume, $volumes);
+        return $this->hasVolumeAccessForUser();
     }
 
-    public function getHasAccessByConferenceAttribute()
+    public function hasVolumeAccessForUser($user = null)
     {
-        return $this->section()->first()->category === 'conference';
+        $user = $user ?? auth()->user();
+        $volumes = $user->book_volumes ? $user->book_volumes : [];
+        return $user->sa || $this->hasFullAccessByUser($user) || $this->hasViewAccessForUser($user) || in_array($this->book_volume, $volumes);
+    }
+
+    public function hasViewAccessForUser($user = null)
+    {
+        $user = $user ?? auth()->user();
+        $current_category = $this->section()->first()->category;
+        $categories = ['learning', 'reality', 'conference'];
+        return $user->sa || (!$this->visible_after_testimony && in_array($current_category, $categories) && $user->hasPerm('view_' . $current_category));
     }
 
     public function getHasAccessByFullAttribute()
     {
-        $category = $this->section()->first()->category;
-        $user = auth()->user();
-        return ($category === 'school' && $user->hasPerm('full_school')) || ($category === 'learning' && $user->hasPerm('full_learning'));
+        return $this->hasFullAccessByUser();
+    }
+
+    public function hasFullAccessByUser($user = null)
+    {
+        $user = $user ?? auth()->user();
+        $current_category = $this->section()->first()->category;
+        $categories = ['school', 'learning', 'reality'];
+        return in_array($current_category, $categories) && ($user->sa || $user->hasPerm('full_' . $current_category));
     }
 
     public function getHasPrincipalVideoAttribute()

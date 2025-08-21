@@ -276,14 +276,12 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import QBtnComponent from "../../base/QBtnComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FormComponent from "../../form/FormComponent.vue";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import { useQuasar } from "quasar";
-import { router } from "@inertiajs/vue3";
 import axios from "axios";
 
 defineOptions({
@@ -316,6 +314,13 @@ const columns = [
         field: "end_at",
         label: "hasta",
         sortable: true,
+        align: "left",
+    },
+    {
+        name: "description",
+        field: "description",
+        label: "descripcion",
+        sortable: false,
         align: "left",
     },
     {
@@ -362,9 +367,6 @@ const formFields = ref([
             start: {
                 required: true,
             },
-            end: {
-                required: true,
-            },
         },
     },
     {
@@ -374,10 +376,18 @@ const formFields = ref([
             defaultValue: props.product.id,
         },
     },
+    {
+        name: "description",
+        type: "editor",
+        label: "descripcion",
+        othersProps: {
+            required: true,
+        },
+    },
 ]);
 
 const currentModule = ref({
-    to_str: "",
+    to_str: null,
     singular_label: "oferta",
     plural_label: "ofertas",
     base_url: "/admin/offers",

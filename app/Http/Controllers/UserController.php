@@ -134,14 +134,14 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'se ha ' . ($request->dark ? 'activado' : 'desactivado') . ' el modo oscuro correctamente');
     }
 
-    public function progressByTopic(Request $request, $id)
-    {
-        if (auth()->user()->hasView('user')) {
-            $user = User::find($id);
-            return redirect()->back()->with('success', 'usuario modificado correctamente');
-        }
-        return $this->deny_access($request);
-    }
+    // public function progressByTopic(Request $request, $id)
+    // {
+    //     if (auth()->user()->hasView('user')) {
+    //         $user = User::find($id);
+    //         return redirect()->back()->with('success', 'usuario modificado correctamente');
+    //     }
+    //     return $this->deny_access($request);
+    // }
 
     public function progress(Request $request, $id)
     {

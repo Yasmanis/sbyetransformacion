@@ -28,6 +28,8 @@
                     />
                     <template v-for="(item, index) in itemsTopics" :key="index">
                         <topic-component
+                            :segment="segment"
+                            :skip="skip"
                             :label="
                                 index === 0 ? 'tema' : `tema ${getIndex(item)}`
                             "
@@ -72,7 +74,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import SectionFormComponent from "./section/SectionFormComponent.vue";
 import TopicComponent from "./topic/TopicComponent.vue";
@@ -88,6 +90,14 @@ import {
 
 defineOptions({
     name: "SectionAddComponent",
+});
+
+const props = defineProps({
+    segment: String,
+    skip: {
+        type: Array,
+        default: [],
+    },
 });
 
 const $q = useQuasar();
@@ -128,11 +138,6 @@ const newTopic = (reset) => {
         itemsTopics.value.push(topic);
     }
 };
-
-const segment = computed(() => {
-    const pathSegments = window.location.pathname.split("/");
-    return pathSegments.pop() || pathSegments[pathSegments.length - 2];
-});
 
 const onBeforeShowDialog = () => {
     newTopic(true);

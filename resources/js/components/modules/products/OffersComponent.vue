@@ -4,14 +4,14 @@
         tooltips="promociones"
         @click="showDialog = true"
     />
-    <q-dialog v-model="showDialog" persistent allow-focus-outside>
-        <q-card style="width: 800px; max-width: 90vw">
+    <q-dialog v-model="showDialog" persistent full-width allow-focus-outside>
+        <q-card>
             <dialog-header-component
                 icon="mdi-credit-card-clock-outline"
                 title="promociones"
                 closable
             />
-            <q-card-section style="max-height: 50vh" class="scroll">
+            <q-card-section style="max-height: 70vh" class="scroll">
                 <q-tabs
                     v-model="tab"
                     dense

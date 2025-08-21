@@ -38,8 +38,14 @@
                             v-if="has_add || (has_edit && sections.length > 0)"
                         >
                             <q-toolbar class="q-gutter-x-sm">
-                                <section-add-component v-if="has_add" />
+                                <section-add-component
+                                    v-if="has_add"
+                                    :segment="segment"
+                                    :skip="modules_skip"
+                                />
                                 <section-edit-component
+                                    :segment="segment"
+                                    :skip="modules_skip"
                                     :has_add="has_add"
                                     :has_edit="has_edit"
                                     :has_delete="has_delete"
@@ -59,6 +65,7 @@
                                 :has_edit="has_edit"
                                 :show-chat="show_chat"
                                 :segment="segment"
+                                :skip="modules_skip"
                                 @change-section="onChangeSection"
                                 @change-topic="
                                     (i) => {
@@ -83,6 +90,7 @@
                         :topics="topics"
                         :current-topic="currentTopic"
                         :segment="segment"
+                        :skip="modules_skip"
                         :expand="index === 0"
                         class="q-mt-md"
                         @change-topic="onChangeTopic"
@@ -128,6 +136,8 @@ const has_edit = ref(false);
 const has_delete = ref(false);
 let chat = null;
 const show_chat = ref(null);
+
+const modules_skip = ref(["learning", "reality"]);
 
 const sections = computed(() => {
     return page.props.sections ? page.props.sections : [];

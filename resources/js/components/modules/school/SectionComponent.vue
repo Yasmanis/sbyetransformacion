@@ -47,7 +47,7 @@
                                 :leftDirection="false"
                                 :disable="
                                     totalSections === index + 1 ||
-                                    (segment === 'learning' &&
+                                    (skip.includes(segment) &&
                                         !allTopicsCompleted())
                                 "
                                 @click="emits('change-section', index + 1)"
@@ -76,7 +76,7 @@
                                 :disable="
                                     getIndexFromCurrentTopic() + 1 ===
                                         section?.topics?.length ||
-                                    (segment === 'learning' &&
+                                    (skip.includes(segment) &&
                                         !allTopicsCompleted())
                                 "
                                 @click="changeTopic"
@@ -166,6 +166,7 @@
         </div>
     </div>
     <chat-component
+        :segment="segment"
         :topic="props.topic"
         :section="section"
         :index="indexTopic"
@@ -217,7 +218,6 @@ import VideoComponent from "./VideoComponent.vue";
 import BtnDownloadComponent from "../../btn/BtnDownloadComponent.vue";
 import ConfirmComponent from "../../base/ConfirmComponent.vue";
 import { usePage } from "@inertiajs/vue3";
-import { useQuasar, Dark } from "quasar";
 
 defineOptions({
     name: "SectionComponent",
@@ -240,16 +240,14 @@ const props = defineProps({
     },
     showChat: String,
     segment: String,
+    skip: {
+        type: Array,
+        default: [],
+    },
     has_edit: {
         type: Boolean,
         default: false,
     },
-});
-
-const $q = useQuasar();
-
-const screen = computed(() => {
-    return $q.screen;
 });
 
 const emits = defineEmits(["change-section", "change-topic"]);
@@ -318,7 +316,7 @@ const changeTopic = () => {
     const index = getIndexFromCurrentTopic() + 1;
     const topic = props.section.topics[index];
     if (topic.has_access && topic.has_access_by_volume) {
-        if (props.segment === "learning" && !othersCompleted(t, topic)) {
+        if (props.skip.includes(props.segment) && !othersCompleted(t, topic)) {
             info("no se puede pasar a este tema sin completar los anteriores");
         } else {
             emits("change-topic", index);

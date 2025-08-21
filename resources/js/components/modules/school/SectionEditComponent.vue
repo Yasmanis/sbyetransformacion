@@ -168,6 +168,8 @@
                 <q-form class="q-gutter-sm q-mt-sm" ref="formTopic" greedy>
                     <template v-for="(item, index) in itemsTopics" :key="index">
                         <topic-component
+                            :segment="segment"
+                            :skip="skip"
                             :label="
                                 index === 0 ? 'tema' : `tema ${getIndex(item)}`
                             "
@@ -301,6 +303,11 @@ const props = defineProps({
     has_delete: {
         type: Boolean,
         default: false,
+    },
+    segment: String,
+    skip: {
+        type: Array,
+        default: [],
     },
 });
 

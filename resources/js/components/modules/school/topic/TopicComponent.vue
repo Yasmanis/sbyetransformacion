@@ -243,7 +243,6 @@
         v-if="addDescription"
     />
     <br />
-
     <checkbox-field
         v-model="formData.skip"
         label="permitir saltar este tema"
@@ -255,7 +254,7 @@
                 formData[name] = val;
             }
         "
-        v-if="segment === 'learning'"
+        v-if="skip.includes(segment)"
     />
 
     <confirm-component
@@ -312,6 +311,11 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    segment: String,
+    skip: {
+        type: Array,
+        default: [],
+    },
 });
 
 const $q = useQuasar();
@@ -365,11 +369,6 @@ onBeforeMount(() => {
     addDescription.value =
         props.topic && props.topic.description !== null ? true : false;
     attachments.value = resources.filter((r) => !r.principal);
-});
-
-const segment = computed(() => {
-    const pathSegments = window.location.pathname.split("/");
-    return pathSegments.pop() || pathSegments[pathSegments.length - 2];
 });
 
 watch(

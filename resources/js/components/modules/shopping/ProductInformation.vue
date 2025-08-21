@@ -91,6 +91,27 @@
                         </q-item-section>
                     </q-item>
 
+                    <!-- <q-item v-if="offers.length > 0 || discounts.length > 0">
+                        <q-item-section
+                            avatar
+                            style="min-width: 160px"
+                        ></q-item-section>
+                        <q-item-section>
+                            <div class="row q-col-gutter-sm">
+                                <template
+                                    v-for="o in offers"
+                                    :key="`offers-${o.id}`"
+                                >
+                                    <div class="col-4">
+                                        <offers-component
+                                            :object="o"
+                                            :product="product"
+                                        />
+                                    </div>
+                                </template>
+                            </div>
+                        </q-item-section>
+                    </q-item> -->
                     <q-item>
                         <q-item-section
                             avatar
@@ -185,9 +206,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
+import OffersComponent from "./components/offers/OffersComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 import { Dark, openURL } from "quasar";
 import { products } from "../../../services/shopping";
@@ -220,4 +242,12 @@ const showInformation = () => {
         showDialog.value = true;
     }
 };
+
+const offers = computed(() => {
+    return props.product.active_offers.offers;
+});
+
+const discounts = computed(() => {
+    return props.product.active_offers.discounts;
+});
 </script>

@@ -4,7 +4,7 @@
     <q-dialog
         v-model="showDialog"
         persistent
-        @show="onShow"
+        @before-show="onShow"
         @hide="tab = 'progress'"
         full-width
     >
@@ -44,6 +44,11 @@
                                         v-for="(s, indexSection) in sections"
                                         :key="`section-${indexSection}`"
                                         dense
+                                        :class="
+                                            s.sections.length === 0
+                                                ? 'hidden'
+                                                : null
+                                        "
                                     >
                                         <template v-slot:header>
                                             <q-item-section>
@@ -173,7 +178,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import { Dark } from "quasar";
@@ -224,13 +229,32 @@ const sections = ref([
         percent: 0,
         sections: [],
     },
+    {
+        name: "reality",
+        label: "Crear la realidad",
+        icon: "mdi-file-sign",
+        percent: 0,
+        sections: [],
+    },
+    {
+        name: "learning",
+        label: "Aprender a liberar",
+        icon: "mdi-file-sign",
+        percent: 0,
+        sections: [],
+    },
 ]);
 
 const showLoading = ref(false);
+let loading = 0;
 
 const onShow = async () => {
     sections.value.forEach(async (s) => {
-        showLoading.value = true;
+        s.sections = [];
+        loading++;
+        if (!showLoading.value) {
+            showLoading.value = true;
+        }
         await axios
             .post(`/admin/users/progress/${props.object.id}`, {
                 section: s.name,
@@ -240,7 +264,10 @@ const onShow = async () => {
                 s.percent = response.data.sections.percent;
             })
             .finally(() => {
-                showLoading.value = false;
+                loading--;
+                if (loading === 0) {
+                    showLoading.value = false;
+                }
             });
     });
 };

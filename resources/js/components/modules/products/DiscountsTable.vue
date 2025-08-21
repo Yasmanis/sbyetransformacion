@@ -333,6 +333,13 @@ const columns = [
         align: "left",
     },
     {
+        name: "description",
+        field: "description",
+        label: "descripcion",
+        sortable: false,
+        align: "left",
+    },
+    {
         name: "actions",
         field: "actions",
         sortable: true,
@@ -392,9 +399,6 @@ const formFields = ref([
             start: {
                 required: true,
             },
-            end: {
-                required: true,
-            },
         },
     },
     {
@@ -404,10 +408,18 @@ const formFields = ref([
             defaultValue: props.product.id,
         },
     },
+    {
+        name: "description",
+        type: "editor",
+        label: "descripcion",
+        othersProps: {
+            required: true,
+        },
+    },
 ]);
 
 const currentModule = ref({
-    to_str: "",
+    to_str: null,
     singular_label: "descuento",
     plural_label: "descuentos",
     base_url: "/admin/discounts",

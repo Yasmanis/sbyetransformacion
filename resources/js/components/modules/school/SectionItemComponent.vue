@@ -161,6 +161,10 @@ const props = defineProps({
     sectionIndex: Number,
     class: String,
     segment: String,
+    skip: {
+        type: Array,
+        default: [],
+    },
     currentTopic: Object,
     expand: {
         type: Boolean,
@@ -238,7 +242,10 @@ const changeTopic = (topic) => {
                 showVideo.value = true;
             }
         } else {
-            if (props.segment === "learning" && !othersCompleted(t, topic)) {
+            if (
+                props.skip.includes(props.segment) &&
+                !othersCompleted(t, topic)
+            ) {
                 info(
                     "no se puede pasar a este tema sin completar los anteriores"
                 );
