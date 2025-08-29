@@ -50,7 +50,6 @@ import BtnEditComponent from "../btn/BtnEditComponent.vue";
 import FormBody from "./FormBody.vue";
 import { usePage } from "@inertiajs/vue3";
 import { Dark } from "quasar";
-import axios from "axios";
 
 const props = defineProps({
     module: {

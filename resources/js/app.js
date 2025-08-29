@@ -30,6 +30,7 @@ import * as PusherPushNotifications from "@pusher/push-notifications-web";
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 import Swal from "sweetalert2";
+import axios from "axios";
 createInertiaApp({
     title: (title) => "SBYE-transformacion",
     progress: false,
@@ -208,3 +209,13 @@ const showAlert = (data) => {
         ],
     });
 };
+
+axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+let token = document.head.querySelector('meta[name="csrf-token"]');
+console.log(document.head);
+
+if (token) {
+    console.log(token);
+
+    axios.defaults.headers.common["X-CSRF-TOKEN"] = token.content;
+}

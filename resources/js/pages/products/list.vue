@@ -190,5 +190,11 @@ const fields = [
     image,
     categories,
     publicF,
+    {
+        field: "planes",
+        name: "planes",
+        label: "planes",
+        type: "planes",
+    },
 ];
 </script>

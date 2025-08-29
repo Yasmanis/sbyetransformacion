@@ -91,27 +91,59 @@
                         </q-item-section>
                     </q-item>
 
-                    <!-- <q-item v-if="offers.length > 0 || discounts.length > 0">
+                    <q-item>
                         <q-item-section
                             avatar
                             style="min-width: 160px"
                         ></q-item-section>
                         <q-item-section>
-                            <div class="row q-col-gutter-sm">
-                                <template
-                                    v-for="o in offers"
-                                    :key="`offers-${o.id}`"
-                                >
-                                    <div class="col-4">
+                            <q-tabs
+                                v-model="tab"
+                                dense
+                                align="justify"
+                                class="bg-black text-white shadow-2"
+                            >
+                                <q-tab name="offers" no-caps label="ofertas" />
+                                <q-tab
+                                    name="discounts"
+                                    no-caps
+                                    label="descuentos"
+                                />
+                            </q-tabs>
+
+                            <q-tab-panels v-model="tab" animated>
+                                <q-tab-panel name="offers" class="q-pa-none">
+                                    <template v-if="offers.length > 0">
                                         <offers-component
+                                            v-for="o in offers"
+                                            :key="`offers-${o.id}`"
                                             :object="o"
                                             :product="product"
                                         />
-                                    </div>
-                                </template>
-                            </div>
+                                    </template>
+                                    <p class="text-center q-py-md" v-else>
+                                        lo sentimos; actualmente no tenemos
+                                        ofertas
+                                    </p>
+                                </q-tab-panel>
+
+                                <q-tab-panel name="discounts" class="q-pa-none">
+                                    <template v-if="discounts.length > 0">
+                                        <discount-component
+                                            v-for="o in discounts"
+                                            :key="`discount-${o.id}`"
+                                            :object="o"
+                                            :product="product"
+                                    /></template>
+                                    <p class="text-center q-py-md" v-else>
+                                        lo sentimos; actualmente no tenemos
+                                        descuentos
+                                    </p>
+                                </q-tab-panel>
+                            </q-tab-panels>
                         </q-item-section>
-                    </q-item> -->
+                    </q-item>
+
                     <q-item>
                         <q-item-section
                             avatar
@@ -210,6 +242,7 @@ import { computed, ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import OffersComponent from "./components/offers/OffersComponent.vue";
+import DiscountComponent from "./components/offers/DiscountComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 import { Dark, openURL } from "quasar";
 import { products } from "../../../services/shopping";
@@ -230,6 +263,7 @@ const emits = defineEmits(["add-product"]);
 
 const rating = ref(0);
 const showDialog = ref(false);
+const tab = ref(null);
 
 const onHide = () => {
     usePage().props.errors = {};

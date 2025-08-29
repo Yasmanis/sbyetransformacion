@@ -34,7 +34,10 @@ class LifeController extends Controller
         $segment = $this->segment();
         if (auth()->user()->hasCreate($segment)) {
             $request->validate([
-                'name' => ['required', 'unique:school_sections'],
+                'name' => [
+                    'required',
+                    Rule::unique('school_sections')->where('category', $this->segment())
+                ],
             ]);
             $repository = new SchoolSectionsRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
@@ -47,13 +50,14 @@ class LifeController extends Controller
 
     public function update(Request $request, $id)
     {
-        $segment = $this->segment();
+        $repository = new SchoolSectionsRepository();
+        $object = $repository->getById($id);
+        $segment = $object->category;
         if (auth()->user()->hasUpdate($segment)) {
             $request->validate([
-                'name' => ['required', Rule::unique('school_sections', 'name')->ignore($id)],
+                'name' => ['required', Rule::unique('school_sections')->where('category', $segment)->ignore($id)],
             ]);
-            $repository = new SchoolSectionsRepository();
-            $role = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+            $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
             return redirect()->back()->with('success', 'seccion modificada correctamente');
         }
         return $this->deny_access($request);
@@ -61,9 +65,10 @@ class LifeController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $segment = $this->segment();
+        $repository = new SchoolSectionsRepository();
+        $object = $repository->getById($id);
+        $segment = $object->category;
         if (auth()->user()->hasDelete($segment)) {
-            $repository = new SchoolSectionsRepository();
             $repository->deleteById($id);
             return redirect()->back()->with('success', 'seccion eliminada correctamente');
         }

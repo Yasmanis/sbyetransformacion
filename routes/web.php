@@ -23,6 +23,7 @@ use App\Http\Controllers\LearningController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\PrivateMsgController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
@@ -324,3 +325,6 @@ Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
 Route::get('/download/{id}', [FileController::class, 'download']);
 Route::post('/subscribe', [BrevoController::class, 'subscribe']);
 Route::get('/product-categories', [SelectsController::class, 'productCategories']);
+
+Route::post('paypal/create-order', [PayPalController::class, 'createOrder']);
+Route::post('paypal/capture-order', [PayPalController::class, 'captureOrder']);

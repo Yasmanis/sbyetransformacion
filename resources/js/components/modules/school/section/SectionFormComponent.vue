@@ -107,6 +107,7 @@ const store = async () => {
                 error(
                     "ya existe una seccion con el nombre actual especificado"
                 );
+                emits("error");
             } else {
                 error500();
             }

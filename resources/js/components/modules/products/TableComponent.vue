@@ -221,6 +221,11 @@
                         :product="props.row"
                         :has-edit="has_edit"
                     />
+                    <plane-field
+                        :parent="props.row"
+                        :has-edit="has_edit"
+                        :in-form="false"
+                    />
                     <delete-component
                         :objects="[props.row]"
                         :url="current_module.base_url"
@@ -317,6 +322,15 @@
                                                 )
                                             "
                                         />
+                                        <offers-component
+                                            :product="props.row"
+                                            :has-edit="has_edit"
+                                        />
+                                        <plane-field
+                                            :parent="props.row"
+                                            :has-edit="has_edit"
+                                            :in-form="false"
+                                        />
                                         <delete-component
                                             :objects="[props.row]"
                                             :url="current_module.base_url"
@@ -348,6 +362,7 @@ import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { currentModule } from "../../../services/current_module";
 import OffersComponent from "./OffersComponent.vue";
+import PlaneField from "../../form/input/PlaneField.vue";
 
 defineOptions({
     name: "TableComponent",

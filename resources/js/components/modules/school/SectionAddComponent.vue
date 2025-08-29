@@ -147,6 +147,7 @@ const onHide = () => {
     itemsTopics.value = [];
     formData.value = {};
     totalSave.value = 0;
+    saveSection.value = false;
 };
 
 const addTopic = () => {

@@ -96,6 +96,13 @@
                     "
                     v-else-if="f.type === 'subtitles'"
                 />
+                <plane-field
+                    :label="f.label"
+                    :name="f.name"
+                    :parent="formData"
+                    @update="onUpdateField"
+                    v-else-if="f.type === 'planes'"
+                />
                 <periodicity-field
                     :name="f.name"
                     :label="f.label"
@@ -212,6 +219,7 @@ import StateField from "./input/StateField.vue";
 import RatingField from "./input/RatingField.vue";
 import UsersSelectDialogComponent from "../modules/user/UsersSelectDialogComponent.vue";
 import SubtitleField from "./input/SubtitleField.vue";
+import PlaneField from "./input/PlaneField.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
 import BtnSaveAndNewComponent from "../btn/BtnSaveAndNewComponent.vue";

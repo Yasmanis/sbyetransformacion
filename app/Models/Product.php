@@ -17,7 +17,8 @@ class Product extends Model
         'public',
         'valoration',
         'clients_valoration',
-        'information_to_landing'
+        'information_to_landing',
+        'planes'
     ];
 
     protected $appends = [
@@ -32,7 +33,8 @@ class Product extends Model
     protected $casts = [
         'public' => 'boolean',
         'clients_valoration' => 'boolean',
-        'information_to_landing' => 'boolean'
+        'information_to_landing' => 'boolean',
+        'planes' => 'json'
     ];
 
     protected static function booted()
@@ -90,8 +92,8 @@ class Product extends Model
     public function getActiveOffersAttribute()
     {
         return [
-            'offers' => $this->offers()->whereRaw('start_at <= CURDATE() AND end_at IS NULL')->orWhereRaw('CURDATE() BETWEEN start_at AND end_at')->get(),
-            'discounts' => $this->discounts()->whereRaw('start_at <= CURDATE() AND end_at IS NULL')->orWhereRaw('CURDATE() BETWEEN start_at AND end_at')->get()
+            'offers' => DB::select("select id, price, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description from products_offers where product_id=? and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id]),
+            'discounts' => DB::select("select id, code, percent, income, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description from products_discount where product_id=? and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id])
         ];
     }
 }

@@ -44,7 +44,7 @@ const props = defineProps({
 
 const emits = defineEmits(["update", "error"]);
 
-const model = ref(null);
+const model = ref(0);
 
 onMounted(() => {
     model.value = props.modelValue;

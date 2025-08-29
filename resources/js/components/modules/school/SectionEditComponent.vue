@@ -227,6 +227,7 @@
                     <section-form-component
                         :save="saveSection"
                         :object="currentSection"
+                        :segment="segment"
                         @update="
                             () => {
                                 saveSection = false;

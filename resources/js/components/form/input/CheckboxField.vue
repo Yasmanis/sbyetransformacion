@@ -6,6 +6,7 @@
         :name="name"
         :dense="dense"
         :class="class"
+        :style="style"
         :disable="disable"
         hide-bottom-space
         bottom-slots
@@ -74,6 +75,7 @@ const props = defineProps({
         default: () => ({}),
     },
     class: String,
+    style: Object,
 });
 
 const emits = defineEmits(["update"]);

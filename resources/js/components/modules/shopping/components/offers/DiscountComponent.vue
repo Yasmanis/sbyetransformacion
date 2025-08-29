@@ -4,7 +4,7 @@
             <q-badge
                 color="black"
                 text-color="white"
-                :label="`${object.price}  €`"
+                :label="`-${object.percent}%`"
             />
         </div>
 
@@ -17,7 +17,7 @@
             <!-- Precios -->
             <div class="row items-center q-mt-sm">
                 <div class="text-h5 text-weight-bold text-black">
-                    {{ object.price }} €
+                    {{ product.price - object.income }} €
                 </div>
                 <div class="text-strike text-grey-6 q-ml-sm">
                     {{ product.price }} €
@@ -45,7 +45,7 @@
 import { computed, ref } from "vue";
 
 defineOptions({
-    name: "OffersComponent",
+    name: "DiscountComponent",
 });
 
 const props = defineProps({
