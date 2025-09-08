@@ -19,6 +19,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\ContactAdminController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\PaymentController;
@@ -39,6 +40,7 @@ use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
+use App\Models\Landing;
 use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\Testimony;
@@ -108,6 +110,15 @@ Route::get('/store', function () {
     $products = Product::public()->get();
     return Inertia('landing/store', [
         'products' => $products
+    ]);
+});
+
+Route::get('/landings/{url}', function ($url) {
+    $landing = Landing::with('product')->firstWhere('url', $url);
+    $testimonies = Testimony::active()->type('text')->get();
+    return Inertia('landing/landing_template', [
+        'landing' => $landing,
+        'testimonies' => $testimonies
     ]);
 });
 
@@ -297,6 +308,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/private-message/highlight/{id}', [PrivateMsgController::class, 'highlight']);
     Route::put('/admin/private-message/read/{id}', [PrivateMsgController::class, 'read']);
     Route::resource('/admin/sections', SectionsController::class);
+    Route::resource('/admin/landings', LandingController::class);
 
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);
@@ -325,6 +337,7 @@ Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
 Route::get('/download/{id}', [FileController::class, 'download']);
 Route::post('/subscribe', [BrevoController::class, 'subscribe']);
 Route::get('/product-categories', [SelectsController::class, 'productCategories']);
+Route::get('/products', [SelectsController::class, 'products']);
 
 Route::post('paypal/create-order', [PayPalController::class, 'createOrder']);
 Route::post('paypal/capture-order', [PayPalController::class, 'captureOrder']);

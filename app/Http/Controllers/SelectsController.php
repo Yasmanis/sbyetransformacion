@@ -6,6 +6,7 @@ use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\CategoryNomenclature;
 use App\Models\Country;
+use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ReasonForReturn;
 use App\Models\Role;
@@ -104,6 +105,13 @@ class SelectsController extends Controller
         }
         return response()->json([
             'options' => $options
+        ]);
+    }
+
+    public function products()
+    {
+        return response()->json([
+            'options' => Product::select('id as value', 'name as label')->get()
         ]);
     }
 }

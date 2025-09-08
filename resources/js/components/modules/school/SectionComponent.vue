@@ -218,6 +218,7 @@ import VideoComponent from "./VideoComponent.vue";
 import BtnDownloadComponent from "../../btn/BtnDownloadComponent.vue";
 import ConfirmComponent from "../../base/ConfirmComponent.vue";
 import { usePage } from "@inertiajs/vue3";
+import { Dark } from "quasar";
 
 defineOptions({
     name: "SectionComponent",
