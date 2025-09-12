@@ -51,7 +51,7 @@ const emit = defineEmits(["deleted"]);
 const confirm = ref(false);
 
 const handleDelete = async () => {
-    if (axios) {
+    if (props.axios) {
         Loading.show();
         axios
             .delete(`${props.url}/${props.objects.map((o) => o.id).toString()}`)
