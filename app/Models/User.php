@@ -181,7 +181,7 @@ class User extends Authenticatable implements CanResetPassword
     public function getModulesFromApp($app)
     {
         $modules_id = $this->getAllPermissions()->pluck('module_id');
-        $modules = Module::whereIn('id', $modules_id)->where('application_id', $app->id)->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'ico_from_path', 'ico_from_path', 'base_url', 'to_str')->get();
+        $modules = Module::whereIn('id', $modules_id)->where('application_id', $app->id)->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'ico_from_path', 'ico_from_path', 'base_url', 'to_str', 'parent_id')->get();
         foreach ($modules as $m) {
             $m->permissions = $this->getPermissionsFromModule($m);
         }
@@ -193,7 +193,7 @@ class User extends Authenticatable implements CanResetPassword
         $permissions = $this->getAllPermissions()->pluck('id');
         $modules = Module::whereNull('application_id')->whereHas('permissions', function ($query) use ($permissions) {
             $query->whereIn('id',  $permissions);
-        })->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'ico_from_path', 'base_url', 'to_str')->get();
+        })->select('id', 'singular_label', 'plural_label', 'model', 'ico', 'ico_from_path', 'base_url', 'to_str', 'parent_id')->get();
         foreach ($modules as $m) {
             $m->permissions = $this->getPermissionsFromModule($m);
         }
@@ -206,15 +206,57 @@ class User extends Authenticatable implements CanResetPassword
         return Permission::whereIn('id', $permissions)->where('module_id', $module->id)->select('name', 'label')->get();
     }
 
+    public function getModules()
+    {
+        $results = [];
+        if ($this->sa) {
+            $results = Module::with('permissions')->get();
+        } else {
+            $results = Module::with('permissions')->whereIn(
+                'id',
+                "with app_list AS (SELECT m.id FROM user_has_permissions up INNER JOIN permissions p ON up.permission_id=p.id INNER JOIN modules m ON p.module_id=m.id WHERE up.user_id=? 
+                    UNION all
+                    SELECT m.id FROM user_has_roles ur INNER JOIN role_has_permissions rp ON ur.role_id=rp.role_id INNER JOIN permissions p ON rp.permission_id=p.id INNER JOIN modules m ON p.module_id=m.id WHERE ur.user_id=?)
+                    SELECT DISTINCT * FROM app_list",
+                [$this->id, $this->id]
+            )->get();
+        }
+        return $results;
+    }
+
+    public function getMenuTree($nodes)
+    {
+        $groupedNodes = $nodes->groupBy(function ($item) {
+            return $item->parent_id ?? 'root';
+        });
+        $buildTree = function ($parentId = 'root') use (&$buildTree, $groupedNodes) {
+            return $groupedNodes->get($parentId, collect())->map(function ($node) use ($buildTree) {
+                $nodeData = [
+                    'id' => $node->id,
+                    'singular_label' => $node->singular_label,
+                    'plural_label' => $node->plural_label,
+                    'model' => $node->model,
+                    'ico_from_path' => $node->ico_from_path,
+                    'base_url' => $node->base_url,
+                    'to_str' => $node->to_str,
+                    'parent_id' => $node->parent_id,
+                    'icon' => $node->ico,
+                    'permissions' => $node->permissions,
+                    'children' => $buildTree($node->id)
+                ];
+                return $nodeData;
+            })->values()->toArray();
+        };
+        return $buildTree;
+    }
+
     public function menu()
     {
-        $apps = $this->getApps();
-        foreach ($apps as $a) {
-            $a->modules = $this->getModulesFromApp($a);
-        }
+        $modules = $this->getModules();
+        $tree = $this->getMenuTree($modules);
         return [
-            'applications_with_module' => $apps,
-            'modules_doesnt_have_app' => $this->getModulesDoesntHaveApp()
+            'modules' => $modules,
+            'tree' => $tree
         ];
     }
 
