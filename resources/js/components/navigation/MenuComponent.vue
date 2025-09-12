@@ -22,279 +22,100 @@
         :thumb-style="thumbStyle"
         :bar-style="barStyle"
     >
-        <q-list>
-            <q-item
-                clickable
-                @click="navigateTo({ name: '/admin' })"
-                :class="
-                    $page.component === 'home'
-                        ? `${
-                              Dark.isActive
-                                  ? 'text-primary text-bold'
-                                  : 'text-bold'
-                          }`
-                        : ''
-                "
-            >
-                <q-item-section avatar>
-                    <q-icon name="mdi-home" />
-                </q-item-section>
-                <q-item-section class="text-lowercase">Inicio</q-item-section>
-                <q-tooltip-component
-                    title="Inicio"
-                    anchor="center right"
-                    self="center left"
-                    class="text-lowercase bg-primary"
-                    v-if="mini"
-                ></q-tooltip-component>
-            </q-item>
-        </q-list>
-        <q-list
-            v-for="(o, indexOption) in applications_with_module"
-            :key="`menu-option-${indexOption}`"
-        >
-            <q-item
-                clickable
-                :class="isActiveParent(o) ? 'text-bold' : ''"
-                :id="`menu-mini-${indexOption}`"
-                v-if="mini"
-            >
-                <q-item-section avatar>
-                    <q-icon :name="o.ico" />
-                </q-item-section>
-                <q-tooltip-component
-                    :title="o.name"
-                    anchor="center right"
-                    self="center left"
-                    class="text-lowercase bg-primary"
-                ></q-tooltip-component>
-                <q-menu
-                    anchor="top right"
-                    self="top left"
-                    :offset="[5, 0]"
-                    transition-show="scale"
-                    transition-hide="scale"
-                >
-                    <q-list>
-                        <q-item class="bg-primary text-white">
-                            <q-item-section avatar>
-                                <q-icon :name="o.ico" />
-                            </q-item-section>
-                            <q-item-section class="text-lowercase">{{
-                                o.name
-                            }}</q-item-section>
-                        </q-item>
-                        <q-item
-                            v-for="(m, indexSubOpt) in o.modules"
-                            :key="`menu_suboption-${indexSubOpt}`"
-                            clickable
-                            class="custom-item"
-                            :active="$page.url.split('?')[0] === m.base_url"
-                            @click="navigateTo({ name: m.base_url })"
-                        >
-                            <q-item-section avatar>
-                                <q-icon
-                                    :name="
-                                        m.ico_from_path
-                                            ? `img:${$page.props.public_path}${
-                                                  Dark.isActive
-                                                      ? m.ico.replace(
-                                                            'black',
-                                                            'white'
-                                                        )
-                                                      : m.ico.replace(
-                                                            'white',
-                                                            'black'
-                                                        )
-                                              }`
-                                            : m.ico
-                                    "
-                                />
-                            </q-item-section>
-                            <q-item-section class="text-lowercase">{{
-                                m.plural_label
-                            }}</q-item-section>
-                        </q-item>
-                    </q-list>
-                </q-menu>
-            </q-item>
-            <q-expansion-item
-                group="somegroup"
-                :icon="o.ico"
-                :label="o.name"
-                :default-opened="isActiveParent(o)"
-                :header-class="
-                    isActiveParent(o)
-                        ? `text-bold ${Dark.isActive ? 'text-primary' : ''}`
-                        : ''
-                "
-                class="text-lowercase"
-                expand-icon-class="text-white"
-                v-else
-            >
-                <q-card>
-                    <q-card-section style="padding: 0">
-                        <q-list :class="Dark.isActive ? '' : 'bg-primary'">
-                            <q-item
-                                v-for="(m, indexSubOpt) in o.modules"
-                                :key="`menu_suboption-${indexSubOpt}`"
-                                clickable
-                                class="custom-item"
-                                :class="
-                                    $page.url.split('?')[0] === m.base_url
-                                        ? `text-bold ${
-                                              Dark.isActive
-                                                  ? 'text-primary'
-                                                  : ''
-                                          }`
-                                        : 'text-white'
-                                "
-                                :inset-level="0.2"
-                                @click="navigateTo({ name: m.base_url })"
-                            >
-                                <q-item-section avatar>
-                                    <q-icon
-                                        :name="
-                                            m.ico_from_path
-                                                ? `img:${$page.props.public_path}${m.ico}`
-                                                : m.ico
-                                        "
-                                    />
-                                </q-item-section>
-                                <q-item-section class="text-lowercase">{{
-                                    m.plural_label
-                                }}</q-item-section>
-                            </q-item>
-                        </q-list>
-                    </q-card-section>
-                </q-card>
-            </q-expansion-item>
-        </q-list>
         <q-item
-            v-for="(o, indexOption) in modules_doesnt_have_app"
-            :key="`menu-doesnt-have-app-${indexOption}`"
             clickable
-            :active="$page.url.split('?')[0] === o.base_url"
-            @click="navigateTo({ name: o.base_url })"
-            :class="Dark.isActive ? '' : 'text-white'"
-        >
-            <q-item-section avatar>
-                <q-icon
-                    :name="
-                        o.ico_from_path
-                            ? `img:${$page.props.public_path}${o.ico}`
-                            : o.ico
-                    "
-                />
-            </q-item-section>
-            <q-item-section class="text-lowercase">{{
-                o.plural_label
-            }}</q-item-section>
-            <q-tooltip-component
-                :title="o.plural_label"
-                anchor="center right"
-                self="center left"
-                v-if="mini"
-                class="text-lowercase bg-primary"
-            ></q-tooltip-component>
-        </q-item>
-        <q-expansion-item
-            group="somegroup"
-            :icon="configuration.ico"
-            :label="configuration.name"
-            :default-opened="isActiveParent(configuration)"
-            :header-class="
-                isActiveParent(configuration)
-                    ? `text-bold ${Dark.isActive ? 'text-primary' : ''}`
+            @click="navigateTo('/admin')"
+            :class="
+                $page.component === 'home'
+                    ? `${
+                          Dark.isActive ? 'text-primary text-bold' : 'text-bold'
+                      }`
                     : ''
             "
-            expand-icon-class="text-white"
-            v-if="configuration && !mini"
         >
-            <q-card>
-                <q-card-section style="padding: 0">
-                    <q-list :class="Dark.isActive ? '' : 'bg-primary'">
-                        <q-item
-                            v-for="(m, indexSubOpt) in configuration.modules"
-                            :key="`menu_suboption-${indexSubOpt}`"
-                            clickable
-                            class="custom-item"
-                            :class="
-                                $page.url.split('?')[0] === m.base_url
-                                    ? `text-bold ${
-                                          Dark.isActive ? 'text-primary' : ''
-                                      }`
-                                    : 'text-white'
-                            "
-                            :inset-level="0.2"
-                            @click="navigateTo({ name: m.base_url })"
-                        >
-                            <q-item-section avatar>
-                                <q-icon :name="m.ico" />
-                            </q-item-section>
-                            <q-item-section>{{
-                                m.plural_label
-                            }}</q-item-section>
-                        </q-item>
-                    </q-list>
-                </q-card-section>
-            </q-card>
-        </q-expansion-item>
-        <q-item clickable v-if="configuration && mini">
             <q-item-section avatar>
-                <q-icon :name="configuration.ico" />
+                <q-icon name="mdi-home" />
             </q-item-section>
+            <q-item-section class="text-lowercase">Inicio</q-item-section>
             <q-tooltip-component
-                :title="configuration.name"
+                title="Inicio"
                 anchor="center right"
                 self="center left"
                 class="text-lowercase bg-primary"
+                v-if="mini"
             ></q-tooltip-component>
-            <q-menu
-                anchor="top right"
-                self="top left"
-                :offset="[5, 0]"
-                transition-show="scale"
-                transition-hide="scale"
-            >
-                <q-list>
-                    <q-item class="bg-primary text-white">
-                        <q-item-section avatar>
-                            <q-icon :name="configuration.ico" />
-                        </q-item-section>
-                        <q-item-section>{{
-                            configuration.name
-                        }}</q-item-section>
-                    </q-item>
-                    <q-item
-                        v-for="(m, indexSubOpt) in configuration.modules"
-                        :key="`menu_suboption-${indexSubOpt}`"
-                        clickable
-                        class="custom-item"
-                        :active="$page.url.split('?')[0] === m.base_url"
-                        @click="navigateTo({ name: m.base_url })"
-                    >
-                        <q-item-section avatar>
-                            <q-icon :name="m.ico" />
-                        </q-item-section>
-                        <q-item-section class="text-lowercase">{{
-                            m.plural_label
-                        }}</q-item-section>
-                    </q-item>
-                </q-list>
-            </q-menu>
         </q-item>
+        <q-tree
+            ref="treeRef"
+            :nodes="menu"
+            dense
+            no-connectors
+            accordion
+            selected-color="primary"
+            node-key="id"
+            id="menu-tree"
+            v-model:expanded="expanded"
+        >
+            <template v-slot:default-header="prop">
+                <q-item
+                    class="text-white text-lowercase"
+                    :class="
+                        active?.id === prop.node.id ||
+                        activePath.includes(prop.node.id)
+                            ? 'text-bold'
+                            : null
+                    "
+                    clickable
+                    style="width: 100%"
+                    @click="navigateTo(prop.node)"
+                >
+                    <q-item-section
+                        avatar
+                        :style="{
+                            'margin-left': `${prop.node.level * 20}px`,
+                        }"
+                    >
+                        <q-icon
+                            :name="
+                                prop.node.ico_from_path
+                                    ? `img:${$page.props.public_path}${prop.node.icon}`
+                                    : prop.node.icon
+                            "
+                        />
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label lines="1">
+                            {{ prop.node.plural_label }}
+                        </q-item-label>
+                    </q-item-section>
+                    <q-item-section avatar v-if="prop.node.children.length > 0">
+                        <q-icon
+                            :name="
+                                expanded.includes(prop.node.id)
+                                    ? 'expand_less'
+                                    : 'expand_more'
+                            "
+                        />
+                    </q-item-section>
+                </q-item>
+            </template>
+        </q-tree>
         <session-close-component :mini="mini" />
     </q-scroll-area>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import QTooltipComponent from "../base/QTooltipComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { logout } from "../../services/auth";
 import { Dark, Screen } from "quasar";
-import { currentModule } from "../../services/current_module";
+import {
+    getActiveMenu,
+    getActiveModule,
+    modules,
+    updateMenu,
+} from "../../services/current_module";
 import SessionCloseComponent from "../base/SessionCloseComponent.vue";
 
 defineOptions({
@@ -315,6 +136,10 @@ const props = defineProps({
 const page = usePage();
 
 const emit = defineEmits(["change-url"]);
+const treeRef = ref(null);
+const active = ref(null);
+const activePath = ref([]);
+const expanded = ref([]);
 
 const thumbStyle = {
     borderRadius: "5px",
@@ -331,43 +156,62 @@ const barStyle = {
     opacity: 0.2,
 };
 
-const applications_with_module = computed(() => {
-    return page.props.auth.menu.applications_with_module.filter(
-        (m) => m.name !== "configuracion"
-    );
-});
-const modules_doesnt_have_app = computed(() => {
-    return page.props.auth.menu.modules_doesnt_have_app;
-});
-
-const configuration = computed(() => {
-    return page.props.auth.menu.applications_with_module.find(
-        (m) => m.name === "configuracion"
-    );
+onBeforeMount(() => {
+    const module = getActiveModule();
+    if (module) {
+        active.value = module;
+        setExpanded(module);
+    }
 });
 
-function navigateTo(payload) {
+const setExpanded = (node) => {
+    if (node.parent_id !== null) {
+        const n = modules().find((m) => m.id === node.parent_id);
+        if (n) {
+            activePath.value.push(n.id);
+            expanded.value.push(n.id);
+            setExpanded(n);
+        }
+    }
+};
+
+const menu = computed(() => {
+    const list = page.props.auth.menu.tree;
+    list.forEach((m) => {
+        m["level"] = 0;
+        setLevelToChildren(m);
+    });
+    return page.props.auth.menu.tree;
+});
+
+const setLevelToChildren = async (node, level = 1) => {
+    node.children.forEach((n) => {
+        n["level"] = level;
+        setLevelToChildren(n, level + 1);
+    });
+};
+
+const navigateTo = (payload) => {
     if (payload) {
         if (typeof payload === "string") {
             if (payload.startsWith("http") || payload.startsWith("https")) {
                 window.open(payload, "_blank");
             } else {
                 router.get(payload);
-                emit("change-url", currentModule(payload).module);
             }
-        } else if (typeof payload === "object") {
-            router.get(payload.name);
-            let module = currentModule(payload.name);
-            if (module) {
-                emit("change-url", currentModule(payload.name).module);
-            }
+        } else if (
+            typeof payload === "object" &&
+            payload.children.length === 0
+        ) {
+            updateMenu(payload);
+            router.get(
+                payload.base_url,
+                {},
+                { preserveScroll: true, preserveState: true }
+            );
+            emit("change-url", payload);
         }
     }
-}
-
-const isActiveParent = (module) => {
-    const application = currentModule(page.url.split("?")[0])?.application;
-    return application && application.id === module.id;
 };
 </script>
 
@@ -387,5 +231,12 @@ const isActiveParent = (module) => {
 
 .q-item--active {
     font-weight: bold;
+}
+#menu-tree .q-icon.q-tree__arrow {
+    display: none;
+}
+#menu-tree .q-tree__node.relative-position.q-tree__node--child,
+#menu-tree .q-tree__children {
+    padding-left: 0px !important;
 }
 </style>
