@@ -11,7 +11,6 @@
                             <mgr-private-msg-component />
                         </q-card-section>
                     </q-card>
-
                     <q-card class="q-mb-md">
                         <q-card-section class="text-center">
                             <p class="q-mb-none">
@@ -163,7 +162,7 @@ watch(sections, (n, o) => {
 });
 
 watch(currentTopic, (n, o) => {
-    if (n !== null) {
+    if (n) {
         tIndex.value = currentSection.value.topics.findIndex(
             (t) => t.id === currentTopic.value.id
         );
@@ -230,9 +229,8 @@ const setDefaults = () => {
             } else {
                 const latest = getLatest();
                 if (latest) {
-                    currentSection.value = n.find(
-                        (s) => s.id === latest.section_id
-                    );
+                    currentSection.value =
+                        n.find((s) => s.id === latest.section_id) || n[0];
                     currentTopic.value = currentSection.value.topics.find(
                         (t) => t.id === latest.topic_id
                     );
@@ -245,7 +243,7 @@ const setDefaults = () => {
                 }
             }
         }
-        if (currentTopic.value !== null) {
+        if (currentTopic.value) {
             let exist = currentSection.value.topics.find(
                 (t) => t.id === currentTopic.value.id
             );
