@@ -10,10 +10,11 @@ class Module extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str', 'application_id', 'ico_from_path'];
+    protected $fillable = ['singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str', 'application_id', 'ico_from_path', 'parent_id', 'exclude_childs'];
 
     protected $casts = [
-        'ico_from_path' => 'boolean'
+        'ico_from_path' => 'boolean',
+        'exclude_childs' => 'boolean',
     ];
 
     public function app()

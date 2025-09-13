@@ -212,13 +212,45 @@ class User extends Authenticatable implements CanResetPassword
         if ($this->sa) {
             $results = Module::with('permissions')->get();
         } else {
+            $access = DB::select(
+                "WITH RECURSIVE 
+                    accesss_modules AS (
+                        SELECT DISTINCT m.id, m.parent_id 
+                        FROM user_has_permissions up 
+                        INNER JOIN permissions p ON up.permission_id=p.id 
+                        INNER JOIN modules m ON p.module_id=m.id 
+                        WHERE up.user_id = ?                        
+                        UNION                        
+                        SELECT DISTINCT m.id, m.parent_id 
+                        FROM user_has_roles ur 
+                        INNER JOIN role_has_permissions rp ON ur.role_id=rp.role_id 
+                        INNER JOIN permissions p ON rp.permission_id=p.id 
+                        INNER JOIN modules m ON p.module_id=m.id 
+                        WHERE ur.user_id = ?                        
+                        UNION ALL                        
+                        SELECT m.id, m.parent_id 
+                        FROM modules m 
+                        JOIN accesss_modules t ON m.parent_id = t.id
+                    ),
+                    parent_modules AS (
+                        SELECT DISTINCT id, parent_id 
+                        FROM accesss_modules                        
+                        UNION ALL                        
+                        SELECT m.id, m.parent_id 
+                        FROM modules m
+                        JOIN parent_modules pm ON m.id = pm.parent_id
+                    )
+                    SELECT DISTINCT id, parent_id 
+                    FROM parent_modules",
+                [$this->id, $this->id]
+            );
+            $ids = [];
+            foreach ($access as $a) {
+                $ids[] = $a->id;
+            }
             $results = Module::with('permissions')->whereIn(
                 'id',
-                "with app_list AS (SELECT m.id FROM user_has_permissions up INNER JOIN permissions p ON up.permission_id=p.id INNER JOIN modules m ON p.module_id=m.id WHERE up.user_id=? 
-                    UNION all
-                    SELECT m.id FROM user_has_roles ur INNER JOIN role_has_permissions rp ON ur.role_id=rp.role_id INNER JOIN permissions p ON rp.permission_id=p.id INNER JOIN modules m ON p.module_id=m.id WHERE ur.user_id=?)
-                    SELECT DISTINCT * FROM app_list",
-                [$this->id, $this->id]
+                $ids
             )->get();
         }
         return $results;
@@ -243,6 +275,7 @@ class User extends Authenticatable implements CanResetPassword
                     'icon' => $node->ico,
                     'permissions' => $node->permissions,
                     'children' => $buildTree($node->id)
+                    //'children' => $node->exclude_childs ? [] : $buildTree($node->id)
                 ];
                 return $nodeData;
             })->values()->toArray();

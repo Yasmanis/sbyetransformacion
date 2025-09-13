@@ -167,7 +167,7 @@ Route::get('/private', function () {
 });
 
 Route::get('/contracting', function () {
-    $config = Configuration::where('key', 'contracting')->first();
+    $config = Configuration::where('key', 'conditions')->first();
     return Inertia('landing/contracting', ['config' => $config]);
 });
 
@@ -320,6 +320,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/admin/posts', [PostController::class, 'index']);
     Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
 
+    Route::get('/admin/configuration/shopping', [ConfigurationController::class, 'shopping']);
     Route::get('/admin/configuration/legal', [ConfigurationController::class, 'legal']);
     Route::get('/admin/configuration/private', [ConfigurationController::class, 'private']);
     Route::get('/admin/configuration/index/{keyName}', [ConfigurationController::class, 'index']);

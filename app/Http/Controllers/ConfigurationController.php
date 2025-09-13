@@ -19,6 +19,13 @@ class ConfigurationController extends Controller
         return $this->deny_access($request);
     }
 
+    public function shopping(Request $request)
+    {
+        return Inertia::render('configuration/shopping', [
+            'config' => Configuration::all()
+        ]);
+    }
+
     public function private(Request $request)
     {
         $user = auth()->user();
