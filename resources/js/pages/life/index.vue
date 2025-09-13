@@ -111,7 +111,7 @@ import MgrPrivateMsgComponent from "../../components/modules/privatemsg/MgrPriva
 import { usePage } from "@inertiajs/vue3";
 import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 import { useQuasar } from "quasar";
-import { currentModule } from "../../services/current_module";
+import { getActiveModule } from "../../services/current_module";
 import axios from "axios";
 
 defineOptions({
@@ -170,18 +170,28 @@ watch(currentTopic, (n, o) => {
     } else tIndex.value = 0;
 });
 
+watch(
+    () => page.url,
+    (n) => {
+        console.log(n);
+
+        const current_module = getActiveModule();
+        console.log(current_module);
+
+        const permissions = current_module.permissions.map((p) => p.name);
+        const modelName = current_module.model.toLowerCase();
+        has_add.value = permissions.includes(`add_${modelName}`);
+        has_edit.value = permissions.includes(`edit_${modelName}`);
+        has_delete.value = permissions.includes(`delete_${modelName}`);
+    }
+);
+
 onBeforeMount(() => {
     let url = page.url.split("?")[0];
     if (url.includes("#")) {
         chat = url.substring(url.indexOf("#") + 6);
         url = url.substring(0, url.indexOf("#"));
     }
-    const current_module = currentModule(url).module;
-    const permissions = current_module.permissions.map((p) => p.name);
-    const modelName = current_module.model.toLowerCase();
-    has_add.value = permissions.includes(`add_${modelName}`);
-    has_edit.value = permissions.includes(`edit_${modelName}`);
-    has_delete.value = permissions.includes(`delete_${modelName}`);
 });
 
 onMounted(() => {

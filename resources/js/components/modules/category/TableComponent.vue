@@ -358,7 +358,7 @@ import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
-import { currentModule } from "../../../services/current_module";
+import { getActiveModule } from "../../../services/current_module";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
 import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import BtnLockUnlockComponent from "../../btn/BtnLockUnlockComponent.vue";
@@ -452,7 +452,7 @@ watch(
 );
 
 onBeforeMount(() => {
-    current_module.value = currentModule(page.url.split("?")[0]).module;
+    current_module.value = getActiveModule();
     const permissions = current_module.value.permissions.map((p) => p.name);
     const modelName = current_module.value.model.toLowerCase();
     has_add.value = permissions.includes(`add_${modelName}`);

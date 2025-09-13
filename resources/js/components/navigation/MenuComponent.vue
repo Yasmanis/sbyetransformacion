@@ -16,6 +16,7 @@
         </q-item-section>
     </q-item>
     <q-scroll-area
+        ref="scroll"
         :style="{
             height: `${Screen.height - (mini ? 60 : 140)}px`,
         }"
@@ -67,6 +68,7 @@
                     "
                     clickable
                     style="width: 100%"
+                    :id="`menu-${prop.node.id}`"
                     @click="navigateTo(prop.node)"
                 >
                     <q-item-section
@@ -105,17 +107,12 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 import QTooltipComponent from "../base/QTooltipComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { logout } from "../../services/auth";
 import { Dark, Screen } from "quasar";
-import {
-    getActiveMenu,
-    getActiveModule,
-    modules,
-    updateMenu,
-} from "../../services/current_module";
+import { getActiveModule, modules } from "../../services/current_module";
 import SessionCloseComponent from "../base/SessionCloseComponent.vue";
 
 defineOptions({
@@ -134,12 +131,14 @@ const props = defineProps({
 });
 
 const page = usePage();
+const scroll = ref(null);
 
 const emit = defineEmits(["change-url"]);
 const treeRef = ref(null);
 const active = ref(null);
 const activePath = ref([]);
 const expanded = ref([]);
+const currentMenu = ref(null);
 
 const thumbStyle = {
     borderRadius: "5px",
@@ -156,13 +155,27 @@ const barStyle = {
     opacity: 0.2,
 };
 
+watch(
+    () => page.url,
+    () => {
+        updateMenu();
+    }
+);
+
 onBeforeMount(() => {
+    updateMenu();
+});
+
+const updateMenu = () => {
     const module = getActiveModule();
     if (module) {
         active.value = module;
         setExpanded(module);
+        currentMenu.value = module;
+    } else {
+        currentMenu.value = null;
     }
-});
+};
 
 const setExpanded = (node) => {
     if (node.parent_id !== null) {
@@ -203,7 +216,6 @@ const navigateTo = (payload) => {
             typeof payload === "object" &&
             payload.children.length === 0
         ) {
-            updateMenu(payload);
             router.get(
                 payload.base_url,
                 {},

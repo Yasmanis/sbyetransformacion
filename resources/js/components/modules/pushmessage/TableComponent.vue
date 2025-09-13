@@ -400,7 +400,7 @@ import FixedBriefIdeaComponent from "./components/FixedBriefIdeaComponent.vue";
 import ViewBriefIdeaComponent from "./components/ViewBriefIdeaComponent.vue";
 import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
-import { currentModule } from "../../../services/current_module";
+import { getActiveModule } from "../../../services/current_module";
 import ViewPushMessageComponent from "./components/ViewPushMessageComponent.vue";
 
 defineOptions({
@@ -496,7 +496,7 @@ watch(
 );
 
 onBeforeMount(() => {
-    current_module.value = currentModule(page.url.split("?")[0]).module;
+    current_module.value = getActiveModule();
     const permissions = current_module.value.permissions.map((p) => p.name);
     const modelName = current_module.value.model.toLowerCase();
     has_add.value = permissions.includes(`add_${modelName}`);

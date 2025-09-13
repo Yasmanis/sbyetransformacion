@@ -12,7 +12,9 @@ class ConfigurationController extends Controller
     {
         $user = auth()->user();
         if ($user->hasPerm('view_legal_configuration') || $user->hasPerm('edit_legal_configuration')) {
-            return Inertia::render('configuration/legal');
+            return Inertia::render('configuration/legal', [
+                'config' => Configuration::all()
+            ]);
         }
         return $this->deny_access($request);
     }

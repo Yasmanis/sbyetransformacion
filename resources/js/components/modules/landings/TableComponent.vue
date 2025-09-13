@@ -330,7 +330,7 @@ import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnShowHideComponent from "../../btn/BtnShowHideComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
-import { currentModule } from "../../../services/current_module";
+import { getActiveModule } from "../../../services/current_module";
 
 defineOptions({
     name: "TableComponent",
@@ -424,7 +424,7 @@ watch(
 );
 
 onBeforeMount(() => {
-    current_module.value = currentModule(page.url.split("?")[0]).module;
+    current_module.value = getActiveModule();
     const permissions = current_module.value.permissions.map((p) => p.name);
     const modelName = current_module.value.model.toLowerCase();
     has_add.value = permissions.includes(`add_${modelName}`);
