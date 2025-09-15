@@ -112,7 +112,11 @@ import QTooltipComponent from "../base/QTooltipComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { logout } from "../../services/auth";
 import { Dark, Screen } from "quasar";
-import { getActiveModule, modules } from "../../services/current_module";
+import {
+    getActiveModule,
+    getChildrenFromParent,
+    modules,
+} from "../../services/current_module";
 import SessionCloseComponent from "../base/SessionCloseComponent.vue";
 
 defineOptions({
@@ -216,6 +220,12 @@ const navigateTo = (payload) => {
             typeof payload === "object" &&
             payload.children.length === 0
         ) {
+            if (payload.exclude_childs) {
+                const modules = getChildrenFromParent(payload);
+                if (modules.length > 0) {
+                    payload = modules[0];
+                }
+            }
             router.get(
                 payload.base_url,
                 {},

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Payment;
 use App\Services\PayPalService;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PaymentController extends Controller
 {
@@ -14,40 +16,87 @@ class PaymentController extends Controller
         $this->paypalService = $paypalService;
     }
 
-    public function createPayment(Request $request)
+    public function create(Request $request)
     {
-        $amount = 100.00;
-        $description = 'Compra en Mi Tienda';
+        $request->validate([
+            'amount' => 'required|numeric|min:1'
+        ]);
 
-        $payment = $this->paypalService->createPayment(
-            $amount,
-            $description,
-            route('payment.success'),
-            route('payment.cancel')
-        );
+        $response = $this->paypalService->createOrder($request->amount);
 
-        return redirect($payment->getApprovalLink());
-    }
+        if (isset($response['id']) && $response['status'] === 'CREATED') {
+            Payment::create([
+                'user_id' => auth()->id(),
+                'order_id' => $response['id'],
+                'status' => 'pending',
+                'amount' => $request->amount,
+                'currency' => 'USD',
+                'payload' => $response
+            ]);
 
-    public function paymentSuccess(Request $request)
-    {
-        $paymentId = $request->input('paymentId');
-        $payerId = $request->input('PayerID');
+            return redirect()->away($links['href']);
 
-        try {
-            $payment = $this->paypalService->executePayment($paymentId, $payerId);
-
-            // Aquí puedes guardar los datos del pago en tu base de datos
-            // y procesar el pedido
-
-            return view('payments.success', compact('payment'));
-        } catch (\Exception $ex) {
-            return redirect()->route('payment.cancel')->withErrors(['error' => $ex->getMessage()]);
+            return response()->json([
+                'orderID' => $response['id'],
+                'approvalURL' => collect($response['links'])
+                    ->where('rel', 'approve')
+                    ->first()['href']
+            ]);
         }
+
+        return response()->json(['error' => 'Error creating order'], 500);
     }
 
-    public function paymentCancel()
+    public function success(Request $request)
     {
-        return view('payments.cancel');
+        $orderId = $request->input('token');
+
+        $response = $this->paypalService->capturePayment($orderId);
+
+        if (isset($response['status']) && $response['status'] === 'COMPLETED') {
+            $payment = Payment::where('order_id', $orderId)->first();
+
+            if ($payment) {
+                $payment->update([
+                    'status' => 'completed',
+                    'payment_id' => $response['id'],
+                    'payload' => $response
+                ]);
+
+                return Inertia::render('Payment/Success', [
+                    'payment' => $payment
+                ]);
+            }
+        }
+
+        return redirect()->route('payment.failed');
+    }
+
+    public function cancel()
+    {
+        return Inertia::render('Payment/Cancel');
+    }
+
+    public function details(Request $request, $id)
+    {
+        $response = $this->paypalService->capturePayment($id);
+
+        if (isset($response['status']) && $response['status'] === 'COMPLETED') {
+            $payment = Payment::where('order_id', $id)->first();
+
+            if ($payment) {
+                $payment->update([
+                    'status' => 'completed',
+                    'payment_id' => $id,
+                    'payload' => $response
+                ]);
+
+                return Inertia::render('Payment/Success', [
+                    'payment' => $payment
+                ]);
+            }
+        }
+
+        return redirect()->route('payment.failed');
     }
 }

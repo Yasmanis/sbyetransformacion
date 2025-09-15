@@ -2,72 +2,47 @@
 
 namespace App\Services;
 
-use PayPal\Rest\ApiContext;
-use PayPal\Auth\OAuthTokenCredential;
-use PayPal\Api\Amount;
-use PayPal\Api\Payer;
-use PayPal\Api\Payment;
-use PayPal\Api\RedirectUrls;
-use PayPal\Api\Transaction;
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PayPalService
 {
-    protected $apiContext;
+    protected $provider;
 
     public function __construct()
     {
-        $this->apiContext = new ApiContext(
-            new OAuthTokenCredential(
-                config('paypal.sandbox.client_id'),
-                config('paypal.sandbox.client_secret')
-            )
-        );
-
-        $this->apiContext->setConfig(config('paypal'));
+        $this->provider = new PayPalClient;
+        $this->provider->setApiCredentials(config('paypal'));
+        $this->provider->getAccessToken();
     }
 
-    public function createPayment($amount, $description, $returnUrl, $cancelUrl, $currency = 'USD')
+    public function createOrder($amount, $currency = 'USD')
     {
-        $payer = new Payer();
-        $payer->setPaymentMethod('paypal');
+        $response = $this->provider->createOrder([
+            'intent' => 'CAPTURE',
+            'purchase_units' => [
+                [
+                    'amount' => [
+                        'currency_code' => $currency,
+                        'value' => $amount
+                    ]
+                ]
+            ],
+            'application_context' => [
+                'return_url' => route('payment.success'),
+                'cancel_url' => route('payment.cancel')
+            ]
+        ]);
 
-        $amountObj = new Amount();
-        $amountObj->setCurrency($currency)
-            ->setTotal($amount);
-
-        $transaction = new Transaction();
-        $transaction->setAmount($amountObj)
-            ->setDescription($description);
-
-        $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl($returnUrl)
-            ->setCancelUrl($cancelUrl);
-
-        $payment = new Payment();
-        $payment->setIntent('sale')
-            ->setPayer($payer)
-            ->setTransactions([$transaction])
-            ->setRedirectUrls($redirectUrls);
-
-        try {
-            $payment->create($this->apiContext);
-            return $payment;
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
+        return $response;
     }
 
-    public function executePayment($paymentId, $payerId)
+    public function capturePayment($orderId)
     {
-        $payment = Payment::get($paymentId, $this->apiContext);
-        $execution = new \PayPal\Api\PaymentExecution();
-        $execution->setPayerId($payerId);
+        return $this->provider->capturePaymentOrder($orderId);
+    }
 
-        try {
-            $result = $payment->execute($execution, $this->apiContext);
-            return $result;
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
+    public function getOrderDetails($orderId)
+    {
+        return $this->provider->showOrderDetails($orderId);
     }
 }

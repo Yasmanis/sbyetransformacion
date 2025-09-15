@@ -1,7 +1,7 @@
 <template>
     <Layout>
-        <q-page padding>
-            <table-component
+        <q-page padding
+            ><table-component
                 :columns="columns"
                 :searchFields="searchFields"
                 :filter-fields="filterFields"
@@ -9,8 +9,8 @@
                 :updateFields="fields"
                 :has_delete="false"
                 post-on-update
-            ></table-component>
-        </q-page>
+            ></table-component
+        ></q-page>
     </Layout>
 </template>
 

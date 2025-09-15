@@ -210,9 +210,9 @@ class User extends Authenticatable implements CanResetPassword
     {
         $results = [];
         if ($this->sa) {
-            $results = Module::with('permissions')->get();
+            $results = Module::all();
         } else {
-            $access = DB::select(
+            $modules = DB::select(
                 "WITH RECURSIVE 
                     accesss_modules AS (
                         SELECT DISTINCT m.id, m.parent_id 
@@ -245,13 +245,16 @@ class User extends Authenticatable implements CanResetPassword
                 [$this->id, $this->id]
             );
             $ids = [];
-            foreach ($access as $a) {
+            foreach ($modules as $a) {
                 $ids[] = $a->id;
             }
-            $results = Module::with('permissions')->whereIn(
+            $results = Module::whereIn(
                 'id',
                 $ids
             )->get();
+        }
+        foreach ($results as $m) {
+            $m->permissions = $this->getPermissionsFromModule($m);
         }
         return $results;
     }
@@ -274,6 +277,7 @@ class User extends Authenticatable implements CanResetPassword
                     'parent_id' => $node->parent_id,
                     'icon' => $node->ico,
                     'permissions' => $node->permissions,
+                    'exclude_childs' => $node->exclude_childs,
                     'children' => $buildTree($node->id)
                     //'children' => $node->exclude_childs ? [] : $buildTree($node->id)
                 ];
