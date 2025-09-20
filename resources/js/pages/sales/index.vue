@@ -116,7 +116,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import Layout from "../../layouts/AdminLayout.vue";
 import ShoppingComponent from "../../components/modules/shopping/ShoppingComponent.vue";
 import BtnHeartComponent from "../../components/btn/BtnHeartComponent.vue";
@@ -125,12 +125,16 @@ import CarComponent from "../../components/modules/shopping/components/CarCompon
 import SalesDatesComponent from "../../components/modules/shopping/userdata/SalesDatesComponent.vue";
 import BtnBasketComponent from "../../components/btn/BtnBasketComponent.vue";
 import { products as selectedProducts } from "../../services/shopping";
+import { usePage } from "@inertiajs/vue3";
+import { success } from "../../helpers/notifications";
 
 defineOptions({
     name: "SalesPage",
 });
 
 const showMenu = ref(false);
+
+const page = usePage();
 
 const items = [
     "el nivel 1 dentro de la metodologia sbyetransformacion",
@@ -139,4 +143,10 @@ const items = [
     "el nivel 4 dentro de la metodologia sbyetransformacion",
     "el nivel 5 dentro de la metodologia sbyetransformacion",
 ];
+
+onMounted(() => {
+    if (page.props.flash_success) {
+        success(page.props.flash_success);
+    }
+});
 </script>

@@ -158,6 +158,7 @@ import {
     products as selectedProducts,
     loadProductsFromStorage,
 } from "../../services/shopping";
+import { success } from "../../helpers/notifications";
 defineOptions({
     name: "ConsultaIndividual",
 });
@@ -177,6 +178,9 @@ onBeforeMount(() => {
 
 onMounted(() => {
     products.value = page.props.products;
+    if (page.props.flash_success) {
+        success(page.props.flash_success);
+    }
 });
 
 watch(category, () => {

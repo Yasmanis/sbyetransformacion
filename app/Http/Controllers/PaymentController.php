@@ -16,13 +16,21 @@ class PaymentController extends Controller
         $this->paypalService = $paypalService;
     }
 
-    public function create(Request $request)
+    public function create()
+    {
+        return Inertia::render('payments/create');
+    }
+
+    public function store(Request $request)
     {
         $request->validate([
             'amount' => 'required|numeric|min:1'
         ]);
 
-        $response = $this->paypalService->createOrder($request->amount);
+        $method = $request->method;
+        $information = $request->information;
+
+        $response = $this->paypalService->createOrder($request->amount, $method, $information);
 
         if (isset($response['id']) && $response['status'] === 'CREATED') {
             Payment::create([
@@ -30,73 +38,56 @@ class PaymentController extends Controller
                 'order_id' => $response['id'],
                 'status' => 'pending',
                 'amount' => $request->amount,
-                'currency' => 'USD',
+                'currency' => 'EUR',
                 'payload' => $response
             ]);
-
-            return redirect()->away($links['href']);
-
-            return response()->json([
-                'orderID' => $response['id'],
-                'approvalURL' => collect($response['links'])
-                    ->where('rel', 'approve')
-                    ->first()['href']
-            ]);
+            session(['source_url' => url()->previous()]);
+            return $response;
         }
-
-        return response()->json(['error' => 'Error creating order'], 500);
+        return response()->json(['error' => 'error creando la orden de pago'], 500);
     }
 
     public function success(Request $request)
     {
+        $sourceUrl = $this->getSourceUrl();
         $orderId = $request->input('token');
-
         $response = $this->paypalService->capturePayment($orderId);
-
         if (isset($response['status']) && $response['status'] === 'COMPLETED') {
             $payment = Payment::where('order_id', $orderId)->first();
-
             if ($payment) {
                 $payment->update([
                     'status' => 'completed',
                     'payment_id' => $response['id'],
                     'payload' => $response
                 ]);
-
-                return Inertia::render('Payment/Success', [
-                    'payment' => $payment
-                ]);
+                session()->flash('success', 'su pago fue procesado correctamente');
+                return redirect()->to($sourceUrl);
             }
         }
-
-        return redirect()->route('payment.failed');
+        session()->flash('error', 'error al procesar su pago');
+        return redirect()->to($sourceUrl);
     }
 
-    public function cancel()
+    public function cancel(Request $request)
     {
-        return Inertia::render('Payment/Cancel');
-    }
-
-    public function details(Request $request, $id)
-    {
-        $response = $this->paypalService->capturePayment($id);
-
-        if (isset($response['status']) && $response['status'] === 'COMPLETED') {
-            $payment = Payment::where('order_id', $id)->first();
-
-            if ($payment) {
-                $payment->update([
-                    'status' => 'completed',
-                    'payment_id' => $id,
-                    'payload' => $response
-                ]);
-
-                return Inertia::render('Payment/Success', [
-                    'payment' => $payment
-                ]);
-            }
+        $orderId = $request->input('token');
+        $payment = Payment::where('order_id', $orderId)->first();
+        if ($payment) {
+            $payment->update([
+                'status' => 'canceled',
+            ]);
         }
+        $sourceUrl = $this->getSourceUrl();
+        session()->flash('success', 'su pago fue cancelado');
+        return redirect()->to($sourceUrl);
+    }
 
-        return redirect()->route('payment.failed');
+    public function getSourceUrl()
+    {
+        $sourceUrl = session('source_url', url('/store'));
+        if (!filter_var($sourceUrl, FILTER_VALIDATE_URL) || !str_contains($sourceUrl, config('app.url'))) {
+            $sourceUrl = url('/store');
+        }
+        return $sourceUrl;
     }
 }

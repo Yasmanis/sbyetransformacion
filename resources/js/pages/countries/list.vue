@@ -1,6 +1,6 @@
 <template>
     <Layout>
-        <q-page padding>
+        <q-page>
             <table-component
                 :columns="columns"
                 :searchFields="searchFields"
@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import Layout from "../../layouts/AdminLayout.vue";
+import Layout from "../../layouts/ShoppingLayout.vue";
 import TableComponent from "../../components/table/TableComponent.vue";
 
 defineOptions({

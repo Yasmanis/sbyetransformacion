@@ -24,7 +24,6 @@ use App\Http\Controllers\LearningController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentMethodController;
-use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\PrivateMsgController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
@@ -209,13 +208,10 @@ Route::get('/not-found', function () {
     return Inertia('errors/notFound');
 })->name('not-found');
 
-Route::get('/checkout', function () {
-    return Inertia('payments/checkout');
-})->name('checkout');
-
-Route::post('/create-payment', [PaymentController::class, 'createPayment'])->name('create.payment');
-Route::get('/payment/success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
-Route::get('/payment/cancel', [PaymentController::class, 'paymentCancel'])->name('payment.cancel');
+Route::get('/payments/create', [PaymentController::class, 'create'])->name('payment.create');
+Route::post('/payments/store', [PaymentController::class, 'store'])->name('payment.store');
+Route::get('/payments/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payments/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
 
 Route::middleware(['auth', 'auth.session'])->group(function () {
 
@@ -339,6 +335,3 @@ Route::get('/download/{id}', [FileController::class, 'download']);
 Route::post('/subscribe', [BrevoController::class, 'subscribe']);
 Route::get('/product-categories', [SelectsController::class, 'productCategories']);
 Route::get('/products', [SelectsController::class, 'products']);
-
-Route::post('paypal/create-order', [PayPalController::class, 'createOrder']);
-Route::post('paypal/capture-order', [PayPalController::class, 'captureOrder']);

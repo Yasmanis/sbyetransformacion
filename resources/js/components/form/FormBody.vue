@@ -252,7 +252,7 @@ const props = defineProps({
     axiosRequest: Boolean,
 });
 
-const emits = defineEmits(["created", "updated", "cancel"]);
+const emits = defineEmits(["created", "updated", "cancel", "update-field"]);
 
 const form = ref(null);
 
@@ -348,6 +348,7 @@ const setDefaultData = () => {
 
 const onUpdateField = (name, val) => {
     formData.value[name] = val;
+    emits("update-field", name, val);
 };
 
 const onUpdateUsers = (name, val) => {

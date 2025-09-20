@@ -278,8 +278,8 @@ class User extends Authenticatable implements CanResetPassword
                     'icon' => $node->ico,
                     'permissions' => $node->permissions,
                     'exclude_childs' => $node->exclude_childs,
-                    'children' => $buildTree($node->id)
-                    //'children' => $node->exclude_childs ? [] : $buildTree($node->id)
+                    //'children' => $buildTree($node->id)
+                    'children' => $node->exclude_childs ? [] : $buildTree($node->id)
                 ];
                 return $nodeData;
             })->values()->toArray();

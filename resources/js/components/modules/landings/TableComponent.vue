@@ -321,7 +321,7 @@
 <script setup>
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
 import { openURL, useQuasar } from "quasar";
-import FormComponent from "../../form/FormComponent.vue";
+import FormComponent from "./FormComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";

@@ -110,9 +110,16 @@
                     class="q-ml-sm"
                 />
                 <q-btn
+                    @click="createPayment"
+                    color="black"
+                    label="pagar"
+                    v-if="step === 4"
+                />
+                <q-btn
                     @click="onStepChange"
                     color="black"
-                    :label="step === 4 ? 'guardar' : 'siguiente'"
+                    label="siguiente"
+                    v-else
                 />
             </q-card-actions>
         </q-card>
@@ -133,8 +140,11 @@ import {
     products,
     currentPaymentMethod,
     currentBillingInformation,
+    subtotalAmount,
 } from "../../../services/shopping";
 import { error } from "../../../helpers/notifications";
+import { Loading } from "quasar";
+import axios from "axios";
 
 defineOptions({
     name: "StepperPage",
@@ -162,6 +172,34 @@ const onBeforeShow = () => {
     step.value = 1;
     currentPaymentMethod.value = null;
     currentBillingInformation.value = null;
+};
+
+const createPayment = async () => {
+    Loading.show();
+    try {
+        const response = await axios.post("/payments/store", {
+            method: currentPaymentMethod.value,
+            information: currentBillingInformation.value,
+            products: products.value,
+            amount: subtotalAmount.value,
+        });
+        if (response.data.id) {
+            const approveLink = response.data.links.find(
+                (link) => link.rel === "approve"
+            );
+            if (approveLink) {
+                window.location.href = approveLink.href;
+            }
+        }
+    } catch (err) {
+        error(
+            `error al crear el pago: ${
+                err.response?.data?.message || err.message
+            }`
+        );
+    } finally {
+        Loading.hide();
+    }
 };
 </script>
 <style>
