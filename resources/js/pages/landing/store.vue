@@ -157,6 +157,7 @@ import {
     updateProductsStorage,
     products as selectedProducts,
     loadProductsFromStorage,
+    removeAllProductsFromStorage,
 } from "../../services/shopping";
 import { success } from "../../helpers/notifications";
 defineOptions({
@@ -180,6 +181,7 @@ onMounted(() => {
     products.value = page.props.products;
     if (page.props.flash_success) {
         success(page.props.flash_success);
+        removeAllProductsFromStorage();
     }
 });
 

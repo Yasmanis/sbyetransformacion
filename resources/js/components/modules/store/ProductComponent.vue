@@ -1,9 +1,21 @@
 <template>
     <q-card flat bordered>
         <q-card-section class="q-pa-xs">
-            <div class="column items-end">
-                <btn-share-component />
-            </div>
+            <q-item>
+                <q-item-section />
+                <q-item-section avatar>
+                    <btn-shoppin-car-component
+                        tooltips="agregar a la cesta"
+                        :disable="
+                            products.map((p) => p.id).includes(product.id)
+                        "
+                        @click="updateProductsStorage(product)"
+                    />
+                </q-item-section>
+                <q-item-section avatar style="min-width: 10px !important">
+                    <btn-share-component />
+                </q-item-section>
+            </q-item>
             <q-img
                 :src="`${$page.props.public_path}${
                     product.image_path?.substring(1) ?? 'images/logo/2.png'
@@ -53,9 +65,11 @@
 <script setup>
 import { ref } from "vue";
 import BtnShareComponent from "../../btn/BtnShareComponent.vue";
+import BtnShoppinCarComponent from "../../btn/BtnShoppinCarComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import ProductInformation from "../shopping/ProductInformation.vue";
 import { Dark } from "quasar";
+import { products, updateProductsStorage } from "../../../services/shopping";
 defineOptions({
     name: "ProductComponent",
 });

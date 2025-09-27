@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Country;
+use Carbon\Carbon;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
+use Illuminate\Support\Str;
 
 class PayPalService
 {
@@ -17,7 +20,9 @@ class PayPalService
 
     public function createOrder($amount, $method, $information, $currency = 'EUR')
     {
-        $user = auth()->user();
+        $country = Country::find($information['country_id']);
+        // $requestId = 'PAYPAL_' . Str::uuid();
+        // $this->provider->setRequestHeader('PayPal-Request-Id', $requestId);
         $response = $this->provider->createOrder([
             'intent' => 'CAPTURE',
             'purchase_units' => [
@@ -30,31 +35,37 @@ class PayPalService
             ],
             'application_context' => [
                 'return_url' => route('payment.success'),
-                'cancel_url' => route('payment.cancel')
+                'cancel_url' => route('payment.cancel'),
+                'locale' => 'es-ES'
             ],
-            // 'payer' => [
-            //     'name' => [
-            //         'given_name' => $user->name,
-            //         'surname' => $user->surname
-            //     ],
-            //     'email_address' => $user->email,
-            //     'phone' => [
-            //         'phone_type' => 'MOBILE',
-            //         'phone_number' => [
-            //             'national_number' => $user->phone
+            // 'payment_source' => [
+            //     'card' => [
+            //         'number' => str_replace(' ', '', $method['number']),
+            //         'expiry' => Carbon::createFromFormat('m/Y', $method['defeat'])->format('Y-m'),
+            //         'name' => $method['name'],
+            //         'billing_address' => [
+            //             "address_line_1" => $information['address'],
+            //             "admin_area_2" => $information['province'],
+            //             "postal_code" => $information['postal_code'],
+            //             "country_code" => $country->iso2
             //         ]
-            //     ],
-            //     'address' => [
-            //         'address_line_1' => $user->address_line_1,
-            //         'address_line_2' => $user->address_line_2,
-            //         'admin_area_2' => $user->city,
-            //         'admin_area_1' => $user->state,
-            //         'postal_code' => $user->postal_code,
-            //         'country_code' => $user->country_code
             //     ]
-            // ]
+            // ],
+            'payer' => [
+                "name" => [
+                    "given_name" => $information['name'],
+                    "surname" => $information['surname']
+                ],
+                "address" => [
+                    "address_line_1" => $information['address'],
+                    "address_line_2" => $information['road'],
+                    "admin_area_2" => $information['province'],
+                    "admin_area_1" => $country->name,
+                    "postal_code" => $information['postal_code'],
+                    "country_code" => $country->iso2
+                ]
+            ],
         ]);
-
         return $response;
     }
 

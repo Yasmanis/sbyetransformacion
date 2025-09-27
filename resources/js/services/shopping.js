@@ -35,6 +35,10 @@ export const removeProductFromStorage = (prod) => {
     products.value = products.value.filter((p) => p.id !== prod.id);
 };
 
+export const removeAllProductsFromStorage = () => {
+    products.value = [];
+};
+
 export const subtotalAmount = computed(() => {
     let total = 0;
     products.value.forEach((p) => {

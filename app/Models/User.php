@@ -215,13 +215,13 @@ class User extends Authenticatable implements CanResetPassword
             $modules = DB::select(
                 "WITH RECURSIVE 
                     accesss_modules AS (
-                        SELECT DISTINCT m.id, m.parent_id 
+                        SELECT m.id, m.parent_id 
                         FROM user_has_permissions up 
                         INNER JOIN permissions p ON up.permission_id=p.id 
                         INNER JOIN modules m ON p.module_id=m.id 
                         WHERE up.user_id = ?                        
-                        UNION                        
-                        SELECT DISTINCT m.id, m.parent_id 
+                        UNION ALL                        
+                        SELECT m.id, m.parent_id 
                         FROM user_has_roles ur 
                         INNER JOIN role_has_permissions rp ON ur.role_id=rp.role_id 
                         INNER JOIN permissions p ON rp.permission_id=p.id 
@@ -233,7 +233,7 @@ class User extends Authenticatable implements CanResetPassword
                         JOIN accesss_modules t ON m.parent_id = t.id
                     ),
                     parent_modules AS (
-                        SELECT DISTINCT id, parent_id 
+                        SELECT id, parent_id 
                         FROM accesss_modules                        
                         UNION ALL                        
                         SELECT m.id, m.parent_id 

@@ -124,7 +124,10 @@ import BtnListComponent from "../../components/btn/BtnListComponent.vue";
 import CarComponent from "../../components/modules/shopping/components/CarComponent.vue";
 import SalesDatesComponent from "../../components/modules/shopping/userdata/SalesDatesComponent.vue";
 import BtnBasketComponent from "../../components/btn/BtnBasketComponent.vue";
-import { products as selectedProducts } from "../../services/shopping";
+import {
+    removeAllProductsFromStorage,
+    products as selectedProducts,
+} from "../../services/shopping";
 import { usePage } from "@inertiajs/vue3";
 import { success } from "../../helpers/notifications";
 
@@ -147,6 +150,7 @@ const items = [
 onMounted(() => {
     if (page.props.flash_success) {
         success(page.props.flash_success);
+        removeAllProductsFromStorage();
     }
 });
 </script>
