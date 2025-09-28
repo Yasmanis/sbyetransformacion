@@ -181,6 +181,7 @@ const principalVideo = ref(null);
 const showNoAccess = ref(false);
 const showNoAccessByVolume = ref(false);
 const currentTopic = ref(null);
+const page = usePage();
 
 onMounted(() => {
     updateViewSection();
@@ -243,6 +244,10 @@ const changeTopic = (topic) => {
             }
         } else {
             if (
+                !page.props.auth.user.sa &&
+                !page.props.auth.permissions.includes(
+                    `full_${props.segment}`
+                ) &&
                 props.skip.includes(props.segment) &&
                 !othersCompleted(t, topic)
             ) {

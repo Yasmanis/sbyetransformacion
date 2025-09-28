@@ -41,6 +41,9 @@
                         :disable="
                             index === section?.topics.length - 1 ||
                             (!$page.props.auth.user.sa &&
+                                !$page.props.auth.permissions.includes(
+                                    `full_${segment}`
+                                ) &&
                                 topic?.percent < 95 &&
                                 segment === 'learning' &&
                                 topic?.has_principal_video)

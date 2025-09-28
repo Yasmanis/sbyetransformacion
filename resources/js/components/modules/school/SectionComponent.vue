@@ -47,7 +47,11 @@
                                 :leftDirection="false"
                                 :disable="
                                     totalSections === index + 1 ||
-                                    (skip.includes(segment) &&
+                                    (!$page.props.auth.user.sa &&
+                                        !$page.props.auth.permissions.includes(
+                                            `full_${segment}`
+                                        ) &&
+                                        skip.includes(segment) &&
                                         !allTopicsCompleted())
                                 "
                                 @click="emits('change-section', index + 1)"
@@ -76,7 +80,11 @@
                                 :disable="
                                     getIndexFromCurrentTopic() + 1 ===
                                         section?.topics?.length ||
-                                    (skip.includes(segment) &&
+                                    (!$page.props.auth.user.sa &&
+                                        !$page.props.auth.permissions.includes(
+                                            `full_${segment}`
+                                        ) &&
+                                        skip.includes(segment) &&
                                         !allTopicsCompleted())
                                 "
                                 @click="changeTopic"
