@@ -56,114 +56,96 @@ class SchoolTopicsController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->hasCreate('schoolsection') || auth()->user()->hasUpdate('schoolsection')) {
-            $request->validate([
-                'name' => ['required'],
-            ]);
-            $repository = new SchoolTopicRepository();
-            $data = $request->only((new ($repository->model()))->getFillable());
-            $data['visible_after_testimony'] = $request->visible_after_testimony == 'true' ? true : false;
-            $data['skip'] = $request->skip == 'true' ? true : false;
-            if ($request->hasFile('coverImage')) {
-                $properties = $this->getPropertiesFromFile($request->file('coverImage'));
-                $data['coverImage'] = $properties['path'];
-            }
-            $topic = $repository->create($data);
-            return $topic;
+        $request->validate([
+            'name' => ['required'],
+        ]);
+        $repository = new SchoolTopicRepository();
+        $data = $request->only((new ($repository->model()))->getFillable());
+        $data['visible_after_testimony'] = $request->visible_after_testimony == 'true' ? true : false;
+        $data['skip'] = $request->skip == 'true' ? true : false;
+        if ($request->hasFile('coverImage')) {
+            $properties = $this->getPropertiesFromFile($request->file('coverImage'));
+            $data['coverImage'] = $properties['path'];
         }
-        return $this->deny_access($request);
+        $topic = $repository->create($data);
+        return $topic;
     }
 
     public function addResource(Request $request)
     {
-        if (auth()->user()->hasCreate('schoolsection') || auth()->user()->hasUpdate('schoolsection')) {
-            $repository = new SchoolTopicRepository();
-            $topic = $repository->getById($request->id);
-            if ($request->hasFile('file')) {
-                $this->addResourceToTopic($request->file('file'), $topic, (bool)$request->principal);
-            }
-            return $topic;
+        $repository = new SchoolTopicRepository();
+        $topic = $repository->getById($request->id);
+        if ($request->hasFile('file')) {
+            $this->addResourceToTopic($request->file('file'), $topic, (bool)$request->principal);
         }
-        return $this->deny_access($request);
+        return $topic;
     }
 
     public function deleteResource(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('schoolsection')) {
-            $resource = SchoolResource::find($id);
-            $principal = $resource->principal;
-            $path = $resource->path;
-            $topic = $resource->topic_id;
-            $resource->delete();
-            Storage::delete('public/' . $path);
-            if ($principal) {
-                $t = SchoolTopic::find($topic);
-                if ($t != null) {
-                    $t->description = null;
-                    $t->save();
-                }
+        $resource = SchoolResource::find($id);
+        $principal = $resource->principal;
+        $path = $resource->path;
+        $topic = $resource->topic_id;
+        $resource->delete();
+        Storage::delete('public/' . $path);
+        if ($principal) {
+            $t = SchoolTopic::find($topic);
+            if ($t != null) {
+                $t->description = null;
+                $t->save();
             }
-            return redirect()->back()->with('success', $principal ? 'video principal eliminado correctamente' : 'adjunto eliminado correctamente');
         }
-        return $this->deny_access($request);
+        return redirect()->back()->with('success', $principal ? 'video principal eliminado correctamente' : 'adjunto eliminado correctamente');
     }
 
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('schoolsection')) {
-            $request->validate([
-                'name' => ['required'],
-            ]);
-            $repository = new SchoolTopicRepository();
-            $data = $request->only((new ($repository->model()))->getFillable());
-            $data['visible_after_testimony'] = $request->visible_after_testimony == 'true' ? true : false;
-            $data['skip'] = $request->skip == 'true' ? true : false;
-            if ($request->hasFile('coverImage')) {
-                $properties = $this->getPropertiesFromFile($request->file('coverImage'));
-                $data['coverImage'] = $properties['path'];
-                $topic = $repository->getById($id);
-                if (isset($topic->coverImage)) {
-                    Storage::delete('public/' . $topic->coverImage);
-                }
-            } else if (!isset($request->coverImage)) {
-                $topic = $repository->getById($id);
-                if (isset($topic->coverImage)) {
-                    Storage::delete('public/' . $topic->coverImage);
-                }
+        $request->validate([
+            'name' => ['required'],
+        ]);
+        $repository = new SchoolTopicRepository();
+        $data = $request->only((new ($repository->model()))->getFillable());
+        $data['visible_after_testimony'] = $request->visible_after_testimony == 'true' ? true : false;
+        $data['skip'] = $request->skip == 'true' ? true : false;
+        if ($request->hasFile('coverImage')) {
+            $properties = $this->getPropertiesFromFile($request->file('coverImage'));
+            $data['coverImage'] = $properties['path'];
+            $topic = $repository->getById($id);
+            if (isset($topic->coverImage)) {
+                Storage::delete('public/' . $topic->coverImage);
             }
-            $repository->updateById($id, $data);
-            return redirect()->back()->with([
-                'success' => 'tema modificado correctamente',
-                'exclude_flash' => (bool) $request->excludeFlash
-            ]);
+        } else if (!isset($request->coverImage)) {
+            $topic = $repository->getById($id);
+            if (isset($topic->coverImage)) {
+                Storage::delete('public/' . $topic->coverImage);
+            }
         }
-        return $this->deny_access($request);
+        $repository->updateById($id, $data);
+        return redirect()->back()->with([
+            'success' => 'tema modificado correctamente',
+            'exclude_flash' => (bool) $request->excludeFlash
+        ]);
     }
 
     public function destroy(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('schoolsection')) {
-            $repository = new SchoolTopicRepository();
-            $repository->deleteById($id);
-            return redirect()->back()->with('success', 'tema eliminado correctamente');
-        }
-        return $this->deny_access($request);
+        $repository = new SchoolTopicRepository();
+        $repository->deleteById($id);
+        return redirect()->back()->with('success', 'tema eliminado correctamente');
     }
 
     public function sortTopics(Request $request)
     {
-        if (auth()->user()->hasUpdate('schoolsection')) {
-            $list = json_decode($request->ids);
-            foreach ($list as $l) {
-                $topic = SchoolTopic::find($l->id);
-                if ($topic != null) {
-                    $topic->order = $l->order;
-                    $topic->save();
-                }
+        $list = json_decode($request->ids);
+        foreach ($list as $l) {
+            $topic = SchoolTopic::find($l->id);
+            if ($topic != null) {
+                $topic->order = $l->order;
+                $topic->save();
             }
-            return redirect()->back()->with('success', 'temas ordenados correctamente');
         }
-        return $this->deny_access($request);
+        return redirect()->back()->with('success', 'temas ordenados correctamente');
     }
 
     public function updateVideoPercentage(Request $request)
