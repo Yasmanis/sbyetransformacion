@@ -1,14 +1,14 @@
 <template>
-    <q-card class="offer-card q-ma-md" bordered>
+    <q-card class="offer-card" flat>
         <div class="discount-badge">
             <q-badge
                 color="black"
                 text-color="white"
-                :label="`-${object.percent}%`"
+                :label="`-${object.income} €`"
             />
         </div>
 
-        <q-card-section>
+        <q-card-section class="q-pa-xs">
             <div
                 class="text-body1 text-grey-8 q-mb-md"
                 v-html="object.description"
@@ -28,21 +28,11 @@
                 <span class="text-caption">{{ period }}</span>
             </div>
         </q-card-section>
-
-        <q-card-actions align="center" class="q-pa-md">
-            <q-btn
-                color="black"
-                no-caps
-                :label="inCart ? 'en carrito' : 'agregar'"
-                :icon="inCart ? 'check' : 'shopping_cart'"
-                @click="inCart = !inCart"
-            />
-        </q-card-actions>
     </q-card>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
 defineOptions({
     name: "DiscountComponent",
@@ -52,8 +42,6 @@ const props = defineProps({
     object: Object,
     product: Object,
 });
-
-const inCart = ref(false);
 
 const period = computed(() => {
     const { start_at, end_at } = props.object;
@@ -68,12 +56,6 @@ const period = computed(() => {
 .offer-card {
     border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
-
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
 
     .discount-badge {
         position: absolute;

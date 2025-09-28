@@ -124,6 +124,8 @@ const screen = computed(() => {
     return $q.screen;
 });
 
+const segment = ref(null);
+
 const page = usePage();
 const currentTopic = ref(null);
 const currentSection = ref(null);
@@ -173,16 +175,7 @@ watch(currentTopic, (n, o) => {
 watch(
     () => page.url,
     (n) => {
-        console.log(n);
-
-        const current_module = getActiveModule();
-        console.log(current_module);
-
-        const permissions = current_module.permissions.map((p) => p.name);
-        const modelName = current_module.model.toLowerCase();
-        has_add.value = permissions.includes(`add_${modelName}`);
-        has_edit.value = permissions.includes(`edit_${modelName}`);
-        has_delete.value = permissions.includes(`delete_${modelName}`);
+        setDefaults();
     }
 );
 
@@ -198,12 +191,17 @@ onMounted(() => {
     setDefaults();
 });
 
-const segment = computed(() => {
-    const pathSegments = window.location.pathname.split("/");
-    return pathSegments.pop() || pathSegments[pathSegments.length - 2];
-});
-
 const setDefaults = () => {
+    const current_module = getActiveModule();
+    const permissions = current_module.permissions.map((p) => p.name);
+    const modelName = current_module.model.toLowerCase();
+    has_add.value = permissions.includes(`add_${modelName}`);
+    has_edit.value = permissions.includes(`edit_${modelName}`);
+    has_delete.value = permissions.includes(`delete_${modelName}`);
+
+    const pathSegments = window.location.pathname.split("/");
+    segment.value = pathSegments.pop() || pathSegments[pathSegments.length - 2];
+
     let n = sections.value;
     if (n.length > 0) {
         if (currentSection.value !== null) {

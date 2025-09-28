@@ -25,7 +25,8 @@ class Product extends Model
         'image_path',
         'categories_id',
         'categories_str',
-        'active_offers'
+        'active_offers',
+        'final_price'
     ];
 
     protected $with = ['subtitles'];
@@ -91,9 +92,24 @@ class Product extends Model
 
     public function getActiveOffersAttribute()
     {
+        $offers = DB::select("select id, price, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description from products_offers where product_id=? and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id]);
+        $discounts = DB::select("select id, code, percent, income, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description from products_discount where product_id=? and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id]);
         return [
-            'offers' => DB::select("select id, price, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description from products_offers where product_id=? and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id]),
-            'discounts' => DB::select("select id, code, percent, income, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description from products_discount where product_id=? and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id])
+            'offer' => count($offers) > 0 ? $offers[0] : null,
+            'discount' => count($discounts) > 0 ? $discounts[0] : null
         ];
+    }
+
+    public function getFinalPriceAttribute()
+    {
+        $price = $this->price;
+        $offers = $this->active_offers;
+        if (isset($offers['offer'])) {
+            $price = $offers['offer']->price;
+        }
+        if (isset($offers['discount'])) {
+            $price = $price - $offers['discount']->income;
+        }
+        return $price;
     }
 }

@@ -76,7 +76,7 @@
                                 </q-item-label>
                                 <q-item-label>contado</q-item-label>
                                 <q-item-label class="text-bold">
-                                    {{ prod.price }} €
+                                    {{ prod.final_price }} €
                                 </q-item-label>
                                 <product-information
                                     :product="prod"

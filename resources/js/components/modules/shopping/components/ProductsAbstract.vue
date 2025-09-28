@@ -12,7 +12,7 @@
             <q-item-label class="text-bold">
                 {{ product.name }}
             </q-item-label>
-            <q-item-label> precio: {{ product.price }} € </q-item-label>
+            <q-item-label> precio: {{ product.final_price }} € </q-item-label>
         </q-item-section>
     </q-item>
 </template>

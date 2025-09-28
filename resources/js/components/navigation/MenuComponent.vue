@@ -226,11 +226,7 @@ const navigateTo = (payload) => {
                     payload = modules[0];
                 }
             }
-            router.get(
-                payload.base_url,
-                {},
-                { preserveScroll: true, preserveState: true }
-            );
+            router.get(payload.base_url);
             emit("change-url", payload);
         }
     }

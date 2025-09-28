@@ -19,7 +19,7 @@
                                     {{ product.name }}
                                 </q-item-label>
                                 <q-item-label>
-                                    Precio: {{ product.price }} €
+                                    Precio: {{ product.final_price }} €
                                 </q-item-label>
                             </q-item-section>
                             <q-item-section avatar top>

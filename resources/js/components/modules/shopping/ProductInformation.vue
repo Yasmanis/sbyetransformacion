@@ -65,10 +65,32 @@
                             </q-item>
                             <q-item style="padding: 0">
                                 <q-item-section avatar class="text-bold">
-                                    precio: {{ product.price }} €
+                                    precio:
+                                </q-item-section>
+                                <q-item-section
+                                    avatar
+                                    class="text-bold"
+                                    v-if="currentOffer"
+                                >
+                                    <q-item-label>
+                                        {{ product.final_price }} €
+                                    </q-item-label>
+                                </q-item-section>
+                                <q-item-section
+                                    avatar
+                                    class="text-bold"
+                                    :class="
+                                        currentOffer
+                                            ? 'text-strike text-grey-6'
+                                            : null
+                                    "
+                                >
+                                    <q-item-label>
+                                        {{ product.price }} €
+                                    </q-item-label>
                                 </q-item-section>
                                 <q-item-section></q-item-section>
-                                <q-item-section avatar>
+                                <q-item-section avatar v-if="!currentOffer">
                                     <q-btn
                                         label="comprar"
                                         :color="
@@ -88,62 +110,50 @@
                                     />
                                 </q-item-section>
                             </q-item>
-                        </q-item-section>
-                    </q-item>
-
-                    <q-item>
-                        <q-item-section
-                            avatar
-                            style="min-width: 160px"
-                        ></q-item-section>
-                        <q-item-section>
-                            <q-tabs
-                                v-model="tab"
-                                dense
-                                align="justify"
-                                class="bg-black text-white shadow-2"
+                            <q-item style="padding: 0" v-if="currentOffer">
+                                <q-item-section
+                                    class="bg-grey-3"
+                                    avatar
+                                    style="width: 50px !important"
+                                >
+                                    <span class="rotate-270">oferta</span>
+                                </q-item-section>
+                                <q-item-section>
+                                    <offers-component
+                                        v-for="o in [currentOffer]"
+                                        :key="`offer-${o.id}`"
+                                        :object="o"
+                                        :product="product"
+                                    />
+                                </q-item-section>
+                            </q-item>
+                            <q-item
+                                style="padding: 0"
+                                class="q-mt-xs"
+                                v-if="currentDiscount"
                             >
-                                <q-tab name="offers" no-caps label="ofertas" />
-                                <q-tab
-                                    name="discounts"
-                                    no-caps
-                                    label="descuentos"
-                                />
-                            </q-tabs>
-
-                            <q-tab-panels v-model="tab" animated>
-                                <q-tab-panel name="offers" class="q-pa-none">
-                                    <template v-if="offers.length > 0">
-                                        <offers-component
-                                            v-for="o in offers"
-                                            :key="`offers-${o.id}`"
-                                            :object="o"
-                                            :product="product"
-                                        />
-                                    </template>
-                                    <p class="text-center q-py-md" v-else>
-                                        lo sentimos; actualmente no tenemos
-                                        ofertas
-                                    </p>
-                                </q-tab-panel>
-
-                                <q-tab-panel name="discounts" class="q-pa-none">
-                                    <template v-if="discounts.length > 0">
-                                        <discount-component
-                                            v-for="o in discounts"
-                                            :key="`discount-${o.id}`"
-                                            :object="o"
-                                            :product="product"
-                                    /></template>
-                                    <p class="text-center q-py-md" v-else>
-                                        lo sentimos; actualmente no tenemos
-                                        descuentos
-                                    </p>
-                                </q-tab-panel>
-                            </q-tab-panels>
+                                <q-item-section
+                                    class="bg-grey-3"
+                                    avatar
+                                    style="width: 50px !important"
+                                >
+                                    <span
+                                        class="rotate-270"
+                                        style="margin-left: -15px"
+                                        >descuento</span
+                                    >
+                                </q-item-section>
+                                <q-item-section>
+                                    <discount-component
+                                        v-for="o in [currentDiscount]"
+                                        :key="`discount-${o.id}`"
+                                        :object="o"
+                                        :product="product"
+                                    />
+                                </q-item-section>
+                            </q-item>
                         </q-item-section>
                     </q-item>
-
                     <q-item>
                         <q-item-section
                             avatar
@@ -277,11 +287,11 @@ const showInformation = () => {
     }
 };
 
-const offers = computed(() => {
-    return props.product.active_offers.offers;
+const currentOffer = computed(() => {
+    return props.product.active_offers.offer;
 });
 
-const discounts = computed(() => {
-    return props.product.active_offers.discounts;
+const currentDiscount = computed(() => {
+    return props.product.active_offers.discount;
 });
 </script>

@@ -1,20 +1,11 @@
 <template>
-    <q-card class="offer-card q-ma-md" bordered>
-        <div class="discount-badge">
-            <q-badge
-                color="black"
-                text-color="white"
-                :label="`${object.price}  €`"
-            />
-        </div>
-
-        <q-card-section>
+    <q-card flat class="offer-card">
+        <q-card-section class="q-pa-xs">
             <div
                 class="text-body1 text-grey-8 q-mb-md"
                 v-html="object.description"
             ></div>
 
-            <!-- Precios -->
             <div class="row items-center q-mt-sm">
                 <div class="text-h5 text-weight-bold text-black">
                     {{ object.price }} €
@@ -24,25 +15,34 @@
                 </div>
             </div>
             <div class="row items-center text-grey-7">
-                <q-icon name="event" class="q-mr-xs" />
-                <span class="text-caption">{{ period }}</span>
+                <div class="col">
+                    <q-icon name="event" class="q-mr-xs" />
+                    <span class="text-caption">{{ period }}</span>
+                </div>
+
+                <div class="col text-right">
+                    <q-btn
+                        color="black"
+                        no-caps
+                        :label="inCart ? 'en la cesta' : 'comprar'"
+                        :icon="inCart ? 'check' : 'shopping_cart'"
+                        :disable="
+                            products.map((p) => p.id).includes(product.id)
+                        "
+                        @click="updateProductsStorage(product)"
+                    />
+                </div>
             </div>
         </q-card-section>
-
-        <q-card-actions align="center" class="q-pa-md">
-            <q-btn
-                color="black"
-                no-caps
-                :label="inCart ? 'en carrito' : 'agregar'"
-                :icon="inCart ? 'check' : 'shopping_cart'"
-                @click="inCart = !inCart"
-            />
-        </q-card-actions>
     </q-card>
 </template>
 
 <script setup>
 import { computed, ref } from "vue";
+import {
+    products,
+    updateProductsStorage,
+} from "../../../../../services/shopping";
 
 defineOptions({
     name: "OffersComponent",
@@ -53,8 +53,6 @@ const props = defineProps({
     product: Object,
 });
 
-const inCart = ref(false);
-
 const period = computed(() => {
     const { start_at, end_at } = props.object;
     if (end_at) {
@@ -62,18 +60,16 @@ const period = computed(() => {
     }
     return `desde ${start_at}`;
 });
+
+const inCart = computed(() => {
+    return products.value.map((p) => p.id).includes(props.product.id);
+});
 </script>
 
 <style lang="scss" scoped>
 .offer-card {
     border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
-
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
 
     .discount-badge {
         position: absolute;
