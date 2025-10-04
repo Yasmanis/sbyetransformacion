@@ -78,6 +78,7 @@
                         label="quiero empezar ahora"
                         no-caps
                         rounded
+                        :href="`/store#product-store-${product?.id}`"
                     >
                         <q-icon
                             name="fa fa-long-arrow-right"
@@ -219,6 +220,7 @@
                         label="quiero vivir esta transformacion"
                         no-caps
                         rounded
+                        :href="`/store#product-store-${product?.id}`"
                     >
                         <q-icon
                             name="fa fa-long-arrow-right"
@@ -401,7 +403,13 @@
                     </q-card-section>
                 </q-card>
                 <div class="col-12 text-center q-mt-md">
-                    <q-btn color="black" label="empezar ahora" no-caps rounded>
+                    <q-btn
+                        color="black"
+                        label="empezar ahora"
+                        no-caps
+                        rounded
+                        :href="`/store#product-store-${product?.id}`"
+                    >
                         <q-icon
                             name="fa fa-long-arrow-right"
                             size="xs"
@@ -838,6 +846,7 @@
                     label="quiero empezar ahora"
                     no-caps
                     rounded
+                    :href="`/store#product-store-${product?.id}`"
                 >
                     <q-icon
                         name="fa fa-long-arrow-right"
@@ -857,7 +866,7 @@ import { useQuasar, dom, Screen } from "quasar";
 
 import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
-import { useForm, usePage } from "@inertiajs/vue3";
+import { usePage } from "@inertiajs/vue3";
 
 defineOptions({
     name: "VivirEnPlenitud",
@@ -950,13 +959,15 @@ const arrowsVisible = ref(false);
 const slide = ref(0);
 const slidesPerView = ref(4);
 const rowsTestimonies = ref(0);
+const page = usePage();
+const product = ref(null);
 
 onMounted(() => {
     const observer = setupObservers();
     const arrows = arrowsObservers();
     setTestimonyWidth();
-    webTestimonies.value = usePage().props.testimonies;
-
+    webTestimonies.value = page.props.testimonies;
+    product.value = page.props.product;
     onUnmounted(() => {
         observer.disconnect();
         arrows.disconnect();

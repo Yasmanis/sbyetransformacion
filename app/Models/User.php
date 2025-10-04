@@ -210,7 +210,7 @@ class User extends Authenticatable implements CanResetPassword
     {
         $results = [];
         if ($this->sa) {
-            $results = Module::all();
+            $results = Module::orderBy('order', 'ASC')->get();
         } else {
             $modules = DB::select(
                 "WITH RECURSIVE 
@@ -247,6 +247,10 @@ class User extends Authenticatable implements CanResetPassword
             $ids = [];
             foreach ($modules as $a) {
                 $ids[] = $a->id;
+            }
+            $shopping = Module::firstWhere('model', 'Shopping');
+            if ($shopping) {
+                $ids[] = $shopping->id;
             }
             $results = Module::whereIn(
                 'id',

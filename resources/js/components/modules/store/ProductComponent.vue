@@ -1,5 +1,5 @@
 <template>
-    <q-card flat bordered>
+    <q-card flat bordered :id="`product-store-${product.id}`">
         <q-card-section class="q-pa-xs">
             <q-item>
                 <q-item-section />

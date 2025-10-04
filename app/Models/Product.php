@@ -93,7 +93,7 @@ class Product extends Model
     public function getActiveOffersAttribute()
     {
         $offers = DB::select("select id, price, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description from products_offers where product_id=? and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id]);
-        $discounts = DB::select("select id, code, percent, income, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description from products_discount where product_id=? and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id]);
+        $discounts = DB::select("select id, code, percent, income, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description, offers_income from products_discount where product_id=? and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id]);
         return [
             'offer' => count($offers) > 0 ? $offers[0] : null,
             'discount' => count($discounts) > 0 ? $discounts[0] : null
@@ -104,10 +104,13 @@ class Product extends Model
     {
         $price = $this->price;
         $offers = $this->active_offers;
+        $has_discount = isset($offers['discount']);
         if (isset($offers['offer'])) {
             $price = $offers['offer']->price;
-        }
-        if (isset($offers['discount'])) {
+            if ($has_discount && $offers['discount']->offers_income === 1) {
+                $price = $price - $offers['discount']->income;
+            }
+        } else if ($has_discount) {
             $price = $price - $offers['discount']->income;
         }
         return $price;

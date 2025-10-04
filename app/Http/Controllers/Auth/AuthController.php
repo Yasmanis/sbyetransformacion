@@ -41,6 +41,12 @@ class AuthController extends Controller
             if ($user->active) {
                 $request->session()->regenerate();
                 auth()->login($user);
+                if ($request->showPaymentOnLogin) {
+                    return redirect()->intended('admin/shopping')->with([
+                        'success' => 'bienvenido ' . $user->username . ', puede continuar con el pago',
+                        'show_payment' => true
+                    ]);
+                }
                 return redirect()->intended('admin')->with([
                     'success' => 'bienvenido ' . $user->username,
                     'show_msg_subscription' => !$user->subscripted

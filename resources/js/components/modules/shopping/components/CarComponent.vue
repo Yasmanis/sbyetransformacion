@@ -115,6 +115,7 @@
                         v-if="authBtn && !user"
                     />
                     <basket-sale-component
+                        :show="showPayment"
                         label="pagar"
                         class="full-width"
                         v-if="user && products.length > 0"
@@ -151,6 +152,7 @@ const props = defineProps({
     },
     authBtn: Boolean,
     show: Boolean,
+    showPayment: Boolean,
 });
 
 const emits = defineEmits(["show", "hide", "remove-product", "show-auth"]);

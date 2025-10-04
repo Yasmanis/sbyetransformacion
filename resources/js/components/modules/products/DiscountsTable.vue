@@ -314,9 +314,17 @@ const columns = [
     {
         name: "income",
         field: "income",
-        label: "decuento",
+        label: "descuento",
         sortable: true,
         align: "left",
+    },
+    {
+        name: "offers_income",
+        field: "offers_income",
+        label: "descuento a oferta",
+        sortable: false,
+        type: "boolean",
+        align: "center",
     },
     {
         name: "start_at",
@@ -363,6 +371,12 @@ const filterFields = ref([
         name: "endt_at",
         label: "hasta",
         type: "date",
+    },
+    {
+        field: "offers_income",
+        name: "offers_income",
+        label: "descuento aplicable a ofertas",
+        type: "boolean",
     },
 ]);
 const searchFields = ref([]);
@@ -414,6 +428,17 @@ const formFields = ref([
         label: "descripcion",
         othersProps: {
             required: true,
+        },
+    },
+    {
+        field: "offers_income",
+        name: "offers_income",
+        label: "descuento aplicable a ofertas",
+        type: "boolean",
+        othersProps: {
+            help: [
+                "señala esta casilla si quieres que este descuento se pueda aplicar a las ofertas vigentes, reduciendo mas el PVP final",
+            ],
         },
     },
 ]);

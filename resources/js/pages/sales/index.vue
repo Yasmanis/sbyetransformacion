@@ -106,8 +106,14 @@
                 >
                     <car-component
                         :show="showMenu"
+                        :show-payment="showPayment"
                         @show="showMenu = true"
-                        @hide="showMenu = false"
+                        @hide="
+                            {
+                                showMenu = false;
+                                showPayment = false;
+                            }
+                        "
                     />
                 </q-item-section>
             </q-item>
@@ -136,7 +142,7 @@ defineOptions({
 });
 
 const showMenu = ref(false);
-
+const showPayment = ref(false);
 const page = usePage();
 
 const items = [
@@ -148,9 +154,13 @@ const items = [
 ];
 
 onMounted(() => {
-    if (page.props.flash_success) {
-        success(page.props.flash_success);
-        removeAllProductsFromStorage();
+    // if (page.props.flash_success) {
+    //     success(page.props.flash_success);
+    //     removeAllProductsFromStorage();
+    // }
+    if (page.props.show_payment) {
+        showMenu.value = true;
+        showPayment.value = true;
     }
 });
 </script>

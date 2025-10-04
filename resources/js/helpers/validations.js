@@ -33,7 +33,8 @@ export const rules = {
 export const validations = {
     getRules: (field) => {
         let result = [];
-        let help = [];
+        let help = field?.help ?? [];
+
         if (field && typeof field === "object") {
             if (field.required) {
                 result = [...result, rules.required];

@@ -90,7 +90,11 @@ Route::get('/', function () {
 
 Route::get('/liberacion_emocional', function () {
     $testimonies = Testimony::active()->type('text')->get();
-    return Inertia('landing/free_learning', ['testimonies' => $testimonies]);
+    $product = Product::firstWhere('name', 'plan basico');
+    return Inertia('landing/free_learning', [
+        'testimonies' => $testimonies,
+        'product' => $product
+    ]);
 });
 
 Route::get('/consulta_individual', function () {

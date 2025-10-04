@@ -11,7 +11,13 @@
                 <q-toolbar-title></q-toolbar-title>
                 <dialog-auth-component
                     :show="showAuth"
-                    @hide="showAuth = false"
+                    :show-payment-on-login="showPaymentOnLogin"
+                    @hide="
+                        {
+                            showAuth = false;
+                            showPaymentOnLogin = false;
+                        }
+                    "
                 />
             </q-toolbar>
             <q-item dense>
@@ -107,8 +113,18 @@
                     <car-component
                         :show="showBasket"
                         :auth-btn="true"
-                        @hide="showBasket = false"
-                        @show-auth="showAuth = true"
+                        @hide="
+                            {
+                                showBasket = false;
+                                showPaymentOnLogin = false;
+                            }
+                        "
+                        @show-auth="
+                            {
+                                showAuth = true;
+                                showPaymentOnLogin = true;
+                            }
+                        "
                     />
                 </q-item-section>
             </q-item>
@@ -159,16 +175,17 @@ import {
     loadProductsFromStorage,
     removeAllProductsFromStorage,
 } from "../../services/shopping";
-import { success } from "../../helpers/notifications";
+import { info, success } from "../../helpers/notifications";
+import { useQuasar } from "quasar";
 defineOptions({
     name: "ConsultaIndividual",
 });
 
 const page = usePage();
-
+const $q = useQuasar();
 const showBasket = ref(false);
 const showAuth = ref(false);
-
+const showPaymentOnLogin = ref(false);
 const products = ref([]);
 const query = ref(null);
 const category = ref(null);
@@ -182,6 +199,22 @@ onMounted(() => {
     if (page.props.flash_success) {
         success(page.props.flash_success);
         removeAllProductsFromStorage();
+    }
+    if (location.hash) {
+        let product = products.value.find(
+            (p) => p.id === parseInt(location.hash.split("-")[2])
+        );
+        $q.dialog({
+            title: "info",
+            message: `usted fue redirigido a la tienda, para continuar debe comprar el producto <b>${product?.name}</b>`,
+            persistent: true,
+            html: true,
+            icon: "info",
+        }).onOk(() => {
+            location.hash = "";
+            query.value = product?.name;
+            filterProducts();
+        });
     }
 });
 

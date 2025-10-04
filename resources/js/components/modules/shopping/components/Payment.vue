@@ -13,7 +13,7 @@
                             </q-item-section>
                         </q-item>
                         <q-item
-                            style="padding: 0"
+                            style="padding: 5px 0px"
                             v-for="(method, indexMethod) in methods"
                             :key="`method-${indexMethod}`"
                             clickable
@@ -125,7 +125,14 @@ defineOptions({
     name: "Payment",
 });
 
-const methods = ref([]);
+const methods = ref([
+    {
+        id: 0,
+        name: "PayPal",
+        predetermined: true,
+        number: "#### #### #### ####",
+    },
+]);
 
 onBeforeMount(() => {
     paymentsMethods.value.forEach((m) => {
@@ -134,7 +141,7 @@ onBeforeMount(() => {
     let predetermined = methods.value.find((m) => m.predetermined);
     if (
         currentPaymentMethod.value &&
-        currentPaymentMethod.id !== predetermined.id
+        currentPaymentMethod.id !== predetermined?.id
     ) {
         predetermined.predetermined = false;
         predetermined = methods.value.find(

@@ -12,9 +12,6 @@
         bottom-slots
         @update:model-value="onUpdate"
     >
-        <template #label v-if="label">
-            {{ label }}
-        </template>
     </q-checkbox>
     <div
         class="q-field__bottom row items-start q-field__bottom--stale"

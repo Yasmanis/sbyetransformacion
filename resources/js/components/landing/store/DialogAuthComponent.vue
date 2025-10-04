@@ -21,7 +21,7 @@
         <q-card class="bg-primary" style="width: 800px; max-width: 80vw">
             <dialog-header-component
                 icon="mdi-key"
-                title="ACCESO ASBYETRANSFORMACION APP PARA FORMALIZAR TU COMPRA"
+                title="ACCESO A SBYETRANSFORMACION APP PARA FORMALIZAR TU COMPRA"
                 closable
                 class="text-white"
             />
@@ -36,7 +36,9 @@
                         class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 q-pa-xl bg-primary"
                     >
                         <div class="column items-center">
-                            <form-login-component />
+                            <form-login-component
+                                :show-payment-on-login="showPaymentOnLogin"
+                            />
                         </div>
                     </div>
                 </div>
@@ -58,6 +60,7 @@ defineOptions({
 
 const props = defineProps({
     show: Boolean,
+    showPaymentOnLogin: Boolean,
 });
 
 const emits = defineEmits(["hide"]);

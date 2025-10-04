@@ -1,10 +1,11 @@
 import { useForm } from "@inertiajs/vue3";
 import { Dialog, Loading } from "quasar";
-export const login = (email, password, rememberme) => {
+export const login = (email, password, rememberme, showPaymentOnLogin) => {
     const form = useForm({
-        email: email,
-        password: password,
-        rememberme: rememberme,
+        email,
+        password,
+        rememberme,
+        showPaymentOnLogin,
     });
     form.post("authenticate");
 };
@@ -31,8 +32,8 @@ export const forgotPassword = (email) => {
         onSuccess: () => {
             return true;
         },
-        onError:()=>{
+        onError: () => {
             return false;
-        }
+        },
     });
 };

@@ -51,6 +51,7 @@ class HandleInertiaRequests extends Middleware
                 ] : null;
             },
             'show_msg_subscription' => $request->session()->get('show_msg_subscription'),
+            'show_payment' => $request->session()->get('show_payment'),
             'public_path' => asset(''),
             'flash_success' => $request->session()->get('success'),
             'flash_error' => $request->session()->get('error'),

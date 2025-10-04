@@ -17,7 +17,12 @@ class ProductDiscount extends Model
         'start_at',
         'end_at',
         'product_id',
-        'description'
+        'description',
+        'offers_income'
+    ];
+
+    protected $casts = [
+        'offers_income' => 'boolean'
     ];
 
     public function product()

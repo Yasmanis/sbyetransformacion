@@ -81,6 +81,10 @@ defineOptions({
     name: "FormLoginComponent",
 });
 
+const props = defineProps({
+    showPaymentOnLogin: Boolean,
+});
+
 const lostPassword = ref(false);
 const formLogin = ref(null);
 
@@ -114,7 +118,7 @@ const authenticate = async () => {
             if (lostPassword.value) {
                 getPassword(email);
             } else {
-                login(email, password, rememberme);
+                login(email, password, rememberme, props.showPaymentOnLogin);
             }
         } else {
             errorValidation();

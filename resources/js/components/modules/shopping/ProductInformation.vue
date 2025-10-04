@@ -37,11 +37,16 @@
                             />
                         </q-item-section>
                         <q-item-section>
-                            <div class="row">
-                                <div class="col">
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label
+                                        class="text-bold text-center text-h5 q-mb-md"
+                                    >
+                                        {{ product.name }}
+                                    </q-item-label>
                                     <span v-html="product.description"></span>
-                                </div>
-                            </div>
+                                </q-item-section>
+                            </q-item>
                             <q-item class="no-padding">
                                 <q-item-section>
                                     <q-expansion-item

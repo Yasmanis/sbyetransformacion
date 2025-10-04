@@ -127,7 +127,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
@@ -153,11 +153,23 @@ defineOptions({
 const props = defineProps({
     label: String,
     class: String,
+    show: Boolean,
 });
 
 const showDialog = ref(false);
 const step = ref(1);
 const stepper = ref(null);
+
+onMounted(() => {
+    showDialog.value = props.show;
+});
+
+watch(
+    () => props.show,
+    (n) => {
+        showDialog.value = n;
+    }
+);
 
 const onStepChange = () => {
     if (step.value === 3 && !currentPaymentMethod.value) {

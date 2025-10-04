@@ -9,13 +9,10 @@ class ShoppingController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->user()->hasView('shopping')) {
-            $repository = new ShoppingRepository();
-            $repository->search($request->search);
-            $repository->filters($request->filters);
-            return $this->data_index($repository, $request);
-        }
-        return $this->deny_access($request);
+        $repository = new ShoppingRepository();
+        $repository->search($request->search);
+        $repository->filters($request->filters);
+        return $this->data_index($repository, $request);
     }
 
     public function store(Request $request)
