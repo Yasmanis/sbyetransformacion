@@ -55,23 +55,16 @@
                                 </q-item-label>
                             </q-item-section>
                         </q-item>
-                        <q-item class="bg-primary text-white q-mt-md">
-                            <q-item-section>
-                                2. DIRECCION DE FACTURACION
-                            </q-item-section>
-                        </q-item>
-                        <address-card :object="currentBillingInformation" />
-                        <q-item style="padding: 0px 0px">
-                            <q-item-section>
-                                <checkbox-field
-                                    name="change_address"
-                                    label="direccion nueva para este envio"
-                                />
-                            </q-item-section>
-                            <q-item-section avatar>
-                                <btn-edit-component />
-                            </q-item-section>
-                        </q-item>
+
+                        <current-billing-information
+                            text="2. DIRECCION DE FACTURACION"
+                            bgClass="bg-primary q-mt-md"
+                            textClass="text-white"
+                            :current="currentBillingInformation"
+                            @change="
+                                (billing) => emits('change-billing', billing)
+                            "
+                        />
                     </q-list>
                 </q-card-section>
             </q-card>
@@ -109,12 +102,10 @@
 <script setup>
 import { onBeforeMount, ref, watch } from "vue";
 import CheckboxField from "../../../form/input/CheckboxField.vue";
-import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
-import AddressCard from "./AddressCard.vue";
+import CurrentBillingInformation from "../userdata/CurrentBillingInformation.vue";
 import { Screen } from "quasar";
 import {
     subtotalAmount,
-    pendingAmount,
     paymentsMethods,
     currentPaymentMethod,
     billingsInformation,
@@ -124,6 +115,8 @@ import {
 defineOptions({
     name: "Payment",
 });
+
+const emits = defineEmits(["change-billing"]);
 
 const methods = ref([
     {
@@ -159,8 +152,8 @@ watch(
         currentBillingInformation.value = n
             ? billingsInformation.value.find(
                   (b) => b.id === n.billing_information_id
-              )
-            : null;
+              )?.id ?? 0
+            : 0;
     },
     {
         deep: true,

@@ -9,13 +9,12 @@
                     <q-card flat>
                         <q-card-section class="q-pa-none">
                             <q-list dense
-                                ><q-item class="bg-primary text-white">
-                                    <q-item-section class="text-center">
-                                        DIRECCION DE FACTURACION
-                                    </q-item-section>
-                                </q-item>
-                                <address-card
-                                    :object="currentBillingInformation"
+                                ><current-billing-information
+                                    text="DIRECCION DE FACTURACION"
+                                    bgClass="bg-primary"
+                                    textClass="text-white"
+                                    :current="billingInformation?.id ?? 0"
+                                    :editable="false"
                                 />
                             </q-list>
                         </q-card-section>
@@ -85,10 +84,20 @@
                             </q-item-section>
                         </q-item>
                         <q-item>
-                            <checkbox-field
+                            <q-checkbox
+                                v-model="accept"
                                 name="accepted"
-                                label="acepto los terminos legales de esta contratacion"
-                            />
+                                dense
+                                @update:model-value="
+                                    (val) => emits('accepted', val)
+                                "
+                            >
+                                acepto los
+                                <legal-contracting
+                                    text="<span class='text-bold'>terminos legales</span>"
+                                />
+                                de esta contratacion
+                            </q-checkbox>
                         </q-item>
                         <q-item>
                             <q-item-section>
@@ -138,13 +147,11 @@
 
     <div class="row q-mt-sm">
         <div class="col">
-            <q-btn-component
-                label="leer terminos legales de esta contratacion"
-                flat
-                no-caps
-                square
-                color="primary"
-            />
+            <q-btn-component flat no-caps square color="primary">
+                <legal-contracting
+                    text="leer <span class='text-bold'>terminos legales</span> de esta contratacion"
+                />
+            </q-btn-component>
         </div>
     </div>
 </template>
@@ -155,82 +162,26 @@ import CheckboxField from "../../../form/input/CheckboxField.vue";
 import QBtnComponent from "../../../base/QBtnComponent.vue";
 import AddressCard from "./AddressCard.vue";
 import ProductsAbstract from "./ProductsAbstract.vue";
-import { Screen } from "quasar";
+import QTooltipComponent from "../../../base/QTooltipComponent.vue";
+import LegalContracting from "../../../others/LegalContracting.vue";
+import CurrentBillingInformation from "../userdata/CurrentBillingInformation.vue";
+import { Screen, openURL } from "quasar";
 import {
     products,
     subtotalAmount,
     pendingAmount,
     currentPaymentMethod as method,
-    currentBillingInformation,
 } from "../../../../services/shopping";
 
 defineOptions({
     name: "Confirmation",
 });
 
-const step = ref(1);
+const props = defineProps({
+    billingInformation: Object,
+});
 
-const columns = ref([
-    {
-        name: "date",
-        field: "date",
-        label: "fecha",
-        headerClasses: "bg-primary text-white",
-        align: "left",
-    },
-    {
-        name: "summary",
-        field: "summary",
-        label: "resumen",
-        headerClasses: "bg-primary text-white",
-        align: "left",
-    },
-    {
-        name: "cost",
-        field: "cost",
-        label: "importe",
-        headerClasses: "bg-primary text-white",
-        align: "right",
-    },
-    {
-        name: "amount",
-        field: "amount",
-        label: "pagado a la fecha",
-        headerClasses: "bg-primary text-white text-body1",
-        align: "right",
-    },
-]);
+const emits = defineEmits(["accepted"]);
 
-const rows = ref([
-    {
-        date: "01-05-2023",
-        summary: "primer pago con la compra",
-        cost: "270 €",
-        amount: "270 €",
-    },
-    {
-        date: "01-06-2023",
-        summary: "segundo pago",
-        cost: "130 €",
-        amount: "400 €",
-    },
-    {
-        date: "01-07-2023",
-        summary: "tercer pago",
-        cost: "130 €",
-        amount: "530 €",
-    },
-    {
-        date: "01-08-2023",
-        summary: "cuarto pago",
-        cost: "130 €",
-        amount: "660 €",
-    },
-    {
-        date: "01-09-2023",
-        summary: "quinto pago",
-        cost: "130 €",
-        amount: "790 €",
-    },
-]);
+const accept = ref(false);
 </script>

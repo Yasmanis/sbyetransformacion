@@ -180,6 +180,13 @@
                     @confirm="onUpdateField"
                     v-else-if="f.type === 'password'"
                 />
+                <discount-field
+                    :percent-value="formData[f.percentName]"
+                    :income-value="formData[f.incomeName]"
+                    :total-price="formData[f.priceName]"
+                    @update="onUpdateField"
+                    v-else-if="f.type === 'discount'"
+                />
             </div>
         </q-form>
     </q-card-section>
@@ -220,6 +227,7 @@ import RatingField from "./input/RatingField.vue";
 import UsersSelectDialogComponent from "../modules/user/UsersSelectDialogComponent.vue";
 import SubtitleField from "./input/SubtitleField.vue";
 import PlaneField from "./input/PlaneField.vue";
+import DiscountField from "./input/DiscountField.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
 import BtnSaveAndNewComponent from "../btn/BtnSaveAndNewComponent.vue";
@@ -335,6 +343,16 @@ const setDefaultData = () => {
                 : null;
             formData.value[f.endName] = props.object
                 ? props.object[f.endName]
+                : null;
+        } else if (f.type === "discount") {
+            formData.value[f.percentName] = props.object
+                ? props.object[f.percentName]
+                : null;
+            formData.value[f.incomeName] = props.object
+                ? props.object[f.incomeName]
+                : null;
+            formData.value[f.priceName] = props.object
+                ? props.object[f.priceName]
                 : null;
         } else {
             formData.value[f.name] = props.object

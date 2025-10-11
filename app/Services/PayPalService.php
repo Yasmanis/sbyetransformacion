@@ -20,7 +20,7 @@ class PayPalService
 
     public function createOrder($amount, $method = null, $information = null, $currency = 'EUR')
     {
-        //$country = Country::find($information['country_id']);
+        $country = Country::find($information['country_id']);
         // $requestId = 'PAYPAL_' . Str::uuid();
         // $this->provider->setRequestHeader('PayPal-Request-Id', $requestId);
         $response = $this->provider->createOrder([
@@ -51,20 +51,20 @@ class PayPalService
             //         ]
             //     ]
             // ],
-            // 'payer' => [
-            //     "name" => [
-            //         "given_name" => $information['name'],
-            //         "surname" => $information['surname']
-            //     ],
-            //     "address" => [
-            //         "address_line_1" => $information['address'],
-            //         "address_line_2" => $information['road'],
-            //         "admin_area_2" => $information['province'],
-            //         "admin_area_1" => $country->name,
-            //         "postal_code" => $information['postal_code'],
-            //         "country_code" => $country->iso2
-            //     ]
-            // ],
+            'payer' => [
+                "name" => [
+                    "given_name" => $information['name'],
+                    "surname" => $information['surname']
+                ],
+                "address" => [
+                    "address_line_1" => $information['address'],
+                    "address_line_2" => $information['road'],
+                    "admin_area_2" => $information['province'],
+                    "admin_area_1" => $country->name,
+                    "postal_code" => $information['postal_code'],
+                    "country_code" => $country->iso2
+                ]
+            ],
         ]);
         return $response;
     }

@@ -657,75 +657,119 @@
             </div>
         </div>
         <div class="row bg-primary text-white container q-py-lg">
-            <p class="text-h6">LO QUE DICEN DE MI TRABAJO</p>
-            <p class="text-justify">
-                cada persona que he acompañado me ha mostrado que, cuando
-                alguien se atreve a mirar dentro, el cambio es inevitable
-            </p>
-            <p class="text-justify">
-                estas son algunas voces reales que han vivido esta
-                transformacion a traves de sesiones, de mi libro o de mis
-                conferencias
-            </p>
-            <hr style="width: 100%; height: 1px; background: #fff" />
-            <p class="text-h6 q-pt-md">video testimonio destacado</p>
-            <div class="row q-col-gutter-sm items-center">
-                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <video-player
-                        :src="`${$page.props.public_path}media/testimonio-destacado.mp4`"
-                        controls
-                        :volume="0.6"
-                        aspectRatio="16:9"
-                    />
-                </div>
-                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <p
-                        class="text-justify"
-                        :class="!Screen.xs ? 'q-px-xl' : null"
-                    >
-                        ella vivio un proceso de liberacion emocional durante
-                        varios dias de trabajo intensivo. lo que cuenta es parte
-                        de lo que tambien puedes empezar a vivir en este
-                        minicurso
-                    </p>
+            <div class="col-12">
+                <p class="text-h6">LO QUE DICEN DE MI TRABAJO</p>
+                <p class="text-justify">
+                    cada persona que he acompañado me ha mostrado que, cuando
+                    alguien se atreve a mirar dentro, el cambio es inevitable
+                </p>
+                <p class="text-justify">
+                    estas son algunas voces reales que han vivido esta
+                    transformacion a traves de sesiones, de mi libro o de mis
+                    conferencias
+                </p>
+                <hr style="width: 100%; height: 1px; background: #fff" />
+                <p class="text-h6 q-pt-md">video testimonio destacado</p>
+                <div class="row q-col-gutter-sm items-center">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <video-player
+                            :src="`${$page.props.public_path}media/testimonio-destacado.mp4`"
+                            controls
+                            :volume="0.6"
+                            aspectRatio="16:9"
+                        />
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <p
+                            class="text-justify"
+                            :class="!Screen.xs ? 'q-px-xl' : null"
+                        >
+                            ella vivio un proceso de liberacion emocional
+                            durante varios dias de trabajo intensivo. lo que
+                            cuenta es parte de lo que tambien puedes empezar a
+                            vivir en este minicurso
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-12">
-                    <hr style="width: 100%; height: 1px; background: #fff" />
-                    <p class="text-h6 q-pt-md q-mb-none">
-                        testimonios destacados
-                    </p>
-                    <br />
-                </div>
-                <div class="col-12 text-black self-center">
-                    <q-carousel
-                        v-model="slide"
-                        transition-prev="slide-right"
-                        transition-next="slide-left"
-                        swipeable
-                        animated
-                        control-color="black"
-                        arrows
-                        class="bg-primary q-pa-none"
-                        style="height: 280px"
+            <div class="col-12">
+                <hr style="width: 100%; height: 1px; background: #fff" />
+                <p class="text-h6 q-pt-md q-mb-none">testimonios destacados</p>
+                <br />
+            </div>
+
+            <div class="col-12 text-black self-center">
+                <q-carousel
+                    v-model="slide"
+                    transition-prev="slide-right"
+                    transition-next="slide-left"
+                    swipeable
+                    animated
+                    control-color="black"
+                    arrows
+                    class="bg-primary q-pa-none"
+                    style="height: 280px"
+                >
+                    <q-carousel-slide
+                        v-for="(slideGroup, index) in groupedSlides"
+                        :key="index"
+                        :name="index"
+                        class="row no-wrap q-pa-none"
                     >
-                        <q-carousel-slide
-                            v-for="(slideGroup, index) in groupedSlides"
-                            :key="index"
-                            :name="index"
-                            class="row no-wrap q-pa-none"
+                        <q-card
+                            v-for="(t, imgIndex) in slideGroup"
+                            :key="imgIndex"
+                            bordered
+                            class="my-card q-ma-sm rounded"
+                            style="
+                                border: 1px solid rgb(64, 116, 146);
+                                width: 300px;
+                                height: 250px;
+                            "
+                        >
+                            <q-card-section
+                                class="q-pa-sm q-pa-none text-center"
+                            >
+                                <q-img
+                                    :src="`${$page.props.public_path}images/icon/heart.png`"
+                                    fit="fill"
+                                    width="50px"
+                                />
+                            </q-card-section>
+                            <q-card-section
+                                class="q-pa-sm q-pa-none text-center text-black"
+                            >
+                                <span v-html="t.description"></span>
+                            </q-card-section>
+                            <q-card-section class="text-center">
+                                <q-item-label>
+                                    {{ t.user }}
+                                </q-item-label>
+                            </q-card-section>
+                        </q-card>
+                    </q-carousel-slide>
+                </q-carousel>
+            </div>
+            <template v-if="rowsTestimonies > 0">
+                <div class="col-12">
+                    <div class="row text-black">
+                        <div
+                            v-for="(
+                                t, indexWebTestimony
+                            ) in webTestimonies.slice(
+                                0,
+                                rowsTestimonies * slidesPerView
+                            )"
+                            :key="indexWebTestimony"
+                            class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
                         >
                             <q-card
-                                v-for="(t, imgIndex) in slideGroup"
-                                :key="imgIndex"
                                 bordered
                                 class="my-card q-ma-sm rounded"
                                 style="
                                     border: 1px solid rgb(64, 116, 146);
                                     width: 300px;
-                                    height: 250px;
                                 "
                             >
                                 <q-card-section
@@ -740,94 +784,48 @@
                                 <q-card-section
                                     class="q-pa-sm q-pa-none text-center text-black"
                                 >
-                                    <span v-html="t.description"></span>
+                                    <span v-html="t.message"></span>
                                 </q-card-section>
                                 <q-card-section class="text-center">
-                                    <q-item-label>
-                                        {{ t.user }}
-                                    </q-item-label>
+                                    <q-card-section class="text-center">
+                                        <q-item-label v-if="t.anonimous">
+                                            <i>publicado como anonimo</i>
+                                        </q-item-label>
+                                        <q-item-label
+                                            v-else-if="t.name_to_show"
+                                        >
+                                            {{ t.name_to_show }}
+                                        </q-item-label>
+                                        <q-item-label v-else>
+                                            {{ t.user.full_name }}
+                                        </q-item-label>
+                                    </q-card-section>
                                 </q-card-section>
                             </q-card>
-                        </q-carousel-slide>
-                    </q-carousel>
-                </div>
-                <template v-if="rowsTestimonies > 0">
-                    <div class="col-12">
-                        <div class="row text-black">
-                            <div
-                                v-for="(
-                                    t, indexWebTestimony
-                                ) in webTestimonies.slice(
-                                    0,
-                                    rowsTestimonies * slidesPerView
-                                )"
-                                :key="indexWebTestimony"
-                                class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
-                            >
-                                <q-card
-                                    bordered
-                                    class="my-card q-ma-sm rounded"
-                                    style="
-                                        border: 1px solid rgb(64, 116, 146);
-                                        width: 300px;
-                                    "
-                                >
-                                    <q-card-section
-                                        class="q-pa-sm q-pa-none text-center"
-                                    >
-                                        <q-img
-                                            :src="`${$page.props.public_path}images/icon/heart.png`"
-                                            fit="fill"
-                                            width="50px"
-                                        />
-                                    </q-card-section>
-                                    <q-card-section
-                                        class="q-pa-sm q-pa-none text-center text-black"
-                                    >
-                                        <span v-html="t.message"></span>
-                                    </q-card-section>
-                                    <q-card-section class="text-center">
-                                        <q-card-section class="text-center">
-                                            <q-item-label v-if="t.anonimous">
-                                                <i>publicado como anonimo</i>
-                                            </q-item-label>
-                                            <q-item-label
-                                                v-else-if="t.name_to_show"
-                                            >
-                                                {{ t.name_to_show }}
-                                            </q-item-label>
-                                            <q-item-label v-else>
-                                                {{ t.user.full_name }}
-                                            </q-item-label>
-                                        </q-card-section>
-                                    </q-card-section>
-                                </q-card>
-                            </div>
                         </div>
                     </div>
-                </template>
-                <div class="col-12 text-center q-mt-xl">
-                    <q-btn
-                        color="black"
-                        no-caps
-                        rounded
-                        :disable="
-                            rowsTestimonies * slidesPerView >=
-                                webTestimonies.length ||
-                            webTestimonies.length === 0
-                        "
-                        @click="rowsTestimonies++"
-                    >
-                        ver mas testimonios <br />
-                        de personas que han <br />
-                        vivido este proceso
-                        <q-icon
-                            name="fa fa-long-arrow-down"
-                            size="md"
-                            class="q-ml-md"
-                        />
-                    </q-btn>
                 </div>
+            </template>
+            <div class="col-12 text-center q-mt-xl">
+                <q-btn
+                    color="black"
+                    no-caps
+                    rounded
+                    :disable="
+                        rowsTestimonies * slidesPerView >=
+                            webTestimonies.length || webTestimonies.length === 0
+                    "
+                    @click="rowsTestimonies++"
+                >
+                    ver mas testimonios <br />
+                    de personas que han <br />
+                    vivido este proceso
+                    <q-icon
+                        name="fa fa-long-arrow-down"
+                        size="md"
+                        class="q-ml-md"
+                    />
+                </q-btn>
             </div>
         </div>
 

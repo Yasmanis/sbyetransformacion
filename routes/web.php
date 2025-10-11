@@ -174,6 +174,11 @@ Route::get('/contracting', function () {
     return Inertia('landing/contracting', ['config' => $config]);
 });
 
+Route::post('/config/{key}', function ($key) {
+    $config = Configuration::where('key', $key)->first();
+    return response()->json($config ?? null);
+});
+
 Route::post('/contacts/store', [ContactsController::class, 'store']);
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');

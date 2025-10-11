@@ -87,7 +87,11 @@
                         :done="step > 2"
                         :header-nav="step > 3"
                     >
-                        <payment />
+                        <payment
+                            @change-billing="
+                                (billing) => (currentBilling = billing)
+                            "
+                        />
                     </q-step>
 
                     <q-step
@@ -96,7 +100,10 @@
                         icon="mdi-file-check-outline"
                         :header-nav="step > 4"
                     >
-                        <confirmation />
+                        <confirmation
+                            @accepted="(val) => (accepted = val)"
+                            :billing-information="currentBilling"
+                        />
                     </q-step>
                 </q-stepper>
             </q-card-section>
@@ -139,7 +146,6 @@ import Products from "./components/Products.vue";
 import {
     products,
     currentPaymentMethod,
-    currentBillingInformation,
     subtotalAmount,
 } from "../../../services/shopping";
 import { error } from "../../../helpers/notifications";
@@ -159,6 +165,8 @@ const props = defineProps({
 const showDialog = ref(false);
 const step = ref(1);
 const stepper = ref(null);
+const accepted = ref(false);
+const currentBilling = ref(null);
 
 onMounted(() => {
     showDialog.value = props.show;
@@ -172,9 +180,16 @@ watch(
 );
 
 const onStepChange = () => {
-    if (step.value === 3 && !currentPaymentMethod.value) {
-        error("debe seleccionar el metodo de pago");
-        return;
+    if (step.value === 3) {
+        if (!currentPaymentMethod.value) {
+            error("debe seleccionar el metodo de pago");
+            return;
+        } else if (!currentBilling.value) {
+            error("debe especificar la direccion de facturacion");
+            return;
+        } else {
+            stepper.value.next();
+        }
     } else {
         stepper.value.next();
     }
@@ -183,34 +198,38 @@ const onStepChange = () => {
 const onBeforeShow = () => {
     step.value = 1;
     currentPaymentMethod.value = null;
-    currentBillingInformation.value = null;
+    currentBilling.value = null;
 };
 
 const createPayment = async () => {
-    Loading.show();
-    try {
-        const response = await axios.post("/payments/store", {
-            method: currentPaymentMethod.value,
-            information: currentBillingInformation.value,
-            products: products.value,
-            amount: subtotalAmount.value,
-        });
-        if (response.data.id) {
-            const approveLink = response.data.links.find(
-                (link) => link.rel === "approve"
-            );
-            if (approveLink) {
-                window.location.href = approveLink.href;
+    if (!accepted.value) {
+        error("debe aceptar los terminos legales de esta contratacion");
+    } else {
+        Loading.show();
+        try {
+            const response = await axios.post("/payments/store", {
+                method: currentPaymentMethod.value,
+                information: currentBilling.value,
+                products: products.value,
+                amount: subtotalAmount.value,
+            });
+            if (response.data.id) {
+                const approveLink = response.data.links.find(
+                    (link) => link.rel === "approve"
+                );
+                if (approveLink) {
+                    window.location.href = approveLink.href;
+                }
             }
+        } catch (err) {
+            error(
+                `error al crear el pago: ${
+                    err.response?.data?.message || err.message
+                }`
+            );
+        } finally {
+            Loading.hide();
         }
-    } catch (err) {
-        error(
-            `error al crear el pago: ${
-                err.response?.data?.message || err.message
-            }`
-        );
-    } finally {
-        Loading.hide();
     }
 };
 </script>

@@ -1,5 +1,10 @@
 <template>
-    <q-btn-component :tooltips="tooltips" icon="mdi-heart" @click="onClick" />
+    <q-btn-component
+        :tooltips="tooltips"
+        :size="size"
+        icon="mdi-heart"
+        @click="onClick"
+    />
 </template>
 
 <script setup>
@@ -12,6 +17,10 @@ const props = defineProps({
     tooltips: {
         type: String,
         default: "quitar de mis deseos",
+    },
+    size: {
+        type: String,
+        default: "lg",
     },
 });
 

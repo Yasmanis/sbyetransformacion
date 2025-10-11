@@ -1,9 +1,9 @@
 <template>
     <q-list dense>
-        <q-item class="bg-green-11">
+        <q-item :class="bgClass">
             <q-item-section>
-                <q-item-label class="text-center text-bold">
-                    DATOS FACTURACION
+                <q-item-label :class="textClass">
+                    {{ text }}
                 </q-item-label>
             </q-item-section>
         </q-item>
@@ -66,7 +66,7 @@
                     }})
                 </q-item-label>
             </q-item-section>
-            <q-item-section avatar>
+            <q-item-section avatar v-if="editable">
                 <list-billing-information
                     :current="billingInformation"
                     :predetermined="predetermined"
@@ -89,6 +89,22 @@ defineOptions({
 const props = defineProps({
     current: { Number, default: 0 },
     predetermined: Boolean,
+    text: {
+        type: String,
+        default: "DATOS FACTURACION",
+    },
+    bgClass: {
+        type: String,
+        default: "bg-green-11",
+    },
+    textClass: {
+        type: String,
+        default: "text-center text-bold",
+    },
+    editable: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emits = defineEmits(["change"]);
@@ -108,12 +124,15 @@ const billingInformation = computed(() => {
                 ? billings.find((b) => b.id === props.current)
                 : billings.find((b) => b.predetermined) ?? billings[0];
     }
-    emits("change", billing);
+    if (billing) {
+        emits("change", billing);
+        currentBilling.value = null;
+    }
     return billing;
 });
 
 const onChangeBilling = (b) => {
-    emits("change", b);
     currentBilling.value = b;
+    emits("change", b);
 };
 </script>

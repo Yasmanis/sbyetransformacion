@@ -100,13 +100,13 @@ const user = computed(() => {
 
 const onBeforeShow = (billing) => {
     let current = billing?.predetermined ?? props.current;
-    currentBilling.value = current;
     let billings = [];
+    currentBilling.value = current;
     user.value.billings_information.forEach((b) => {
         let bill = { ...b };
         if (!props.predetermined) {
             Object.assign(bill, {
-                predetermined: b.id === current.id,
+                predetermined: current ? b.id === current.id : false,
             });
         }
         billings.push(bill);

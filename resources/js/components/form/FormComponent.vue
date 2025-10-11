@@ -1,5 +1,5 @@
 <template>
-    <btn-add-component @click="showDialog = true" v-if="!object" />
+    <btn-add-component @click="showDialog = true" v-if="!object?.id" />
     <btn-edit-component @click="showDialog = true" v-else />
     <q-dialog
         v-model="showDialog"
@@ -14,7 +14,7 @@
             <dialog-header-component
                 :icon="icon"
                 :title="
-                    object
+                    object?.id
                         ? `editar ${
                               object[module.to_str] ??
                               module.singular_label.toLowerCase()
@@ -109,7 +109,7 @@ const setDefault = ref(false);
 const page = usePage();
 
 onMounted(() => {
-    if (props.object != null) {
+    if (props.object?.id) {
         fullTitle.value = `Editar ${props.title}`;
         icon.value = `img:${page.props.public_path}images/icon/${
             Dark.isActive ? "white" : "black"

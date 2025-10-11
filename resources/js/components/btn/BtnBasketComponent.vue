@@ -1,5 +1,10 @@
 <template>
-    <q-btn-component :tooltips="tooltips" icon="mdi-basket" @click="onClick">
+    <q-btn-component
+        :tooltips="tooltips"
+        icon="mdi-basket"
+        :size="size"
+        @click="onClick"
+    >
         <slot></slot>
     </q-btn-component>
 </template>
@@ -14,6 +19,10 @@ const props = defineProps({
     tooltips: {
         type: String,
         default: "cesta",
+    },
+    size: {
+        type: String,
+        default: "lg",
     },
 });
 

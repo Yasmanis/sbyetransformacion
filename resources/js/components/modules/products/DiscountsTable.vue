@@ -29,7 +29,7 @@
         "
         @request="onRequest"
     >
-        <template v-slot:top="props">
+        <template v-slot:top>
             <q-toolbar>
                 <q-space />
                 <div class="col-auto">
@@ -38,6 +38,9 @@
                         :fields="formFields"
                         :module="currentModule"
                         :axios-request="true"
+                        :object="{
+                            price: product.price,
+                        }"
                         size="sm"
                         @created="onRequest({ pagination })"
                         v-if="formFields.length > 0 && hasEdit"
@@ -153,7 +156,7 @@
                 class="actions-def"
             >
                 <form-component
-                    :object="props.row"
+                    :object="{ ...props.row, price: product.price }"
                     :module="currentModule"
                     title="editar oferta"
                     :fields="formFields"
@@ -239,7 +242,10 @@
                                 <q-separator />
                                 <div class="q-pa-sm q-gutter-sm text-right">
                                     <form-component
-                                        :object="props.row"
+                                        :object="{
+                                            ...props.row,
+                                            price: product.price,
+                                        }"
                                         :module="currentModule"
                                         title="editar oferat"
                                         :fields="formFields"
@@ -283,7 +289,6 @@ import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FormComponent from "../../form/FormComponent.vue";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import { useQuasar } from "quasar";
-import { router } from "@inertiajs/vue3";
 import axios from "axios";
 
 defineOptions({
@@ -390,20 +395,10 @@ const formFields = ref([
         },
     },
     {
-        name: "percent",
-        label: "porciento",
-        type: "number",
-        othersProps: {
-            required: true,
-        },
-    },
-    {
-        name: "income",
-        label: "importe",
-        type: "number",
-        othersProps: {
-            required: true,
-        },
+        type: "discount",
+        percentName: "percent",
+        incomeName: "income",
+        priceName: "price",
     },
     {
         type: "daterange",
