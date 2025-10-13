@@ -16,7 +16,12 @@
         @hide="onHide"
     >
         <q-card class="scroll">
-            <dialog-header-component :icon="icon" :title="fullTitle" closable />
+            <dialog-header-component
+                :icon="icon"
+                :title="fullTitle"
+                closable
+                @close="showDialog = false"
+            />
             <form-body
                 ref="formBody"
                 :object="object"

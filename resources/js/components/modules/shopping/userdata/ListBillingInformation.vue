@@ -7,6 +7,7 @@
                 icon="mdi-credit-card-check-outline"
                 title="selecciona datos de facturacion"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 50vh" class="scroll">
                 <q-list dense class="q-gutter-md">

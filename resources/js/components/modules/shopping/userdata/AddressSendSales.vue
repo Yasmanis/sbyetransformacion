@@ -10,6 +10,7 @@
                 icon="mdi-store-edit-outline"
                 title="direccion de envio"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 50vh" class="scroll">
             </q-card-section>

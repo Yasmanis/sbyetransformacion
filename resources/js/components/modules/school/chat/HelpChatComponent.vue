@@ -12,6 +12,7 @@
                 icon="mdi-help-circle-outline"
                 title="ayuda del chat"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 50vh" class="scroll">
                 <btn-conf-component

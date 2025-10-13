@@ -14,6 +14,7 @@
                 icon="mdi-cards-heart-outline"
                 title="mis deseos"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section>
                 <q-list class="q-mt-sm">

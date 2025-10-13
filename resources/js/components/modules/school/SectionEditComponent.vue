@@ -12,6 +12,7 @@
                 }-edit.png`"
                 title="modificar seccion y temas"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section
                 class="col q-pt-none scroll"
@@ -163,6 +164,7 @@
                 "
                 :title="currentTopic ? 'editar tema' : 'adicionar tema'"
                 closable
+                @close="showDialogTopic = false"
             />
             <q-card-section class="col q-pt-none">
                 <q-form class="q-gutter-sm q-mt-sm" ref="formTopic" greedy>
@@ -221,6 +223,7 @@
                 }-edit.png`"
                 title="editar seccion"
                 closable
+                @close="showDialogSection = false"
             />
             <q-card-section class="col q-pt-none">
                 <q-form class="q-gutter-sm q-mt-sm" ref="formSection" greedy>

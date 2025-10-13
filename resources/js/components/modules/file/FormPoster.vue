@@ -17,6 +17,7 @@
                 icon="mdi-image-outline"
                 title="portada"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section class="col q-pt-none">
                 <q-form class="q-gutter-sm q-mt-sm" greedy>

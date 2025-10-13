@@ -72,6 +72,7 @@
                 icon="mdi-plus"
                 title="nueva compra"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section>
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>

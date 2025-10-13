@@ -61,6 +61,7 @@
                 :icon="currentSubtitle ? 'edit' : 'add'"
                 :title="`${currentSubtitle ? 'editar' : 'adicionar'} subtitulo`"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section>
                 <q-card-section class="col q-pt-none">

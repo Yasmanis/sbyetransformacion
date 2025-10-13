@@ -1,14 +1,15 @@
 <template>
     <span class="cursor-pointer" @click.stop="showDialog = true">
         <span v-html="text"></span>
-        <q-tooltip-component title="click para ver terminos legales"
+        <q-tooltip-component :title="`click para ver ${title}`"
     /></span>
     <q-dialog v-model="showDialog" persistent>
         <q-card style="width: 900px; max-width: 1000vw">
             <dialog-header-component
                 icon="mdi-gavel"
-                title="terminos legales de contratacion"
+                :title="title"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 70vh" class="scroll">
                 <span v-html="terms"></span>
@@ -33,16 +34,24 @@ defineOptions({
 });
 
 const props = defineProps({
+    title: {
+        type: String,
+        default: "terminos legales de contratacion",
+    },
     text: {
         type: String,
         default: "terminos legales",
+    },
+    keyName: {
+        type: String,
+        default: "conditions",
     },
 });
 
 const terms = ref(null);
 
 onMounted(async () => {
-    const result = await axios.post("/config/conditions");
+    const result = await axios.post(`/config/${props.keyName}`);
     if (result) {
         terms.value = result.data.value;
     }

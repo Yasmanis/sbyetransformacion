@@ -11,6 +11,7 @@
                 icon="mdi-message-question-outline"
                 title="escribir a sbye-transformacion"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section class="col q-pt-none">
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>

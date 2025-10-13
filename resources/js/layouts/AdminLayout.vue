@@ -227,6 +227,7 @@
                 icon="mdi-account-key-outline"
                 title="cambiar mi contraseña"
                 closable
+                @close="showPasswordDialog = false"
             />
             <q-card-section class="col q-pt-none">
                 <q-form class="q-gutter-sm q-mt-sm" ref="formPassword" greedy>

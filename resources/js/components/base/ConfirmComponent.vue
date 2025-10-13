@@ -10,6 +10,7 @@
                 :title="title"
                 :separator="false"
                 closable
+                @close="showDialog = false"
                 v-if="header"
             />
             <q-card-section class="column items-center">

@@ -10,6 +10,7 @@
                 icon="mdi-credit-card-clock-outline"
                 title="promociones"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 70vh" class="scroll">
                 <q-tabs

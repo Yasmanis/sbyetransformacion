@@ -11,7 +11,14 @@
             @click="maximized = !maximized"
             v-if="maximizeable"
         />
-        <q-btn flat round dense icon="close" v-close-popup v-if="closable" />
+        <q-btn
+            flat
+            round
+            dense
+            icon="close"
+            @click="emits('close')"
+            v-if="closable"
+        />
     </q-toolbar>
     <q-separator v-if="separator" />
 </template>
@@ -51,7 +58,7 @@ const props = defineProps({
     class: String,
 });
 
-const emits = defineEmits(["fullsize"]);
+const emits = defineEmits(["fullsize", "close"]);
 const draggableRef = ref(null);
 const maximized = ref(false);
 let pos = { top: 0, left: 0 };

@@ -10,6 +10,7 @@
                 icon="mdi-book-open-page-variant-outline"
                 title="informacion"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section class="scroll q-pa-none">
                 <q-table

@@ -110,7 +110,7 @@ Route::get('/maria', function () {
 });
 
 Route::get('/store', function () {
-    $products = Product::public()->get();
+    $products = Product::public()->orderBy('order', 'ASC')->get();
     return Inertia('landing/store', [
         'products' => $products
     ]);
@@ -272,6 +272,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::put('/admin/products/subtitle/{id}', [ProductController::class, 'updateSubtitle']);
     Route::delete('/admin/products/subtitle/{id}', [ProductController::class, 'deleteSubtitle']);
     Route::post('/admin/products/public/{id}', [ProductController::class, 'public']);
+    Route::post('/admin/products/sort', [ProductController::class, 'sort']);
     Route::resource('/admin/product-categories', ProductCategoryController::class);
     Route::resource('/admin/users/payment-methods', PaymentMethodController::class)->except('index');
     Route::resource('/admin/users/billing-information', BillingInformationController::class)->except('index');

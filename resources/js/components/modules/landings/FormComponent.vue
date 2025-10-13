@@ -23,6 +23,7 @@
                         : `adicionar ${module.singular_label.toLowerCase()}`
                 "
                 closable
+                @close="showDialog = false"
             />
             <q-card-section
                 :style="{

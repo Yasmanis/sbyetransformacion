@@ -20,6 +20,7 @@
                         : `adicionar ${module.singular_label.toLowerCase()}`
                 "
                 closable
+                @close="showDialog = false"
             />
             <form-body
                 :object="object"

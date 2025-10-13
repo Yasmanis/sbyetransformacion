@@ -10,6 +10,7 @@ use App\Traits\FileSave;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -21,7 +22,13 @@ class ProductController extends Controller
             $repository = new ProductRepository();
             $repository->search($request->search);
             $repository->filters($request->filters);
-            $repository->orderBy($request->sortBy, $request->sortDirection);
+            $sortBy = $request->sortBy;
+            $sortDirection = $request->sortDirection;
+            if (!isset($sortBy)) {
+                $sortBy = 'order';
+                $sortDirection = 'ASC';
+            }
+            $repository->orderBy($sortBy, $sortDirection);
             return $this->data_index($repository, $request);
         }
         return $this->deny_access($request);
@@ -35,9 +42,16 @@ class ProductController extends Controller
             ]);
             $repository = new ProductRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            if ($request->hasFile('image_path')) {
-                $properties = $this->getPropertiesFromFile($request->file('image_path'), 'products');
-                $data['image'] = $properties['path'];
+            if (isset($request->image_path)) {
+                if ($request->hasFile('image_path')) {
+                    $properties = $this->getPropertiesFromFile($request->file('image_path'), 'products');
+                    $data['image'] = $properties['path'];
+                } else {
+                    $extension = pathinfo($request->image_path, PATHINFO_EXTENSION);
+                    $name = Str::random(40) . '.' . $extension;
+                    Storage::disk('public')->copy(Str::after($request->image_path, 'storage/'), sprintf('products/%s', $name));
+                    $data['image'] = sprintf('products/%s', $name);
+                }
             }
             $product = $repository->create($data);
             if (isset($request->categories_id)) {
@@ -151,6 +165,22 @@ class ProductController extends Controller
             $repository = new ProductSubtitleRepository();
             $repository->deleteById($id);
             return redirect()->back()->with('success', 'subtitulo eliminado correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function sort(Request $request)
+    {
+        if (auth()->user()->hasUpdate('product')) {
+            $objects = json_decode($request->ids);
+            foreach ($objects as $c) {
+                $obj = Product::find($c->id);
+                if ($obj != null) {
+                    $obj->order = $c->order;
+                    $obj->save();
+                }
+            }
+            return redirect()->back()->with('success', 'productos ordenados correctamente');
         }
         return $this->deny_access($request);
     }

@@ -60,6 +60,7 @@
                 icon="attach_money"
                 title="planes"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 70vh" class="scroll">
                 <div class="row q-col-gutter-md">
@@ -126,6 +127,7 @@
                 icon="attach_money"
                 title="modificar plan"
                 closable
+                @close="formDialog = false"
             />
             <q-card-section style="max-height: 70vh" class="scroll">
                 <q-form greedy ref="form">

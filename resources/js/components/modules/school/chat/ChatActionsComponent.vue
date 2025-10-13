@@ -115,6 +115,7 @@
                 maximizeable
                 closable
                 @fullsize="(s) => (maximizedToggle = s)"
+                @close="showDialog = false"
             />
 
             <q-card-section

@@ -1,99 +1,262 @@
 <template>
-    <q-input
-        name="old_password"
-        label="contraseña actual"
-        :rules="[(val) => !!val || 'requerido']"
-        :error="oldPwd !== null"
-        :error-message="oldPwd"
-        :dense="dense"
-        :clearable="clearable"
-        hide-bottom-space
-        bottom-slots
-        v-model="oldPass"
-        :type="isOldPwd ? 'password' : 'text'"
-        class="full-width"
-        @update:model-value="onChangeOldPassword"
-        v-if="oldPassword"
-    >
-        <template #hint>
-            <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
-                <li style="list-style: none">requerido</li>
-            </ul>
-        </template>
-        <template v-slot:append>
-            <q-icon
-                :name="isOldPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isOldPwd = !isOldPwd"
-            />
-        </template>
-    </q-input>
-    <q-input
-        :name="props.name"
-        :label="props.label"
-        :rules="fieldRules"
-        :error="errorPwd !== null"
-        :error-message="errorPwd"
-        :dense="dense"
-        :clearable="clearable"
-        hide-bottom-space
-        bottom-slots
-        v-model="model"
-        :type="isPwd ? 'password' : 'text'"
-        class="full-width"
-        @update:model-value="onChangePassword"
-    >
-        <template #hint v-if="fieldHelp?.length > 0">
-            <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
-                <li
-                    v-for="(h, index) in fieldHelp"
-                    :key="`help-${index}`"
-                    style="list-style: none"
+    <template v-if="inline">
+        <div class="row q-col-gutter-md">
+            <div
+                class="col-xs-12 col-sm-6 col-md-3 col-lg-3 col-xl-3"
+                v-if="oldPassword"
+            >
+                <q-input
+                    name="old_password"
+                    label="contraseña actual"
+                    :rules="[(val) => !!val || 'requerido']"
+                    :error="oldPwd !== null"
+                    :error-message="oldPwd"
+                    :dense="dense"
+                    :clearable="clearable"
+                    hide-bottom-space
+                    bottom-slots
+                    v-model="oldPass"
+                    :type="isOldPwd ? 'password' : 'text'"
+                    class="full-width"
+                    @update:model-value="onChangeOldPassword"
                 >
-                    {{ h }}
-                </li>
-            </ul>
-        </template>
-        <template v-slot:append>
-            <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd = !isPwd"
-            />
-        </template>
-    </q-input>
-    <q-input
-        v-model="modelConfirm"
-        name="password_confirm"
-        label="confirmar contraseña"
-        :rules="[
-            (val) => !!val || 'requerido',
-            (val) => val === model || 'las contraseñas no coinciden',
-        ]"
-        :error="errorConfirm !== null"
-        :error-message="errorConfirm"
-        :dense="dense"
-        :clearable="clearable"
-        hide-bottom-space
-        bottom-slots
-        :type="isPwdConfirm ? 'password' : 'text'"
-        class="full-width"
-        @update:model-value="onChangeConfirm"
-    >
-        <template #hint>
-            <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
-                <li style="list-style: none">requerido</li>
-                <li style="list-style: none">igual que la anterior</li>
-            </ul>
-        </template>
-        <template v-slot:append>
-            <q-icon
-                :name="isPwdConfirm ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwdConfirm = !isPwdConfirm"
-            />
-        </template>
-    </q-input>
+                    <template #hint>
+                        <ul
+                            style="
+                                padding: 0;
+                                margin-top: 0px;
+                                margin-bottom: 0px;
+                            "
+                        >
+                            <li style="list-style: none">requerido</li>
+                        </ul>
+                    </template>
+                    <template v-slot:append>
+                        <q-icon
+                            :name="isOldPwd ? 'visibility_off' : 'visibility'"
+                            class="cursor-pointer"
+                            @click="isOldPwd = !isOldPwd"
+                        />
+                    </template>
+                </q-input>
+            </div>
+            <div
+                class="col-xs-12"
+                :class="
+                    oldPassword
+                        ? 'col-sm-4 col-md-4 col-lg-4 col-xl-4'
+                        : 'col-sm-6 col-md-6 col-lg-6 col-xl-6'
+                "
+            >
+                <q-input
+                    :name="props.name"
+                    :label="props.label"
+                    :rules="fieldRules"
+                    :error="errorPwd !== null"
+                    :error-message="errorPwd"
+                    :dense="dense"
+                    :clearable="clearable"
+                    hide-bottom-space
+                    bottom-slots
+                    v-model="model"
+                    :type="isPwd ? 'password' : 'text'"
+                    class="full-width"
+                    @update:model-value="onChangePassword"
+                >
+                    <template #label v-if="label">
+                        {{ label }}
+                        <span class="text-red" v-if="othersProps?.required"
+                            >*</span
+                        >
+                    </template>
+                    <template #hint v-if="fieldHelp?.length > 0">
+                        <ul
+                            style="
+                                padding: 0;
+                                margin-top: 0px;
+                                margin-bottom: 0px;
+                            "
+                        >
+                            <li
+                                v-for="(h, index) in fieldHelp"
+                                :key="`help-${index}`"
+                                style="list-style: none"
+                            >
+                                {{ h }}
+                            </li>
+                        </ul>
+                    </template>
+                    <template v-slot:append>
+                        <q-icon
+                            :name="isPwd ? 'visibility_off' : 'visibility'"
+                            class="cursor-pointer"
+                            @click="isPwd = !isPwd"
+                        />
+                    </template>
+                </q-input>
+            </div>
+            <div
+                class="col-xs-12"
+                :class="
+                    oldPassword
+                        ? 'col-sm-4 col-md-4 col-lg-4 col-xl-4'
+                        : 'col-sm-6 col-md-6 col-lg-6 col-xl-6'
+                "
+            >
+                <q-input
+                    v-model="modelConfirm"
+                    name="password_confirm"
+                    label="confirmar contraseña"
+                    :rules="[
+                        (val) => !!val || 'requerido',
+                        (val) =>
+                            val === model || 'las contraseñas no coinciden',
+                    ]"
+                    :error="errorConfirm !== null"
+                    :error-message="errorConfirm"
+                    :dense="dense"
+                    :clearable="clearable"
+                    hide-bottom-space
+                    bottom-slots
+                    :type="isPwdConfirm ? 'password' : 'text'"
+                    class="full-width"
+                    @update:model-value="onChangeConfirm"
+                >
+                    <template #label>
+                        confirmar contraseña
+                        <span class="text-red" v-if="othersProps?.required"
+                            >*</span
+                        >
+                    </template>
+                    <template #hint>
+                        <ul
+                            style="
+                                padding: 0;
+                                margin-top: 0px;
+                                margin-bottom: 0px;
+                            "
+                        >
+                            <li style="list-style: none">
+                                igual que la anterior
+                            </li>
+                        </ul>
+                    </template>
+                    <template v-slot:append>
+                        <q-icon
+                            :name="
+                                isPwdConfirm ? 'visibility_off' : 'visibility'
+                            "
+                            class="cursor-pointer"
+                            @click="isPwdConfirm = !isPwdConfirm"
+                        />
+                    </template>
+                </q-input>
+            </div>
+        </div>
+    </template>
+    <template v-else
+        ><q-input
+            name="old_password"
+            label="contraseña actual"
+            :rules="[(val) => !!val || 'requerido']"
+            :error="oldPwd !== null"
+            :error-message="oldPwd"
+            :dense="dense"
+            :clearable="clearable"
+            hide-bottom-space
+            bottom-slots
+            v-model="oldPass"
+            :type="isOldPwd ? 'password' : 'text'"
+            class="full-width"
+            @update:model-value="onChangeOldPassword"
+            v-if="oldPassword"
+        >
+            <template #hint>
+                <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
+                    <li style="list-style: none">requerido</li>
+                </ul>
+            </template>
+            <template v-slot:append>
+                <q-icon
+                    :name="isOldPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isOldPwd = !isOldPwd"
+                />
+            </template>
+        </q-input>
+        <q-input
+            :name="props.name"
+            :label="props.label"
+            :rules="fieldRules"
+            :error="errorPwd !== null"
+            :error-message="errorPwd"
+            :dense="dense"
+            :clearable="clearable"
+            hide-bottom-space
+            bottom-slots
+            v-model="model"
+            :type="isPwd ? 'password' : 'text'"
+            class="full-width"
+            @update:model-value="onChangePassword"
+        >
+            <template #label v-if="label">
+                {{ label }}
+                <span class="text-red" v-if="othersProps?.required">*</span>
+            </template>
+            <template #hint v-if="fieldHelp?.length > 0">
+                <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
+                    <li
+                        v-for="(h, index) in fieldHelp"
+                        :key="`help-${index}`"
+                        style="list-style: none"
+                    >
+                        {{ h }}
+                    </li>
+                </ul>
+            </template>
+            <template v-slot:append>
+                <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                />
+            </template>
+        </q-input>
+        <q-input
+            v-model="modelConfirm"
+            name="password_confirm"
+            label="confirmar contraseña"
+            :rules="[
+                (val) => !!val || 'requerido',
+                (val) => val === model || 'las contraseñas no coinciden',
+            ]"
+            :error="errorConfirm !== null"
+            :error-message="errorConfirm"
+            :dense="dense"
+            :clearable="clearable"
+            hide-bottom-space
+            bottom-slots
+            :type="isPwdConfirm ? 'password' : 'text'"
+            class="full-width"
+            @update:model-value="onChangeConfirm"
+        >
+            <template #label v-if="label">
+                {{ label }}
+                <span class="text-red" v-if="othersProps?.required">*</span>
+            </template>
+            <template #hint>
+                <ul style="padding: 0; margin-top: 0px; margin-bottom: 0px">
+                    <li style="list-style: none">igual que la anterior</li>
+                </ul>
+            </template>
+            <template v-slot:append>
+                <q-icon
+                    :name="isPwdConfirm ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwdConfirm = !isPwdConfirm"
+                />
+            </template> </q-input
+    ></template>
 </template>
 
 <script setup>
@@ -113,6 +276,7 @@ const props = defineProps({
     label: {
         type: String,
         required: true,
+        default: "contraseña",
     },
     dense: {
         type: Boolean,
@@ -130,6 +294,7 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    inline: Boolean,
 });
 
 const emits = defineEmits(["update", "confirm", "old-password"]);

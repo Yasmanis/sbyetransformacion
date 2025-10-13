@@ -17,6 +17,7 @@
                 icon="mdi-plus"
                 title="añadir seccion y temas"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section class="col q-pt-none">
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>

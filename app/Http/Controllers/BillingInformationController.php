@@ -12,7 +12,6 @@ class BillingInformationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nif_cif' => ['required'],
             'road' => ['required'],
             'province' => ['required'],
             'postal_code' => ['required'],

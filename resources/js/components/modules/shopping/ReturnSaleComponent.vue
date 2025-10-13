@@ -7,6 +7,7 @@
                 icon="mdi-credit-card-sync-outline"
                 title="elige los productos a devolver"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section>
                 <q-list class="q-mt-sm">

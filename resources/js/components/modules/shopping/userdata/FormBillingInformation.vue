@@ -7,6 +7,7 @@
                 icon="mdi-card-account-details-outline"
                 title="añadir datos de facturacion"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 50vh" class="scroll">
                 <q-form ref="form" greedy>
@@ -40,9 +41,6 @@
                             <text-field
                                 name="nif_cif"
                                 label="nif/cif"
-                                :othersProps="{
-                                    required: true,
-                                }"
                                 @update="(name, val) => (formData[name] = val)"
                             />
                         </div>

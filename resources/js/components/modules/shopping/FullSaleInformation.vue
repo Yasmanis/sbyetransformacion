@@ -14,6 +14,7 @@
                 icon="mdi-cart-variant"
                 title="informacion detallada sobre la compra"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 50vh" class="scroll">
                 <div class="row">

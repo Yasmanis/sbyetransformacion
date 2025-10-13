@@ -22,6 +22,7 @@
                     products.length > 1 ? 's' : ''
                 })`"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 60vh" class="scroll">
                 <q-stepper
@@ -184,10 +185,12 @@ const onStepChange = () => {
         if (!currentPaymentMethod.value) {
             error("debe seleccionar el metodo de pago");
             return;
-        } else if (!currentBilling.value) {
-            error("debe especificar la direccion de facturacion");
-            return;
-        } else {
+        }
+        //  else if (!currentBilling.value) {
+        //     error("debe especificar la direccion de facturacion");
+        //     return;
+        // }
+        else {
             stepper.value.next();
         }
     } else {

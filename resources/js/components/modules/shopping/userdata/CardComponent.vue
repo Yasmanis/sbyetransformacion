@@ -15,6 +15,7 @@
                 icon="mdi-credit-card-plus-outline"
                 title="nueva tarjeta"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 50vh" class="scroll">
                 <q-form ref="form" greedy class="q-gutter-sm">
@@ -64,6 +65,7 @@
                 icon="mdi-credit-card-plus-outline"
                 title="nueva tarjeta"
                 closable
+                @close="showDialogConfirm = false"
             />
             <q-card-section style="max-height: 50vh" class="scroll">
                 <div class="row">

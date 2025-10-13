@@ -28,6 +28,7 @@
                 icon="filter_alt"
                 title="filtrar"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section>
                 <div

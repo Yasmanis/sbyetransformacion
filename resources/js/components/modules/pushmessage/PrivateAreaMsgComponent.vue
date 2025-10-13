@@ -6,7 +6,11 @@
             }"
             class="bg-custom-blue"
         >
-            <dialog-header-component closable :separator="false" />
+            <dialog-header-component
+                closable
+                :separator="false"
+                @close="showDialog = false"
+            />
             <q-card-section class="q-pt-none" style="margin-top: -10px">
                 <p class="text-center">
                     cada mes explorare un aspecto clave de mi libro de forma

@@ -10,6 +10,7 @@
                 icon="mdi-card-account-details-outline"
                 title="ficha de usuario"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section class="scroll">
                 <q-form ref="formRef" greedy>

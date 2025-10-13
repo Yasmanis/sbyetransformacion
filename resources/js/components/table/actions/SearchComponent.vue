@@ -84,6 +84,7 @@
                 icon="search"
                 title="configuracion de busqueda"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section class="q-gutter-md">
                 <q-select

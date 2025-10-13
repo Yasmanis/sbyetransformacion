@@ -143,6 +143,7 @@
                 }-private-msg.png`"
                 title="mensajes privados"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section class="col q-pt-none">
                 <q-list v-if="messages.length > 0">

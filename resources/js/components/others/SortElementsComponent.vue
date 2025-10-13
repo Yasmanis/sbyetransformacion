@@ -11,6 +11,7 @@
                 icon="mdi-sort"
                 :title="tooltips ? tooltips : 'ordenar'"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section>
                 <draggable

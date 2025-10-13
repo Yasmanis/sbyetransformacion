@@ -12,6 +12,7 @@
                 icon="mdi-credit-card-edit-outline"
                 title="editar metodo de pago"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 50vh" class="scroll">
                 <div class="row">

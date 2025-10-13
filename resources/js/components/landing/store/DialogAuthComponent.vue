@@ -24,6 +24,7 @@
                 title="ACCESO A SBYETRANSFORMACION APP PARA FORMALIZAR TU COMPRA"
                 closable
                 class="text-white"
+                @close="showDialog = false"
             />
             <q-card-section>
                 <div class="row bg-white">

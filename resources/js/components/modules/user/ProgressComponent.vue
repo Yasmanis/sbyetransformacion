@@ -13,6 +13,7 @@
                 icon="mdi-book-open-page-variant-outline"
                 :title="`informe de ${object.full_name}`"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 50vh" class="scroll q-pa-none">
                 <q-tabs

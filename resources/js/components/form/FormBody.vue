@@ -235,6 +235,8 @@ import { useForm } from "@inertiajs/vue3";
 import { errorValidation, success } from "../../helpers/notifications";
 import axios from "axios";
 import { Loading } from "quasar";
+import { cloneDeep } from "lodash";
+import { formData, originalData } from "../../helpers/formData";
 
 const props = defineProps({
     module: {
@@ -264,13 +266,12 @@ const emits = defineEmits(["created", "updated", "cancel", "update-field"]);
 
 const form = ref(null);
 
-const formData = ref({});
-
 onBeforeMount(() => {
     setDefaultData();
 });
 
 const setDefaultData = () => {
+    formData.value = {};
     props.fields.forEach((f) => {
         if (f.type === "boolean") {
             formData.value[f.name] = props.object
@@ -362,6 +363,7 @@ const setDefaultData = () => {
                 : null;
         }
     });
+    originalData.value = cloneDeep(formData.value);
 };
 
 const onUpdateField = (name, val) => {
@@ -376,7 +378,7 @@ const onUpdateUsers = (name, val) => {
 const save = async (hide) => {
     form.value.validate().then((success) => {
         if (success) {
-            if (props.object) {
+            if (props.object?.id) {
                 update();
             } else {
                 store(hide);

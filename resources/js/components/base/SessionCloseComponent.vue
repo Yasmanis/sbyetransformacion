@@ -19,6 +19,7 @@
                 title="cerrar sesion"
                 closable
                 :separator="false"
+                @close="showDialog = false"
             />
             <q-card-section class="column items-center">
                 <q-icon

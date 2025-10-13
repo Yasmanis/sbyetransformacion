@@ -28,6 +28,7 @@
         "fabric": "^6.5.3",
         "glightbox": "^3.3.0",
         "laravel-echo": "^1.18.0",
+        "lodash": "^4.17.21",
         "nprogress": "^0.2.0",
         "pusher-js": "^8.4.0-rc2",
         "quasar": "^2.16.11",

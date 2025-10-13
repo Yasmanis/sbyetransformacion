@@ -58,8 +58,15 @@
                             :fields="createFields"
                             :module="current_module"
                             :new-on-create="newOnCreate"
+                            :close-confirm="true"
                             size="sm"
                             v-if="createFields.length > 0 && has_add"
+                        />
+                        <sort-elements-component
+                            :items="rows"
+                            :url="`${current_module.base_url}/sort`"
+                            tooltips="ordenar productos"
+                            v-if="has_edit"
                         />
                         <btn-reload-component @click="onRequest" />
                         <visible-columns-component
@@ -203,9 +210,23 @@
                         :fields="updateFields"
                         :module="current_module"
                         :post-on-update="postOnUpdate"
+                        :close-confirm="true"
                         size="sm"
                         v-if="updateFields.length > 0 && has_edit"
                     />
+
+                    <form-component
+                        :object="props.row"
+                        :duplicate="true"
+                        title="current_module.singular_label"
+                        :fields="updateFields"
+                        :module="current_module"
+                        :post-on-update="postOnUpdate"
+                        :close-confirm="true"
+                        size="sm"
+                        v-if="updateFields.length > 0 && has_edit"
+                    />
+
                     <btn-public-component
                         :public="props.row.public"
                         titlePublic="dar alta"
@@ -305,6 +326,7 @@
                                             "
                                             :fields="updateFields"
                                             :module="current_module"
+                                            :close-confirm="true"
                                             size="sm"
                                             v-if="
                                                 updateFields.length > 0 &&
@@ -363,6 +385,7 @@ import { router, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
 import OffersComponent from "./OffersComponent.vue";
 import PlaneField from "../../form/input/PlaneField.vue";
+import SortElementsComponent from "../../others/SortElementsComponent.vue";
 
 defineOptions({
     name: "TableComponent",

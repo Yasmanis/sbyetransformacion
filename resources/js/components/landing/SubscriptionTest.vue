@@ -1,7 +1,11 @@
 <template>
     <q-dialog v-model="showDialog" persistent @hide="initDefault">
         <q-card class="bg-custom-blue">
-            <dialog-header-component closable :separator="false" />
+            <dialog-header-component
+                closable
+                :separator="false"
+                @close="showDialog = false"
+            />
             <q-card-section class="q-pt-none" style="margin-top: -15px">
                 <div v-if="showResults">
                     <p class="text-bold">resultados: que te impide aprender?</p>

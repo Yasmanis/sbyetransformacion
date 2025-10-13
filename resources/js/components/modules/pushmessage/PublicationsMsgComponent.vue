@@ -6,7 +6,11 @@
             }"
             class="bg-custom-blue"
         >
-            <dialog-header-component closable :separator="false" />
+            <dialog-header-component
+                closable
+                :separator="false"
+                @close="showDialog = false"
+            />
             <q-card-section class="q-pt-none" style="margin-top: -20px">
                 <p class="text-center">
                     <b

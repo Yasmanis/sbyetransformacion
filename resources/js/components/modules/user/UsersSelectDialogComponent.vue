@@ -110,6 +110,7 @@
                     multiple ? 'seleccionar usuarios' : 'seleccionar usuario'
                 "
                 closable
+                @close="showDialog = false"
             />
             <q-card-section>
                 <users-select-component

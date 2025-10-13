@@ -37,7 +37,7 @@ class ProductCategoryController extends Controller
     {
         if (auth()->user()->hasUpdate('productcategory')) {
             $request->validate([
-                'email' => ['required', Rule::unique('product_category', 'name')->ignore($id)],
+                'name' => ['required', Rule::unique('product_category', 'name')->ignore($id)],
             ]);
             $repository = new ProductCategoryRepository();
             $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));

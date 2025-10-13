@@ -5,6 +5,7 @@
                 icon="mdi-video"
                 :title="video.name"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section class="col q-pa-none">
                 <div

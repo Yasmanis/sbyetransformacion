@@ -47,10 +47,11 @@
                     no-caps
                 />
                 <q-rating
-                    v-model="rating"
+                    v-model="product.valoration"
                     color="primary"
                     icon="star_border"
                     icon-selected="star"
+                    readonly
                 />
                 <q-btn-component
                     label="novedad"

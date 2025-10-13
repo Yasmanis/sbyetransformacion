@@ -13,6 +13,7 @@
                 :icon="icon"
                 :title="`${object ? 'editar' : 'adicionar'} seccion`"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section
                 :style="{

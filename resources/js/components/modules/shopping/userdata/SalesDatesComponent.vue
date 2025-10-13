@@ -10,6 +10,7 @@
                 icon="mdi-card-account-details-outline"
                 title="mis datos de compra"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 50vh" class="scroll">
                 <div class="row">
@@ -91,13 +92,21 @@
                                         :ratio="16 / 9"
                                         width="200px"
                                         fit="fill"
+                                        v-if="method.id !== 0"
+                                    />
+                                    <q-img
+                                        :src="`${$page.props.public_path}images/others/paypal.png`"
+                                        :ratio="16 / 9"
+                                        width="80px"
+                                        fit="fill"
+                                        v-else
                                     />
                                 </q-item-section>
                                 <q-item-section>
                                     <q-item-label>
                                         {{ method.name }}
                                     </q-item-label>
-                                    <q-item-label>
+                                    <q-item-label v-if="method.id !== 0">
                                         tarjeta de credito que termina en ••••
                                         {{ method.number.split(" ")[3] }}
                                     </q-item-label>

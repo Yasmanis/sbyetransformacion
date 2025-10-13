@@ -8,6 +8,7 @@
                 }-notification.png`"
                 title="gestion de avisos"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section>
                 <div class="row q-gutter-sm">

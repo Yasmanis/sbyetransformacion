@@ -213,45 +213,42 @@
                     </div>
                     <div class="row">
                         <div
-                            class="col-xs-12 col-sm-6 col-lg-3 col-md-3 col-xl-3 q-px-sm"
+                            class="col-xs-12 col-sm-12 col-lg-6 col-md-6 col-xl-6 q-px-sm"
                         >
-                            <text-field
-                                type="password"
-                                label="contraseña"
+                            <password-field
+                                inline
                                 name="password"
-                                :model-value="formData.password"
                                 :others-props="{
                                     required: true,
                                 }"
                                 @update="onUpdateField"
+                                @confirm="onUpdateField"
                             />
                         </div>
                         <div
-                            class="col-xs-12 col-sm-6 col-lg-3 col-md-3 col-xl-3 q-px-sm"
-                        >
-                            <text-field
-                                type="password"
-                                label="confirmar contraseña"
-                                name="password_confirmed"
-                                :model-value="formData.password_confirmed"
-                                :others-props="{
-                                    required: true,
-                                }"
-                                @update="onUpdateField"
-                            />
-                        </div>
-                        <div
-                            class="col-xs-12 col-sm-12 col-lg-6 col-md-6 col-xl-6 q-px-sm q-pt-md"
+                            class="col-xs-12 col-sm-12 col-lg-6 col-md-6 col-xl-6 q-px-sm"
                             :class="
                                 !screen.xs && !screen.sm ? 'text-right' : null
                             "
                         >
-                            <checkbox-field
-                                label="leo y acepto los terminos legales"
+                            <q-checkbox
                                 name="conditions"
-                                :model-value="formData.conditions"
-                                @update="onUpdateField"
-                            />
+                                class="text-left"
+                                v-model="formData.conditions"
+                            >
+                                he leido y acepto las
+                                <legal-contracting
+                                    title="condiciones generales"
+                                    text="<b>condiciones generales</b>"
+                                    key-name="legal"
+                                />
+                                y la
+                                <legal-contracting
+                                    title="politica de privacidad"
+                                    text="<b>politica de privacidad</b>"
+                                    key-name="private"
+                                />
+                            </q-checkbox>
                         </div>
                     </div>
                 </q-form>
@@ -271,11 +268,13 @@
 import { ref, computed, watch } from "vue";
 import CarComponent from "../../modules/shopping/components/CarComponent.vue";
 import TextField from "../../form/input/TextField.vue";
+import PasswordField from "../../form/input/PasswordField.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import DateField from "../../form/input/DateField.vue";
 import BtnConfirmComponent from "../../btn/BtnConfirmComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import CheckboxField from "../../form/input/CheckboxField.vue";
+import LegalContracting from "../../others/LegalContracting.vue";
 import { useQuasar } from "quasar";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { errorValidation, error } from "../../../helpers/notifications";

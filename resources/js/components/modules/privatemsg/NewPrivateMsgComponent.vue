@@ -20,6 +20,7 @@
                         : 'escribir mensaje privado'
                 "
                 closable
+                @close="showDialog = false"
             />
             <q-card-section style="max-height: 50vh" class="scroll">
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>

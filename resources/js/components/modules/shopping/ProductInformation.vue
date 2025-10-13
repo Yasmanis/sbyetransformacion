@@ -23,6 +23,7 @@
                 icon="mdi-information-outline"
                 title="INFORMACION DEL PRODUCTO"
                 closable
+                @close="showDialog = false"
             />
             <q-card-section>
                 <q-list>
