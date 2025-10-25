@@ -133,7 +133,9 @@ onMounted(() => {
         icon.value = `img:${page.props.public_path}images/icon/${
             Dark.isActive ? "white" : "black"
         }-edit.png`;
+
         currentObject.value = { ...props.object };
+
         if (props.duplicate) {
             delete currentObject.value.id;
             fullTitle.value = `duplicar ${

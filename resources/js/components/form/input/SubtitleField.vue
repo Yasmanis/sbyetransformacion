@@ -146,7 +146,8 @@ const formData = useForm({
     id: null,
     name: null,
     description: null,
-    product_id: null,
+    subtitlable_type: null,
+    subtitlable_id: null,
 });
 
 const confirm = ref(false);
@@ -167,7 +168,8 @@ watch(
 );
 
 const onShow = () => {
-    formData.product_id = props.parent?.id ?? null;
+    formData.subtitlable_id = props.parent?.id ?? null;
+    formData.subtitlable_type = props.parent?.type ?? null;
 };
 
 const onHide = () => {
@@ -191,7 +193,15 @@ const save = () => {
                     store();
                 }
             } else {
-                const { id, name, description } = formData;
+                const {
+                    id,
+                    name,
+                    description,
+                    subtitlable_id,
+                    subtitlable_type,
+                } = formData;
+                console.log(formData.data());
+
                 if (id) {
                     const s = subtitles.value.find((ss) => ss.id === id);
                     s.name = name;
@@ -199,8 +209,10 @@ const save = () => {
                 } else {
                     let s = {
                         id: uid(),
-                        name: formData.name,
-                        description: formData.description,
+                        name,
+                        description,
+                        subtitlable_id,
+                        subtitlable_type,
                     };
                     subtitles.value.push(s);
                 }
@@ -213,7 +225,7 @@ const save = () => {
 };
 
 const store = async () => {
-    formData.post("/admin/products/subtitle", {
+    formData.post("/admin/subtitles", {
         onSuccess: (data) => {
             subtitles.value.push(data.props.object);
             showDialog.value = false;
@@ -222,7 +234,7 @@ const store = async () => {
 };
 
 const update = async () => {
-    formData.put(`/admin/products/subtitle/${formData.id}`, {
+    formData.put(`/admin/subtitles/${formData.id}`, {
         onSuccess: (data) => {
             const subtitle = subtitles.value.find((s) => s.id === formData.id);
             Object.assign(subtitle, data.props.object);
@@ -243,7 +255,7 @@ const onEdit = (obj) => {
 const remove = async () => {
     const { id } = currentSubtitle.value;
     if (is.number(id)) {
-        await router.delete(`/admin/products/subtitle/${id}`, {
+        await router.delete(`/admin/subtitles/${id}`, {
             onSuccess: () => {
                 subtitles.value = subtitles.value.filter((s) => s.id !== id);
                 confirm.value = false;

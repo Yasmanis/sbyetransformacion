@@ -88,7 +88,7 @@ watch(
 const onUpdateField = (name, val) => {
     let percentVal = 0;
     let incomeVal = 0;
-    let price = props.totalPrice !== null ? props.totalPrice : 0;
+    let price = props.totalPrice ?? 0;
     if (name === props.percentName) {
         incomeVal = Math.round((val / 100) * price * 100) / 100;
         percentVal = val;

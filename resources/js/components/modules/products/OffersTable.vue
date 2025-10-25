@@ -29,7 +29,7 @@
         "
         @request="onRequest"
     >
-        <template v-slot:top="props">
+        <template v-slot:top>
             <q-toolbar>
                 <q-space />
                 <div class="col-auto">
@@ -289,8 +289,14 @@ defineOptions({
 });
 
 const props = defineProps({
-    product: Object,
+    object: Object,
     hasEdit: Boolean,
+    baseUrl: String,
+    listUrl: String,
+    relationName: {
+        type: String,
+        default: "product_id",
+    },
 });
 const $q = useQuasar();
 
@@ -370,10 +376,10 @@ const formFields = ref([
         },
     },
     {
-        name: "product_id",
+        name: props.relationName,
         type: "hidden",
         othersProps: {
-            defaultValue: props.product.id,
+            defaultValue: props.object.id,
         },
     },
     {
@@ -390,7 +396,7 @@ const currentModule = ref({
     to_str: null,
     singular_label: "oferta",
     plural_label: "ofertas",
-    base_url: "/admin/offers",
+    base_url: props.baseUrl,
 });
 
 const pagination = ref({
@@ -420,7 +426,7 @@ const onRequest = async (attrs) => {
         : pagination.value;
     const sortDirection = descending ? "DESC" : "ASC";
     axios
-        .post(`/admin/products/offers/${props.product.id}`, {
+        .post(props.listUrl, {
             page,
             rowsPerPage,
             search,

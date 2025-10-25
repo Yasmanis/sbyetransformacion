@@ -87,7 +87,7 @@
                     :label="f.label"
                     :name="f.name"
                     :objects="formData[f.name]"
-                    :parent="formData"
+                    :parent="object"
                     @remove="
                         (id) =>
                             (formData[f.name] = formData[f.name].filter(
@@ -183,9 +183,15 @@
                 <discount-field
                     :percent-value="formData[f.percentName]"
                     :income-value="formData[f.incomeName]"
-                    :total-price="formData[f.priceName]"
+                    :total-price="f.totalPrice ?? 0"
                     @update="onUpdateField"
                     v-else-if="f.type === 'discount'"
+                />
+                <depends-select-field
+                    :parent="f.parent"
+                    :child="f.child"
+                    @update="onUpdateField"
+                    v-else-if="f.type === 'depends-select'"
                 />
             </div>
         </q-form>
@@ -228,6 +234,7 @@ import UsersSelectDialogComponent from "../modules/user/UsersSelectDialogCompone
 import SubtitleField from "./input/SubtitleField.vue";
 import PlaneField from "./input/PlaneField.vue";
 import DiscountField from "./input/DiscountField.vue";
+import DependsSelectField from "./input/DependsSelectField.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
 import BtnSaveAndNewComponent from "../btn/BtnSaveAndNewComponent.vue";
@@ -352,9 +359,21 @@ const setDefaultData = () => {
             formData.value[f.incomeName] = props.object
                 ? props.object[f.incomeName]
                 : null;
-            formData.value[f.priceName] = props.object
-                ? props.object[f.priceName]
+        } else if (f.type === "depends-select") {
+            formData.value[f.parent.name] = props.object
+                ? props.object[f.parent.name]
                 : null;
+            formData.value[f.child.name] = props.object
+                ? props.object[f.child.name]
+                : null;
+            if (!f.parent.othersProps) {
+                f.parent.othersProps = {};
+            }
+            if (!f.child.othersProps) {
+                f.child.othersProps = {};
+            }
+            f.parent["modelValue"] = formData.value[f.parent.name];
+            f.child["modelValue"] = formData.value[f.child.name];
         } else {
             formData.value[f.name] = props.object
                 ? props.object[f.name]
@@ -363,6 +382,7 @@ const setDefaultData = () => {
                 : null;
         }
     });
+
     originalData.value = cloneDeep(formData.value);
 };
 

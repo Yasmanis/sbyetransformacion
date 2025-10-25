@@ -58,14 +58,13 @@
                             :fields="createFields"
                             :module="current_module"
                             :new-on-create="newOnCreate"
-                            :close-confirm="true"
                             size="sm"
                             v-if="createFields.length > 0 && has_add"
                         />
                         <sort-elements-component
                             :items="rows"
                             :url="`${current_module.base_url}/sort`"
-                            tooltips="ordenar productos"
+                            tooltips="ordenar categorias"
                             v-if="has_edit"
                         />
                         <btn-reload-component @click="onRequest" />
@@ -210,47 +209,20 @@
                         :fields="updateFields"
                         :module="current_module"
                         :post-on-update="postOnUpdate"
-                        :close-confirm="true"
                         size="sm"
                         v-if="updateFields.length > 0 && has_edit"
                     />
 
-                    <form-component
+                    <!-- <offers-component
                         :object="props.row"
-                        :duplicate="true"
-                        title="current_module.singular_label"
-                        :fields="updateFields"
-                        :module="current_module"
-                        :post-on-update="postOnUpdate"
-                        :close-confirm="true"
-                        size="sm"
-                        v-if="updateFields.length > 0 && has_edit"
-                    />
-
-                    <btn-public-component
-                        :public="props.row.public"
-                        titlePublic="dar alta"
-                        titleHide="dar baja"
-                        v-if="has_edit"
-                        @click="
-                            router.post(
-                                `/admin/products/public/${props.row.id}`
-                            )
-                        "
-                    />
-                    <offers-component
-                        :object="props.row"
-                        base-discount-url="/admin/discounts"
-                        :list-discount-url="`/admin/products/discounts/${props.row.id}`"
-                        base-offer-url="/admin/offers"
-                        :list-offer-url="`/admin/products/offers/${props.row.id}`"
+                        base-discount-url="/admin/discounts-subcategory"
+                        base-offer-url="/admin/offers-subcategory"
+                        discount-relation="subcategory_id"
+                        offer-relation="subcategory_id"
+                        :list-discount-url="`/admin/products/discounts-subcategory/${props.row.id}`"
+                        :list-offer-url="`/admin/products/offers-subcategory/${props.row.id}`"
                         :has-edit="has_edit"
-                    />
-                    <plane-field
-                        :parent="props.row"
-                        :has-edit="has_edit"
-                        :in-form="false"
-                    />
+                    /> -->
                     <delete-component
                         :objects="[props.row]"
                         :url="current_module.base_url"
@@ -330,37 +302,22 @@
                                             "
                                             :fields="updateFields"
                                             :module="current_module"
-                                            :close-confirm="true"
                                             size="sm"
                                             v-if="
                                                 updateFields.length > 0 &&
                                                 has_edit
                                             "
                                         />
-                                        <btn-public-component
-                                            :public="props.row.public"
-                                            titlePublic="dar alta"
-                                            titleHide="dar baja"
-                                            v-if="has_edit"
-                                            @click="
-                                                router.post(
-                                                    `/admin/products/public/${props.row.id}`
-                                                )
-                                            "
-                                        />
-                                        <offers-component
+                                        <!-- <offers-component
                                             :object="props.row"
-                                            base-discount-url="/admin/discounts"
-                                            :list-discount-url="`/admin/products/discounts/${props.row.id}`"
-                                            base-offer-url="/admin/offers"
-                                            :list-offer-url="`/admin/products/offers/${props.row.id}`"
+                                            base-discount-url="/admin/discounts-subcategory"
+                                            base-offer-url="/admin/offers-subcategory"
+                                            discount-relation="subcategory_id"
+                                            offer-relation="subcategory_id"
+                                            :list-discount-url="`/admin/products/discounts-subcategory/${props.row.id}`"
+                                            :list-offer-url="`/admin/products/offers-subcategory/${props.row.id}`"
                                             :has-edit="has_edit"
-                                        />
-                                        <plane-field
-                                            :parent="props.row"
-                                            :has-edit="has_edit"
-                                            :in-form="false"
-                                        />
+                                        /> -->
                                         <delete-component
                                             :objects="[props.row]"
                                             :url="current_module.base_url"
@@ -381,19 +338,17 @@
 <script setup>
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
 import { useQuasar } from "quasar";
-import FormComponent from "../../form/FormComponent.vue";
-import DeleteComponent from "../../table/actions/DeleteComponent.vue";
-import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
-import SearchComponent from "../../table/actions/SearchComponent.vue";
-import FilterComponent from "../../table/actions/FilterComponent.vue";
-import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
-import QBtnComponent from "../../base/QBtnComponent.vue";
-import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
+import FormComponent from "../../../form/FormComponent.vue";
+import DeleteComponent from "../../../table/actions/DeleteComponent.vue";
+import VisibleColumnsComponent from "../../../table/actions/VisibleColumnsComponent.vue";
+import SearchComponent from "../../../table/actions/SearchComponent.vue";
+import FilterComponent from "../../../table/actions/FilterComponent.vue";
+import BtnReloadComponent from "../../../btn/BtnReloadComponent.vue";
+import QBtnComponent from "../../../base/QBtnComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
-import { getActiveModule } from "../../../services/current_module";
-import OffersComponent from "./OffersComponent.vue";
-import PlaneField from "../../form/input/PlaneField.vue";
-import SortElementsComponent from "../../others/SortElementsComponent.vue";
+import { getActiveModule } from "../../../../services/current_module";
+import OffersComponent from "../OffersComponent.vue";
+import SortElementsComponent from "../../../others/SortElementsComponent.vue";
 
 defineOptions({
     name: "TableComponent",

@@ -34,13 +34,10 @@
                 <q-space />
                 <div class="col-auto">
                     <form-component
-                        title="adicionar oferta"
+                        title="adicionar descuento"
                         :fields="formFields"
                         :module="currentModule"
                         :axios-request="true"
-                        :object="{
-                            price: product.price,
-                        }"
                         size="sm"
                         @created="onRequest({ pagination })"
                         v-if="formFields.length > 0 && hasEdit"
@@ -156,7 +153,7 @@
                 class="actions-def"
             >
                 <form-component
-                    :object="{ ...props.row, price: product.price }"
+                    :object="props.row"
                     :module="currentModule"
                     title="editar oferta"
                     :fields="formFields"
@@ -242,10 +239,7 @@
                                 <q-separator />
                                 <div class="q-pa-sm q-gutter-sm text-right">
                                     <form-component
-                                        :object="{
-                                            ...props.row,
-                                            price: product.price,
-                                        }"
+                                        :object="props.row"
                                         :module="currentModule"
                                         title="editar oferat"
                                         :fields="formFields"
@@ -282,7 +276,6 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import QBtnComponent from "../../base/QBtnComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
@@ -296,8 +289,18 @@ defineOptions({
 });
 
 const props = defineProps({
-    product: Object,
+    object: Object,
     hasEdit: Boolean,
+    baseUrl: String,
+    listUrl: String,
+    priceName: {
+        type: String,
+        default: "price",
+    },
+    relationName: {
+        type: String,
+        default: "product_id",
+    },
 });
 const $q = useQuasar();
 
@@ -399,6 +402,7 @@ const formFields = ref([
         percentName: "percent",
         incomeName: "income",
         priceName: "price",
+        totalPrice: props.object[props.priceName] ?? 0,
     },
     {
         type: "daterange",
@@ -411,10 +415,10 @@ const formFields = ref([
         },
     },
     {
-        name: "product_id",
+        name: props.relationName,
         type: "hidden",
         othersProps: {
-            defaultValue: props.product.id,
+            defaultValue: props.object.id,
         },
     },
     {
@@ -442,7 +446,7 @@ const currentModule = ref({
     to_str: null,
     singular_label: "descuento",
     plural_label: "descuentos",
-    base_url: "/admin/discounts",
+    base_url: props.baseUrl,
 });
 
 const pagination = ref({
@@ -472,7 +476,7 @@ const onRequest = async (attrs) => {
         : pagination.value;
     const sortDirection = descending ? "DESC" : "ASC";
     axios
-        .post(`/admin/products/discounts/${props.product.id}`, {
+        .post(props.listUrl, {
             page,
             rowsPerPage,
             search,

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,15 +19,20 @@ class Product extends Model
         'valoration',
         'clients_valoration',
         'information_to_landing',
-        'planes'
+        'planes',
+        'category_id',
+        'subcategory_id',
+        'course_id'
     ];
 
     protected $appends = [
         'image_path',
-        'categories_id',
-        'categories_str',
         'active_offers',
-        'final_price'
+        'category_str',
+        'subcategory_str',
+        'course_str',
+        'final_price',
+        'type'
     ];
 
     protected $with = ['subtitles'];
@@ -55,14 +61,29 @@ class Product extends Model
         Storage::delete('public/' . $this->image);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class, 'category_id');
+    }
+
+    public function subcategory()
+    {
+        return $this->belongsTo(ProductSubcategory::class, 'subcategory_id');
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Module::class, 'course_id');
+    }
+
     public function categories()
     {
         return $this->belongsToMany(ProductCategory::class, 'products_categories', 'product_id', 'category_id');
     }
 
-    public function subtitles()
+    public function subtitles(): MorphMany
     {
-        return $this->hasMany(ProductSubtitle::class, 'product_id');
+        return $this->morphMany(Subtitle::class, 'subtitlable');
     }
 
     public function offers()
@@ -73,16 +94,6 @@ class Product extends Model
     public function discounts()
     {
         return $this->hasMany(ProductDiscount::class, 'product_id');
-    }
-
-    public function getCategoriesIdAttribute()
-    {
-        return $this->categories()->get()->pluck('id');
-    }
-
-    public function getCategoriesStrAttribute()
-    {
-        return $this->categories()->get()->pluck('name');
     }
 
     public function scopePublic($query)
@@ -114,5 +125,25 @@ class Product extends Model
             $price = $price - $offers['discount']->income;
         }
         return $price;
+    }
+
+    public function getCategoryStrAttribute()
+    {
+        return $this->category->name ?? null;
+    }
+
+    public function getSubCategoryStrAttribute()
+    {
+        return $this->subcategory->name ?? null;
+    }
+
+    public function getCourseStrAttribute()
+    {
+        return $this->course->singular_label ?? null;
+    }
+
+    public function getTypeAttribute()
+    {
+        return $this::class;
     }
 }

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductSubtitle;
+use App\Models\Subtitle;
 use App\Repositories\ProductRepository;
 use App\Repositories\ProductSubtitleRepository;
+use App\Repositories\SubtitleRepository;
 use App\Traits\FileSave;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -38,7 +41,7 @@ class ProductController extends Controller
     {
         if (auth()->user()->hasCreate('product')) {
             $request->validate([
-                'name' => ['required', 'unique:products'],
+                'name' => ['required', Rule::unique('products')->where('subcategory_id', $request->subcategory_id)->where('course_id', $request->course_id)],
             ]);
             $repository = new ProductRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
@@ -54,20 +57,21 @@ class ProductController extends Controller
                 }
             }
             $product = $repository->create($data);
-            if (isset($request->categories_id)) {
-                $product->categories()->attach($request->categories_id);
-            }
             if (isset($request->subtitles)) {
                 $subtitles = [];
+                $date = Carbon::now();
                 foreach ($request->subtitles as $item) {
                     $subtitles[] = [
                         'name' => $item['name'],
                         'description' => $item['description'],
-                        'product_id' => $product->id
+                        'subtitlable_type' => Product::class,
+                        'subtitlable_id' => $product->id,
+                        'created_at' => $date,
+                        'updated_at' => $date,
                     ];
                 }
                 if (count($subtitles) > 0) {
-                    ProductSubtitle::insert($subtitles);
+                    Subtitle::insert($subtitles);
                 }
             }
             return redirect()->back()->with('success', 'producto adicionado correctamente');
@@ -90,12 +94,7 @@ class ProductController extends Controller
                 $object = $repository->getById($id);
                 $old_file = $object->image;
             }
-            $product = $repository->updateById($id, $data);
-            if (isset($request->categories_id)) {
-                $product->categories()->sync($request->categories_id);
-            } else {
-                $product->categories()->detach();
-            }
+            $repository->updateById($id, $data);
             if ($old_file) {
                 Storage::delete('public/' . $old_file);
             }
@@ -122,7 +121,6 @@ class ProductController extends Controller
     public function public(Request $request, $id)
     {
         if (auth()->user()->hasUpdate('product')) {
-            $repository = new ProductRepository();
             $object = Product::find($id);
             $object->public  = !$object->public;
             $object->save();
@@ -131,12 +129,10 @@ class ProductController extends Controller
         return $this->deny_access($request);
     }
 
-
-
     public function addSubtitle(Request $request)
     {
         if (auth()->user()->hasUpdate('product')) {
-            $repository = new ProductSubtitleRepository();
+            $repository = new SubtitleRepository();
             $object = $repository->create($request->only((new ($repository->model()))->getFillable()));
             return redirect()->back()->with([
                 'success' => 'subtitulo adicionado correctamente',
@@ -149,7 +145,7 @@ class ProductController extends Controller
     public function updateSubtitle(Request $request, $id)
     {
         if (auth()->user()->hasUpdate('product')) {
-            $repository = new ProductSubtitleRepository();
+            $repository = new SubtitleRepository();
             $object = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
             return redirect()->back()->with([
                 'success' => 'subtitulo modificado correctamente',
@@ -162,7 +158,7 @@ class ProductController extends Controller
     public function deleteSubtitle(Request $request, $id)
     {
         if (auth()->user()->hasUpdate('product')) {
-            $repository = new ProductSubtitleRepository();
+            $repository = new SubtitleRepository();
             $repository->deleteById($id);
             return redirect()->back()->with('success', 'subtitulo eliminado correctamente');
         }

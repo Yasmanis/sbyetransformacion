@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Models\PaymentProduct;
+use App\Models\Product;
 use App\Services\PayPalService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -30,20 +32,44 @@ class PaymentController extends Controller
         $method = $request->method;
         $information = $request->information;
 
-        $response = $this->paypalService->createOrder($request->amount, $method, $information);
-
-        if (isset($response['id']) && $response['status'] === 'CREATED') {
-            Payment::create([
-                'user_id' => auth()->id(),
-                'order_id' => $response['id'],
-                'status' => 'pending',
-                'amount' => $request->amount,
-                'currency' => 'EUR',
-                'payload' => $response
-            ]);
-            session(['source_url' => url()->previous()]);
-            return $response;
+        $amount = 0;
+        $temp = [];
+        foreach ($request->products as $p) {
+            $product = Product::find($p['id']);
+            if ($product) {
+                $amount += $product->final_price;
+                $temp[] = [
+                    'payment_id' => null,
+                    'product_id' => $p['id'],
+                    'amount' => $product->final_price
+                ];
+            }
         }
+
+        if ($amount > 0) {
+
+            $response = $this->paypalService->createOrder($request->amount, $method, $information);
+
+            if (isset($response['id']) && $response['status'] === 'CREATED') {
+                $object = Payment::create([
+                    'user_id' => auth()->id(),
+                    'order_id' => $response['id'],
+                    'status' => 'pending',
+                    'amount' => $amount,
+                    'currency' => 'EUR',
+                    'payload' => $response
+                ]);
+
+                foreach ($temp as $p) {
+                    $p['payment_id'] = $object->id;
+                }
+                PaymentProduct::create($temp);
+
+                session(['source_url' => url()->previous()]);
+                return $response;
+            }
+        }
+
         return response()->json(['error' => 'error creando la orden de pago'], 500);
     }
 
@@ -53,15 +79,33 @@ class PaymentController extends Controller
         $orderId = $request->input('token');
         $response = $this->paypalService->capturePayment($orderId);
         if (isset($response['status']) && $response['status'] === 'COMPLETED') {
-            $payment = Payment::where('order_id', $orderId)->first();
+            $payment = Payment::with('products.course.permissions')->firstWhere('order_id', $orderId);
             if ($payment) {
                 $payment->update([
                     'status' => 'completed',
                     'payment_id' => $response['id'],
                     'payload' => $response
                 ]);
+
+                $permissionsToGrant = $payment->products
+                    ->pluck('course')
+                    ->filter()
+                    ->pluck('permissions')->where('name', 'like', '%view%')
+                    ->flatten()
+                    ->pluck('id');
+
+                dd($permissionsToGrant);
+
+                $user = auth()->user();
+
+                if (!$user->sa && $permissionsToGrant->isNotEmpty()) {
+                    $user->givePermissionTo($permissionsToGrant);
+                }
+
                 session()->flash('success', 'su pago fue procesado correctamente');
-                return redirect()->to($sourceUrl);
+
+                $url = $payment->products[0]->course->base_url;
+                return redirect()->to($url);
             }
         }
         session()->flash('error', 'error al procesar su pago');

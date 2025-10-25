@@ -19,4 +19,9 @@ class Payment extends Model
     protected $casts = [
         'payload' => 'array'
     ];
+
+    public function products()
+    {
+        return $this->belongsToMany(PaymentProduct::class);
+    }
 }

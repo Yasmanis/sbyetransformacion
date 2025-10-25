@@ -6,8 +6,10 @@ use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\CategoryNomenclature;
 use App\Models\Country;
+use App\Models\Module;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductSubcategory;
 use App\Models\ReasonForReturn;
 use App\Models\Role;
 use App\Models\User;
@@ -67,6 +69,26 @@ class SelectsController extends Controller
     {
         return response()->json([
             'options' => ProductCategory::select('id as value', 'name as label')->get()
+        ]);
+    }
+
+    public function productCourses()
+    {
+        $module = Module::with('childs')->firstWhere('singular_label', 'Escuela');
+        return response()->json([
+            'options' => $module->childs->map(function ($item) {
+                return [
+                    'value' => $item->id,
+                    'label' => $item->singular_label
+                ];
+            })
+        ]);
+    }
+
+    public function productSubcategories($id)
+    {
+        return response()->json([
+            'options' => ProductSubcategory::where('category_id', $id)->select('id as value', 'name as label', 'category_id')->get()
         ]);
     }
 

@@ -4,6 +4,7 @@
             <table-component
                 :columns="columns"
                 :searchFields="searchFields"
+                :filterFields="filterFields"
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
@@ -15,7 +16,7 @@
 
 <script setup>
 import Layout from "../../layouts/ShoppingLayout.vue";
-import TableComponent from "../../components/modules/products/categories/TableComponent.vue";
+import TableComponent from "../../components/modules/products/subcategories/TableComponent.vue";
 
 defineOptions({
     name: "ListPage",
@@ -35,28 +36,32 @@ const name = {
     },
 };
 
-const description = {
-    field: "description",
-    name: "description",
-    label: "descripcion",
-    align: "left",
-    sortable: true,
-    type: "editor",
-    autogrow: true,
+const category = {
+    field: "category_id",
+    name: "category_id",
+    label: "categoria",
+    type: "select",
+    othersProps: {
+        url_to_options: "/product-categories",
+    },
 };
 
-const subtitles = {
-    field: "subtitles",
-    name: "subtitles",
-    label: "subtitulos",
-    type: "subtitles",
+const categoryStr = {
+    field: "category_str",
+    name: "category_str",
+    label: "categoria",
+    align: "left",
+    sortable: false,
+    type: "text",
 };
 
 const searchFields = [name];
 
+const filterFields = [category];
+
 const columns = [
     name,
-    //description,
+    categoryStr,
     {
         field: "actions",
         name: "actions",
@@ -66,9 +71,5 @@ const columns = [
     },
 ];
 
-const fields = [
-    name,
-    //description,
-    //subtitles
-];
+const fields = [name, category];
 </script>

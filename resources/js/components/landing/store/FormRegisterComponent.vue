@@ -105,9 +105,6 @@
                                 label="localidad"
                                 name="city"
                                 :model-value="formData.city"
-                                :others-props="{
-                                    required: true,
-                                }"
                                 @update="onUpdateField"
                             />
                         </div>
@@ -131,9 +128,6 @@
                                 label="codigo postal"
                                 name="postal_code"
                                 :model-value="formData.postal_code"
-                                :others-props="{
-                                    required: true,
-                                }"
                                 @update="onUpdateField"
                             />
                         </div>
@@ -146,9 +140,6 @@
                                 label="tipo via"
                                 name="road"
                                 :model-value="formData.road"
-                                :others-props="{
-                                    required: true,
-                                }"
                                 @update="onUpdateField"
                             />
                         </div>
@@ -159,9 +150,6 @@
                                 label="nombre via, numero, portal, piso, puerta"
                                 name="address"
                                 :model-value="formData.address"
-                                :others-props="{
-                                    required: true,
-                                }"
                                 @update="onUpdateField"
                             />
                         </div>
@@ -173,9 +161,6 @@
                             <text-field
                                 name="phone"
                                 :model-value="formData.phone"
-                                :others-props="{
-                                    required: true,
-                                }"
                                 @update="onUpdateField"
                             >
                                 <template #before>
@@ -189,9 +174,6 @@
                                         :clearable="false"
                                         style="width: 120px !important"
                                         @update="onUpdateField"
-                                        :others-props="{
-                                            required: true,
-                                        }"
                                     />
                                 </template>
                             </text-field>

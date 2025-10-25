@@ -26,24 +26,28 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PrivateMsgController;
 use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductCategoryDiscountController;
+use App\Http\Controllers\ProductCategoryOffersController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductDiscountController;
 use App\Http\Controllers\ProductOffersController;
+use App\Http\Controllers\ProductSubcategoryController;
+use App\Http\Controllers\ProductSubcategoryDiscountController;
+use App\Http\Controllers\ProductSubcategoryOffersController;
 use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\RealityController;
 use App\Http\Controllers\ReasonForReturnController;
 use App\Http\Controllers\SchoolTopicsController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\ShoppingController;
+use App\Http\Controllers\SubtitleController;
 use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
 use App\Models\Landing;
-use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\Testimony;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -110,7 +114,7 @@ Route::get('/maria', function () {
 });
 
 Route::get('/store', function () {
-    $products = Product::public()->orderBy('order', 'ASC')->get();
+    $products = Product::public()->whereNotNull('course_id')->orderBy('order', 'ASC')->get();
     return Inertia('landing/store', [
         'products' => $products
     ]);
@@ -266,14 +270,32 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/products', ProductController::class);
     Route::resource('/admin/offers', ProductOffersController::class)->only(['store', 'update', 'destroy']);
     Route::resource('/admin/discounts', ProductDiscountController::class)->only(['store', 'update', 'destroy']);
+    Route::resource('/admin/offers-category', ProductCategoryOffersController::class)->only(['store', 'update', 'destroy']);
+    Route::resource('/admin/discounts-category', ProductCategoryDiscountController::class)->only(['store', 'update', 'destroy']);
+    Route::resource('/admin/offers-subcategory', ProductSubcategoryOffersController::class)->only(['store', 'update', 'destroy']);
+    Route::resource('/admin/discounts-subcategory', ProductSubcategoryDiscountController::class)->only(['store', 'update', 'destroy']);
+
+    Route::post('/admin/products/offers-category/{id}', [ProductCategoryOffersController::class, 'index']);
+    Route::post('/admin/products/discounts-category/{id}', [ProductCategoryDiscountController::class, 'index']);
+
+    Route::post('/admin/products/offers-subcategory/{id}', [ProductSubcategoryOffersController::class, 'index']);
+    Route::post('/admin/products/discounts-subcategory/{id}', [ProductSubcategoryDiscountController::class, 'index']);
+
     Route::post('/admin/products/offers/{id}', [ProductOffersController::class, 'index']);
     Route::post('/admin/products/discounts/{id}', [ProductDiscountController::class, 'index']);
+
     Route::post('/admin/products/subtitle', [ProductController::class, 'addSubtitle']);
     Route::put('/admin/products/subtitle/{id}', [ProductController::class, 'updateSubtitle']);
     Route::delete('/admin/products/subtitle/{id}', [ProductController::class, 'deleteSubtitle']);
+
+    Route::resource('/admin/subtitles', SubtitleController::class)->only(['store', 'update', 'destroy']);
+
     Route::post('/admin/products/public/{id}', [ProductController::class, 'public']);
     Route::post('/admin/products/sort', [ProductController::class, 'sort']);
     Route::resource('/admin/product-categories', ProductCategoryController::class);
+    Route::post('/admin/product-categories/sort', [ProductCategoryController::class, 'sort']);
+    Route::resource('/admin/product-subcategories', ProductSubcategoryController::class);
+    Route::post('/admin/product-subcategories/sort', [ProductSubcategoryController::class, 'sort']);
     Route::resource('/admin/users/payment-methods', PaymentMethodController::class)->except('index');
     Route::resource('/admin/users/billing-information', BillingInformationController::class)->except('index');
     Route::post('/admin/users/billing-information/predetermined/{id}', [BillingInformationController::class, 'predetermined']);
@@ -344,4 +366,6 @@ Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
 Route::get('/download/{id}', [FileController::class, 'download']);
 Route::post('/subscribe', [BrevoController::class, 'subscribe']);
 Route::get('/product-categories', [SelectsController::class, 'productCategories']);
+Route::get('/product-subcategories/{id}', [SelectsController::class, 'productSubcategories']);
+Route::get('/product-courses', [SelectsController::class, 'productCourses']);
 Route::get('/products', [SelectsController::class, 'products']);

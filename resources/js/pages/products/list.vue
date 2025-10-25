@@ -69,17 +69,6 @@ const image = {
     type: "image",
 };
 
-const categories = {
-    field: "categories_id",
-    name: "categories_id",
-    label: "categorias",
-    type: "select",
-    othersProps: {
-        multiple: true,
-        url_to_options: "/product-categories",
-    },
-};
-
 const valoration = {
     field: "valoration",
     name: "valoration",
@@ -122,9 +111,40 @@ const subtitles = {
     type: "subtitles",
 };
 
+const depends = {
+    type: "depends-select",
+    parent: {
+        name: "category_id",
+        label: "categoria",
+        othersProps: {
+            required: true,
+            url_to_options: "/product-categories",
+        },
+    },
+    child: {
+        name: "subcategory_id",
+        label: "subcategoria",
+        othersProps: {
+            required: true,
+            base_url: "/product-subcategories",
+        },
+    },
+};
+
+const course = {
+    field: "course_id",
+    name: "course_id",
+    label: "curso",
+    type: "select",
+    othersProps: {
+        url_to_options: "/product-courses",
+        required: true,
+    },
+};
+
 const searchFields = [name];
 
-const filterFields = [publicF, clientsValoration, informationToLanding];
+const filterFields = [publicF, clientsValoration, informationToLanding, course];
 
 const columns = [
     {
@@ -146,14 +166,31 @@ const columns = [
     valoration,
     clientsValoration,
     informationToLanding,
-    description,
     {
-        field: "categories_str",
-        name: "categories_str",
-        label: "categorias",
+        field: "category_str",
+        name: "category_str",
+        label: "categoria",
         align: "left",
+        sortable: false,
         type: "text",
     },
+    {
+        field: "subcategory_str",
+        name: "subcategory_str",
+        label: "subcategoria",
+        align: "left",
+        sortable: false,
+        type: "text",
+    },
+    {
+        field: "course_str",
+        name: "course_str",
+        label: "curso",
+        align: "left",
+        sortable: false,
+        type: "text",
+    },
+    description,
     publicF,
     {
         field: "actions",
@@ -178,6 +215,8 @@ const fields = [
         type: "boolean",
     },
     valoration,
+    depends,
+    course,
     description,
     subtitles,
     {
@@ -188,7 +227,6 @@ const fields = [
         type: "boolean",
     },
     image,
-    categories,
     publicF,
     {
         field: "planes",

@@ -27,12 +27,21 @@
 
                 <q-tab-panels v-model="tab" animated>
                     <q-tab-panel name="offers" class="q-pa-none">
-                        <offers-table :product="product" :has-edit="hasEdit" />
+                        <offers-table
+                            :object="object"
+                            :base-url="baseOfferUrl"
+                            :list-url="listOfferUrl"
+                            :relation-name="offerRelation"
+                            :has-edit="hasEdit"
+                        />
                     </q-tab-panel>
 
                     <q-tab-panel name="discounts" class="q-pa-none">
                         <discounts-table
-                            :product="product"
+                            :object="object"
+                            :base-url="baseDiscountUrl"
+                            :list-url="listDiscountUrl"
+                            :relation-name="discountRelation"
                             :has-edit="hasEdit"
                         />
                     </q-tab-panel>
@@ -61,8 +70,14 @@ defineOptions({
 });
 
 const props = defineProps({
-    product: Object,
+    object: Object,
     hasEdit: Boolean,
+    baseDiscountUrl: String,
+    listDiscountUrl: String,
+    baseOfferUrl: String,
+    listOfferUrl: String,
+    discountRelation: String,
+    offerRelation: String,
 });
 
 const showDialog = ref(false);

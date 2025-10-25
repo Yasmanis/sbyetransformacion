@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductCategory;
+use App\Models\Subtitle;
 use App\Repositories\ProductCategoryRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -14,7 +17,13 @@ class ProductCategoryController extends Controller
             $repository = new ProductCategoryRepository();
             $repository->search($request->search);
             $repository->filters($request->filters);
-            $repository->orderBy($request->sortBy, $request->sortDirection);
+            $sortBy = $request->sortBy;
+            $sortDirection = $request->sortDirection;
+            if (!isset($sortBy)) {
+                $sortBy = 'order';
+                $sortDirection = 'ASC';
+            }
+            $repository->orderBy($sortBy, $sortDirection);
             return $this->data_index($repository, $request);
         }
         return $this->deny_access($request);
@@ -27,7 +36,24 @@ class ProductCategoryController extends Controller
                 'name' => ['required', 'unique:product_category']
             ]);
             $repository = new ProductCategoryRepository();
-            $repository->create($request->only((new ($repository->model()))->getFillable()));
+            $object = $repository->create($request->only((new ($repository->model()))->getFillable()));
+            if (isset($request->subtitles)) {
+                $subtitles = [];
+                $date = Carbon::now();
+                foreach ($request->subtitles as $item) {
+                    $subtitles[] = [
+                        'name' => $item['name'],
+                        'description' => $item['description'],
+                        'subtitlable_type' => ProductCategory::class,
+                        'subtitlable_id' => $object->id,
+                        'created_at' => $date,
+                        'updated_at' => $date,
+                    ];
+                }
+                if (count($subtitles) > 0) {
+                    Subtitle::insert($subtitles);
+                }
+            }
             return redirect()->back()->with('success', 'categoria adicionada correctamente');
         }
         return $this->deny_access($request);
@@ -57,6 +83,22 @@ class ProductCategoryController extends Controller
                 $repository->deleteMultipleById($ids);
             }
             return redirect()->back()->with('success', count($ids) == 1 ? 'categoria eliminada correctamente' : 'categorias eliminadas correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function sort(Request $request)
+    {
+        if (auth()->user()->hasUpdate('productcategory')) {
+            $objects = json_decode($request->ids);
+            foreach ($objects as $c) {
+                $obj = ProductCategory::find($c->id);
+                if ($obj != null) {
+                    $obj->order = $c->order;
+                    $obj->save();
+                }
+            }
+            return redirect()->back()->with('success', 'categorias ordenadas correctamente');
         }
         return $this->deny_access($request);
     }

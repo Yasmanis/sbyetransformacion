@@ -89,14 +89,12 @@
                                 <q-item-section avatar>
                                     <q-img
                                         :src="`${$page.props.public_path}images/logo/2.png`"
-                                        :ratio="16 / 9"
                                         width="200px"
                                         fit="fill"
                                         v-if="method.id !== 0"
                                     />
                                     <q-img
                                         :src="`${$page.props.public_path}images/others/paypal.png`"
-                                        :ratio="16 / 9"
                                         width="80px"
                                         fit="fill"
                                         v-else
