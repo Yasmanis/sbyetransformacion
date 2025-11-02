@@ -78,7 +78,7 @@
                         label="quiero empezar ahora"
                         no-caps
                         rounded
-                        :href="`/store#product-store-${product?.id}`"
+                        :href="`/tienda#product-store-${product?.id}`"
                     >
                         <q-icon
                             name="fa fa-long-arrow-right"
@@ -220,7 +220,7 @@
                         label="quiero vivir esta transformacion"
                         no-caps
                         rounded
-                        :href="`/store#product-store-${product?.id}`"
+                        :href="`/tienda#product-store-${product?.id}`"
                     >
                         <q-icon
                             name="fa fa-long-arrow-right"
@@ -408,7 +408,7 @@
                         label="empezar ahora"
                         no-caps
                         rounded
-                        :href="`/store#product-store-${product?.id}`"
+                        :href="`/tienda#product-store-${product?.id}`"
                     >
                         <q-icon
                             name="fa fa-long-arrow-right"
@@ -844,7 +844,7 @@
                     label="quiero empezar ahora"
                     no-caps
                     rounded
-                    :href="`/store#product-store-${product?.id}`"
+                    :href="`/tienda#product-store-${product?.id}`"
                 >
                     <q-icon
                         name="fa fa-long-arrow-right"

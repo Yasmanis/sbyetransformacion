@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Ocultar paginas legales del buscador
+Disallow: /legal/
+Disallow: /private/
+Disallow: /contracting/
+
+# Allow para archivos CSS y JS si los bloqueas por alguna regla general
+Allow: *.css
+Allow: *.js

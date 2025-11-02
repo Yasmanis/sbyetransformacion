@@ -1,4 +1,18 @@
 <template>
+    <Head>
+        <title>
+            Liberación emocional – la puerta para vivir en plenitud | Sbye
+            Transformación
+        </title>
+        <meta
+            name="description"
+            content="Descubre cómo vivir en plenitud con la intervención directa de Dios. María Garriga Domínguez te guía en un camino de liberación emocional, consciencia y reencuentro con tu esencia divina. Conoce el libro y empieza hoy tu transformación."
+        />
+        <meta
+            name="keywords"
+            content="liberación emocional, vivir en plenitud, consciencia, dios nos habla, maria garriga domínguez, sbye transformación"
+        />
+    </Head>
     <Layout title="VIVIR EN PLENITUD">
         <div class="banner bg-primary">
             <div class="row items-center container">
@@ -528,7 +542,7 @@
 <script setup>
 import Layout from "../../layouts/MainLayout.vue";
 import { ref, computed } from "vue";
-import { router } from "@inertiajs/vue3";
+import { router, Head } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import FormSubscriptionComponent from "../../components/landing/FormSubscriptionComponent.vue";
 

@@ -200,7 +200,7 @@ const links = ref([
     },
     {
         title: "tienda",
-        url: "/store",
+        url: "/tienda",
     },
     {
         title: "contactame",

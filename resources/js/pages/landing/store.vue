@@ -1,4 +1,18 @@
 <template>
+    <Head>
+        <title>
+            Cursos y consulta online – Aprender a liberar y Crear la realidad
+            conscientemente | Sbye Transformación
+        </title>
+        <meta
+            name="description"
+            content="Cursos de María Garriga Domínguez para liberar emociones, transformar creencias y crear conscientemente la vida que deseas. Aprende a vivir desde tu esencia."
+        />
+        <meta
+            name="keywords"
+            content="cursos liberación emocional, crear la realidad, consciencia, desprogramación emocional, maria garriga, consulta desarrollo personal"
+        />
+    </Head>
     <Layout title="tienda">
         <div class="q-py-lg">
             <div class="row bg-red q-pa-md text-h5 text-white">
@@ -168,7 +182,7 @@ import QBtnComponent from "../../components/base/QBtnComponent.vue";
 import BtnBasketComponent from "../../components/btn/BtnBasketComponent.vue";
 import MyWishesComponent from "../../components/modules/store/MyWishesComponent.vue";
 import { onBeforeMount, onMounted, ref, watch } from "vue";
-import { usePage } from "@inertiajs/vue3";
+import { usePage, Head } from "@inertiajs/vue3";
 import {
     updateProductsStorage,
     products as selectedProducts,

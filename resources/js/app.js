@@ -31,8 +31,9 @@ import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 import Swal from "sweetalert2";
 import axios from "axios";
+
 createInertiaApp({
-    title: (title) => "SBYE-transformacion",
+    title: (title) => title ?? "SBYE-transformacion",
     progress: false,
     resolve: (name) =>
         resolvePageComponent(

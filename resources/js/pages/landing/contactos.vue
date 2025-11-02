@@ -1,4 +1,17 @@
 <template>
+    <Head>
+        <title>
+            Contáctame | Sbye Transformación – María Garriga Domínguez
+        </title>
+        <meta
+            name="description"
+            content="¿Quieres más información sobre el libro, los cursos, las consultas o las conferencias? Ponte en contacto directamente con María Garriga Domínguez."
+        />
+        <meta
+            name="keywords"
+            content="contacto, maria garriga domínguez, sbye transformación, consultas, conferencias"
+        />
+    </Head>
     <Layout title="contactame">
         <div class="row container bg-primary items-center q-pa-md">
             <div class="col-lg-5 col-md-5 text-center">
@@ -420,7 +433,7 @@
 <script setup>
 import Layout from "../../layouts/MainLayout.vue";
 import { ref, watch, computed, onMounted } from "vue";
-import { useForm, usePage, Link } from "@inertiajs/vue3";
+import { useForm, usePage, Link, Head } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import { error, errorValidation } from "../../helpers/notifications.js";
 defineOptions({

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Models\PaymentProduct;
 use App\Models\Product;
+use App\Models\User;
 use App\Services\PayPalService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class PaymentController extends Controller
@@ -60,10 +62,11 @@ class PaymentController extends Controller
                     'payload' => $response
                 ]);
 
-                foreach ($temp as $p) {
+                foreach ($temp as &$p) {
                     $p['payment_id'] = $object->id;
                 }
-                PaymentProduct::create($temp);
+
+                PaymentProduct::insert($temp);
 
                 session(['source_url' => url()->previous()]);
                 return $response;
@@ -79,33 +82,32 @@ class PaymentController extends Controller
         $orderId = $request->input('token');
         $response = $this->paypalService->capturePayment($orderId);
         if (isset($response['status']) && $response['status'] === 'COMPLETED') {
-            $payment = Payment::with('products.course.permissions')->firstWhere('order_id', $orderId);
+            $payment = Payment::firstWhere('order_id', $orderId);
             if ($payment) {
+                $module = PaymentProduct::firstWhere('payment_id', $payment->id)->product->course;
                 $payment->update([
                     'status' => 'completed',
                     'payment_id' => $response['id'],
                     'payload' => $response
                 ]);
 
-                $permissionsToGrant = $payment->products
-                    ->pluck('course')
-                    ->filter()
-                    ->pluck('permissions')->where('name', 'like', '%view%')
-                    ->flatten()
-                    ->pluck('id');
-
-                dd($permissionsToGrant);
+                $permissionsToGrant = DB::select("SELECT distinct p.id FROM permissions p INNER JOIN modules m ON p.module_id=m.id INNER JOIN products prod ON m.id=prod.course_id INNER JOIN payment_products pp ON prod.id=pp.product_id and pp.payment_id=? WHERE p.name LIKE 'view_%'", [$payment->id]);
 
                 $user = auth()->user();
 
-                if (!$user->sa && $permissionsToGrant->isNotEmpty()) {
-                    $user->givePermissionTo($permissionsToGrant);
+                if (!$user->sa) {
+                    foreach ($permissionsToGrant as $p) {
+                        try {
+                            $user->permissions()->attach($p);
+                        } catch (\Throwable $th) {
+                            continue;
+                        }
+                    }
                 }
 
                 session()->flash('success', 'su pago fue procesado correctamente');
 
-                $url = $payment->products[0]->course->base_url;
-                return redirect()->to($url);
+                return redirect()->to($module->base_url);
             }
         }
         session()->flash('error', 'error al procesar su pago');
@@ -128,9 +130,9 @@ class PaymentController extends Controller
 
     public function getSourceUrl()
     {
-        $sourceUrl = session('source_url', url('/store'));
+        $sourceUrl = session('source_url', url('/tienda'));
         if (!filter_var($sourceUrl, FILTER_VALIDATE_URL) || !str_contains($sourceUrl, config('app.url'))) {
-            $sourceUrl = url('/store');
+            $sourceUrl = url('/tienda');
         }
         return $sourceUrl;
     }

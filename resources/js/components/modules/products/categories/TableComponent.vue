@@ -213,7 +213,7 @@
                         v-if="updateFields.length > 0 && has_edit"
                     />
 
-                    <!-- <offers-component
+                    <offers-component
                         :object="props.row"
                         base-discount-url="/admin/discounts-category"
                         base-offer-url="/admin/offers-category"
@@ -222,7 +222,7 @@
                         :list-discount-url="`/admin/products/discounts-category/${props.row.id}`"
                         :list-offer-url="`/admin/products/offers-category/${props.row.id}`"
                         :has-edit="has_edit"
-                    /> -->
+                    />
                     <delete-component
                         :objects="[props.row]"
                         :url="current_module.base_url"
@@ -308,7 +308,7 @@
                                                 has_edit
                                             "
                                         />
-                                        <!-- <offers-component
+                                        <offers-component
                                             :object="props.row"
                                             base-discount-url="/admin/discounts-category"
                                             base-offer-url="/admin/offers-category"
@@ -317,7 +317,7 @@
                                             :list-discount-url="`/admin/products/discounts-category/${props.row.id}`"
                                             :list-offer-url="`/admin/products/offers-category/${props.row.id}`"
                                             :has-edit="has_edit"
-                                        /> -->
+                                        />
                                         <delete-component
                                             :objects="[props.row]"
                                             :url="current_module.base_url"

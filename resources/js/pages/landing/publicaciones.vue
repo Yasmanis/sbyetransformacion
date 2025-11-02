@@ -1,4 +1,17 @@
 <template>
+    <Head>
+        <title>
+            Reflexiones, conferencias y testimonios | Sbye Transformación
+        </title>
+        <meta
+            name="description"
+            content="Explora las publicaciones de María Garriga Domínguez sobre consciencia, liberación emocional y vida en plenitud. Encuentra inspiración en testimonios, conferencias y mensajes de transformación."
+        />
+        <meta
+            name="keywords"
+            content="reflexiones, conferencias, testimonios, liberación emocional, María Garriga Domínguez"
+        />
+    </Head>
     <Layout title="publicaciones">
         <div
             class="row container q-mt-xl"
@@ -147,7 +160,7 @@
 <script setup>
 import { computed, ref } from "vue";
 import Layout from "../../layouts/MainLayout.vue";
-import { usePage } from "@inertiajs/vue3";
+import { usePage, Head } from "@inertiajs/vue3";
 import ListCategoryComponent from "../../components/landing/ListCategoryComponent.vue";
 import FilesCategoryComponent from "../../components/landing/FilesCategoryComponent.vue";
 import FormTestimonyComponent from "../../components/landing/FormTestimonyComponent.vue";

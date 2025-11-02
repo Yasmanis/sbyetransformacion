@@ -113,7 +113,7 @@ Route::get('/maria', function () {
     return Inertia('landing/maria');
 });
 
-Route::get('/store', function () {
+Route::get('/tienda', function () {
     $products = Product::public()->whereNotNull('course_id')->orderBy('order', 'ASC')->get();
     return Inertia('landing/store', [
         'products' => $products

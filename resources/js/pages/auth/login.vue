@@ -1,4 +1,18 @@
 <template>
+    <Head>
+        <title>
+            Area Privada para alumnos y lectores de Liberacion emocional | Sbye
+            Transformación
+        </title>
+        <meta
+            name="description"
+            content="Accede al área privada para alumnos y lectores del libro Liberación emocional. Escuela, video-libro, conferencias y comunidad interactiva con María Garriga"
+        />
+        <meta
+            name="keywords"
+            content="escuela sbye, area privada, liberación emocional, maria garriga domínguez, comunidad consciente"
+        />
+    </Head>
     <q-layout view="lHh Lpr lFf">
         <q-page-container>
             <q-page
@@ -105,10 +119,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
-import { usePage } from "@inertiajs/vue3";
-import { login, getPassword } from "../../services/auth";
-import { errorValidation } from "../../helpers/notifications";
+import { ref } from "vue";
 import QBtnComponent from "../../components/base/QBtnComponent.vue";
 import FormForgotPasswordComponent from "../../components/auth/FormForgotPasswordComponent.vue";
 import FormLoginComponent from "../../components/auth/FormLoginComponent.vue";

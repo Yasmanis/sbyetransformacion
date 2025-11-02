@@ -56,7 +56,7 @@ const searchFields = [name];
 
 const columns = [
     name,
-    //description,
+    description,
     {
         field: "actions",
         name: "actions",
@@ -66,9 +66,5 @@ const columns = [
     },
 ];
 
-const fields = [
-    name,
-    //description,
-    //subtitles
-];
+const fields = [name, description, subtitles];
 </script>

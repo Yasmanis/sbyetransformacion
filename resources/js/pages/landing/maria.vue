@@ -1,4 +1,19 @@
 <template>
+    <Head>
+        <title>
+            María Garriga Domínguez – Sbye Transformación | Liberación emocional
+            y consciencia
+        </title>
+        <meta
+            name="description"
+            content="Conoce la historia real detrás del libro Liberación emocional. María Garriga comparte su proceso de transformación interior y cómo aprendió a escuchar la voz de Dios a través de la vida.
+"
+        />
+        <meta
+            name="keywords"
+            content="maría garriga domínguez, liberación emocional, historia real, consciencia, dios nos habla"
+        />
+    </Head>
     <Layout title="maria">
         <div class="row container bg-primary items-center text-white">
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
@@ -72,7 +87,7 @@
 </template>
 
 <script setup>
-import { Link } from "@inertiajs/vue3";
+import { Link, Head } from "@inertiajs/vue3";
 import Layout from "../../layouts/MainLayout.vue";
 import { useQuasar } from "quasar";
 import { computed } from "vue";
