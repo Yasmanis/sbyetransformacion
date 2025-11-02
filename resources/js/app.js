@@ -33,7 +33,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 
 createInertiaApp({
-    title: (title) => title ?? "SBYE-transformacion",
+    title: (title) => "SBYE-transformacion",
     progress: false,
     resolve: (name) =>
         resolvePageComponent(

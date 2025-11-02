@@ -1,7 +1,4 @@
 <template>
-    <Head>
-        <title>Welcome to laravel + quasar</title>
-    </Head>
     <Layout>
         <q-page class="column flex-center"> Cambiar este contenido... </q-page>
     </Layout>
