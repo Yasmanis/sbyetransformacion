@@ -1,7 +1,9 @@
 <template>
     <q-table
         :rows="rows"
-        :columns="columns"
+        :columns="
+            onlyPercent ? columns.filter((c) => c.name !== 'income') : columns
+        "
         :grid="$q.screen.lt.sm"
         :loading="loading"
         :rows-per-page-options="[10, 20, 30, 50, 100]"
@@ -301,10 +303,11 @@ const props = defineProps({
         type: String,
         default: "product_id",
     },
+    onlyPercent: Boolean,
 });
 const $q = useQuasar();
 
-const columns = [
+const columns = ref([
     {
         name: "code",
         field: "code",
@@ -315,7 +318,7 @@ const columns = [
     {
         name: "percent",
         field: "percent",
-        label: "porciento",
+        label: `${props.onlyPercent ? "descuento (%)" : "porciento"}`,
         sortable: true,
         align: "left",
     },
@@ -361,7 +364,7 @@ const columns = [
         sortable: true,
         align: "right",
     },
-];
+]);
 
 const rows = ref([]);
 
@@ -403,6 +406,7 @@ const formFields = ref([
         incomeName: "income",
         priceName: "price",
         totalPrice: props.object[props.priceName] ?? 0,
+        onlyPercent: props.onlyPercent,
     },
     {
         type: "daterange",

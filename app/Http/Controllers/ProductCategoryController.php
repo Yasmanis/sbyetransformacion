@@ -7,6 +7,7 @@ use App\Models\Subtitle;
 use App\Repositories\ProductCategoryRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ProductCategoryController extends Controller
@@ -36,7 +37,12 @@ class ProductCategoryController extends Controller
                 'name' => ['required', 'unique:product_category']
             ]);
             $repository = new ProductCategoryRepository();
-            $object = $repository->create($request->only((new ($repository->model()))->getFillable()));
+            $data = $request->only((new ($repository->model()))->getFillable());
+            if ($request->hasFile('image')) {
+                $path = $request->image->store('products', 'public');
+                $data['image'] = $path;
+            }
+            $object = $repository->create($data);
             if (isset($request->subtitles)) {
                 $subtitles = [];
                 $date = Carbon::now();
@@ -66,7 +72,27 @@ class ProductCategoryController extends Controller
                 'name' => ['required', Rule::unique('product_category', 'name')->ignore($id)],
             ]);
             $repository = new ProductCategoryRepository();
-            $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+            $data = $request->only((new ($repository->model()))->getFillable());
+            $current_image = null;
+            if ($request->hasFile('image')) {
+                $path = $request->image->store('products', 'public');
+                $data['image'] = $path;
+                $object = $repository->getById($id);
+                if (isset($object->image)) {
+                    $current_image = $object->image;
+                }
+            } else if (isset($request->image)) {
+                $data['image'] = substr($request->image, strpos($request->image, 'storage') + 8);
+            } else {
+                $object = $repository->getById($id);
+                if (isset($object->image)) {
+                    $current_image = $object->image;
+                }
+            }
+            $repository->updateById($id, $data);
+            if (isset($current_image)) {
+                Storage::delete('public/' . $current_image);
+            }
             return redirect()->back()->with('success', 'categoria modificada correctamente');
         }
         return $this->deny_access($request);

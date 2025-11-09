@@ -16,6 +16,8 @@
 <script setup>
 import Layout from "../../layouts/ShoppingLayout.vue";
 import TableComponent from "../../components/modules/products/categories/TableComponent.vue";
+import { Dark } from "quasar";
+import { usePage } from "@inertiajs/vue3";
 
 defineOptions({
     name: "ListPage",
@@ -52,9 +54,38 @@ const subtitles = {
     type: "subtitles",
 };
 
+const image = {
+    field: "image",
+    name: "image",
+    label: "imagen",
+    type: "file",
+    othersProps: {
+        icon: "mdi-image-outline",
+        titleIcon: "seleccionar imagen",
+        accept: "image/*",
+        change: true,
+        helpCheck:
+            "marque esta casilla si desea reemplazar la imagen existente",
+    },
+};
+
 const searchFields = [name];
 
 const columns = [
+    {
+        type: "image",
+        field: "image_path",
+        name: "image_path",
+        label: "",
+        align: "center",
+        sortable: false,
+        width: "100px",
+        othersProps: {
+            default: `${usePage().props.public_path}images/logo/${
+                Dark.isActive ? "1" : "2"
+            }.png`,
+        },
+    },
     name,
     description,
     {
@@ -66,5 +97,5 @@ const columns = [
     },
 ];
 
-const fields = [name, description, subtitles];
+const fields = [name, image, description, subtitles];
 </script>

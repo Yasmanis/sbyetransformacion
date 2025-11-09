@@ -184,6 +184,7 @@
                     :percent-value="formData[f.percentName]"
                     :income-value="formData[f.incomeName]"
                     :total-price="f.totalPrice ?? 0"
+                    :only-percent="f.onlyPercent ?? false"
                     @update="onUpdateField"
                     v-else-if="f.type === 'discount'"
                 />

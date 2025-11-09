@@ -40,12 +40,7 @@
                 @add-product="emits('add-product', product)"
             />
             <div class="column items-center">
-                <q-btn-component
-                    label="alguna duda? preguntanos"
-                    class="full-width"
-                    :round="false"
-                    no-caps
-                />
+                <help-question :product="product" />
                 <q-rating
                     v-model="product.valoration"
                     color="primary"
@@ -69,7 +64,7 @@ import BtnShareComponent from "../../btn/BtnShareComponent.vue";
 import BtnShoppinCarComponent from "../../btn/BtnShoppinCarComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import ProductInformation from "../shopping/ProductInformation.vue";
-import { Dark } from "quasar";
+import HelpQuestion from "./HelpQuestion.vue";
 import { products, updateProductsStorage } from "../../../services/shopping";
 defineOptions({
     name: "ProductComponent",

@@ -221,6 +221,7 @@
                         offer-relation="category_id"
                         :list-discount-url="`/admin/products/discounts-category/${props.row.id}`"
                         :list-offer-url="`/admin/products/offers-category/${props.row.id}`"
+                        :only-percent="true"
                         :has-edit="has_edit"
                     />
                     <delete-component
@@ -316,6 +317,7 @@
                                             offer-relation="category_id"
                                             :list-discount-url="`/admin/products/discounts-category/${props.row.id}`"
                                             :list-offer-url="`/admin/products/offers-category/${props.row.id}`"
+                                            :only-percent="true"
                                             :has-edit="has_edit"
                                         />
                                         <delete-component

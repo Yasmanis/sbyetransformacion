@@ -15,4 +15,6 @@ class ProductSubcategoryRepository extends BaseRepository
     {
         return 'products/subcategories';
     }
+
+    protected $with = ['subtitles'];
 }

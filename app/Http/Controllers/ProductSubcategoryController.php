@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductSubcategory;
+use App\Models\Subtitle;
 use App\Repositories\ProductSubcategoryRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ProductSubcategoryController extends Controller
@@ -37,7 +40,29 @@ class ProductSubcategoryController extends Controller
                 ],
             ]);
             $repository = new ProductSubcategoryRepository();
-            $repository->create($request->only((new ($repository->model()))->getFillable()));
+            $data = $request->only((new ($repository->model()))->getFillable());
+            if ($request->hasFile('image')) {
+                $path = $request->image->store('products', 'public');
+                $data['image'] = $path;
+            }
+            $object = $repository->create($data);
+            if (isset($request->subtitles)) {
+                $subtitles = [];
+                $date = Carbon::now();
+                foreach ($request->subtitles as $item) {
+                    $subtitles[] = [
+                        'name' => $item['name'],
+                        'description' => $item['description'],
+                        'subtitlable_type' => ProductSubcategory::class,
+                        'subtitlable_id' => $object->id,
+                        'created_at' => $date,
+                        'updated_at' => $date,
+                    ];
+                }
+                if (count($subtitles) > 0) {
+                    Subtitle::insert($subtitles);
+                }
+            }
             return redirect()->back()->with('success', 'subcategoria adicionada correctamente');
         }
         return $this->deny_access($request);
@@ -50,7 +75,27 @@ class ProductSubcategoryController extends Controller
                 'name' => ['required', Rule::unique('product_subcategory')->where('category_id', $request->category_id)->ignore($id)],
             ]);
             $repository = new ProductSubcategoryRepository();
-            $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+            $data = $request->only((new ($repository->model()))->getFillable());
+            $current_image = null;
+            if ($request->hasFile('image')) {
+                $path = $request->image->store('products', 'public');
+                $data['image'] = $path;
+                $object = $repository->getById($id);
+                if (isset($object->image)) {
+                    $current_image = $object->image;
+                }
+            } else if (isset($request->image)) {
+                $data['image'] = substr($request->image, strpos($request->image, 'storage') + 8);
+            } else {
+                $object = $repository->getById($id);
+                if (isset($object->image)) {
+                    $current_image = $object->image;
+                }
+            }
+            $repository->updateById($id, $data);
+            if (isset($current_image)) {
+                Storage::delete('public/' . $current_image);
+            }
             return redirect()->back()->with('success', 'subcategoria modificada correctamente');
         }
         return $this->deny_access($request);

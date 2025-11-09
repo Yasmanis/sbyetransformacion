@@ -28,14 +28,13 @@ class Product extends Model
     protected $appends = [
         'image_path',
         'active_offers',
+        'offers_or_promo',
         'category_str',
         'subcategory_str',
         'course_str',
         'final_price',
         'type'
     ];
-
-    protected $with = ['subtitles'];
 
     protected $casts = [
         'public' => 'boolean',
@@ -109,6 +108,12 @@ class Product extends Model
             'offer' => count($offers) > 0 ? $offers[0] : null,
             'discount' => count($discounts) > 0 ? $discounts[0] : null
         ];
+    }
+
+    public function getOffersOrPromoAttribute()
+    {
+        $offersOrPromo = $this->active_offers;
+        return isset($offersOrPromo['offer']) || isset($offersOrPromo['discount']);
     }
 
     public function getFinalPriceAttribute()

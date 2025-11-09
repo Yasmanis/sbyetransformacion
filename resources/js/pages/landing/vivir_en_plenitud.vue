@@ -431,10 +431,10 @@
             class="column bg-primary text-center text-white q-mt-xl"
             style="padding-left: 17%; padding-right: 17%"
         >
-            <p class="text-center text-bold q-pt-md">
+            <h6 class="text-center text-bold text-white q-py-md">
                 tienes mi libro? <br />
                 accede a mas contenido exclusivo!
-            </p>
+            </h6>
             <p class="text-center">
                 disfruta de todo el libro en video, leido por mi, dentro del
                 area privada <br />descarga plantillas y recursos para practicar

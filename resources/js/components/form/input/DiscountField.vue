@@ -19,6 +19,7 @@
         type="number"
         class="q-mt-sm"
         @update="onUpdateField"
+        v-if="!onlyPercent"
     />
 </template>
 
@@ -51,6 +52,7 @@ const props = defineProps({
     percentValue: Number,
     incomeValue: Number,
     totalPrice: Number,
+    onlyPercent: Boolean,
     dense: {
         type: Boolean,
         default: true,
@@ -93,8 +95,10 @@ const onUpdateField = (name, val) => {
         incomeVal = Math.round((val / 100) * price * 100) / 100;
         percentVal = val;
     } else {
-        percentVal = Math.round((val / price) * 100 * 100) / 100;
-        incomeVal = val;
+        if (!props.onlyPercent) {
+            percentVal = Math.round((val / price) * 100 * 100) / 100;
+            incomeVal = val;
+        }
     }
     if (incomeVal > price) {
         incomeVal = 0;

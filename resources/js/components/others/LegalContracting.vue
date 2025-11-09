@@ -3,7 +3,7 @@
         <span v-html="text"></span>
         <q-tooltip-component :title="`click para ver ${title}`"
     /></span>
-    <q-dialog v-model="showDialog" persistent>
+    <q-dialog v-model="showDialog" persistent @hide="emits('hide')">
         <q-card style="width: 900px; max-width: 1000vw">
             <dialog-header-component
                 icon="mdi-gavel"
@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import DialogHeaderComponent from "../base/DialogHeaderComponent.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import QTooltipComponent from "../base/QTooltipComponent.vue";
@@ -46,7 +46,10 @@ const props = defineProps({
         type: String,
         default: "conditions",
     },
+    show: Boolean,
 });
+
+const emits = defineEmits(["hide"]);
 
 const terms = ref(null);
 
@@ -58,4 +61,11 @@ onMounted(async () => {
 });
 
 const showDialog = ref(false);
+
+watch(
+    () => props.show,
+    (n) => {
+        showDialog.value = n;
+    }
+);
 </script>

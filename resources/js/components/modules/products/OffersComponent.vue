@@ -42,6 +42,7 @@
                             :base-url="baseDiscountUrl"
                             :list-url="listDiscountUrl"
                             :relation-name="discountRelation"
+                            :only-percent="onlyPercent"
                             :has-edit="hasEdit"
                         />
                     </q-tab-panel>
@@ -78,6 +79,7 @@ const props = defineProps({
     listOfferUrl: String,
     discountRelation: String,
     offerRelation: String,
+    onlyPercent: Boolean,
 });
 
 const showDialog = ref(false);

@@ -41,7 +41,7 @@ class ProductController extends Controller
     {
         if (auth()->user()->hasCreate('product')) {
             $request->validate([
-                'name' => ['required', Rule::unique('products')->where('subcategory_id', $request->subcategory_id)->where('course_id', $request->course_id)],
+                'name' => ['required', Rule::unique('products')->where('category_id', $request->category_id)->where('subcategory_id', $request->subcategory_id)->where('course_id', $request->course_id)],
             ]);
             $repository = new ProductRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
@@ -83,7 +83,7 @@ class ProductController extends Controller
     {
         if (auth()->user()->hasUpdate('product')) {
             $request->validate([
-                'name' => ['required', Rule::unique('products', 'name')->ignore($id)],
+                'name' => ['required', Rule::unique('products')->where('category_id', $request->category_id)->where('subcategory_id', $request->subcategory_id)->where('course_id', $request->course_id)->ignore($id)],
             ]);
             $repository = new ProductRepository();
             $old_file = null;

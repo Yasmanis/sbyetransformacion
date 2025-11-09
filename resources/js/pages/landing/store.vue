@@ -21,6 +21,7 @@
                     desarrollo
                 </div>
             </div>
+
             <q-toolbar>
                 <q-toolbar-title></q-toolbar-title>
                 <dialog-auth-component
@@ -43,29 +44,51 @@
                                     <q-item-section>
                                         <q-item-label> novedades </q-item-label>
                                     </q-item-section>
+                                    <q-item-section avatar></q-item-section>
                                 </q-item>
-                                <q-item clickable>
+                                <q-item
+                                    clickable
+                                    @click="
+                                        withOfferOrPromo = !withOfferOrPromo
+                                    "
+                                >
                                     <q-item-section>
                                         <q-item-label>
                                             ofertas y promociones
                                         </q-item-label>
                                     </q-item-section>
-                                </q-item>
-                                <q-item clickable>
-                                    <q-item-section>
-                                        <q-item-label>
-                                            categoria 1
-                                        </q-item-label>
+                                    <q-item-section avatar>
+                                        <q-icon
+                                            name="check"
+                                            v-if="withOfferOrPromo"
+                                        />
                                     </q-item-section>
                                 </q-item>
-                                <q-item clickable>
+                                <q-item
+                                    v-for="c in categories"
+                                    :key="`category-${c.id}`"
+                                    clickable
+                                    @click="
+                                        category =
+                                            category === c.id ? null : c.id
+                                    "
+                                >
                                     <q-item-section>
                                         <q-item-label>
-                                            categoria 2
+                                            {{ c.name }}
                                         </q-item-label>
                                     </q-item-section>
+                                    <q-item-section avatar>
+                                        <q-icon
+                                            name="check"
+                                            v-if="category === c.id"
+                                        />
+                                    </q-item-section>
                                 </q-item>
-                                <q-item clickable>
+                                <q-item
+                                    clickable
+                                    @click="showLegalConditions = true"
+                                >
                                     <q-item-section>
                                         <q-item-label>
                                             terminos y condiciones legales
@@ -80,6 +103,7 @@
                     <select-field
                         label="categoria"
                         name="category"
+                        :model-value="category"
                         :others-props="{
                             url_to_options: '/product-categories',
                         }"
@@ -168,6 +192,11 @@
             </q-item>
         </div>
     </Layout>
+
+    <legal-contracting
+        :show="showLegalConditions"
+        @hide="showLegalConditions = false"
+    />
 </template>
 
 <script setup>
@@ -181,7 +210,8 @@ import TextField from "../../components/form/input/TextField.vue";
 import QBtnComponent from "../../components/base/QBtnComponent.vue";
 import BtnBasketComponent from "../../components/btn/BtnBasketComponent.vue";
 import MyWishesComponent from "../../components/modules/store/MyWishesComponent.vue";
-import { onBeforeMount, onMounted, ref, watch } from "vue";
+import LegalContracting from "../../components/others/LegalContracting.vue";
+import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 import { usePage, Head } from "@inertiajs/vue3";
 import {
     updateProductsStorage,
@@ -189,7 +219,7 @@ import {
     loadProductsFromStorage,
     removeAllProductsFromStorage,
 } from "../../services/shopping";
-import { info, success } from "../../helpers/notifications";
+import { success } from "../../helpers/notifications";
 import { useQuasar } from "quasar";
 defineOptions({
     name: "ConsultaIndividual",
@@ -203,6 +233,10 @@ const showPaymentOnLogin = ref(false);
 const products = ref([]);
 const query = ref(null);
 const category = ref(null);
+const withOfferOrPromo = ref(false);
+const allNodes = ref([]);
+const categories = ref([]);
+const showLegalConditions = ref(false);
 
 onBeforeMount(() => {
     loadProductsFromStorage();
@@ -230,9 +264,15 @@ onMounted(() => {
             filterProducts();
         });
     }
+    allNodes.value = page.props.all_nodes;
+    categories.value = page.props.categories;
 });
 
 watch(category, () => {
+    filterProducts();
+});
+
+watch(withOfferOrPromo, () => {
     filterProducts();
 });
 
@@ -240,22 +280,47 @@ watch(query, () => {
     filterProducts();
 });
 
+const nodeMap = computed(() => {
+    const map = {};
+    allNodes.value.forEach((item) => {
+        map[item.key] = { ...item, children: [] };
+    });
+    return map;
+});
+
+const treeData = computed(() => {
+    const map = nodeMap.value;
+    const tree = [];
+    allNodes.value.forEach((item) => {
+        const node = map[item.key];
+        if (item.parent === null) {
+            tree.push(node);
+        } else {
+            const parentNode = map[item.parent_key];
+            if (parentNode) {
+                parentNode.children.push(node);
+            }
+        }
+    });
+    return tree;
+});
+
 const filterProducts = () => {
     const c = category.value;
     const q = query.value;
-    if (c && q) {
-        products.value = page.props.products.filter(
-            (p) => p.categories_id.includes(c) && p.name.includes(q)
-        );
-    } else if (c) {
-        products.value = page.props.products.filter((p) =>
-            p.categories_id.includes(c)
-        );
-    } else if (q) {
-        products.value = page.props.products.filter((p) => p.name.includes(q));
-    } else {
-        products.value = page.props.products;
+    let temp = page.props.products;
+    if (c) {
+        temp = temp.filter((p) => p.category_id === c);
     }
+    if (withOfferOrPromo.value) {
+        temp = temp.filter((p) => p.offers_or_promo);
+    }
+    if (q) {
+        temp = temp.filter((p) => p.name.includes(q));
+    }
+    console.log(temp);
+
+    products.value = temp;
 };
 </script>
 <style>

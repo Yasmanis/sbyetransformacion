@@ -47,8 +47,10 @@ use App\Models\Configuration;
 use App\Models\File;
 use App\Models\Landing;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\Testimony;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Pusher\Pusher;
@@ -115,8 +117,12 @@ Route::get('/maria', function () {
 
 Route::get('/tienda', function () {
     $products = Product::public()->whereNotNull('course_id')->orderBy('order', 'ASC')->get();
+    $categories = ProductCategory::orderBy('order', 'ASC')->get();
+    $all_nodes = DB::select("SELECT tree.* from (SELECT p.id, p.name AS label, p.image, p.order, NULL AS parent, CONCAT('categ-', p.id) AS 'key', null as parent_key FROM product_category p UNION all SELECT p.id, p.name AS label, p.image, p.order, p.category_id parent, CONCAT('subcateg-', p.id) AS 'key', CONCAT('categ-', p.category_id) AS 'key' FROM product_subcategory p) tree ORDER BY tree.order");
     return Inertia('landing/store', [
-        'products' => $products
+        'products' => $products,
+        'all_nodes' => $all_nodes,
+        'categories' => $categories
     ]);
 });
 
