@@ -14,7 +14,12 @@ class ProductOffer extends Model
         'start_at',
         'end_at',
         'product_id',
-        'description'
+        'description',
+        'active'
+    ];
+
+    protected $casts = [
+        'active' => 'boolean'
     ];
 
     public function product()

@@ -27,7 +27,8 @@ class Product extends Model
 
     protected $appends = [
         'image_path',
-        'active_offers',
+        'active_offer',
+        'active_discount',
         'offers_or_promo',
         'category_str',
         'subcategory_str',
@@ -100,36 +101,49 @@ class Product extends Model
         return $query->where('public', true);
     }
 
-    public function getActiveOffersAttribute()
+    public function getActiveOfferAttribute()
     {
-        $offers = DB::select("select id, price, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description from products_offers where product_id=? and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id]);
-        $discounts = DB::select("select id, code, percent, income, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description, offers_income from products_discount where product_id=? and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id]);
-        return [
-            'offer' => count($offers) > 0 ? $offers[0] : null,
-            'discount' => count($discounts) > 0 ? $discounts[0] : null
-        ];
+        $offer = $this->category->active_offer ?? null;
+        if (!isset($offer)) {
+            $offer = $this->subcategory->active_offer ?? null;
+        }
+        if (!isset($offer)) {
+            $temp = DB::select("select id, price, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description from products_offers where product_id=? and active=1 and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id]);
+            $offer = count($temp) > 0 ? $temp[0] : null;
+        }
+        return $offer;
+    }
+
+    public function getActiveDiscountAttribute()
+    {
+        $discount = $this->category->active_discount ?? null;
+        if (!isset($discount)) {
+            $discount = $this->subcategory->active_discount ?? null;
+        }
+        if (!isset($discount)) {
+            $temp = DB::select("select id, code, percent, income, DATE_FORMAT(start_at,'%d/%m/%Y') start_at, DATE_FORMAT(end_at,'%d/%m/%Y') end_at, description, offers_income from products_discount where product_id=? and active=1 and ((start_at <= CURDATE() AND end_at IS NULL) or (CURDATE() BETWEEN start_at AND end_at))", [$this->id]);
+            $discount = count($temp) > 0 ? $temp[0] : null;
+        }
+        return $discount;
     }
 
     public function getOffersOrPromoAttribute()
     {
-        $offersOrPromo = $this->active_offers;
-        return isset($offersOrPromo['offer']) || isset($offersOrPromo['discount']);
+        return isset($this->active_offer) || isset($this->active_discount);
     }
 
     public function getFinalPriceAttribute()
     {
         $price = $this->price;
-        $offers = $this->active_offers;
-        $has_discount = isset($offers['discount']);
-        if (isset($offers['offer'])) {
-            $price = $offers['offer']->price;
-            if ($has_discount && $offers['discount']->offers_income === 1) {
-                $price = $price - $offers['discount']->income;
-            }
-        } else if ($has_discount) {
-            $price = $price - $offers['discount']->income;
+        $offer = $this->active_offer;
+        $discount =  $this->active_discount;
+        if (isset($offer)) {
+            $price = $offer->price;
         }
-        return $price;
+        if (isset($discount)) {
+            $price = $price - (($discount->percent / 100) * $this->price);
+        }
+        return round($price, 2);
     }
 
     public function getCategoryStrAttribute()

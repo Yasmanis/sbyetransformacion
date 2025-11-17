@@ -102,4 +102,19 @@ class ProductOffersController extends Controller
         }
         return $this->deny_access($request);
     }
+
+    public function active(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('product')) {
+            $object = ProductOffer::find($id);
+            $object->active  = !$object->active;
+            $object->save();
+            return response()->json([
+                'success' => true,
+                'object' => $object,
+                'message' => $object->active ? 'oferta publicada correctamente' : 'oferta despublicada correctamente'
+            ]);
+        }
+        return $this->deny_access($request);
+    }
 }

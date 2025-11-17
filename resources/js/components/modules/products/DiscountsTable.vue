@@ -167,6 +167,15 @@
                         })
                     "
                     v-if="formFields.length > 0 && hasEdit"
+                /><active-component
+                    :object="props.row"
+                    :base-url="baseUrl"
+                    @save="
+                        onRequest({
+                            pagination,
+                        })
+                    "
+                    v-if="hasEdit"
                 />
                 <delete-component
                     :axios="true"
@@ -254,6 +263,16 @@
                                         "
                                         v-if="formFields.length > 0 && hasEdit"
                                     />
+                                    <active-component
+                                        :object="props.row"
+                                        :base-url="baseUrl"
+                                        @save="
+                                            onRequest({
+                                                pagination,
+                                            })
+                                        "
+                                        v-if="hasEdit"
+                                    />
                                     <delete-component
                                         :axios="true"
                                         :objects="[props.row]"
@@ -283,6 +302,7 @@ import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FormComponent from "../../form/FormComponent.vue";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
+import ActiveComponent from "./ActiveComponent.vue";
 import { useQuasar } from "quasar";
 import axios from "axios";
 
@@ -306,6 +326,17 @@ const props = defineProps({
     onlyPercent: Boolean,
 });
 const $q = useQuasar();
+
+const active = {
+    field: "active",
+    name: "active",
+    label: "activo",
+    align: "center",
+    type: "boolean",
+    othersProps: {
+        help: ["indica si esta o no activo el descuento"],
+    },
+};
 
 const columns = ref([
     {
@@ -358,6 +389,7 @@ const columns = ref([
         sortable: false,
         align: "left",
     },
+    active,
     {
         name: "actions",
         field: "actions",
@@ -389,6 +421,7 @@ const filterFields = ref([
         label: "descuento aplicable a ofertas",
         type: "boolean",
     },
+    active,
 ]);
 const searchFields = ref([]);
 const formFields = ref([
@@ -444,6 +477,7 @@ const formFields = ref([
             ],
         },
     },
+    active,
 ]);
 
 const currentModule = ref({

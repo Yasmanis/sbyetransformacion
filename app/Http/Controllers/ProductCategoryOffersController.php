@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductCategoryOffer;
 use App\Repositories\ProductCategoryOfferRepository;
 use App\Traits\FileSave;
 use Carbon\Carbon;
@@ -97,6 +98,21 @@ class ProductCategoryOffersController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => count($ids) == 1 ? 'oferta eliminada correctamente' : 'ofertas eliminadas correctamente'
+            ]);
+        }
+        return $this->deny_access($request);
+    }
+
+    public function active(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('product')) {
+            $object = ProductCategoryOffer::find($id);
+            $object->active  = !$object->active;
+            $object->save();
+            return response()->json([
+                'success' => true,
+                'object' => $object,
+                'message' => $object->active ? 'oferta publicada correctamente' : 'oferta despublicada correctamente'
             ]);
         }
         return $this->deny_access($request);

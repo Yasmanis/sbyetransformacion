@@ -67,6 +67,16 @@ const description = {
     autogrow: true,
 };
 
+const end_text = {
+    field: "end_text",
+    name: "end_text",
+    label: "texto final",
+    align: "left",
+    sortable: true,
+    type: "editor",
+    autogrow: true,
+};
+
 const subtitles = {
     field: "subtitles",
     name: "subtitles",
@@ -111,6 +121,7 @@ const columns = [
     name,
     categoryStr,
     description,
+    end_text,
     {
         field: "actions",
         name: "actions",
@@ -120,5 +131,5 @@ const columns = [
     },
 ];
 
-const fields = [name, category, image, description, subtitles];
+const fields = [name, category, image, description, subtitles, end_text];
 </script>

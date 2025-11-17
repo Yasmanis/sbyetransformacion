@@ -17,11 +17,13 @@ class ProductCategoryDiscount extends Model
         'end_at',
         'category_id',
         'description',
-        'offers_income'
+        'offers_income',
+        'active'
     ];
 
     protected $casts = [
-        'offers_income' => 'boolean'
+        'offers_income' => 'boolean',
+        'active' => 'boolean'
     ];
 
     public function category()

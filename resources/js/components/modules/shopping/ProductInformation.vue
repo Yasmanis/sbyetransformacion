@@ -294,10 +294,10 @@ const showInformation = () => {
 };
 
 const currentOffer = computed(() => {
-    return props.product.active_offers.offer;
+    return props.product.active_offer;
 });
 
 const currentDiscount = computed(() => {
-    return props.product.active_offers.discount;
+    return props.product.active_discount;
 });
 </script>

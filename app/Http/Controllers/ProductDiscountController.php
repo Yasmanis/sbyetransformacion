@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductDiscount;
+use App\Models\ProductOffer;
 use App\Repositories\DiscountRepository;
 use App\Traits\FileSave;
 use Carbon\Carbon;
@@ -101,6 +103,21 @@ class ProductDiscountController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => count($ids) == 1 ? 'descuento eliminado correctamente' : 'descuentos eliminados correctamente'
+            ]);
+        }
+        return $this->deny_access($request);
+    }
+
+    public function active(Request $request, $id)
+    {
+        if (auth()->user()->hasUpdate('product')) {
+            $object = ProductDiscount::find($id);
+            $object->active  = !$object->active;
+            $object->save();
+            return response()->json([
+                'success' => true,
+                'object' => $object,
+                'message' => $object->active ? 'descuento publicado correctamente' : 'descuento despublicado correctamente'
             ]);
         }
         return $this->deny_access($request);

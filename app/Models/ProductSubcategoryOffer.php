@@ -14,7 +14,12 @@ class ProductSubcategoryOffer extends Model
         'start_at',
         'end_at',
         'subcategory_id',
-        'description'
+        'description',
+        'active'
+    ];
+
+    protected $casts = [
+        'active' => 'boolean'
     ];
 
     public function product()

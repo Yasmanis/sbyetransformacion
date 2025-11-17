@@ -81,9 +81,7 @@ class ProductCategoryController extends Controller
                 if (isset($object->image)) {
                     $current_image = $object->image;
                 }
-            } else if (isset($request->image)) {
-                $data['image'] = substr($request->image, strpos($request->image, 'storage') + 8);
-            } else {
+            } else if (!isset($request->image)) {
                 $object = $repository->getById($id);
                 if (isset($object->image)) {
                     $current_image = $object->image;

@@ -290,6 +290,13 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/products/offers/{id}', [ProductOffersController::class, 'index']);
     Route::post('/admin/products/discounts/{id}', [ProductDiscountController::class, 'index']);
 
+    Route::post('/admin/offers-category/active/{id}', [ProductCategoryOffersController::class, 'active']);
+    Route::post('/admin/discounts-category/active/{id}', [ProductCategoryDiscountController::class, 'active']);
+    Route::post('/admin/offers-subcategory/active/{id}', [ProductSubcategoryOffersController::class, 'active']);
+    Route::post('/admin/discounts-subcategory/active/{id}', [ProductSubcategoryDiscountController::class, 'active']);
+    Route::post('/admin/offers/active/{id}', [ProductOffersController::class, 'active']);
+    Route::post('/admin/discounts/active/{id}', [ProductDiscountController::class, 'active']);
+
     Route::post('/admin/products/subtitle', [ProductController::class, 'addSubtitle']);
     Route::put('/admin/products/subtitle/{id}', [ProductController::class, 'updateSubtitle']);
     Route::delete('/admin/products/subtitle/{id}', [ProductController::class, 'deleteSubtitle']);

@@ -18,11 +18,13 @@ class ProductDiscount extends Model
         'end_at',
         'product_id',
         'description',
-        'offers_income'
+        'offers_income',
+        'active'
     ];
 
     protected $casts = [
-        'offers_income' => 'boolean'
+        'offers_income' => 'boolean',
+        'active' => 'boolean'
     ];
 
     public function product()
