@@ -65,7 +65,7 @@
                                     </q-item-section>
                                 </q-item>
                                 <q-item
-                                    v-for="c in categories"
+                                    v-for="c in $page.props.categories"
                                     :key="`category-${c.id}`"
                                     clickable
                                     @click="
@@ -104,18 +104,42 @@
                         label="categoria"
                         name="category"
                         :model-value="category"
-                        :others-props="{
-                            url_to_options: '/product-categories',
-                        }"
-                        style="width: 300px !important"
-                        @update="(name, val) => (category = val)"
+                        :options="
+                            categories.map((c) => {
+                                return {
+                                    label: c.name,
+                                    value: c.id,
+                                };
+                            })
+                        "
+                        @update="
+                            (name, val) => {
+                                category = val;
+                                filter();
+                            }
+                        "
+                    />
+                </q-item-section>
+                <q-item-section avatar>
+                    <select-field
+                        label="subcategoria"
+                        name="subcategory"
+                        :model-value="subcategory"
+                        :options="subcategories"
+                        :disable="!category"
+                        @update="(name, val) => (subcategory = val)"
                     />
                 </q-item-section>
                 <q-item-section avatar>
                     <text-field
                         label="buscar"
                         name="search"
-                        @update="(name, val) => (query = val)"
+                        @update="
+                            (name, val) => {
+                                query = val;
+                                filter();
+                            }
+                        "
                     >
                         <template #append>
                             <q-btn-component icon="search" />
@@ -166,35 +190,112 @@
                     />
                 </q-item-section>
             </q-item>
-            <q-item dense>
-                <q-item-section>
-                    <store-component
-                        :products="products"
-                        @add-product="(prod) => updateProductsStorage(prod)"
-                        v-if="products.length > 0"
-                    />
+            <div class="row">
+                <div class="col q-pa-lg">
+                    <template v-if="categories.length > 0">
+                        <template
+                            v-for="category in categories"
+                            :key="`category-${category.id}`"
+                        >
+                            <q-item-label>
+                                <q-icon
+                                    :name="`img:${$page.props.public_path}storage/${category.image}`"
+                                    size="20px"
+                                />
+                                {{ category.name }}
+                            </q-item-label>
+                            <q-item-label>
+                                <span v-html="category.description"></span>
+                            </q-item-label>
+                            <q-item-label v-if="category.subtitles.length > 0">
+                                <q-expansion-item
+                                    group="somegroup"
+                                    expand-separator
+                                    v-for="subtitle in category.subtitles"
+                                    :key="`subtitle-${subtitle.id}`"
+                                    :label="subtitle.name"
+                                >
+                                    <q-card>
+                                        <q-card-section>
+                                            <span
+                                                v-html="subtitle.description"
+                                            ></span>
+                                        </q-card-section>
+                                    </q-card>
+                                </q-expansion-item>
+                            </q-item-label>
+                            <template
+                                v-for="subcategory in category.subcategories"
+                                :key="`subcategory-${subcategory.id}`"
+                            >
+                                <q-item-label>
+                                    <q-icon
+                                        :name="`img:${$page.props.public_path}storage/${subcategory.image}`"
+                                        size="20px"
+                                    />
+                                    {{ subcategory.name }}
+                                </q-item-label>
+                                <q-item-label v-if="subcategory.description">
+                                    <span
+                                        v-html="subcategory.description"
+                                    ></span>
+                                </q-item-label>
+                                <q-item-label>
+                                    <q-expansion-item
+                                        group="somegroup"
+                                        expand-separator
+                                        v-for="subtitle in subcategory.subtitles"
+                                        :key="`subtitle-${subtitle.id}`"
+                                        :label="subtitle.name"
+                                    >
+                                        <q-card>
+                                            <q-card-section>
+                                                <span
+                                                    v-html="
+                                                        subtitle.description
+                                                    "
+                                                ></span>
+                                            </q-card-section>
+                                        </q-card>
+                                    </q-expansion-item>
+                                </q-item-label>
+                                <q-item-label>
+                                    <store-component
+                                        :products="subcategory.products"
+                                        @add-product="
+                                            (prod) =>
+                                                updateProductsStorage(prod)
+                                        "
+                                    />
+                                </q-item-label>
+
+                                <q-item-label v-if="subcategory.end_text">
+                                    <span v-html="subcategory.end_text"></span>
+                                </q-item-label>
+                            </template>
+
+                            <q-item-label v-if="category.end_text">
+                                <span v-html="category.end_text"></span>
+                            </q-item-label>
+                        </template>
+                    </template>
                     <q-item-label class="text-center text-h5 q-mt-xl" v-else>
                         no existen productos
                     </q-item-label>
-                </q-item-section>
-                <q-item-section
-                    avatar
-                    top
-                    class="bg-primary q-ml-xl"
-                    style="
-                        min-width: 20px;
-                        width: 30px;
-                        padding: 0;
-                        margin-top: -6px;
-                    "
-                >
-                </q-item-section>
-            </q-item>
+                </div>
+                <div class="col-auto cursor-pointer" @click="showBasket = true">
+                    <div
+                        class="bg-primary q-mr-md"
+                        style="width: 30px; margin-top: -6px; height: 100%"
+                    ></div>
+                </div>
+            </div>
         </div>
     </Layout>
 
     <legal-contracting
         :show="showLegalConditions"
+        :show-title="false"
         @hide="showLegalConditions = false"
     />
 </template>
@@ -221,6 +322,7 @@ import {
 } from "../../services/shopping";
 import { success } from "../../helpers/notifications";
 import { useQuasar } from "quasar";
+import { cloneDeep } from "lodash";
 defineOptions({
     name: "ConsultaIndividual",
 });
@@ -230,97 +332,109 @@ const $q = useQuasar();
 const showBasket = ref(false);
 const showAuth = ref(false);
 const showPaymentOnLogin = ref(false);
-const products = ref([]);
 const query = ref(null);
 const category = ref(null);
+const subcategory = ref(null);
 const withOfferOrPromo = ref(false);
-const allNodes = ref([]);
-const categories = ref([]);
 const showLegalConditions = ref(false);
+const categories = ref([]);
+const subcategories = ref([]);
+let allCategories = [];
 
 onBeforeMount(() => {
     loadProductsFromStorage();
 });
 
 onMounted(() => {
-    products.value = page.props.products;
+    let list = [];
+    page.props.categories.forEach((c) => {
+        list.push({
+            ...c,
+            all_subcategories: c.subcategories,
+        });
+    });
+    categories.value = list;
+    allCategories = list;
     if (page.props.flash_success) {
         success(page.props.flash_success);
         removeAllProductsFromStorage();
     }
     if (location.hash) {
-        let product = products.value.find(
-            (p) => p.id === parseInt(location.hash.split("-")[2])
-        );
-        $q.dialog({
-            title: "info",
-            message: `usted fue redirigido a la tienda, para continuar debe comprar el producto <b>${product?.name}</b>`,
-            persistent: true,
-            html: true,
-            icon: "info",
-        }).onOk(() => {
-            location.hash = "";
-            query.value = product?.name;
-            filterProducts();
-        });
+        // let product = products.value.find(
+        //     (p) => p.id === parseInt(location.hash.split("-")[2])
+        // );
+        // $q.dialog({
+        //     title: "info",
+        //     message: `usted fue redirigido a la tienda, para continuar debe comprar el producto <b>${product?.name}</b>`,
+        //     persistent: true,
+        //     html: true,
+        //     icon: "info",
+        // }).onOk(() => {
+        //     location.hash = "";
+        //     query.value = product?.name;
+        //     filterProducts();
+        // });
     }
-    allNodes.value = page.props.all_nodes;
-    categories.value = page.props.categories;
 });
 
-watch(category, () => {
-    filterProducts();
+watch(category, (n) => {
+    subcategory.value = null;
+    subcategories.value = [];
+    if (n) {
+        let categ = categories.value.find((c) => c.id === n);
+        if (categ) {
+            subcategories.value = categ.all_subcategories.map((s) => {
+                return {
+                    label: s.name,
+                    value: s.id,
+                };
+            });
+        }
+    }
+    filter();
 });
 
 watch(withOfferOrPromo, () => {
-    filterProducts();
+    filter();
 });
 
-watch(query, () => {
-    filterProducts();
-});
-
-const nodeMap = computed(() => {
-    const map = {};
-    allNodes.value.forEach((item) => {
-        map[item.key] = { ...item, children: [] };
-    });
-    return map;
-});
-
-const treeData = computed(() => {
-    const map = nodeMap.value;
-    const tree = [];
-    allNodes.value.forEach((item) => {
-        const node = map[item.key];
-        if (item.parent === null) {
-            tree.push(node);
-        } else {
-            const parentNode = map[item.parent_key];
-            if (parentNode) {
-                parentNode.children.push(node);
-            }
-        }
-    });
-    return tree;
-});
-
-const filterProducts = () => {
-    const c = category.value;
-    const q = query.value;
-    let temp = page.props.products;
+const filter = () => {
+    let list = cloneDeep(allCategories);
+    let c = category.value,
+        q = query.value,
+        s = subcategory.value;
     if (c) {
-        temp = temp.filter((p) => p.category_id === c);
+        let categ = list.find((cat) => cat.id === c);
+        list = categ ? [categ] : [];
+    }
+    if (s && list.length > 0) {
+        let subcateg = list[0].all_subcategories.find((sub) => sub.id === s);
+        list[0].subcategories = subcateg ? [subcateg] : [];
     }
     if (withOfferOrPromo.value) {
-        temp = temp.filter((p) => p.offers_or_promo);
+        list.forEach((categ) => {
+            categ.subcategories.forEach((subcateg) => {
+                subcateg.products = subcateg.products.filter(
+                    (p) => p.offers_or_promo
+                );
+            });
+        });
     }
     if (q) {
-        temp = temp.filter((p) => p.name.includes(q));
+        list.forEach((categ) => {
+            categ.subcategories.forEach((subcateg) => {
+                subcateg.products = subcateg.products.filter((p) =>
+                    p.name.includes(q)
+                );
+            });
+        });
     }
-    console.log(temp);
 
-    products.value = temp;
+    list.forEach((l) => {
+        l.subcategories = l.subcategories.filter((s) => s.products.length > 0);
+    });
+
+    categories.value = list.filter((l) => l.subcategories.length > 0);
 };
 </script>
 <style>

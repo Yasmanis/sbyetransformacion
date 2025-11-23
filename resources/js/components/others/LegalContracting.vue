@@ -1,5 +1,9 @@
 <template>
-    <span class="cursor-pointer" @click.stop="showDialog = true">
+    <span
+        class="cursor-pointer"
+        @click.stop="showDialog = true"
+        v-if="showTitle"
+    >
         <span v-html="text"></span>
         <q-tooltip-component :title="`click para ver ${title}`"
     /></span>
@@ -47,6 +51,10 @@ const props = defineProps({
         default: "conditions",
     },
     show: Boolean,
+    showTitle: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emits = defineEmits(["hide"]);

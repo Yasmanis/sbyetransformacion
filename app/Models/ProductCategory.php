@@ -33,6 +33,11 @@ class ProductCategory extends Model
         return $this->belongsToMany(Product::class);
     }
 
+    public function subcategories()
+    {
+        return $this->hasMany(ProductSubcategory::class, 'category_id')->orderBy('order', 'asc');
+    }
+
     public function subtitles(): MorphMany
     {
         return $this->morphMany(Subtitle::class, 'subtitlable');

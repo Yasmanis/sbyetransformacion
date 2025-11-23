@@ -247,7 +247,7 @@ class AuthController extends Controller
                     if ($result['success']) {
                         return back()->with(['success' => 'hemos enviado un token al correo proporcionado para restablecer tu contraseña']);
                     }
-                    return back()->with(['error' => $result['error']]);
+                    return back()->with(['error' => $result['error']['message']]);
                 } else {
                     return back()->with(['error' => 'su cuenta esta bloqueada; no puede acceder a este servicio']);
                 }

@@ -40,6 +40,7 @@ use App\Http\Controllers\ReasonForReturnController;
 use App\Http\Controllers\SchoolTopicsController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\ShoppingController;
+use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SubtitleController;
 use App\Http\Controllers\TestimonyController;
 use App\Models\Category;
@@ -115,16 +116,7 @@ Route::get('/maria', function () {
     return Inertia('landing/maria');
 });
 
-Route::get('/tienda', function () {
-    $products = Product::public()->whereNotNull('course_id')->orderBy('order', 'ASC')->get();
-    $categories = ProductCategory::orderBy('order', 'ASC')->get();
-    $all_nodes = DB::select("SELECT tree.* from (SELECT p.id, p.name AS label, p.image, p.order, NULL AS parent, CONCAT('categ-', p.id) AS 'key', null as parent_key FROM product_category p UNION all SELECT p.id, p.name AS label, p.image, p.order, p.category_id parent, CONCAT('subcateg-', p.id) AS 'key', CONCAT('categ-', p.category_id) AS 'key' FROM product_subcategory p) tree ORDER BY tree.order");
-    return Inertia('landing/store', [
-        'products' => $products,
-        'all_nodes' => $all_nodes,
-        'categories' => $categories
-    ]);
-});
+Route::get('/tienda', [StoreController::class, 'index']);
 
 Route::get('/landings/{url}', function ($url) {
     $landing = Landing::with('product')->firstWhere('url', $url);
@@ -378,6 +370,7 @@ Route::get('/countries', [SelectsController::class, 'countries']);
 Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
 Route::get('/download/{id}', [FileController::class, 'download']);
 Route::post('/subscribe', [BrevoController::class, 'subscribe']);
+Route::post('/send-question', [StoreController::class, 'sendQuestion']);
 Route::get('/product-categories', [SelectsController::class, 'productCategories']);
 Route::get('/product-subcategories/{id}', [SelectsController::class, 'productSubcategories']);
 Route::get('/product-courses', [SelectsController::class, 'productCourses']);
