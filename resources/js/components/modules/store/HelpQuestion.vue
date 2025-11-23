@@ -7,7 +7,7 @@
         @click="showDialog = true"
     />
 
-    <q-dialog v-model="showDialog">
+    <q-dialog v-model="showDialog" @show="onShow">
         <q-card>
             <dialog-header-component
                 icon="mdi-help"
@@ -73,14 +73,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import TextField from "../../form/input/TextField.vue";
 import BtnSendComponent from "../../btn/BtnSendComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import { errorValidation } from "../../../helpers/notifications";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 
 defineOptions({
     name: "HelpQuestion",
@@ -100,6 +100,15 @@ const formData = useForm({
     question: null,
     product: props.product.id,
 });
+
+const onShow = () => {
+    const user = usePage().props.auth?.user ?? null;
+    if (user) {
+        formData.name = user.name;
+        formData.surname = user.surname;
+        formData.email = user.email;
+    }
+};
 
 const save = () => {
     formRef.value.validate().then((success) => {

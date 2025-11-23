@@ -188,49 +188,49 @@ const slides = [
         title: "DEPENDENCIA EMOCIONAL",
         description:
             "por qué nacemos dependientes cómo se nos programa y por qué cortar ese “cordón invisible” es clave para amarnos",
-        video: "asi fue mi despertar.mp4",
+        video: "la frase que todos necesitamos oír.mp4",
     },
     {
         title: "NADIE TIENE TIEMPO PARA VERTE… Y TU TAMPOCO",
         description:
             "a raíz de la comparacion y la busqueda de reconocimiento que nos aleja de nosotros mismos",
-        video: "asi fue mi despertar.mp4",
+        video: "nadie tiene tiempo para verte… y tu tampoco.mp4",
     },
     {
         title: "REMEMBRAR: DE LA DEPENDENCIA A LA UNION DIVINA",
         description:
             "cuando dejamos de buscar dios habita en nosotros y en los demas",
-        video: "asi fue mi despertar.mp4",
+        video: "remembrar de la dependencia a la union divina.mp4",
     },
     {
         title: "SENTIRSE MARAVILLOSO: EL DESTINO DEL ALMA",
         description:
             "el reencuentro con la propia divinidad y la aceptación profunda de lo que somos",
-        video: "asi fue mi despertar.mp4",
+        video: "sentirse maravilloso el destino del alma.mp4",
     },
     {
         title: "EL ESPEJO DEL MUNDO: LO QUE EL ALMA QUIERE RECORDAR",
         description:
             "la comprensión más alta: lo que vivimos fuera refleja lo que aún no hemos recordado dentro",
-        video: "asi fue mi despertar.mp4",
+        video: "el espejo del mundo lo que el alma quiere recordar.mp4",
     },
     {
         title: "COMO ACTUA UN NARCISISTA (Y POR QUE CAEMOS EN SU JUEGO)",
         description:
             "como se forma su personalidad y por qué atrae a quienes dudan de sí mismos",
-        video: "asi fue mi despertar.mp4",
+        video: "Narcisismo y dependencia emocional.mp4",
     },
     {
         title: "COMO ES UN NARCISISTA",
         description:
             "las señales que lo delatan, la fragilidad que esconde y la herida que lo origina <br> cuando entiendes su vacío, dejas de tomarte su conducta como algo personal",
-        video: "asi fue mi despertar.mp4",
+        video: "CÓMO ES UN NARCISISTA.mp4",
     },
     {
         title: "AMARSE NO ES SER NARCISISTA",
         description:
             "diferenciar entre el amor propio y el ego inflado <br> amarte es escucharte, respetarte y vivir desde el alma, no desde la herida",
-        video: "asi fue mi despertar.mp4",
+        video: "AMARSE NO ES SER NARCISISTA.mp4",
     },
 ];
 

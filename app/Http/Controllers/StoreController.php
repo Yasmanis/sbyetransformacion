@@ -6,11 +6,15 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\PushMessageConfigNotification;
 use App\Models\PushMessageFixedUser;
+use App\Models\User;
+use App\Models\UserNotifications;
+use App\Notifications\StandardNotification;
 use Illuminate\Http\Request;
 use App\Repositories\PushMessageRepository;
 use App\Services\BrevoService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 
 class StoreController extends PushMessageController
@@ -53,6 +57,16 @@ class StoreController extends PushMessageController
         $brevoService = new BrevoService();
         $result = $brevoService->sendEmail('duda desde la tienda', 'store.question', $params);
         if ($result['success']) {
+            $notification = new UserNotifications();
+            $notification->title = 'duda desde la tienda';
+            $notification->priority = 'Alta';
+            $notification->description = sprintf('el usuario con correo <b>%s</b> le ha enviado una duda desde la tienda', $request->email);
+            $notification->code = 'store_question';
+            $notification->save();
+
+            $users = User::isAdmin()->get();
+            Notification::send($users, new StandardNotification($notification));
+
             return back()->with(['success' => 'su duda ha sido registrada correctamente, se le responderá a traves del correo especificado']);
         }
         return back()->with(['error' => $result['error']['message']]);

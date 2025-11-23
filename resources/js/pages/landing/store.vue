@@ -323,8 +323,9 @@ import {
 import { success } from "../../helpers/notifications";
 import { useQuasar } from "quasar";
 import { cloneDeep } from "lodash";
+
 defineOptions({
-    name: "ConsultaIndividual",
+    name: "Store",
 });
 
 const page = usePage();
