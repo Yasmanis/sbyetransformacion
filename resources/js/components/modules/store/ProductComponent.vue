@@ -7,10 +7,15 @@
                     <q-item-section avatar>
                         <btn-shoppin-car-component
                             tooltips="agregar a la cesta"
-                            :disable="
-                                products.map((p) => p.id).includes(product.id)
-                            "
-                            @click="updateProductsStorage(product)"
+                            icon="mdi-cart-plus"
+                            @click="addProductToStorage(product)"
+                            v-if="getProductFromStorage(product) === null"
+                        />
+                        <btn-shoppin-car-component
+                            tooltips="quitar de la cesta"
+                            icon="mdi-cart-minus"
+                            @click="removeProductFromStorage(product)"
+                            v-else
                         />
                     </q-item-section>
                     <q-item-section avatar style="min-width: 10px !important">
@@ -77,7 +82,12 @@ import BtnShoppinCarComponent from "../../btn/BtnShoppinCarComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import ProductInformation from "../shopping/ProductInformation.vue";
 import HelpQuestion from "./HelpQuestion.vue";
-import { products, updateProductsStorage } from "../../../services/shopping";
+import {
+    addProductToStorage,
+    getProductFromStorage,
+    products,
+    removeProductFromStorage,
+} from "../../../services/shopping";
 defineOptions({
     name: "ProductComponent",
 });

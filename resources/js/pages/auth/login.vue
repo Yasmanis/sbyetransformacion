@@ -123,6 +123,7 @@ import { ref } from "vue";
 import QBtnComponent from "../../components/base/QBtnComponent.vue";
 import FormForgotPasswordComponent from "../../components/auth/FormForgotPasswordComponent.vue";
 import FormLoginComponent from "../../components/auth/FormLoginComponent.vue";
+import { Head } from "@inertiajs/vue3";
 defineOptions({
     name: "Login",
 });

@@ -35,11 +35,9 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
-import BtnShoppinCarComponent from "../../../btn/BtnShoppinCarComponent.vue";
 import { removeProductFromStorage } from "../../../../services/shopping";
-import { date } from "quasar";
 
 defineOptions({
     name: "Products",
@@ -50,90 +48,6 @@ const props = defineProps({
 });
 
 const product = ref(null);
-
-const payments_str = [
-    "primer",
-    "segundo",
-    "tercer",
-    "cuarto",
-    "quinto",
-    "sexto",
-    "septimo",
-    "octavo",
-    "noveno",
-    "decimo",
-];
-
-const columns = ref([
-    {
-        name: "date",
-        field: "date",
-        label: "fecha",
-        headerClasses: "bg-primary text-white",
-        align: "left",
-    },
-    {
-        name: "summary",
-        field: "summary",
-        label: "resumen",
-        headerClasses: "bg-primary text-white",
-        align: "left",
-    },
-    {
-        name: "cost",
-        field: "cost",
-        label: "importe",
-        headerClasses: "bg-primary text-white",
-        align: "right",
-    },
-    {
-        name: "amount",
-        field: "amount",
-        label: "pagado a la fecha",
-        headerClasses: "bg-primary text-white text-body1",
-        align: "right",
-    },
-]);
-
-const amountPerPayment = computed(() => {
-    return round(
-        product.value.total_to_car *
-            ((product.value.price - product.value.first_payment) /
-                product.value.total_payments)
-    );
-});
-
-const round = (val) => {
-    return Math.round(val * 100) / 100;
-};
-
-const rows = computed(() => {
-    const firstDate = new Date();
-    let nextDate = firstDate;
-
-    const { total_to_car, first_payment, total_payments } = product.value;
-
-    const fp = total_to_car * first_payment;
-    let data = [
-        {
-            date: date.formatDate(firstDate, "DD-MM-YYYY"),
-            summary: "primer pago con la compra",
-            cost: `${fp}  €`,
-            amount: `${fp}  €`,
-        },
-    ];
-
-    for (let i = 1; i <= total_payments; i++) {
-        nextDate = date.addToDate(nextDate, { months: 1 });
-        data.push({
-            date: date.formatDate(nextDate, "DD-MM-YYYY"),
-            summary: `${payments_str[i]} pago con la compra`,
-            cost: `${amountPerPayment.value}  €`,
-            amount: `${round(amountPerPayment.value * i + fp)}  €`,
-        });
-    }
-    return data;
-});
 
 onBeforeMount(() => {
     product.value = props.object;

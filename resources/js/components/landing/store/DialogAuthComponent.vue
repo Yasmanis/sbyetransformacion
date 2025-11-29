@@ -5,6 +5,7 @@
         no-caps
         color="primary"
         href="/admin"
+        :class="!showLabel ? 'hidden' : ''"
         v-if="authenticated"
     />
 
@@ -13,6 +14,7 @@
         outline
         no-caps
         color="primary"
+        :class="!showLabel ? 'hidden' : ''"
         @click="showDialog = true"
         v-else
     />
@@ -62,6 +64,10 @@ defineOptions({
 const props = defineProps({
     show: Boolean,
     showPaymentOnLogin: Boolean,
+    showLabel: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emits = defineEmits(["hide"]);

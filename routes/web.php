@@ -49,6 +49,7 @@ use App\Models\File;
 use App\Models\Landing;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductSubcategory;
 use App\Models\Testimony;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -97,10 +98,10 @@ Route::get('/', function () {
 
 Route::get('/liberacion_emocional', function () {
     $testimonies = Testimony::active()->type('text')->get();
-    $product = Product::firstWhere('name', 'plan basico');
+    $subcategory = ProductSubcategory::with(['products' => fn($productQuery) => $productQuery->active()])->whereHas('products', fn($productQuery) => $productQuery->active())->where('name', 'aprender a liberar emocionalmente')->first();
     return Inertia('landing/free_learning', [
         'testimonies' => $testimonies,
-        'product' => $product
+        'subcategory' => $subcategory
     ]);
 });
 

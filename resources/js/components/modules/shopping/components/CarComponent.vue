@@ -5,6 +5,9 @@
         rounded
         color="black"
         padding="2px"
+        :style="style"
+        :class="cls"
+        :size="size"
     >
         <q-badge
             floating
@@ -111,7 +114,12 @@
                         :round="false"
                         :disable="products.length === 0"
                         padding="5px"
-                        @click="emits('show-auth')"
+                        @click="
+                            () => {
+                                showPaymentOnLogin = true;
+                                showAuth = true;
+                            }
+                        "
                         v-if="authBtn && !user"
                     />
                     <basket-sale-component
@@ -124,6 +132,17 @@
             </q-card>
         </q-menu>
     </q-btn>
+
+    <dialog-auth-component
+        :show="showAuth"
+        :show-label="false"
+        :show-payment-on-login="showPaymentOnLogin"
+        @hide="
+            {
+                showAuth = false;
+            }
+        "
+    />
 </template>
 
 <script setup>
@@ -133,6 +152,7 @@ import BtnLeftRightComponent from "../../../btn/BtnLeftRightComponent.vue";
 import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
 import ProductInformation from "../ProductInformation.vue";
 import BasketSaleComponent from "../BasketSaleComponent.vue";
+import DialogAuthComponent from "../../../landing/store/DialogAuthComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 
 import {
@@ -150,15 +170,19 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    style: Object,
+    cls: String,
     authBtn: Boolean,
     show: Boolean,
     showPayment: Boolean,
+    size: String,
 });
 
-const emits = defineEmits(["show", "hide", "remove-product", "show-auth"]);
+const emits = defineEmits(["show", "hide", "remove-product"]);
 const menu = ref(false);
 const page = usePage();
-
+const showAuth = ref(false);
+const showPaymentOnLogin = ref(false);
 onBeforeMount(() => {
     loadProductsFromStorage();
 });

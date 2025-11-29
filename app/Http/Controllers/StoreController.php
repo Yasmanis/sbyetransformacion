@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductSubcategory;
 use App\Models\PushMessageConfigNotification;
 use App\Models\PushMessageFixedUser;
 use App\Models\User;
@@ -26,16 +27,31 @@ class StoreController extends PushMessageController
 
     public function index(Request $request)
     {
-        $categories = ProductCategory::whereHas('subcategories', function ($subcategoryQuery) {
-            $subcategoryQuery->whereHas('products');
-        })->with(['subcategories' => function ($query) {
-            $query->whereHas('products')
-                ->orderBy('order', 'asc')->with('subtitles');
-        }, 'subcategories.products' => function ($query) {
-            $query->orderBy('order', 'asc')->with('subtitles');
-        }])->orderBy('order', 'asc')->with('subtitles')->get();
+        $categories = ProductCategory::whereHas(
+            'subcategories',
+            fn($subcategoryQuery) =>
+            $subcategoryQuery->whereHas('products', fn($productQuery) => $productQuery->active())
+        )->with([
+            'subcategories' => fn($query) =>
+            $query->whereHas('products', fn($productQuery) => $productQuery->active())
+                ->orderBy('order', 'asc')
+                ->with('subtitles'),
+            'subcategories.products' => fn($query) =>
+            $query->active()
+                ->orderBy('order', 'asc')
+                ->with('subtitles')
+        ])
+            ->orderBy('order', 'asc')
+            ->with('subtitles')
+            ->get();
+
+        $subcategories = ProductSubcategory::whereHas('products', fn($productQuery) => $productQuery->active())
+            ->orderBy('order', 'asc')
+            ->get();
+
         return Inertia('landing/store', [
-            'categories' => $categories
+            'categories' => $categories,
+            'subcategories' => $subcategories
         ]);
     }
 

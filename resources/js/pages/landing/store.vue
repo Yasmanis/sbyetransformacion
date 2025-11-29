@@ -36,66 +36,20 @@
                 />
             </q-toolbar>
             <q-item dense>
-                <q-item-section avatar>
-                    <btn-list-component size="lg">
+                <q-item-section avatar v-if="Screen.xs || Screen.sm">
+                    <btn-list-component size="lg" v-if="Screen.xs || Screen.sm">
                         <q-menu>
-                            <q-list dense>
-                                <q-item clickable>
-                                    <q-item-section>
-                                        <q-item-label> novedades </q-item-label>
-                                    </q-item-section>
-                                    <q-item-section avatar></q-item-section>
-                                </q-item>
-                                <q-item
-                                    clickable
-                                    @click="
-                                        withOfferOrPromo = !withOfferOrPromo
-                                    "
-                                >
-                                    <q-item-section>
-                                        <q-item-label>
-                                            ofertas y promociones
-                                        </q-item-label>
-                                    </q-item-section>
-                                    <q-item-section avatar>
-                                        <q-icon
-                                            name="check"
-                                            v-if="withOfferOrPromo"
-                                        />
-                                    </q-item-section>
-                                </q-item>
-                                <q-item
-                                    v-for="c in $page.props.categories"
-                                    :key="`category-${c.id}`"
-                                    clickable
-                                    @click="
-                                        category =
-                                            category === c.id ? null : c.id
-                                    "
-                                >
-                                    <q-item-section>
-                                        <q-item-label>
-                                            {{ c.name }}
-                                        </q-item-label>
-                                    </q-item-section>
-                                    <q-item-section avatar>
-                                        <q-icon
-                                            name="check"
-                                            v-if="category === c.id"
-                                        />
-                                    </q-item-section>
-                                </q-item>
-                                <q-item
-                                    clickable
-                                    @click="showLegalConditions = true"
-                                >
-                                    <q-item-section>
-                                        <q-item-label>
-                                            terminos y condiciones legales
-                                        </q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                            </q-list>
+                            <menu-component
+                                :categories="$page.props.categories"
+                                :category="category"
+                                @change="
+                                    (data) => {
+                                        category = data.category;
+                                        withOfferOrPromo =
+                                            data.withOfferOrPromo;
+                                    }
+                                "
+                            />
                         </q-menu>
                     </btn-list-component>
                 </q-item-section>
@@ -104,20 +58,8 @@
                         label="categoria"
                         name="category"
                         :model-value="category"
-                        :options="
-                            categories.map((c) => {
-                                return {
-                                    label: c.name,
-                                    value: c.id,
-                                };
-                            })
-                        "
-                        @update="
-                            (name, val) => {
-                                category = val;
-                                filter();
-                            }
-                        "
+                        :options="allCategories"
+                        @update="(name, val) => (category = val)"
                     />
                 </q-item-section>
                 <q-item-section avatar>
@@ -125,21 +67,30 @@
                         label="subcategoria"
                         name="subcategory"
                         :model-value="subcategory"
-                        :options="subcategories"
+                        :options="
+                            $page.props.subcategories
+                                .filter((c) => c.category_id === category)
+                                .map((s) => {
+                                    return {
+                                        ...s,
+                                        label: s.name,
+                                        value: s.id,
+                                    };
+                                }) ?? []
+                        "
                         :disable="!category"
-                        @update="(name, val) => (subcategory = val)"
+                        @update="
+                            (name, val) => {
+                                subcategory = val;
+                            }
+                        "
                     />
                 </q-item-section>
                 <q-item-section avatar>
                     <text-field
-                        label="buscar"
+                        label="buscar por producto"
                         name="search"
-                        @update="
-                            (name, val) => {
-                                query = val;
-                                filter();
-                            }
-                        "
+                        @update="(name, val) => (query = val)"
                     >
                         <template #append>
                             <q-btn-component icon="search" />
@@ -181,28 +132,55 @@
                                 showPaymentOnLogin = false;
                             }
                         "
-                        @show-auth="
-                            {
-                                showAuth = true;
-                                showPaymentOnLogin = true;
-                            }
-                        "
                     />
                 </q-item-section>
             </q-item>
             <div class="row">
+                <div
+                    class="col-md-3 q-pt-lg q-pl-md"
+                    v-if="!Screen.xs && !Screen.sm"
+                >
+                    <menu-component
+                        :categories="$page.props.categories"
+                        :category="category"
+                        @change="
+                            (data) => {
+                                category = data.category;
+                                withOfferOrPromo = data.withOfferOrPromo;
+                            }
+                        "
+                    />
+                </div>
                 <div class="col q-pa-lg">
                     <template v-if="categories.length > 0">
                         <template
-                            v-for="category in categories"
+                            v-for="(category, indexCategory) in categories"
                             :key="`category-${category.id}`"
                         >
-                            <q-item-label>
-                                <q-icon
-                                    :name="`img:${$page.props.public_path}storage/${category.image}`"
-                                    size="20px"
-                                />
-                                {{ category.name }}
+                            <q-item-label
+                                class="q-mb-md"
+                                :class="{
+                                    'q-mt-lg': indexCategory !== 0,
+                                }"
+                            >
+                                <q-item dense style="padding: 0">
+                                    <q-item-section
+                                        avatar
+                                        style="min-width: 10px; padding: 0"
+                                    >
+                                        <q-icon
+                                            :name="`img:${$page.props.public_path}storage/${category.image}`"
+                                            size="30px"
+                                        />
+                                    </q-item-section>
+                                    <q-item-section>
+                                        <h4
+                                            class="q-ml-sm q-pt-xs text-bold text-uppercase"
+                                        >
+                                            {{ category.name }}
+                                        </h4>
+                                    </q-item-section>
+                                </q-item>
                             </q-item-label>
                             <q-item-label>
                                 <span v-html="category.description"></span>
@@ -225,57 +203,136 @@
                                 </q-expansion-item>
                             </q-item-label>
                             <template
-                                v-for="subcategory in category.subcategories"
-                                :key="`subcategory-${subcategory.id}`"
+                                v-for="(
+                                    subcategory, indexSubcategory
+                                ) in category.subcategories"
+                                :key="`subcategory-${indexSubcategory.id}`"
                             >
-                                <q-item-label>
-                                    <q-icon
-                                        :name="`img:${$page.props.public_path}storage/${subcategory.image}`"
-                                        size="20px"
-                                    />
-                                    {{ subcategory.name }}
-                                </q-item-label>
-                                <q-item-label v-if="subcategory.description">
-                                    <span
-                                        v-html="subcategory.description"
-                                    ></span>
-                                </q-item-label>
-                                <q-item-label>
-                                    <q-expansion-item
-                                        group="somegroup"
-                                        expand-separator
-                                        v-for="subtitle in subcategory.subtitles"
-                                        :key="`subtitle-${subtitle.id}`"
-                                        :label="subtitle.name"
-                                    >
-                                        <q-card>
-                                            <q-card-section>
-                                                <span
-                                                    v-html="
-                                                        subtitle.description
+                                <div
+                                    class="q-pa-md"
+                                    :class="
+                                        indexSubcategory % 2 === 0
+                                            ? 'bg-primary'
+                                            : null
+                                    "
+                                >
+                                    <q-item-label class="q-mb-sm">
+                                        <q-item dense style="padding: 0">
+                                            <q-item-section
+                                                avatar
+                                                style="
+                                                    padding: 0;
+                                                    min-width: 10px;
+                                                "
+                                            >
+                                                <q-icon
+                                                    :name="`img:${$page.props.public_path}storage/${subcategory.image}`"
+                                                    size="20px"
+                                                />
+                                            </q-item-section>
+                                            <q-item-section>
+                                                <h4
+                                                    class="q-ml-sm text-lowercase text-bold"
+                                                    :class="
+                                                        indexSubcategory % 2 ===
+                                                        0
+                                                            ? 'text-white'
+                                                            : null
                                                     "
-                                                ></span>
-                                            </q-card-section>
-                                        </q-card>
-                                    </q-expansion-item>
-                                </q-item-label>
-                                <q-item-label>
-                                    <store-component
-                                        :products="subcategory.products"
-                                        @add-product="
-                                            (prod) =>
-                                                updateProductsStorage(prod)
+                                                >
+                                                    {{ subcategory.name }}
+                                                </h4>
+                                            </q-item-section>
+                                        </q-item>
+                                    </q-item-label>
+                                    <q-item-label
+                                        :class="
+                                            indexSubcategory % 2 === 0
+                                                ? 'text-white'
+                                                : null
                                         "
-                                    />
-                                </q-item-label>
+                                        v-if="subcategory.description"
+                                    >
+                                        <span
+                                            v-html="subcategory.description"
+                                        ></span>
+                                    </q-item-label>
+                                    <q-item-label
+                                        :class="
+                                            indexSubcategory % 2 === 0
+                                                ? 'text-white'
+                                                : null
+                                        "
+                                    >
+                                        <q-expansion-item
+                                            group="somegroup"
+                                            expand-separator
+                                            v-for="subtitle in subcategory.subtitles"
+                                            :key="`subtitle-${subtitle.id}`"
+                                            :label="subtitle.name"
+                                        >
+                                            <q-card
+                                                :class="
+                                                    indexSubcategory % 2 === 0
+                                                        ? 'bg-primary'
+                                                        : null
+                                                "
+                                            >
+                                                <q-card-section>
+                                                    <span
+                                                        v-html="
+                                                            subtitle.description
+                                                        "
+                                                    ></span>
+                                                </q-card-section>
+                                            </q-card>
+                                        </q-expansion-item>
+                                    </q-item-label>
+                                    <q-item-label>
+                                        <store-component
+                                            :products="subcategory.products"
+                                            @add-product="
+                                                (prod) =>
+                                                    updateProductsStorage(prod)
+                                            "
+                                        />
+                                    </q-item-label>
 
-                                <q-item-label v-if="subcategory.end_text">
-                                    <span v-html="subcategory.end_text"></span>
-                                </q-item-label>
+                                    <q-item-label
+                                        :class="
+                                            indexSubcategory % 2 === 0
+                                                ? 'text-white'
+                                                : null
+                                        "
+                                        v-if="subcategory.end_text"
+                                    >
+                                        <span
+                                            v-html="subcategory.end_text"
+                                        ></span>
+                                    </q-item-label>
+                                </div>
+                                <div
+                                    class="bg-primary q-my-md"
+                                    style="height: 5px"
+                                    v-if="
+                                        category.end_text &&
+                                        indexSubcategory % 2 !== 0
+                                    "
+                                ></div>
                             </template>
 
-                            <q-item-label v-if="category.end_text">
-                                <span v-html="category.end_text"></span>
+                            <q-item-label
+                                class="q-mt-sm"
+                                v-if="category.end_text"
+                            >
+                                <span
+                                    v-html="category.end_text"
+                                    :class="
+                                        indexCategory % 2 === 0
+                                            ? 'text-white'
+                                            : null
+                                    "
+                                ></span>
                             </q-item-label>
                         </template>
                     </template>
@@ -292,12 +349,6 @@
             </div>
         </div>
     </Layout>
-
-    <legal-contracting
-        :show="showLegalConditions"
-        :show-title="false"
-        @hide="showLegalConditions = false"
-    />
 </template>
 
 <script setup>
@@ -305,13 +356,13 @@ import Layout from "../../layouts/MainLayout.vue";
 import DialogAuthComponent from "../../components/landing/store/DialogAuthComponent.vue";
 import CarComponent from "../../components/modules/shopping/components/CarComponent.vue";
 import StoreComponent from "../../components/modules/store/StoreComponent.vue";
-import BtnListComponent from "../../components/btn/BtnListComponent.vue";
 import SelectField from "../../components/form/input/SelectField.vue";
 import TextField from "../../components/form/input/TextField.vue";
 import QBtnComponent from "../../components/base/QBtnComponent.vue";
 import BtnBasketComponent from "../../components/btn/BtnBasketComponent.vue";
+import BtnListComponent from "../../components/btn/BtnListComponent.vue";
 import MyWishesComponent from "../../components/modules/store/MyWishesComponent.vue";
-import LegalContracting from "../../components/others/LegalContracting.vue";
+import MenuComponent from "../../components/modules/store/MenuComponent.vue";
 import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 import { usePage, Head } from "@inertiajs/vue3";
 import {
@@ -321,7 +372,7 @@ import {
     removeAllProductsFromStorage,
 } from "../../services/shopping";
 import { success } from "../../helpers/notifications";
-import { useQuasar } from "quasar";
+import { Screen } from "quasar";
 import { cloneDeep } from "lodash";
 
 defineOptions({
@@ -329,7 +380,6 @@ defineOptions({
 });
 
 const page = usePage();
-const $q = useQuasar();
 const showBasket = ref(false);
 const showAuth = ref(false);
 const showPaymentOnLogin = ref(false);
@@ -337,61 +387,49 @@ const query = ref(null);
 const category = ref(null);
 const subcategory = ref(null);
 const withOfferOrPromo = ref(false);
-const showLegalConditions = ref(false);
 const categories = ref([]);
-const subcategories = ref([]);
-let allCategories = [];
+let fromHash = false;
 
 onBeforeMount(() => {
     loadProductsFromStorage();
 });
 
 onMounted(() => {
-    let list = [];
-    page.props.categories.forEach((c) => {
-        list.push({
-            ...c,
-            all_subcategories: c.subcategories,
-        });
-    });
-    categories.value = list;
-    allCategories = list;
+    let categoriesList = page.props.categories;
     if (page.props.flash_success) {
         success(page.props.flash_success);
         removeAllProductsFromStorage();
     }
     if (location.hash) {
-        // let product = products.value.find(
-        //     (p) => p.id === parseInt(location.hash.split("-")[2])
-        // );
-        // $q.dialog({
-        //     title: "info",
-        //     message: `usted fue redirigido a la tienda, para continuar debe comprar el producto <b>${product?.name}</b>`,
-        //     persistent: true,
-        //     html: true,
-        //     icon: "info",
-        // }).onOk(() => {
-        //     location.hash = "";
-        //     query.value = product?.name;
-        //     filterProducts();
-        // });
+        let subCategId = parseInt(location.hash.substring(1));
+        for (let i = 0; i < categoriesList.length; i++) {
+            let temp = categoriesList[i].subcategories.find(
+                (s) => s.id === subCategId
+            );
+            if (temp) {
+                category.value = temp.category_id;
+                subcategory.value = subCategId;
+                fromHash = true;
+                break;
+            }
+        }
+        setTimeout(() => {
+            location.hash = "";
+        }, 600);
+    } else {
+        filter();
     }
 });
 
-watch(category, (n) => {
-    subcategory.value = null;
-    subcategories.value = [];
-    if (n) {
-        let categ = categories.value.find((c) => c.id === n);
-        if (categ) {
-            subcategories.value = categ.all_subcategories.map((s) => {
-                return {
-                    label: s.name,
-                    value: s.id,
-                };
-            });
-        }
+watch(category, () => {
+    if (!fromHash) {
+        subcategory.value = null;
     }
+    fromHash = false;
+    filter();
+});
+
+watch(subcategory, () => {
     filter();
 });
 
@@ -399,8 +437,22 @@ watch(withOfferOrPromo, () => {
     filter();
 });
 
+watch(query, () => {
+    filter();
+});
+
+const allCategories = computed(() => {
+    return page.props.categories.map((c) => {
+        return {
+            ...c,
+            label: c.name,
+            value: c.id,
+        };
+    });
+});
+
 const filter = () => {
-    let list = cloneDeep(allCategories);
+    let list = cloneDeep(allCategories.value);
     let c = category.value,
         q = query.value,
         s = subcategory.value;
@@ -409,8 +461,9 @@ const filter = () => {
         list = categ ? [categ] : [];
     }
     if (s && list.length > 0) {
-        let subcateg = list[0].all_subcategories.find((sub) => sub.id === s);
-        list[0].subcategories = subcateg ? [subcateg] : [];
+        list[0].subcategories = [
+            list[0].subcategories.find((ss) => ss.id === s),
+        ];
     }
     if (withOfferOrPromo.value) {
         list.forEach((categ) => {
@@ -422,19 +475,18 @@ const filter = () => {
         });
     }
     if (q) {
-        list.forEach((categ) => {
-            categ.subcategories.forEach((subcateg) => {
-                subcateg.products = subcateg.products.filter((p) =>
-                    p.name.includes(q)
+        const searchTerm = q.toLowerCase().trim();
+        list.forEach((cat) => {
+            cat.subcategories.forEach((sub) => {
+                sub.products = sub.products.filter((p) =>
+                    p.name.toLowerCase().includes(searchTerm)
                 );
             });
         });
     }
-
     list.forEach((l) => {
         l.subcategories = l.subcategories.filter((s) => s.products.length > 0);
     });
-
     categories.value = list.filter((l) => l.subcategories.length > 0);
 };
 </script>
@@ -444,5 +496,8 @@ figure.media {
 }
 figure.media video {
     width: 30%;
+}
+.text-white > span > p > span {
+    color: white !important;
 }
 </style>

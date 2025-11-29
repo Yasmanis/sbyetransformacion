@@ -165,4 +165,9 @@ class Product extends Model
     {
         return $this::class;
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('public', true);
+    }
 }

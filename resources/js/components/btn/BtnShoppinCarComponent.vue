@@ -1,7 +1,7 @@
 <template>
     <q-btn-component
         :tooltips="tooltips"
-        icon="mdi-cart-variant"
+        :icon="icon"
         :size="size"
         :disable="disable"
         @click="onClick"
@@ -28,6 +28,10 @@ const props = defineProps({
         default: false,
     },
     size: String,
+    icon: {
+        type: String,
+        default: "mdi-cart-variant",
+    },
 });
 
 const emits = defineEmits(["click"]);

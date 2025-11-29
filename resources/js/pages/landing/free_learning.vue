@@ -78,7 +78,8 @@
                         label="quiero empezar ahora"
                         no-caps
                         rounded
-                        :href="`/tienda#product-store-${product?.id}`"
+                        :href="`/tienda#${subcategory?.id}`"
+                        v-if="subcategory"
                     >
                         <q-icon
                             name="fa fa-long-arrow-right"
@@ -220,7 +221,8 @@
                         label="quiero vivir esta transformacion"
                         no-caps
                         rounded
-                        :href="`/tienda#product-store-${product?.id}`"
+                        :href="`/tienda#${subcategory?.id}`"
+                        v-if="subcategory"
                     >
                         <q-icon
                             name="fa fa-long-arrow-right"
@@ -408,7 +410,8 @@
                         label="empezar ahora"
                         no-caps
                         rounded
-                        :href="`/tienda#product-store-${product?.id}`"
+                        :href="`/tienda#${subcategory?.id}`"
+                        v-if="subcategory"
                     >
                         <q-icon
                             name="fa fa-long-arrow-right"
@@ -425,21 +428,59 @@
                     <p class="text-h6 text-white">PRECIOS Y PLANES</p>
                 </div>
             </div>
-            <div class="row">
+            <div class="row q-col-gutter-lg">
                 <div
+                    v-for="p in planes"
+                    :key="`plane-${p.name}`"
                     class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12"
-                    :class="screen.xs ? 'q-py-sm' : 'q-pr-md'"
                 >
                     <q-card style="border: 1px solid #000">
-                        <q-card-section class="no-padding">
+                        <q-card-section
+                            class="no-padding"
+                            style="min-height: 220px"
+                        >
                             <q-list dense>
-                                <q-item>
+                                <q-item
+                                    ><q-item-section avatar />
                                     <q-item-section>
                                         <q-item-label
                                             class="text-center q-pt-md"
                                         >
-                                            🌱
+                                            {{ p.icon }}
                                         </q-item-label>
+                                    </q-item-section>
+                                    <q-item-section avatar>
+                                        <!-- <template v-if="p.product">
+                                            <btn-shoppin-car-component
+                                                tooltips="agregar a la cesta"
+                                                icon="mdi-cart-plus"
+                                                @click="
+                                                    addProductToStorage(
+                                                        p.product
+                                                    )
+                                                "
+                                                v-if="
+                                                    getProductFromStorage(
+                                                        p.product
+                                                    ) === null
+                                                "
+                                            />
+                                            <btn-shoppin-car-component
+                                                tooltips="quitar de la cesta"
+                                                icon="mdi-cart-minus"
+                                                @click="
+                                                    removeProductFromStorage(
+                                                        p.product
+                                                    )
+                                                "
+                                                v-else
+                                            />
+                                        </template>
+                                        <btn-shoppin-car-component
+                                            icon="mdi-cart-off"
+                                            disable
+                                            v-else
+                                        /> -->
                                     </q-item-section>
                                 </q-item>
                                 <q-item>
@@ -447,170 +488,33 @@
                                         <q-item-label
                                             class="text-center q-pb-sm"
                                         >
-                                            plan basico
+                                            {{ p.name }}
                                         </q-item-label></q-item-section
                                     >
                                 </q-item>
                                 <q-item>
-                                    <q-item-section>
-                                        <q-item-label class="text-center">
-                                            🎓️ curso completo
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label class="text-center">
-                                            💬 acompañamiento por chat
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                                <q-item />
-                                <q-item />
-                                <q-item style="padding: 0">
                                     <q-item-section>
                                         <q-item-label
-                                            class="text-white bg-black text-center q-py-sm q-my-lg"
+                                            v-for="l in p.lines"
+                                            :key="l"
+                                            class="text-center q-py-xs"
                                         >
-                                            45 €
+                                            {{ l }}
                                         </q-item-label></q-item-section
                                     >
                                 </q-item>
                             </q-list>
                         </q-card-section>
-                    </q-card>
-                </div>
-                <div
-                    class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12"
-                    :class="screen.xs ? 'q-py-sm' : null"
-                >
-                    <q-card style="border: 1px solid #000">
                         <q-card-section class="no-padding">
-                            <q-list dense>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label
-                                            class="text-center q-pt-md"
-                                        >
-                                            🌿
-                                        </q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label
-                                            class="text-center q-pb-sm"
-                                        >
-                                            plan esencial
-                                        </q-item-label></q-item-section
+                            <q-item style="padding: 0">
+                                <q-item-section>
+                                    <q-item-label
+                                        class="text-white bg-black text-center q-py-sm q-my-lg"
                                     >
-                                </q-item>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label class="text-center">
-                                            🎓️ curso completo
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label class="text-center">
-                                            💬 acompañamiento por chat
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label class="text-center">
-                                            + 3 respuestas personalizadas en
-                                            video
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                                <q-item />
-                                <q-item style="padding: 0">
-                                    <q-item-section>
-                                        <q-item-label
-                                            class="text-white bg-black text-center q-py-sm q-my-lg"
-                                        >
-                                            75 €
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                            </q-list>
-                        </q-card-section>
-                    </q-card>
-                </div>
-                <div
-                    class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12"
-                    :class="
-                        screen.xs
-                            ? 'q-py-sm'
-                            : screen.sm
-                            ? 'q-py-md q-pr-md'
-                            : 'q-pl-md'
-                    "
-                >
-                    <q-card style="border: 1px solid #000">
-                        <q-card-section class="no-padding">
-                            <q-list dense>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label
-                                            class="text-center q-pt-md"
-                                        >
-                                            🌺
-                                        </q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label
-                                            class="text-center q-pb-sm"
-                                        >
-                                            plan premium
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label class="text-center">
-                                            🎓️ curso completo
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label class="text-center">
-                                            💬 acompañamiento por chat
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label class="text-center">
-                                            + 3 respuestas personalizadas en
-                                            video
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label class="text-center">
-                                            👥 1 sesion individual de 1h
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                                <q-item style="padding: 0">
-                                    <q-item-section>
-                                        <q-item-label
-                                            class="text-white bg-black text-center q-py-sm q-my-lg"
-                                        >
-                                            150 €
-                                        </q-item-label></q-item-section
-                                    >
-                                </q-item>
-                            </q-list>
+                                        {{ p.price }} €
+                                    </q-item-label></q-item-section
+                                >
+                            </q-item>
                         </q-card-section>
                     </q-card>
                 </div>
@@ -844,7 +748,8 @@
                     label="quiero empezar ahora"
                     no-caps
                     rounded
-                    :href="`/tienda#product-store-${product?.id}`"
+                    :href="`/tienda#${subcategory?.id}`"
+                    v-if="subcategory"
                 >
                     <q-icon
                         name="fa fa-long-arrow-right"
@@ -854,6 +759,19 @@
                 </q-btn>
             </div>
         </div>
+        <!-- <car-component
+            :auth-btn="true"
+            size="xl"
+            only-btn
+            cls="fixed"
+            style="
+                right: 20px;
+                top: 10%;
+                transform: translateY(-50%);
+                z-index: 1000;
+            "
+            :disable="products.length === 0"
+        /> -->
     </Layout>
 </template>
 
@@ -861,10 +779,17 @@
 import Layout from "../../layouts/MainLayout.vue";
 import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { useQuasar, dom, Screen } from "quasar";
-
+import BtnShoppinCarComponent from "../../components/btn/BtnShoppinCarComponent.vue";
+import CarComponent from "../../components/modules/shopping/components/CarComponent.vue";
 import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
 import { usePage } from "@inertiajs/vue3";
+import {
+    addProductToStorage,
+    getProductFromStorage,
+    products,
+    removeProductFromStorage,
+} from "../../services/shopping";
 
 defineOptions({
     name: "VivirEnPlenitud",
@@ -916,6 +841,39 @@ const images = ref([
     },
 ]);
 
+const planes = ref([
+    {
+        icon: "🌱",
+        name: "plan basico",
+        lines: ["🎓️ curso completo", "💬 acompañamiento por chat"],
+        price: 45,
+        product: null,
+    },
+    {
+        icon: "🌿",
+        name: "plan esencial",
+        lines: [
+            "🎓️ curso completo",
+            "💬 acompañamiento por chat",
+            "+ 3 respuestas personalizadas en video",
+        ],
+        price: 75,
+        product: null,
+    },
+    {
+        icon: "🌺",
+        name: "plan premium",
+        lines: [
+            "🎓️ curso completo",
+            "💬 acompañamiento por chat",
+            "+ 3 respuestas personalizadas en video",
+            "👥 1 sesion individual de 1h",
+        ],
+        price: 150,
+        product: null,
+    },
+]);
+
 const webTestimonies = ref([]);
 
 const staticTestimonies = [
@@ -958,14 +916,22 @@ const slide = ref(0);
 const slidesPerView = ref(4);
 const rowsTestimonies = ref(0);
 const page = usePage();
-const product = ref(null);
+const subcategory = ref(null);
+const productsSubcategory = ref([]);
 
 onMounted(() => {
     const observer = setupObservers();
     const arrows = arrowsObservers();
     setTestimonyWidth();
     webTestimonies.value = page.props.testimonies;
-    product.value = page.props.product;
+    subcategory.value = page.props.subcategory;
+    planes.value.forEach((p) => {
+        p.product =
+            subcategory.value?.products.find((pp) => pp.name === p.name) ??
+            null;
+    });
+    productsSubcategory.value =
+        subcategory.value?.products.map((p) => p.name) ?? [];
     onUnmounted(() => {
         observer.disconnect();
         arrows.disconnect();

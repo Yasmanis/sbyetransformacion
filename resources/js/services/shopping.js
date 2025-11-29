@@ -31,8 +31,29 @@ export const updateProductsStorage = (prod) => {
     }
 };
 
+export const getProductFromStorage = (prod) => {
+    return products.value.find((p) => p.id === prod.id) ?? null;
+};
+
+export const addProductToStorage = (prod) => {
+    const exist = getProductFromStorage(prod);
+    if (exist === null) {
+        products.value.push(prod);
+    }
+};
+
 export const removeProductFromStorage = (prod) => {
     products.value = products.value.filter((p) => p.id !== prod.id);
+};
+
+export const getProductByIdFromBasket = (id) => {
+    const products = LocalStorage.getItem("products_to_car") ?? [];
+    return products.find((p) => p.id === id) ?? null;
+};
+
+export const getProductByNameFromBasket = (name) => {
+    const products = LocalStorage.getItem("products_to_car") ?? [];
+    return products.find((p) => p.name === name) ?? null;
 };
 
 export const removeAllProductsFromStorage = () => {

@@ -140,7 +140,6 @@ import QBtnComponent from "../../base/QBtnComponent.vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
 import BtnShoppinCarComponent from "../../btn/BtnShoppinCarComponent.vue";
-import Shipment from "./components/Shipment.vue";
 import Payment from "./components/Payment.vue";
 import Confirmation from "./components/Confirmation.vue";
 import Products from "./components/Products.vue";
