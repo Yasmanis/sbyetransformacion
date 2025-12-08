@@ -450,7 +450,7 @@
                                         </q-item-label>
                                     </q-item-section>
                                     <q-item-section avatar>
-                                        <!-- <template v-if="p.product">
+                                        <template v-if="p.product">
                                             <btn-shoppin-car-component
                                                 tooltips="agregar a la cesta"
                                                 icon="mdi-cart-plus"
@@ -480,7 +480,7 @@
                                             icon="mdi-cart-off"
                                             disable
                                             v-else
-                                        /> -->
+                                        />
                                     </q-item-section>
                                 </q-item>
                                 <q-item>
@@ -759,7 +759,7 @@
                 </q-btn>
             </div>
         </div>
-        <!-- <car-component
+        <car-component
             :auth-btn="true"
             size="xl"
             only-btn
@@ -770,8 +770,8 @@
                 transform: translateY(-50%);
                 z-index: 1000;
             "
-            :disable="products.length === 0"
-        /> -->
+            v-if="products.length > 0"
+        />
     </Layout>
 </template>
 

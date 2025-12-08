@@ -83,10 +83,7 @@
                 />
             </div>
         </div>
-        <div
-            class="row container bg-primary q-pt-lg"
-            v-if="groupedSlides.length === 0"
-        >
+        <div class="row container bg-primary q-pt-lg">
             <div class="row">
                 <h6 class="text-center text-white q-mb-sm">
                     UNA MUESTRA DE LO QUE QUIERO COMPARTIR CONTIGO

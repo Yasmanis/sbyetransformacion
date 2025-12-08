@@ -66,7 +66,8 @@
             </q-td>
         </template>
         <template v-slot:body-cell-actions="props">
-            <q-td style="width: 100px">
+            <q-td style="width: 120px">
+                <!-- <form-reply-component :object="props.row" /> -->
                 <btn-show-hide-component
                     titleHide="marcar como no leido"
                     titlePublic="marcar como leido"
@@ -106,6 +107,7 @@ import ConfirmComponent from "../base/ConfirmComponent.vue";
 import BtnShowHideComponent from "../btn/BtnShowHideComponent.vue";
 import DeleteComponent from "../table/actions/DeleteComponent.vue";
 import BtnClearComponent from "../btn/BtnClearComponent.vue";
+import FormReplyComponent from "./FormReplyComponent.vue";
 
 defineOptions({
     name: "NotificationsManagerComponent",
@@ -122,50 +124,6 @@ const highlightedId = ref(false);
 const pagination = ref({
     page: 1,
     rowsPerPage: 10,
-});
-
-onMounted(() => {
-    if (props.notificationFromEmail) {
-        const { model, id } = props.notificationFromEmail;
-        console.log(model, id, notifications.value);
-
-        const foundRecord = notifications.value.find(
-            (record) => record.model === model && record.model_id === id
-        );
-        if (foundRecord) {
-            const rowsPerPage = pagination.value.rowsPerPage;
-            const recordIndex = notifications.value.findIndex(
-                (record) => record.model === model && record.model_id === id
-            );
-
-            const targetPage = Math.floor(recordIndex / rowsPerPage) + 1;
-
-            pagination.value.page = targetPage;
-
-            highlightedId.value = foundRecord.id;
-        }
-        console.log(foundRecord);
-    }
-});
-
-const notifications = computed(() => {
-    let notifications = [];
-    usePage().props.auth.user.notifications.forEach((n) => {
-        const { title, priority, description, model, model_id } = n.data[0];
-        notifications.push({
-            id: n.id,
-            type: n.type,
-            title,
-            priority,
-            description,
-            model,
-            model_id,
-            time: n.time,
-            user: n.user,
-            read: n.read_at !== null,
-        });
-    });
-    return notifications;
 });
 
 const columns = ref([
@@ -233,6 +191,50 @@ const columns = ref([
         },
     },
 ]);
+
+onMounted(() => {
+    if (props.notificationFromEmail) {
+        const { model, id } = props.notificationFromEmail;
+        console.log(model, id, notifications.value);
+
+        const foundRecord = notifications.value.find(
+            (record) => record.model === model && record.model_id === id
+        );
+        if (foundRecord) {
+            const rowsPerPage = pagination.value.rowsPerPage;
+            const recordIndex = notifications.value.findIndex(
+                (record) => record.model === model && record.model_id === id
+            );
+
+            const targetPage = Math.floor(recordIndex / rowsPerPage) + 1;
+
+            pagination.value.page = targetPage;
+
+            highlightedId.value = foundRecord.id;
+        }
+        console.log(foundRecord);
+    }
+});
+
+const notifications = computed(() => {
+    let notifications = [];
+    usePage().props.auth.user.notifications.forEach((n) => {
+        const { title, priority, description, model, model_id } = n.data[0];
+        notifications.push({
+            id: n.id,
+            type: n.type,
+            title,
+            priority,
+            description,
+            model,
+            model_id,
+            time: n.time,
+            user: n.user,
+            read: n.read_at !== null,
+        });
+    });
+    return notifications;
+});
 
 const onClear = () => {
     highlightedId.value = null;

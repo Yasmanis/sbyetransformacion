@@ -85,7 +85,7 @@ const save = () => {
             ) {
                 error("especifique en que desea que lo/la ayudemos");
             } else {
-                formData.post("/admin/contact-admin/store", {
+                formData.post("/admin/tikets", {
                     onSuccess: () => {
                         showDialog.value = false;
                     },

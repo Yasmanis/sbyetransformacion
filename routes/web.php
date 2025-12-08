@@ -43,6 +43,7 @@ use App\Http\Controllers\ShoppingController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SubtitleController;
 use App\Http\Controllers\TestimonyController;
+use App\Http\Controllers\TiketReplyController;
 use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
@@ -359,7 +360,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/admin/configuration/private', [ConfigurationController::class, 'private']);
     Route::get('/admin/configuration/index/{keyName}', [ConfigurationController::class, 'index']);
     Route::post('/admin/configuration/save', [ConfigurationController::class, 'save']);
-    Route::post('/admin/contact-admin/store', [ContactAdminController::class, 'store']);
+    Route::resource('/admin/tikets', ContactAdminController::class)->only(['index', 'store', 'destroy']);
+    Route::resource('/admin/tikets-reply', TiketReplyController::class)->only(['store']);
 
     Route::post('/contacts/change-book-volume/{id}', [ContactsController::class, 'changeBookVolume']);
 

@@ -72,6 +72,11 @@ class User extends Authenticatable implements CanResetPassword
 
     protected $with = ['latestCourses', 'paymentMethods', 'billingsInformation'];
 
+    public function tikets()
+    {
+        return $this->hasMany(ContactAdmin::class, 'created_by');
+    }
+
     public function books()
     {
         return $this->hasMany(Contact::class);

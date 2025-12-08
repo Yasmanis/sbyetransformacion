@@ -11,6 +11,15 @@ use Illuminate\Support\Facades\Notification;
 
 class ContactAdminController extends Controller
 {
+    public function index()
+    {
+        $user = auth()->user();
+        if ($user) {
+            return response()->json($user->tikets()->latest()->get());
+        }
+        return response()->json([]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

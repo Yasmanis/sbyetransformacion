@@ -18,7 +18,11 @@
 
         <q-item-section>
             <q-item-label>{{ notification.data[0].title }}</q-item-label>
-            <q-item-label caption v-if="notification.data[0].description">
+            <q-item-label
+                lines="3"
+                caption
+                v-if="notification.data[0].description"
+            >
                 <small v-html="notification.data[0].description"></small>
             </q-item-label>
         </q-item-section>

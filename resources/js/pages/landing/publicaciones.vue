@@ -17,6 +17,24 @@
             class="row container q-mt-xl"
             :style="{ 'padding-top': screen.xs || screen.sm ? '40px' : '' }"
         >
+            <!-- <div
+                class="col-12 text-center q-pb-md"
+                v-if="currentCategory.name === 'para prensa'"
+            >
+                <p>
+                    “en este espacio encontraras informacion destinada a medios
+                    de comunicacion, prensa y colaboraciones
+                </p>
+                <p>
+                    aqui podras acceder a mi dossier de prensa, biografia,
+                    fotografias oficiales y material audiovisual sobre mis
+                    conferencias, libros y proyectos
+                </p>
+                <p>
+                    si deseas contactar conmigo para entrevistas, artículos o
+                    colaboraciones, puedes hacerlo a traves de contactame”
+                </p>
+            </div> -->
             <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                 <files-category-component :category="currentCategory" />
                 <div

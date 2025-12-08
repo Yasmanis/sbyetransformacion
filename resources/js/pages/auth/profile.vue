@@ -22,6 +22,7 @@
                         icon="mdi-book-open-page-variant-outline"
                         label="tomos adquiridos"
                     />
+                    <!-- <q-tab name="tikets" icon="mdi-send" label="tikets" /> -->
                     <q-tab
                         name="notifications"
                         icon="mdi-bell-cog-outline"
@@ -54,6 +55,10 @@
                         :new-book="newBook"
                         @show="newBook = false"
                     />
+                </q-tab-panel>
+
+                <q-tab-panel name="tikets" class="no-padding">
+                    <tikets-component />
                 </q-tab-panel>
 
                 <q-tab-panel name="notifications" class="no-padding">
@@ -107,6 +112,7 @@ import BtnCancelComponent from "../../components/btn/BtnCancelComponent.vue";
 import InfoComponent from "../../components/auth/InfoComponent.vue";
 import BooksComponent from "../../components/auth/BooksComponent.vue";
 import NotificationsManagerComponent from "../../components/auth/NotificationsManagerComponent.vue";
+import TiketsComponent from "../../components/auth/TiketsComponent.vue";
 import { useForm } from "@inertiajs/vue3";
 import { Dark } from "quasar";
 import { errorValidation } from "../../helpers/notifications";

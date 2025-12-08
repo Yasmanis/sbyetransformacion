@@ -6,33 +6,40 @@ use App\Services\BrevoService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ContactAdmin extends Model
+class TiketReply extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['subject', 'description'];
+    protected $table = 'tikets_reply';
+
+    protected $fillable = ['tiket_id', 'message'];
 
     public static function boot()
     {
         parent::boot();
         static::creating(function ($obj) {
-            $obj->created_by = auth()->user()->id;
+            $obj->user_id = auth()->user()->id;
         });
 
         static::created(function ($obj) {
             $brevo = new BrevoService();
-            $user = $obj->user()->first();
+            $user = $obj->tiket()->with('user')->first();
             $params = [
                 'email' => $user->email,
                 'name' => $user->full_name,
                 'url' => sprintf('%s/auth/profile#%s', env('APP_URL'), base64_encode('notifications-ContactAdmin-' . $obj->id))
             ];
-            $brevo->sendEmail('AVISO – contestar MENSAJE FORMULARIO CONTACTAR', 'admin.contact', $params);
+            //$brevo->sendEmail('AVISO – contestar MENSAJE FORMULARIO CONTACTAR', 'admin.contact', $params);
         });
+    }
+
+    public function tiket()
+    {
+        return $this->belongsTo(ContactAdmin::class, 'tiket_id');
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
