@@ -239,3 +239,17 @@
 figure.media{
     margin: 0;
 }
+
+.guion-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.guion-list li {
+    padding-left: 1.5em;
+    text-indent: -1.5em;
+}
+
+.guion-list li::before {
+    content: "- ";
+}

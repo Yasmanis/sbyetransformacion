@@ -176,7 +176,7 @@
             <q-toolbar :class="Dark.isActive ? 'bg-dark' : ''">
                 <q-toolbar-title>
                     <span class="text-body1 text-white"
-                        >©2024 sbye salud s.l.
+                        >©2024 maria garriga dominguez
                     </span></q-toolbar-title
                 >
                 <q-btn-component

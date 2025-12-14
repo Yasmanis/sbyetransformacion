@@ -135,7 +135,41 @@
                     condiciones de contratacion
                 </Link>
             </div>
-            <div class="text-center">&#169;2024 sbye salud s.l.</div>
+            <div class="row q-col-gutter-md">
+                <div class="col-xs-12 col-sm-2 col-md-3 col-lg-3 col-xl-3">
+                    sbye transformacion<br />
+                    maria<br />
+                    mi enfoque<br />
+                    consulta individual<br />
+                    taller online
+                </div>
+                <div class="col-xs-12 col-sm-2 col-md-3 col-lg-3 col-xl-3">
+                    publicaciones <br />
+                    <div class="q-ml-md">
+                        testimonios <br />
+                        medios <br />
+                        conferencias <br />
+                        posts <br />
+                        newsletters <br />
+                        vinculadas al libro <br />
+                        para prensa
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-2 col-md-3 col-lg-3 col-xl-3">
+                    tienda <br />
+                    <div class="q-ml-md">
+                        curso aprender a liberar emocionalmente
+                        <br />
+                        curso crear la realidad conscientemente
+                    </div>
+                </div>
+                <div
+                    class="col-xs-12 col-sm-2 col-md-3 col-lg-3 col-xl-3 text-right"
+                >
+                    contacto
+                </div>
+            </div>
+            <div class="text-center">&#169;2024 maria garriga dominguez</div>
         </q-footer>
 
         <q-page-scroller

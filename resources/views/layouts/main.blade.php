@@ -119,7 +119,7 @@
             </div>
         </div>
         <div class="copyright pb-6 pt-1">
-            <small>&#169;2024 sbye salud s.l.</small>
+            <small>&#169;2024 maria garriga dominguez</small>
         </div>
         </div>
     </footer>

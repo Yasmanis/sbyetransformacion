@@ -13,7 +13,7 @@
             content="liberación emocional, vivir en plenitud, consciencia, dios nos habla, maria garriga domínguez, sbye transformación"
         />
     </Head>
-    <Layout title="VIVIR EN PLENITUD">
+    <Layout title="SBYE TRANSFORMACION">
         <div class="banner bg-primary">
             <div class="row items-center container">
                 <div
@@ -25,30 +25,22 @@
                         style="width: 50%; z-index: 9999 !important"
                     />
                 </div>
-                <div class="col-md-6 col-sm-12 col-xs-12 text-center">
-                    <span
-                        class="text-white header-title"
-                        style="font-size: 33px; line-height: 1"
-                        >LIBERACION EMOCIONAL</span
-                    >
-                    <br />
-                    <span
-                        class="text-white text-lowercase"
-                        style="font-size: 22px"
-                        >la puerta para</span
-                    >
-                    <br />
-                    <span
-                        class="text-white header-title"
-                        style="font-size: 44px; line-height: 1"
-                        >VIVIR EN PLENITUD</span
-                    >
-                    <br />
-                    <span
-                        class="text-white text-lowercase"
-                        style="font-size: 22px"
-                        >con la intervencion directa de dios</span
-                    >
+                <div
+                    class="col-md-6 col-sm-12 col-xs-12 text-center text-white"
+                    style="font-size: 18px; line-height: 1.5"
+                >
+                    <p class="text-bold">
+                        un camino para recordar quien eres <br />
+                        y vivir desde tu plenitud
+                    </p>
+                    <p>
+                        desde el libro, las consultas, los cursos, las
+                        conferencias<br />
+                        y cada mensaje que comparto, te guio a comprenderte<br />
+                        liberarte, desprogramarte y volver a tu verdad interior
+                        <br />
+                        con la intervencion directa de dios
+                    </p>
                 </div>
             </div>
             <div
@@ -72,428 +64,322 @@
                 </svg>
             </div>
         </div>
+        <p class="text-center q-py-xl">
+            todo lo que encontraras aqui nace de mi propio despertar<br />
+            de mi trabajo personal y de consulta<br />
+            y del libro donde comparto este camino
+        </p>
         <div
-            class="row items-center container q-py-xl bg-white"
+            class="row items-center container q-py-xl bg-primary text-white"
             style="margin-top: -5px"
         >
             <div class="col-md-6 col-sm-12">
+                <h6 class="q-my-md text-lowercase text-white">
+                    que es sbye transformacion
+                </h6>
                 <p>
-                    la complejidad de nuestras emociones junto con el desarrollo
-                    de nuestra mente es lo que nos hace seres singulares con
-                    respecto al resto de la existencia. comprender estas
-                    emociones, aceptarlas y liberar el sufrimiento es
-                    fundamental para trascender nuestra personalidad y alcanzar
-                    la existencia en plenitud
+                    sbye transformacion no es un metodo teórico<br />
+                    es un camino completo para volver a ti<br />
+                    a tu claridad, tu verdad y tu plenitud<br />
                 </p>
+                <p>aqui encontraras diferentes formas de acompañarte</p>
                 <p>
-                    vive en plenitud una persona que consigue equilibrar la
-                    trilogia cuerpo_mente_dios, por lo que dialogar con dios es
-                    un requisito para vivir en plenitud y asi me lo ha dicho de
-                    forma directa dios que fue quien me insto a escribir este
-                    libro
+                    - <b>en redes</b>, comparto cada dia ideas simples que
+                    despierta<br />
+                    - <b>en newsletter</b>, te abro mi vida para mostrar el
+                    mensaje en accion<br />
+                    - <b>en medios</b>, profundizo en temas clave<br />
+                    - <b>en conferencias</b>, practicas en directo para
+                    reflexionar conmigo y encontrar tu guia interior<br />
+                    - <b>en cursos</b>, te doy estructura, ejercicios y
+                    practica<br />
+                    - <b>en el taller online</b>, trabajas conmigo en
+                    profundidad y en grupo, para verte en otros y avanzar mas
+                    rapido<br />
+                    - <b>en consulta individual</b>, trabajamos de forma
+                    profunda tu personalidad<br />
+                    - <b>en el area privada</b>, tienes acceso a mi video-libro,
+                    materiales, reflexiones y un espacio para interactuar
+                    conmigo<br />
                 </p>
-                <p>
-                    todo lo que digo en este libro esta directamente inspirado
-                    por dios a traves de mi pensamiento que fue guiado en todo
-                    momento por el/ella/ello. despertar es hablar con dios, es
-                    tener la certeza de que tu eres dios en accion, dios
-                    materializado a traves de ti, que tu eres el instrumento de
-                    dios para experimentarse a si mismo a traves de ti
-                </p>
-                <p>
-                    este libro desarrolla a traves de mi propia vivencia el
-                    libro de neale donald walsch
-                    <em>conversaciones con dios</em>
-                </p>
-            </div>
-            <div class="col-md-6 col-sm-12 text-center">
-                <img
-                    :src="`${$page.props.public_path}images/books/tree-books.png`"
-                    alt="group-image"
-                    style="width: 80%"
-                />
-            </div>
-        </div>
-        <div class="row container q-py-md">
-            <div class="col-md-4 col-sm-12 q-pa-lg">
-                <div class="text-center">
-                    <img
-                        class="blog-img"
-                        :src="`${$page.props.public_path}images/books/book-1.png`"
-                        style="width: 270px; height: 340px"
-                    />
-                    <p class="q-mt-sm q-mb-none" style="font-size: 18px">
-                        en el tomo 1
-                    </p>
-                </div>
-                <p class="text-justify">
-                    abordo la parte mas teorica de como funcionan nuestra mente
-                    y nuestras emociones; como existe un dominio emocional sobre
-                    la parte recional y como el inconsciente, que comienza a
-                    forjarse en nuestra infancia y gestacion, nos condiciona sin
-                    darnos cuenta, produciendo nuestros patrones de proteccion y
-                    autoengaño para superar los traumas y sinsabores de la vida.
-                    en realidad, estoy poniendo las bases para comprender como
-                    se gesta nuestra personalidad, llena de programas
-                    inconscientes que nos impiden vivir en plenitud y como
-                    llegar a desprogramar estos, liberar nuestras emociones y
-                    convertir nuestro ego programado por otros, en un ego
-                    conectado con nuestra esencia divina
-                </p>
-                <p class="text-center text-lowercase q-mb-none">SUMARIO</p>
-                <span>PARTE I VIVIENDO PLENAMENTE</span>
-                <ul class="summary q-mt-none" v-if="!more_book1">
-                    <li>cambiemos soy por estoy siendo</li>
-                    <li>el cambio</li>
-                    <li>mente y sus emociones vinculadas</li>
-                    <li>cambiemos soy por estoy siendo</li>
-                </ul>
-                <div v-if="more_book1">
-                    <ul class="summary q-mt-none">
-                        <li>el cambio</li>
-                        <li>mente y sus emociones vinculadas</li>
-                        <li>la adiccion de nuestras emociones</li>
-                        <li>
-                            la tirania de nuestra mente, el estado perpetuo de
-                            cavilacion
-                        </li>
-                        <li>el cerebro</li>
-                        <li>
-                            la union entre lo que pensamos, lo que nos
-                            emocionamos y nuestra salud
-                        </li>
-                        <li>el temor que nos impide vivir en plenitud</li>
-                        <li>la rabia</li>
-                        <li>la sutil diferencia entre ego y personalidad</li>
-                        <li>el apego</li>
-                        <li>lo que es amor y lo que no lo es</li>
-                        <li>el despertar</li>
-                        <li>vivir en plenitud, la verdadera felicidad</li>
-                        <li>Introspectar no es liberar</li>
-                        <li>
-                            los pasos que dar para desprogramarnos hasta vivir
-                            en plenitud
-                        </li>
-                        <ul class="summary">
-                            <li>focalizate</li>
-                            <li>manten una atencion plena constante</li>
-                            <li>manten el rumbo</li>
-                            <li>libera emocionalmente para desprogramar</li>
-                            <li>
-                                utiliza los espejos para descubrir tus programas
-                                inconscientes
-                            </li>
-                        </ul>
-                    </ul>
-                    <span>PARTE II ERES CREADOR DE TU REALIDAD</span>
-                    <ul class="summary q-mt-none">
-                        <li>creamos nuestra vida en un mundo de relatividad</li>
-                        <li>todo es energia, todo es dios</li>
-                        <li>
-                            principios de la energia, principios de creacion
-                        </li>
-                        <li>porque vivimos realidades que no nos gustan?</li>
-                    </ul>
-                    <span>PARTE III LOS ESPEJOS</span>
-                    <ul class="summary q-mt-none">
-                        <li>espejos emocionales</li>
-                        <ul class="summary">
-                            <li>espejo numero uno: las personas</li>
-                            <li>
-                                espejo numero dos, nuestras cosas personalísimas
-                            </li>
-                            <li>
-                                espejo numero tres: nuestros juicios y opiniones
-                            </li>
-                            <li>
-                                espejo numero cuatro, la enfermedad el cuerpo,
-                                la postura corporal
-                            </li>
-                            <li>espejo numero cinco: otros</li>
-                        </ul>
-                        <li>espejos por creacion de nuestra realidad</li>
-                    </ul>
-                </div>
-                <div class="text-center">
-                    <q-btn
-                        color="black"
-                        :label="more_book1 ? 'leer menos' : 'leer mas'"
-                        no-caps
-                        rounded
-                        @click="more_book1 = !more_book1"
-                    >
-                        <q-icon
-                            name="fa fa-long-arrow-left"
-                            size="xs"
-                            class="q-ml-md"
-                            v-if="more_book1"
-                        />
-                        <q-icon
-                            name="fa fa-long-arrow-right"
-                            size="xs"
-                            class="q-ml-md"
-                            v-else
-                        />
-                    </q-btn>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-12 q-pa-lg">
-                <div class="text-center">
-                    <img
-                        class="blog-img"
-                        :src="`${$page.props.public_path}images/books/book-2.png`"
-                        style="width: 320px; height: 340px"
-                    />
-                    <p class="q-mt-sm q-mb-none" style="font-size: 18px">
-                        en el tomo 2
-                    </p>
-                </div>
-                <p class="text-justify">
-                    reflexiono sobre distintos temas que todos compartimos y
-                    sobre los que podemos pensar muy distinto segun lo que
-                    hayamos vivido, nuestras circunstancias y programaciones.
-                    tambien son temas que estan en constante evolucion historica
-                    y, por tanto, son reflexiones enfocadas en provocar que
-                    pienses sobre estos asuntos y que aprendas de este modo a
-                    flexibilizar tu mente, sobre la base de que existen muy
-                    pocas verdades absolutas y que las creencias pertenecen al
-                    instante que vivamos, de ahi la expresion de necesitar
-                    aprender a vivir presentes. como ultima parte de este tomo
-                    tengo una conversacion directa con dios con la finalidad de
-                    que te atrevas a hablar de forma directa con el/ella/ello
-                    mostrandote el camino que yo emprendi para poder hacerlo
-                </p>
-                <p class="text-center text-lowercase q-mb-none">SUMARIO</p>
-                <span>PARTE IV REFLEXIONES</span>
-                <ul class="summary q-mt-none" v-if="!more_book2">
-                    <li>de atea a estar segura de la existencia de dios</li>
-                    <li>salud y enfermedad</li>
-                </ul>
-                <div v-if="more_book2">
-                    <ul class="summary q-mt-none">
-                        <li>de atea a estar segura de la existencia de dios</li>
-                        <li>salud y enfermedad</li>
-                        <li>ecologia y alimentacion</li>
-                        <li>sexualidad y amor de pareja</li>
-                        <li>familia, maternidad y paternidad</li>
-                        <li>dinero y riqueza</li>
-                        <li>
-                            el miedo a vivir, el miedo a morir y el miedo a
-                            sufrir
-                        </li>
-                        <li>soledad y desamor</li>
-                        <li>la necesidad de perfeccionismo</li>
-                        <li>la culpa y la vergüenza</li>
-                    </ul>
-                    <span>
-                        PARTE V ALGUNAS PREGUNTAS QUE LE HE HECHO A DIOS Y HE
-                        AQUI SUS RESPUESTAS
-                    </span>
-                </div>
-                <div class="text-center">
-                    <q-btn
-                        color="black"
-                        :label="more_book2 ? 'leer menos' : 'leer mas'"
-                        no-caps
-                        rounded
-                        @click="more_book2 = !more_book2"
-                    >
-                        <q-icon
-                            name="fa fa-long-arrow-left"
-                            size="xs"
-                            class="q-ml-md"
-                            v-if="more_book2"
-                        />
-                        <q-icon
-                            name="fa fa-long-arrow-right"
-                            size="xs"
-                            class="q-ml-md"
-                            v-else
-                        />
-                    </q-btn>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-12 q-pa-lg">
-                <div class="text-center">
-                    <img
-                        class="blog-img"
-                        :src="`${$page.props.public_path}images/books/book-3.png`"
-                        style="width: 270px; height: 340px"
-                    />
-                    <p class="q-mt-sm q-mb-none" style="font-size: 18px">
-                        en el tomo 3
-                    </p>
-                </div>
-                <p class="text-justify">
-                    te propongo ejercicios y recursos para que puedas trabajar
-                    tu desarrollo personal, para que puedas reflexionar y
-                    aprender tecnicas que te ayudaran a desprogramarte y a
-                    liberar emocionalmente
-                </p>
-                <p class="text-center text-lowercase q-mb-none">SUMARIO</p>
-                <span
-                    >PARTE VI EJERCICIOS, RECURSOS Y ACTIVIDADES PARA PRACTICAR
-                    Y APRENDER A DESPROGRAMARTE POR COMPLETO</span
-                >
-                <ul class="summary q-mt-none" v-if="!more_book3">
-                    <li>
-                        significado de las principales dolencias y enfermedades
-                    </li>
-                    <li>desprogramacion creencias. ejemplo con el dinero</li>
-                    <ul class="summary">
-                        <li>tapping</li>
-                        <li>regresion</li>
-                    </ul>
-                    <li>
-                        asertividad para resolver conflictos. ejemplo con la
-                        relacion de pareja
-                    </li>
-                    <li>
-                        trabajo de profundizacion y liberacion de nuestro estado
-                        emocional. ejemplo con el sentimiento de soledad y
-                        analisis de la codependencia
-                    </li>
-                    <li>
-                        como llegar a nuestra verdad profunda. ejemplo con la
-                        necesidad de tener razon y otros apegos
-                    </li>
-                </ul>
-                <div v-if="more_book3">
-                    <ul class="summary q-mt-none">
-                        <li>
-                            significado de las principales dolencias y
-                            enfermedades
-                        </li>
-                        <li>
-                            desprogramacion creencias. ejemplo con el dinero
-                        </li>
-                        <ul class="summary">
-                            <li>tapping</li>
-                            <li>regresion</li>
-                        </ul>
-                        <li>
-                            asertividad para resolver conflictos. ejemplo con la
-                            relacion de pareja
-                        </li>
-                        <li>
-                            trabajo de profundizacion y liberacion de nuestro
-                            estado emocional. ejemplo con el sentimiento de
-                            soledad y analisis de la codependencia
-                        </li>
-                        <li>
-                            como llegar a nuestra verdad profunda. ejemplo con
-                            la necesidad de tener razon y otros apegos
-                        </li>
-                        <li>
-                            trabajo para reflexionar sobre lo que estoy viviendo
-                            y como me siento, a donde quiero dirigirme, que
-                            puedo mejorar y como quiero acabar sintiendome
-                        </li>
-                        <li>
-                            detecta como te sientes a traves de los espejos que
-                            pasan en tu dia a dia
-                        </li>
-                        <li>crear nuestra realidad. tecnicas y ayudas</li>
-                        <li>profundizacion a traves de lo que vamos creando</li>
-                        <li>valor personal, autoestima, autoconfianza</li>
-                        <li>
-                            trabajamos el ego, la personalidad, nuestros
-                            patrones
-                        </li>
-                        <li>trabajemos la rabia</li>
-                    </ul>
-                </div>
-                <div class="text-center">
-                    <q-btn
-                        color="black"
-                        :label="more_book3 ? 'leer menos' : 'leer mas'"
-                        no-caps
-                        rounded
-                        @click="more_book3 = !more_book3"
-                    >
-                        <q-icon
-                            name="fa fa-long-arrow-left"
-                            size="xs"
-                            class="q-ml-md"
-                            v-if="more_book3"
-                        />
-                        <q-icon
-                            name="fa fa-long-arrow-right"
-                            size="xs"
-                            class="q-ml-md"
-                            v-else
-                        />
-                    </q-btn>
-                </div>
-            </div>
-        </div>
-        <div
-            class="column bg-primary text-center text-white q-mt-xl"
-            style="padding-left: 17%; padding-right: 17%"
-        >
-            <h6 class="text-center text-bold text-white q-py-md">
-                tienes mi libro? <br />
-                accede a mas contenido exclusivo!
-            </h6>
-            <p class="text-center">
-                disfruta de todo el libro en video, leido por mi, dentro del
-                area privada <br />descarga plantillas y recursos para practicar
-                <br />
-                conectate con otras personas y accede a contenido nuevo con el
-                tiempo
-            </p>
-            <p class="text-center">
-                <span class="text-bold">para ingresar necesitas</span> <br />
-                nombre completo <br />email <br />datos de compra (nombre del
-                comprador, fecha, ticket/factura)
-            </p>
-            <p class="text-center">
-                📢 mas adelante, te pedire una reseña para ayudar a expandir
-                este mensaje
-            </p>
-            <p class="text-center text-bold">
-                solo una persona por compra puede registrarse
-            </p>
 
-            <div class="text-center q-pb-md">
-                <q-btn
-                    no-caps
-                    label="me registro!"
-                    color="black"
-                    rounded
-                    @click="router.get('/contactame')"
+                <p>
+                    todo nace del mismo lugar:mi experiencia, mi transformacion
+                    y el
+                    <br />
+                    libro que lo sostiene
+                </p>
+                <p>
+                    no necesitas elegir: todo lo que hay aqui trabaja unido y
+                    cada recurso<br />
+                    te acerca un poco mas a tu verdad interior
+                </p>
+            </div>
+            <div class="col-md-6 col-sm-12 text-center q-pa-xl">
+                <img
+                    :src="`${$page.props.public_path}images/others/camino_sbye_transformacion.png`"
                 />
             </div>
         </div>
-        <div class="row container q-py-md items-center">
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
+        <div class="row container items-center">
+            <div
+                class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center"
+            >
                 <img
-                    :src="`${$page.props.public_path}images/team/maria1.png`"
-                    alt="group-image"
-                    style="width: 40%"
+                    :src="`${$page.props.public_path}images/others/composicion_libro_abierto.png`"
+                    style="width: 60%"
                 />
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                <div class="column text-center">
-                    <h4
-                        class="q-my-none"
-                        style="font-size: 26px; line-height: 1.22"
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                <h6 class="text-lowercase q-pb-md">
+                    el libro que sostiene todo este camino
+                </h6>
+                <p>
+                    en este libro encontraras las bases de mi trabajo: la
+                    liberacion emocional, la desprogramacion del ego, el dialogo
+                    con tu verdad interior y la comprension profunda de como
+                    funciona el ser humano por dentro
+                </p>
+                <p>
+                    es la raiz de mis consultas, mis cursos, mis conferencias y
+                    del mensaje que comparto cada dia
+                </p>
+                <p>
+                    mi enfoque une desarrollo personal, neurociencia,
+                    consciencia y liberacion emocional con un lenguaje claro y
+                    accesible
+                </p>
+            </div>
+        </div>
+        <div class="row container items-center">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                <h6 class="text-lowercase q-pb-md">
+                    por que <i>con la intervencion directa de dios</i>
+                </h6>
+                <p>este libro esta inspirado directamente por dios</p>
+                <p>
+                    escrito desde mi propio camino y personalidad pero con un
+                    mensaje eterno, no religioso, presente tambien en
+                    “conversaciones con dios” de neale donald walsch
+                </p>
+                <p>
+                    es un libro que te tambien te enseña a recordar quien eres,
+                    a comprender lo que sientes y a dejar que tu alma te guie
+                </p>
+            </div>
+            <div
+                class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center"
+            >
+                <img
+                    :src="`${$page.props.public_path}images/others/intervencion_directa_de_dios.png`"
+                    style="width: 60%"
+                />
+            </div>
+        </div>
+        <div class="row container items-center">
+            <div
+                class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center q-px-xl order-1 order-sm-2 order-xs-2"
+            >
+                <q-card flat>
+                    <q-card-section
+                        class="q-py-lg q-px-none"
+                        style="
+                            background: #ededed;
+                            border-radius: 0;
+                            border-start-end-radius: 50px !important;
+                        "
                     >
-                        TODAVIA NO HAS LEIDO <br />
-                        MI LIBRO?
-                    </h4>
-                    <p class="q-my-none">podras comprarlo aqui</p>
-                    <div>
-                        <q-btn
-                            href="https://www.amazon.es/dp/B0DJG45MMK?binding=paperback&ref=dbs_dp_sirpi"
-                            target="_blank"
-                            rounded
-                            label="ir a tienda"
-                            color="black"
-                            no-caps
+                        <img
+                            :src="`${$page.props.public_path}images/books/trilogia.png`"
+                            style="width: 80%"
                         />
-                    </div>
+                    </q-card-section>
+                </q-card>
+            </div>
+            <div
+                class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 order-2 order-sm-1 order-xs-1"
+            >
+                <h6 class="text-lowercase q-pb-md">la trilogia</h6>
+                <p>
+                    la trilogia es un camino profundo de liberacion emocional,
+                    desprogramacion del inconsciente y dialogo con dios
+                </p>
+                <p>aqui entenderas</p>
+                <p>
+                    - por que repites patrones <br />
+                    - como se forma tu ego <br />
+                    - como liberar las emociones atrapadas <br />
+                    - como abrir tu pensamiento <br />
+                    - y como recordar quien eres
+                </p>
+                <p>
+                    no es teoria. es experiencia real. es mi propio despertar
+                    puesto al servicio del tuyo
+                </p>
+                <p>
+                    cada tomo te acompaña desde un lugar distinto:
+                    <b>comprension – reflexion – practica</b>
+                </p>
+            </div>
+        </div>
+        <div class="row container q-py-md" style="background: #ededed">
+            <div class="col-md-4 col-sm-12 q-pa-lg">
+                <div class="text-center">
+                    <img
+                        class="blog-img"
+                        :src="`${$page.props.public_path}images/books/imagen_tomo_1.png`"
+                        style="width: 270px; height: 340px"
+                    />
+                    <h6 class="text-lowercase text-bold">tomo 1</h6>
+                    <p class="text-bold" style="font-size: 18px">
+                        comprender la mente y liberar las emociones
+                    </p>
                 </div>
+                <p>el origen</p>
+                <p>
+                    este libro explica con claridad por que repites patrones,
+                    como funciona tu inconsciente y como liberar el dolor que te
+                    limita
+                </p>
+                <p>en el encontraras</p>
+                <p>
+                    - como se gesta tu personalidad y tu ego <br />
+                    - como liberar emociones atrapadas <br />
+                    - como trascender el autoengaño <br />
+                    - como desprogramar creencias profundas <br />
+                    - los espejos que revelan tu verdad interior <br />
+                    - como escuchar la voz del alma
+                </p>
+                <p>es el tomo para comprenderte desde dentro</p>
+                <p
+                    :style="{
+                        'margin-top':
+                            Screen.lg || Screen.md || Screen.xl ? '60px' : null,
+                    }"
+                >
+                    🎁 incluye videolibro completo + acceso a la zona privada +
+                    interaccion directa conmigo
+                </p>
+            </div>
+            <div class="col-md-4 col-sm-12 q-pa-lg">
+                <div class="text-center">
+                    <img
+                        class="blog-img"
+                        :src="`${$page.props.public_path}images/books/imagen_tomo_2.png`"
+                        style="width: 270px; height: 340px"
+                    />
+                    <h6 class="text-lowercase text-bold">tomo 2</h6>
+                    <p class="text-bold" style="font-size: 18px">
+                        reflexiones profundas y conversacion directa con dios
+                    </p>
+                </div>
+                <p>el puente</p>
+                <p>
+                    un viaje profundo hacia la sinceridad interior, la
+                    flexibilidad mental y el dialogo real con dios en lo
+                    cotidiano
+                </p>
+                <p>aqui exploraras</p>
+                <p>
+                    - amor, culpa, miedo, libertad, muerte, familia <br />
+                    - como distinguir la voz del alma de la del ego <br />
+                    - como dios te habla a traves de tus pensamientos y
+                    experiencias <br />
+                    - como vivir desde tu verdad interior <br />
+                    - como abrir tu percepcion
+                </p>
+                <p>
+                    incluye una conversacion directa con dios sencilla, natural
+                    y accesible para cualquiera
+                </p>
+                <p
+                    :style="{
+                        'margin-top':
+                            Screen.lg || Screen.md || Screen.xl ? '38px' : null,
+                    }"
+                >
+                    🎁 incluye videolibro + zona privada + acompanamiento
+                    personal
+                </p>
+            </div>
+            <div class="col-md-4 col-sm-12 q-pa-lg">
+                <div class="text-center">
+                    <img
+                        class="blog-img"
+                        :src="`${$page.props.public_path}images/books/imagen_tomo_3.png`"
+                        style="width: 270px; height: 340px"
+                    />
+                    <h6 class="text-lowercase text-bold">tomo 3</h6>
+                    <p class="text-bold" style="font-size: 18px">
+                        ejercicios y recursos para liberar y transformar
+                    </p>
+                </div>
+                <p>la practica</p>
+                <p>el tomo donde pasas de la comprension a la experiencia</p>
+                <p>incluye</p>
+                <p>
+                    - ejercicios de liberacion emocional <br />
+                    - dinamicas de introspeccion profunda <br />
+                    - pasos para desprogramar creencias <br />
+                    - practicas para abrir el corazon <br />
+                    - recursos para comprender el lenguaje del alma <br />
+                    - guia para crear tu realidad conscientemente <br />
+                    - un ejercicio central para medir tu plenitud real
+                </p>
+                <p>es el tomo para transformar tu vida dia a dia</p>
+                <p>🎁 incluye videolibro + zona privada + recursos ampliados</p>
+            </div>
+        </div>
+        <div class="row container q-py-xl">
+            <div class="col text-center">
+                <h6 class="text-lowercase q-mb-md">
+                    beneficios de la trilogia
+                </h6>
+                <p>al comprar cualquier tomo, recibes acceso automatico a</p>
+                <p>
+                    <q-icon
+                        :name="`img:${$page.props.public_path}images/icon/icono_video_libro.png`"
+                        size="sm"
+                    />
+                    el videolibro completo (mi voz, experiencia inmersiva)
+                </p>
+                <p>
+                    <q-icon
+                        :name="`img:${$page.props.public_path}images/icon/icono_zona_privada_acceso.png`"
+                        size="sm"
+                    />
+                    la zona privada: ejercicios, plantillas y recursos ampliados
+                </p>
+                <p>
+                    <q-icon
+                        :name="`img:${$page.props.public_path}images/icon/icono_conversar_conmigo.png`"
+                        size="sm"
+                    />
+                    la posibilidad de hablar directamente conmigo para
+                    acompañarte en tu proceso
+                </p>
+                <q-btn
+                    rounded
+                    color="black"
+                    label="quiero mi libro"
+                    no-caps
+                    class="q-mt-md"
+                    href="https://www.amazon.es/dp/B0DJG45MMK?binding=paperback&ref=dbs_dp_sirpi"
+                    target="_blank"
+                >
+                    <q-icon name="fa fa-long-arrow-right" class="q-ml-md" />
+                </q-btn>
+                <br />
+                <q-btn
+                    rounded
+                    color="black"
+                    label="ver testimonios"
+                    no-caps
+                    class="q-mt-md"
+                    href="/publicaciones/2"
+                >
+                    <q-icon name="fa fa-long-arrow-right" class="q-ml-md" />
+                </q-btn>
             </div>
         </div>
         <div class="row container bg-primary text-white q-pa-lg" id="suscribe">
@@ -522,8 +408,8 @@
                     aprendizaje<br />
                     🎁 una <b>guia en PDF</b> con estrategias para liberar tu
                     mente y aprender sin miedo<br />
-                    🎁 acceso exclusivo a <b>contenido indito de mi libro</b>
-                    <i> liberación emocional</i>
+                    🎁 acceso exclusivo a <b>contenido inedito de mi libro</b>
+                    <i> liberacion emocional</i>
                 </p>
                 <p class="q-mx-sm q-mt-md">
                     unete ahora y empieza tu camino hacia la plenitud!
@@ -536,15 +422,106 @@
                 <form-subscription-component />
             </div>
         </div>
+        <div class="row container q-mt-lg">
+            <div class="row">
+                <div class="col">
+                    <h6 class="q-mb-sm text-lowercase">
+                        UNA MUESTRA DE LO QUE QUIERO COMPARTIR CONTIGO
+                    </h6>
+                    <p>
+                        durante años vivi creyendo que la suerte y las
+                        circunstancias decidian por mi pero cuando descubri que
+                        mis heridas y creencias eran las que realmente estaban
+                        creando mi realidad, todo cambio
+                    </p>
+                    <p>
+                        aprender a soltar, liberar y confiar me llevo a crear
+                        desde el alma, sin miedo y sin autoengaño
+                    </p>
+                    <p>
+                        hoy acompaño a otros a hacer lo mismo: a crear su vida
+                        conscientemente, con sentido, alegria y verdad
+                    </p>
+                    <h6 class="q-mb-sm text-lowercase">
+                        videos para recordar quien eres
+                    </h6>
+                </div>
+            </div>
+            <q-carousel
+                v-model="slide"
+                swipeable
+                animated
+                arrows
+                padding
+                navigation
+                :prev-icon="`img:${$page.props.public_path}images/icon/left.png`"
+                :next-icon="`img:${$page.props.public_path}images/icon/right.png`"
+            >
+                <q-carousel-slide
+                    v-for="(slideGroup, indexGroup) in groupedSlides"
+                    :key="`slide-group-${indexGroup}`"
+                    :name="`style-${indexGroup}`"
+                    class="column no-wrap flex-center"
+                >
+                    <div class="row q-col-gutter-md">
+                        <div
+                            v-for="(slide, slideIndex) in slideGroup"
+                            :key="`slide-${slideIndex}`"
+                            class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6"
+                        >
+                            <q-card
+                                class="my-card rounded-borders bg-primary text-white"
+                                style="border-radius: 30px !important"
+                            >
+                                <q-card-section class="q-pa-xl">
+                                    <div class="row q-col-gutter-lg">
+                                        <div
+                                            class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6"
+                                        >
+                                            <h6 class="q-mb-sm text-white">
+                                                {{ slide.title }}
+                                            </h6>
+                                            <div
+                                                v-html="slide.description"
+                                            ></div>
+                                        </div>
+                                        <div
+                                            class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6"
+                                        >
+                                            <video-player
+                                                :src="`${$page.props.public_path}media/${slide.video}`"
+                                                controls
+                                                aspectRatio="1:1"
+                                                :volume="0.6"
+                                                class="full-width"
+                                            />
+                                        </div>
+                                    </div>
+                                </q-card-section>
+                            </q-card>
+                        </div>
+                    </div>
+                </q-carousel-slide>
+            </q-carousel>
+            <div class="column full-width">
+                <p class="text-center text-white">
+                    cada experiencia, cada vinculo y cada sombra nos invita a
+                    recordar <br />
+                    que el verdadero amor comienza en nosotros
+                </p>
+            </div>
+        </div>
     </Layout>
 </template>
 
 <script setup>
 import Layout from "../../layouts/MainLayout.vue";
 import { ref, computed } from "vue";
-import { router, Head } from "@inertiajs/vue3";
-import { useQuasar } from "quasar";
+import { Head } from "@inertiajs/vue3";
+import { Screen, useQuasar } from "quasar";
 import FormSubscriptionComponent from "../../components/landing/FormSubscriptionComponent.vue";
+import { VideoPlayer } from "@videojs-player/vue";
+import "video.js/dist/video-js.css";
 
 defineOptions({
     name: "VivirEnPlenitud",
@@ -555,9 +532,67 @@ const $q = useQuasar();
 const screen = computed(() => {
     return $q.screen;
 });
-const more_book1 = ref(false);
-const more_book2 = ref(false);
-const more_book3 = ref(false);
+
+const slide = ref("style-0");
+
+const slides = [
+    {
+        title: "DEPENDENCIA EMOCIONAL",
+        description:
+            "por qué nacemos dependientes cómo se nos programa y por qué cortar ese “cordón invisible” es clave para amarnos",
+        video: "la frase que todos necesitamos oír.mp4",
+    },
+    {
+        title: "NADIE TIENE TIEMPO PARA VERTE… Y TU TAMPOCO",
+        description:
+            "a raíz de la comparacion y la busqueda de reconocimiento que nos aleja de nosotros mismos",
+        video: "nadie tiene tiempo para verte… y tu tampoco.mp4",
+    },
+    {
+        title: "REMEMBRAR: DE LA DEPENDENCIA A LA UNION DIVINA",
+        description:
+            "cuando dejamos de buscar dios habita en nosotros y en los demas",
+        video: "remembrar de la dependencia a la union divina.mp4",
+    },
+    {
+        title: "SENTIRSE MARAVILLOSO: EL DESTINO DEL ALMA",
+        description:
+            "el reencuentro con la propia divinidad y la aceptación profunda de lo que somos",
+        video: "sentirse maravilloso el destino del alma.mp4",
+    },
+    {
+        title: "EL ESPEJO DEL MUNDO: LO QUE EL ALMA QUIERE RECORDAR",
+        description:
+            "la comprensión más alta: lo que vivimos fuera refleja lo que aún no hemos recordado dentro",
+        video: "el espejo del mundo lo que el alma quiere recordar.mp4",
+    },
+    {
+        title: "COMO ACTUA UN NARCISISTA (Y POR QUE CAEMOS EN SU JUEGO)",
+        description:
+            "como se forma su personalidad y por qué atrae a quienes dudan de sí mismos",
+        video: "Narcisismo y dependencia emocional.mp4",
+    },
+    {
+        title: "COMO ES UN NARCISISTA",
+        description:
+            "las señales que lo delatan, la fragilidad que esconde y la herida que lo origina <br> cuando entiendes su vacío, dejas de tomarte su conducta como algo personal",
+        video: "CÓMO ES UN NARCISISTA.mp4",
+    },
+    {
+        title: "AMARSE NO ES SER NARCISISTA",
+        description:
+            "diferenciar entre el amor propio y el ego inflado <br> amarte es escucharte, respetarte y vivir desde el alma, no desde la herida",
+        video: "AMARSE NO ES SER NARCISISTA.mp4",
+    },
+];
+
+const groupedSlides = computed(() => {
+    const groups = [];
+    for (let i = 0; i < slides.length; i += 2) {
+        groups.push(slides.slice(i, i + 2));
+    }
+    return groups;
+});
 </script>
 <style scope>
 .wave {
@@ -600,5 +635,23 @@ svg {
     fill: #fff;
     transform-origin: center;
     transform: rotateY(0deg);
+}
+
+.q-carousel__control.q-carousel__arrow button i img {
+    height: 50px !important;
+    width: 50px !important;
+    padding: 20px !important;
+}
+
+.q-carousel__arrow button .q-focus-helper {
+    display: none;
+}
+
+.q-carousel__arrow.q-carousel__next-arrow {
+    right: 5px !important;
+}
+
+.q-carousel__arrow.q-carousel__prev-arrow {
+    left: 5px !important;
 }
 </style>

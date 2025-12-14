@@ -346,8 +346,8 @@ const screen = computed(() => {
 </script>
 <style scope>
 .bg-mariposas {
-    background-image: url("images/others/cambio-transformacion.png");
+    background-image: url("../../../../public/images/others/cambio-transformacion.png");
     background-repeat: no-repeat;
-    background-size: 66%;
+    background-size: contain;
 }
 </style>

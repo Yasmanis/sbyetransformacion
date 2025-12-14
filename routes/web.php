@@ -118,6 +118,10 @@ Route::get('/maria', function () {
     return Inertia('landing/maria');
 });
 
+Route::get('/mi_enfoque', function () {
+    return Inertia('landing/mi_enfoque');
+});
+
 Route::get('/tienda', [StoreController::class, 'index']);
 
 Route::get('/landings/{url}', function ($url) {
