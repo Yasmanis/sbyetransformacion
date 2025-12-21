@@ -11,7 +11,13 @@ class Category extends Model
 
     protected $table = 'category';
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'subtitle',
+        'description',
+        'public_access',
+        'private_area'
+    ];
 
     protected $casts = [
         'public_access' => 'boolean',

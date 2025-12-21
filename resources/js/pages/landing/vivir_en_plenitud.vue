@@ -6,7 +6,7 @@
         </title>
         <meta
             name="description"
-            content="Descubre cómo vivir en plenitud con la intervención directa de Dios. María Garriga Domínguez te guía en un camino de liberación emocional, consciencia y reencuentro con tu esencia divina. Conoce el libro y empieza hoy tu transformación."
+            content="Descubre cómo vivir en plenitud con la intervención directa de Dios. María Garriga Domínguez te guia en un camino de liberación emocional, consciencia y reencuentro con tu esencia divina. Conoce el libro y empieza hoy tu transformación."
         />
         <meta
             name="keywords"
@@ -62,6 +62,7 @@
             c0,0-51.5,19.4-106.2,25.7C839.5,97,814.1,95.2,790.5,93.1z"
                     ></path>
                 </svg>
+                <div style="background: #fff; margin-top: -1px"></div>
             </div>
         </div>
         <p class="text-center q-py-xl">
@@ -73,19 +74,19 @@
             class="row items-center container q-py-xl bg-primary text-white"
             style="margin-top: -5px"
         >
-            <div class="col-md-6 col-sm-12">
+            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
                 <h6 class="q-my-md text-lowercase text-white">
                     que es sbye transformacion
                 </h6>
                 <p>
-                    sbye transformacion no es un metodo teórico<br />
+                    sbye transformacion no es un metodo teorico<br />
                     es un camino completo para volver a ti<br />
                     a tu claridad, tu verdad y tu plenitud<br />
                 </p>
                 <p>aqui encontraras diferentes formas de acompañarte</p>
                 <p>
                     - <b>en redes</b>, comparto cada dia ideas simples que
-                    despierta<br />
+                    despiertan<br />
                     - <b>en newsletter</b>, te abro mi vida para mostrar el
                     mensaje en accion<br />
                     - <b>en medios</b>, profundizo en temas clave<br />
@@ -104,7 +105,7 @@
                 </p>
 
                 <p>
-                    todo nace del mismo lugar:mi experiencia, mi transformacion
+                    todo nace del mismo lugar: mi experiencia, mi transformacion
                     y el
                     <br />
                     libro que lo sostiene
@@ -115,22 +116,25 @@
                     te acerca un poco mas a tu verdad interior
                 </p>
             </div>
-            <div class="col-md-6 col-sm-12 text-center q-pa-xl">
+            <div
+                class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 self-end text-right"
+            >
                 <img
                     :src="`${$page.props.public_path}images/others/camino_sbye_transformacion.png`"
+                    style="width: 95%"
                 />
             </div>
         </div>
         <div class="row container items-center">
             <div
-                class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center"
+                class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 text-center"
             >
                 <img
                     :src="`${$page.props.public_path}images/others/composicion_libro_abierto.png`"
                     style="width: 60%"
                 />
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
                 <h6 class="text-lowercase q-pb-md">
                     el libro que sostiene todo este camino
                 </h6>
@@ -152,7 +156,7 @@
             </div>
         </div>
         <div class="row container items-center">
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
                 <h6 class="text-lowercase q-pb-md">
                     por que <i>con la intervencion directa de dios</i>
                 </h6>
@@ -163,41 +167,34 @@
                     “conversaciones con dios” de neale donald walsch
                 </p>
                 <p>
-                    es un libro que te tambien te enseña a recordar quien eres,
-                    a comprender lo que sientes y a dejar que tu alma te guie
+                    es un libro que tambien te enseña a recordar quien eres, a
+                    comprender lo que sientes y a dejar que tu alma te guie
                 </p>
             </div>
             <div
-                class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center"
+                class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 text-center"
             >
                 <img
                     :src="`${$page.props.public_path}images/others/intervencion_directa_de_dios.png`"
-                    style="width: 60%"
+                    style="width: 50%"
                 />
             </div>
         </div>
         <div class="row container items-center">
             <div
-                class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center q-px-xl order-1 order-sm-2 order-xs-2"
+                class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 text-center self-end"
             >
-                <q-card flat>
-                    <q-card-section
-                        class="q-py-lg q-px-none"
-                        style="
-                            background: #ededed;
-                            border-radius: 0;
-                            border-start-end-radius: 50px !important;
-                        "
-                    >
-                        <img
-                            :src="`${$page.props.public_path}images/books/trilogia.png`"
-                            style="width: 80%"
-                        />
-                    </q-card-section>
-                </q-card>
+                <img
+                    :src="`${$page.props.public_path}images/books/trilogia_con_fondo_gris.png`"
+                    style="margin-bottom: -12px"
+                />
             </div>
             <div
-                class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 order-2 order-sm-1 order-xs-1"
+                class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7"
+                :style="{
+                    background: Screen.xs || Screen.sm ? '#ededed' : '#fffff',
+                }"
+                :class="Screen.xs || Screen.sm ? 'q-px-md' : null"
             >
                 <h6 class="text-lowercase q-pb-md">la trilogia</h6>
                 <p>
@@ -226,16 +223,16 @@
             <div class="col-md-4 col-sm-12 q-pa-lg">
                 <div class="text-center">
                     <img
-                        class="blog-img"
+                        class="blog-img q-py-md"
                         :src="`${$page.props.public_path}images/books/imagen_tomo_1.png`"
-                        style="width: 270px; height: 340px"
+                        width="70%"
                     />
                     <h6 class="text-lowercase text-bold">tomo 1</h6>
                     <p class="text-bold" style="font-size: 18px">
                         comprender la mente y liberar las emociones
                     </p>
                 </div>
-                <p>el origen</p>
+                <p><i>el origen</i></p>
                 <p>
                     este libro explica con claridad por que repites patrones,
                     como funciona tu inconsciente y como liberar el dolor que te
@@ -264,16 +261,16 @@
             <div class="col-md-4 col-sm-12 q-pa-lg">
                 <div class="text-center">
                     <img
-                        class="blog-img"
+                        class="blog-img q-py-md"
                         :src="`${$page.props.public_path}images/books/imagen_tomo_2.png`"
-                        style="width: 270px; height: 340px"
+                        width="70%"
                     />
                     <h6 class="text-lowercase text-bold">tomo 2</h6>
                     <p class="text-bold" style="font-size: 18px">
                         reflexiones profundas y conversacion directa con dios
                     </p>
                 </div>
-                <p>el puente</p>
+                <p><i>el puente</i></p>
                 <p>
                     un viaje profundo hacia la sinceridad interior, la
                     flexibilidad mental y el dialogo real con dios en lo
@@ -289,8 +286,8 @@
                     - como abrir tu percepcion
                 </p>
                 <p>
-                    incluye una conversacion directa con dios sencilla, natural
-                    y accesible para cualquiera
+                    incluye una conversacion directa con dios <br />
+                    sencilla, natural y accesible para cualquiera
                 </p>
                 <p
                     :style="{
@@ -305,16 +302,16 @@
             <div class="col-md-4 col-sm-12 q-pa-lg">
                 <div class="text-center">
                     <img
-                        class="blog-img"
+                        class="blog-img q-py-md"
                         :src="`${$page.props.public_path}images/books/imagen_tomo_3.png`"
-                        style="width: 270px; height: 340px"
+                        width="70%"
                     />
                     <h6 class="text-lowercase text-bold">tomo 3</h6>
                     <p class="text-bold" style="font-size: 18px">
                         ejercicios y recursos para liberar y transformar
                     </p>
                 </div>
-                <p>la practica</p>
+                <p><i>la practica</i></p>
                 <p>el tomo donde pasas de la comprension a la experiencia</p>
                 <p>incluye</p>
                 <p>
@@ -390,8 +387,8 @@
                 <p class="q-mx-sm q-mt-md text-justify">
                     📩 suscribete a mi newsletter exclusiva y accede a
                     reflexiones profundas, enseñanzas ineditas y herramientas
-                    practicas para liberarte emocionalmente y conectar con la
-                    guia de dios en tu dia a dia
+                    practicas para liberarte emocionalmente y conectar con tu
+                    plenitud
                 </p>
                 <p class="q-mx-sm q-mt-md">
                     <b>que recibiras?</b><br />
@@ -422,10 +419,10 @@
                 <form-subscription-component />
             </div>
         </div>
-        <div class="row container q-mt-lg">
+        <div class="row container q-mt-xl">
             <div class="row">
                 <div class="col">
-                    <h6 class="q-mb-sm text-lowercase">
+                    <h6 class="q-mb-md text-lowercase">
                         UNA MUESTRA DE LO QUE QUIERO COMPARTIR CONTIGO
                     </h6>
                     <p>
@@ -456,6 +453,7 @@
                 navigation
                 :prev-icon="`img:${$page.props.public_path}images/icon/left.png`"
                 :next-icon="`img:${$page.props.public_path}images/icon/right.png`"
+                style="height: auto"
             >
                 <q-carousel-slide
                     v-for="(slideGroup, indexGroup) in groupedSlides"
@@ -467,7 +465,7 @@
                         <div
                             v-for="(slide, slideIndex) in slideGroup"
                             :key="`slide-${slideIndex}`"
-                            class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6"
+                            class="col"
                         >
                             <q-card
                                 class="my-card rounded-borders bg-primary text-white"
@@ -539,43 +537,43 @@ const slides = [
     {
         title: "DEPENDENCIA EMOCIONAL",
         description:
-            "por qué nacemos dependientes cómo se nos programa y por qué cortar ese “cordón invisible” es clave para amarnos",
+            "por que nacemos dependientes como se nos programa y por que cortar ese “cordon invisible” es clave para amarnos",
         video: "la frase que todos necesitamos oír.mp4",
     },
     {
         title: "NADIE TIENE TIEMPO PARA VERTE… Y TU TAMPOCO",
         description:
-            "a raíz de la comparacion y la busqueda de reconocimiento que nos aleja de nosotros mismos",
+            "a raiz de la comparacion y la busqueda de reconocimiento que nos aleja de nosotros mismos",
         video: "nadie tiene tiempo para verte… y tu tampoco.mp4",
     },
     {
         title: "REMEMBRAR: DE LA DEPENDENCIA A LA UNION DIVINA",
         description:
-            "cuando dejamos de buscar dios habita en nosotros y en los demas",
+            "cuando dejamos de buscar<br/> dios habita en nosotros y en los demas",
         video: "remembrar de la dependencia a la union divina.mp4",
     },
     {
         title: "SENTIRSE MARAVILLOSO: EL DESTINO DEL ALMA",
         description:
-            "el reencuentro con la propia divinidad y la aceptación profunda de lo que somos",
+            "el reencuentro con la propia divinidad y la aceptacion profunda de lo que somos",
         video: "sentirse maravilloso el destino del alma.mp4",
     },
     {
         title: "EL ESPEJO DEL MUNDO: LO QUE EL ALMA QUIERE RECORDAR",
         description:
-            "la comprensión más alta: lo que vivimos fuera refleja lo que aún no hemos recordado dentro",
+            "la comprension mas alta: lo que vivimos fuera refleja lo que aun no hemos recordado dentro",
         video: "el espejo del mundo lo que el alma quiere recordar.mp4",
     },
     {
         title: "COMO ACTUA UN NARCISISTA (Y POR QUE CAEMOS EN SU JUEGO)",
         description:
-            "como se forma su personalidad y por qué atrae a quienes dudan de sí mismos",
+            "como se forma su personalidad y por que atrae a quienes dudan de si mismos",
         video: "Narcisismo y dependencia emocional.mp4",
     },
     {
         title: "COMO ES UN NARCISISTA",
         description:
-            "las señales que lo delatan, la fragilidad que esconde y la herida que lo origina <br> cuando entiendes su vacío, dejas de tomarte su conducta como algo personal",
+            "las señales que lo delatan, la fragilidad que esconde y la herida que lo origina <br> cuando entiendes su vacio, dejas de tomarte su conducta como algo personal",
         video: "CÓMO ES UN NARCISISTA.mp4",
     },
     {
@@ -588,8 +586,9 @@ const slides = [
 
 const groupedSlides = computed(() => {
     const groups = [];
-    for (let i = 0; i < slides.length; i += 2) {
-        groups.push(slides.slice(i, i + 2));
+    let increment = Screen.xs || Screen.sm ? 1 : 2;
+    for (let i = 0; i < slides.length; i += increment) {
+        groups.push(slides.slice(i, i + increment));
     }
     return groups;
 });

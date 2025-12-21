@@ -4,6 +4,7 @@
             <table-component
                 :columns="columns"
                 :searchFields="searchFields"
+                :filterFields="filterFields"
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
@@ -34,18 +35,70 @@ const name = {
     },
 };
 
-const searchFields = [name];
+const subtitle = {
+    field: "subtitle",
+    name: "subtitle",
+    label: "subtitulo",
+    align: "left",
+    sortable: true,
+    type: "text",
+};
+
+const description = {
+    field: "description",
+    name: "description",
+    label: "descripcion",
+    align: "left",
+    sortable: true,
+    type: "editor",
+};
+
+const publicAccess = {
+    field: "public_access",
+    name: "public_access",
+    label: "acceso publico",
+    align: "center",
+    type: "boolean",
+};
+
+const privateArea = {
+    field: "private_area",
+    name: "private_area",
+    label: "area privada",
+    align: "center",
+    type: "boolean",
+};
+
+const searchFields = [
+    name,
+    // subtitle
+];
+
+const filterFields = [
+    // publicAccess,
+    // privateArea
+];
 
 const columns = [
     name,
+    //subtitle,
+    // description,
+    // publicAccess,
+    // privateArea,
     {
         field: "actions",
         name: "actions",
         label: "Acciones",
         type: "actions",
-        width: 100,
+        width: 200,
     },
 ];
 
-const fields = [name];
+const fields = [
+    name,
+    // subtitle,
+    // description,
+    // publicAccess,
+    // privateArea,
+];
 </script>

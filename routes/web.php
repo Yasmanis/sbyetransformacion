@@ -159,6 +159,15 @@ Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
     return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'recent_files' => $recent_files, 'testimonies' => $testimonies])->with('error', 'asasdasd');
 })->name('publicaciones');
 
+Route::get('/shared_data', function () {
+    $categories = Category::publicAccess()->orderBy('order', 'ASC')->get();
+    $courses = ProductSubcategory::with(['products' => fn($productQuery) => $productQuery->active()])->whereHas('products', fn($productQuery) => $productQuery->active())->get();
+    return response()->json([
+        'categories' => $categories,
+        'courses' => $courses
+    ]);
+});
+
 Route::get('/contactame', function () {
     return Inertia('landing/contactos');
 });

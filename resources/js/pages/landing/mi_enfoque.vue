@@ -6,14 +6,19 @@
     </Head>
     <Layout title="mi enfoque">
         <div class="row container bg-primary items-center text-white">
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
-                <div class="container-img-right">
-                    <img
-                        :src="`${$page.props.public_path}images/others/mi_enfoque.png`"
-                        alt="group-image"
-                        style="width: 50%"
-                    />
-                </div>
+            <div
+                class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center"
+                :class="{
+                    'q-pa-xl': !Screen.xs,
+                }"
+            >
+                <img
+                    :src="`${$page.props.public_path}images/others/mi_enfoque.png`"
+                    alt="group-image"
+                    :style="{
+                        width: Screen.xs ? '60%' : '50%',
+                    }"
+                />
             </div>
             <div
                 class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center"
@@ -120,11 +125,11 @@
                 </p>
             </div>
             <div
-                class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12 text-center q-pt-lg"
+                class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12 text-center q-pt-lg self-end"
             >
                 <img
                     :src="`${$page.props.public_path}images/others/diferencia_otros_enfoques.png`"
-                    style="width: 60%; margin-bottom: -9px"
+                    style="width: 60%; margin-bottom: -15px"
                 />
             </div>
         </div>
@@ -133,15 +138,20 @@
             style="background-color: #ededed"
         >
             <div
-                class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12 self-center text-center q-pt-lg"
+                class="col-md-5 col-lg-5 col-xl-5 col-sm-12 col-xs-12 text-center"
+                :class="
+                    Screen.xs || Screen.sm ? 'text-center q-pt-xl' : 'self-end'
+                "
             >
                 <img
                     :src="`${$page.props.public_path}images/others/mariposas_azul_clarito_negro_azulado.png`"
-                    style="width: 40%; margin-bottom: -8px"
+                    :style="{
+                        width: !Screen.xs ? '30%' : '40%',
+                    }"
                 />
             </div>
             <div
-                class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12"
+                class="col-md-7 col-lg-7 col-xl-7 col-sm-12 col-xs-12"
                 :class="Screen.xs || Screen.sm ? ' q-py-xl' : null"
             >
                 <h6 class="text-lowercase q-mb-md">
@@ -204,6 +214,7 @@
             >
                 <img
                     :src="`${$page.props.public_path}images/others/enfoque_camino.png`"
+                    style="width: 90%"
                 />
             </div>
             <div class="col-12 text-center q-pt-xl">

@@ -16,14 +16,17 @@
     </Head>
     <Layout title="maria">
         <div class="row container bg-primary items-center text-white">
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
-                <div class="container-img-right">
-                    <img
-                        :src="`${$page.props.public_path}images/team/maria_garriga_dominguez.png`"
-                        alt="group-image"
-                        style="width: 50%"
-                    />
-                </div>
+            <div
+                class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center"
+                :class="{
+                    'q-pa-lg': !Screen.xs,
+                }"
+            >
+                <img
+                    :src="`${$page.props.public_path}images/team/maria_garriga_dominguez.png`"
+                    alt="group-image"
+                    style="width: 40%"
+                />
             </div>
             <div
                 class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center"
@@ -46,7 +49,7 @@
             <div class="col text-center">
                 <p>
                     soy maria garriga, creadora de <i>sbye transformacion</i> y
-                    autora de liberacion emocional
+                    autora de <i>liberacion emocional</i>
                 </p>
                 <p>
                     aunque esta pagina lleve mi nombre, no soy yo el centro de
@@ -58,7 +61,7 @@
             </div>
         </div>
         <div class="row container bg-primary text-white items-center">
-            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 q-my-xl">
+            <div class="col-md-7 col-lg-7 col-xl-7 col-sm-12 col-xs-12 q-my-xl">
                 <h6 class="q-mb-md text-lowercase text-white">
                     quien soy dentro de sbye transformacion
                 </h6>
@@ -68,38 +71,52 @@
                 </p>
                 <p>
                     las heridas tempranas, las creencias heredadas, las
-                    reacciones automaticas, los miedos, la necesidad de encajar,
-                    la inseguridad y todo aquello que te impide vivir desde tu
-                    verdad profunda
+                    reacciones automaticas, los miedos, la <br />
+                    necesidad de encajar, la inseguridad y todo aquello que te
+                    impide vivir desde tu verdad profunda
                 </p>
                 <p>
                     integro desprogramacion de creencias, liberacion emocional,
-                    comprension del inconsciente, trabajo directo con la verdad
-                    interior y el dialogo constante con dios a traves del
+                    comprension del inconsciente, <br />trabajo directo con la
+                    verdad interior y el dialogo constante con dios a traves del
                     pensamiento
                 </p>
                 <p>
                     <i>sbye transformacion</i> nacio para que cualquier persona
-                    pueda aprender a convertirse en su propio guia, comprender
-                    lo que siente, liberar lo que le duele y crear su vida desde
-                    si misma
+                    pueda aprender a convertirse en su propio<br />
+                    guia, comprender lo que siente, liberar lo que le duele y
+                    crear su vida desde si misma
                 </p>
             </div>
-            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 text-center">
-                <img
+            <div
+                class="col-md-5 col-lg-5 col-xl-5 col-sm-12 col-xs-12 text-center"
+                :class="Screen.xs || Screen.sm ? 'q-pb-xl' : null"
+            >
+                <q-img
                     :src="`${$page.props.public_path}images/team/maria_garriga_sonrisa_amable.png`"
-                    style="width: 60%"
+                    :style="{
+                        width: Screen.xl ? '40%' : '60%',
+                    }"
                 />
             </div>
         </div>
         <div class="row container items-center">
-            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 text-center">
+            <div
+                class="col-md-5 col-lg-5 col-xl-5 col-sm-12 col-xs-12"
+                :class="
+                    Screen.xs || Screen.sm
+                        ? 'text-center q-pt-xl'
+                        : 'self-end q-pb-xl'
+                "
+            >
                 <img
                     :src="`${$page.props.public_path}images/others/mariposa_azul_eter.png`"
-                    style="width: 60%"
+                    :style="{
+                        width: Screen.xl ? '40%' : '60%',
+                    }"
                 />
             </div>
-            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 q-my-xl">
+            <div class="col-md-7 col-lg-7 col-xl-7 col-sm-12 col-xs-12 q-my-xl">
                 <h6 class="q-mb-md text-lowercase">
                     mi historia: de donde vengo y por que hago esto
                 </h6>
@@ -144,7 +161,7 @@
             </div>
         </div>
         <div class="row container items-center bg-primary text-white">
-            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 q-my-xl">
+            <div class="col-md-7 col-lg-7 col-xl-7 col-sm-12 col-xs-12 q-my-xl">
                 <h6 class="q-mb-md text-lowercase text-white">
                     mi despertar: cuando comenzo mi dialogo con dios
                 </h6>
@@ -201,11 +218,13 @@
                 </p>
                 <p>
                     no espero que todo el mundo lo entienda. solo comparto lo
-                    que vivi. y desde ese despertar nacio liberacion emocional y
-                    todo este proyecto
+                    que vivi. y desde ese despertar nacio
+                    <i>liberacion emocional</i> y todo este proyecto
                 </p>
             </div>
-            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 text-center">
+            <div
+                class="col-md-5 col-lg-5 col-xl-5 col-sm-12 col-xs-12 text-center"
+            >
                 <img
                     :src="`${$page.props.public_path}images/others/destello.png`"
                     style="width: 60%"
@@ -213,13 +232,15 @@
             </div>
         </div>
         <div class="row container items-center">
-            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 text-center">
+            <div
+                class="col-md-5 col-lg-5 col-xl-5 col-sm-12 col-xs-12 text-center self-end"
+            >
                 <img
                     :src="`${$page.props.public_path}images/others/camino.png`"
                     style="width: 60%"
                 />
             </div>
-            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 q-my-xl">
+            <div class="col-md-7 col-lg-7 col-xl-7 col-sm-12 col-xs-12 q-my-xl">
                 <h6 class="q-mb-md text-lowercase">
                     mi mision como creadora de sbye transformacion
                 </h6>
@@ -270,6 +291,7 @@ import { Head } from "@inertiajs/vue3";
 import Layout from "../../layouts/MainLayout.vue";
 import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
+import { Screen } from "quasar";
 
 defineOptions({
     name: "Maria",

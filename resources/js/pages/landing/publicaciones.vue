@@ -17,6 +17,20 @@
             class="row container q-mt-xl"
             :style="{ 'padding-top': screen.xs || screen.sm ? '40px' : '' }"
         >
+            <!-- <div class="col-12 q-pb-md">
+                <h4 class="q-mb-sm">{{ currentCategory.name }}</h4>
+                <h6
+                    class="text-lowercase q-mb-md"
+                    v-if="currentCategory.subtitle"
+                >
+                    {{ currentCategory.subtitle }}
+                </h6>
+                <span
+                    v-if="currentCategory.description"
+                    v-html="currentCategory.description"
+                >
+                </span>
+            </div> -->
             <!-- <div
                 class="col-12 text-center q-pb-md"
                 v-if="currentCategory.name === 'para prensa'"

@@ -124,7 +124,7 @@
                     <q-icon name="fab fa-tiktok" size="xs" />
                 </q-btn-component>
             </div>
-            <div class="text-center q-pa-md">
+            <div class="text-center q-py-lg">
                 <Link href="/legal" class="text-white q-mr-md">
                     avisos legales
                 </Link>
@@ -135,41 +135,86 @@
                     condiciones de contratacion
                 </Link>
             </div>
-            <div class="row q-col-gutter-md">
-                <div class="col-xs-12 col-sm-2 col-md-3 col-lg-3 col-xl-3">
-                    sbye transformacion<br />
-                    maria<br />
-                    mi enfoque<br />
-                    consulta individual<br />
-                    taller online
-                </div>
-                <div class="col-xs-12 col-sm-2 col-md-3 col-lg-3 col-xl-3">
-                    publicaciones <br />
-                    <div class="q-ml-md">
-                        testimonios <br />
-                        medios <br />
-                        conferencias <br />
-                        posts <br />
-                        newsletters <br />
-                        vinculadas al libro <br />
-                        para prensa
+            <div class="row justify-around q-gutter-md">
+                <div class="col-xs-12 col-sm-5 col-md-2 col-lg-2 col-xl-2">
+                    <div
+                        class="column"
+                        :class="Screen.xs ? 'items-center' : 'items-end'"
+                    >
+                        <div>
+                            <Link href="" class="text-white"
+                                >sbye transformacion</Link
+                            ><br />
+                            <Link href="/maria" class="text-white">maria</Link
+                            ><br />
+                            <Link href="/mi_enfoque" class="text-white"
+                                >mi enfoque</Link
+                            ><br />
+                            <Link href="/consulta_individual" class="text-white"
+                                >consulta individual</Link
+                            ><br />
+                            <Link href="taller_online" class="text-white"
+                                >taller online</Link
+                            >
+                        </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-2 col-md-3 col-lg-3 col-xl-3">
-                    tienda <br />
-                    <div class="q-ml-md">
-                        curso aprender a liberar emocionalmente
-                        <br />
-                        curso crear la realidad conscientemente
+                <div class="col-xs-12 col-sm-5 col-md-2 col-lg-2 col-xl-2">
+                    <div class="column items-center">
+                        <div>
+                            publicaciones <br />
+                            <div class="q-ml-md">
+                                <span
+                                    v-for="c in allCategories"
+                                    :key="`public-categ-${c.name}`"
+                                >
+                                    <Link
+                                        :href="`/publicaciones/${c.id}`"
+                                        class="text-white"
+                                        v-if="c.id !== null"
+                                        >{{ c.name }}</Link
+                                    >
+                                    <span disabled v-else> {{ c.name }} </span
+                                    ><br />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-5 col-md-2 col-lg-2 col-xl-2">
+                    <div class="column items-center">
+                        <div>
+                            tienda <br />
+                            <div class="q-ml-md">
+                                <span
+                                    v-for="c in allCourses"
+                                    :key="`course-${c.name}`"
+                                >
+                                    <Link
+                                        :href="`/tienda#${c.id}`"
+                                        class="text-white"
+                                        v-if="c.id !== null"
+                                        >{{ c.name }}</Link
+                                    >
+                                    <span disabled v-else> {{ c.name }} </span
+                                    ><br />
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div
-                    class="col-xs-12 col-sm-2 col-md-3 col-lg-3 col-xl-3 text-right"
+                    class="col-xs-12 col-sm-5 col-md-2 col-lg-2 col-xl-2"
+                    :class="{
+                        'text-center': Screen.xs || Screen.sm,
+                    }"
                 >
-                    contacto
+                    <Link href="/contactame" class="text-white">contacto</Link>
                 </div>
             </div>
-            <div class="text-center">&#169;2024 maria garriga dominguez</div>
+            <p class="text-center no-margin q-pt-lg">
+                &#169;2024 maria garriga dominguez
+            </p>
         </q-footer>
 
         <q-page-scroller
@@ -184,10 +229,10 @@
 <script setup>
 import QBtnComponent from "../components/base/QBtnComponent.vue";
 import { router } from "@inertiajs/vue3";
-import { ref, computed } from "vue";
+import { ref, computed, onBeforeMount } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
-import { useQuasar } from "quasar";
-import { Screen } from "quasar";
+import { Screen, useQuasar } from "quasar";
+import axios from "axios";
 
 defineOptions({
     name: "MainLayout",
@@ -202,6 +247,58 @@ const props = defineProps({
 });
 
 const $q = useQuasar();
+
+const allCategories = ref([
+    {
+        name: "testimonios",
+        id: null,
+    },
+    {
+        name: "medios",
+        id: null,
+    },
+    {
+        name: "conferencias",
+        id: null,
+    },
+    {
+        name: "posts",
+        id: null,
+    },
+    {
+        name: "newsletters",
+        id: null,
+    },
+    {
+        name: "vinculadas al libro",
+        id: null,
+    },
+    {
+        name: "para prensa",
+        id: null,
+    },
+]);
+
+const allCourses = ref([
+    { name: "curso aprender a liberar emocionalmente", id: null },
+    { name: "curso crear la realidad conscientemente", id: null },
+]);
+
+const activeCourses = ref([]);
+
+onBeforeMount(async () => {
+    await axios.get("/shared_data").then((response) => {
+        const { categories, courses } = response.data;
+        allCategories.value.forEach((c) => {
+            let found = categories.find((cc) => cc.name === c.name);
+            c.id = found?.id ?? null;
+        });
+        allCourses.value.forEach((c) => {
+            let found = courses.find((cc) => `curso ${cc.name}` === c.name);
+            c.id = found?.id ?? null;
+        });
+    });
+});
 
 const screen = computed(() => {
     return $q.screen;
@@ -219,6 +316,10 @@ const links = ref([
     {
         title: "maria",
         url: "/maria",
+    },
+    {
+        title: "mi enfoque",
+        url: "/mi_enfoque",
     },
     {
         title: "consulta individual",

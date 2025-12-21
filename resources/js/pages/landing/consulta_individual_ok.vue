@@ -212,7 +212,6 @@
                                     label="cuentame lo que necesitas"
                                     no-caps
                                     class="q-my-lg"
-                                    href="/contactame"
                                 >
                                     <q-icon
                                         name="fa fa-long-arrow-right"

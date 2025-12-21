@@ -1,6 +1,7 @@
 <template>
     <q-card flat bordered>
         <q-table
+            wrap-cells
             :rows="rows"
             :columns="columns"
             :grid="$q.screen.lt.sm"
@@ -61,6 +62,11 @@
                         <visible-columns-component
                             :columns="columns"
                             @change="(vc) => (visibleColumns = vc)"
+                        />
+                        <filter-component
+                            :fields="filterFields"
+                            @refresh-data="onRefreshData"
+                            v-if="filterFields.length > 0"
                         />
                         <delete-component
                             :objects="selected"
@@ -155,28 +161,16 @@
                             dense
                             size="sm"
                             style="max-width: min-content"
-                            :color="props.value ? 'positive' : 'negative'"
-                            text-color="white"
+                            :color="props.value ? 'black' : 'blue-2'"
+                            :text-color="props.value ? 'white' : 'black'"
                             :icon="props.value ? 'check' : 'error'"
                             :label="props.value ? 'Si' : 'No'"
                         />
                     </template>
-                    <template v-else-if="props.col.type === 'textarea'">
-                        <span v-if="props.row[props.col.field].length <= 20">
-                            {{ props.row[props.col.field] }}
-                        </span>
-                        <span v-else
-                            >{{ props.row[props.col.field].substring(0, 17) }}
-                            <b>
-                                ...
-                                <q-tooltip class="bg-brown"
-                                    >Click para ver detalles</q-tooltip
-                                >
-                            </b>
-                        </span>
-                    </template>
                     <template v-else>
-                        {{ props.row[props.col.field] }}
+                        <q-item-label lines="5">
+                            <span v-html="props.row[props.col.field]"> </span>
+                        </q-item-label>
                     </template>
                 </q-td>
             </template>
@@ -357,6 +351,7 @@ import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
+import FilterComponent from "../../table/actions/FilterComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
