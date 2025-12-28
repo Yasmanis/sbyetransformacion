@@ -136,7 +136,7 @@
                 </Link>
             </div>
             <div class="row justify-around q-gutter-md">
-                <div class="col-xs-12 col-sm-5 col-md-2 col-lg-2 col-xl-2">
+                <div class="col-xs-12 col-sm-5 col-md-3 col-lg-3 col-xl-3">
                     <div
                         class="column"
                         :class="Screen.xs ? 'items-center' : 'items-end'"
@@ -159,7 +159,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-5 col-md-2 col-lg-2 col-xl-2">
+                <div class="col-xs-12 col-sm-5 col-md-3 col-lg-3 col-xl-3">
                     <div class="column items-center">
                         <div>
                             publicaciones <br />
@@ -181,7 +181,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-5 col-md-2 col-lg-2 col-xl-2">
+                <div class="col-xs-12 col-sm-5 col-md-3 col-lg-3 col-xl-3">
                     <div class="column items-center">
                         <div>
                             tienda <br />
@@ -202,14 +202,13 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div
-                    class="col-xs-12 col-sm-5 col-md-2 col-lg-2 col-xl-2"
-                    :class="{
-                        'text-center': Screen.xs || Screen.sm,
-                    }"
-                >
-                    <Link href="/contactame" class="text-white">contacto</Link>
+                    <div class="column q-mt-md">
+                        <div>
+                            <Link href="/contactame" class="text-white"
+                                >contacto</Link
+                            >
+                        </div>
+                    </div>
                 </div>
             </div>
             <p class="text-center no-margin q-pt-lg">
@@ -254,7 +253,7 @@ const allCategories = ref([
         id: null,
     },
     {
-        name: "medios",
+        name: "en los medios",
         id: null,
     },
     {
@@ -262,7 +261,7 @@ const allCategories = ref([
         id: null,
     },
     {
-        name: "posts",
+        name: "post",
         id: null,
     },
     {
@@ -270,11 +269,11 @@ const allCategories = ref([
         id: null,
     },
     {
-        name: "vinculadas al libro",
+        name: "archivos asociados al libro",
         id: null,
     },
     {
-        name: "para prensa",
+        name: "para prensa y medios",
         id: null,
     },
 ]);
@@ -310,7 +309,7 @@ const authenticated = computed(() => {
 
 const links = ref([
     {
-        title: "vivir en plenitud",
+        title: "sbye transformacion",
         url: "/",
     },
     {

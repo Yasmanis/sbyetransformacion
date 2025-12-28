@@ -225,7 +225,7 @@
                     <img
                         class="blog-img q-py-md"
                         :src="`${$page.props.public_path}images/books/imagen_tomo_1.png`"
-                        width="70%"
+                        width="50%"
                     />
                     <h6 class="text-lowercase text-bold">tomo 1</h6>
                     <p class="text-bold" style="font-size: 18px">
@@ -263,7 +263,7 @@
                     <img
                         class="blog-img q-py-md"
                         :src="`${$page.props.public_path}images/books/imagen_tomo_2.png`"
-                        width="70%"
+                        width="50%"
                     />
                     <h6 class="text-lowercase text-bold">tomo 2</h6>
                     <p class="text-bold" style="font-size: 18px">
@@ -304,7 +304,7 @@
                     <img
                         class="blog-img q-py-md"
                         :src="`${$page.props.public_path}images/books/imagen_tomo_3.png`"
-                        width="70%"
+                        width="50%"
                     />
                     <h6 class="text-lowercase text-bold">tomo 3</h6>
                     <p class="text-bold" style="font-size: 18px">

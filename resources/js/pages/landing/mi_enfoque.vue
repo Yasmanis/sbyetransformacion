@@ -125,16 +125,21 @@
                 </p>
             </div>
             <div
-                class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12 text-center q-pt-lg self-end"
+                class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12 text-center self-end"
+                :class="Screen.xs ? '' : 'q-pt-lg'"
             >
                 <img
                     :src="`${$page.props.public_path}images/others/diferencia_otros_enfoques.png`"
-                    style="width: 60%; margin-bottom: -15px"
+                    :style="{
+                        width: Screen.xs ? '100%' : '60%',
+                        'margin-bottom': '-15px',
+                    }"
                 />
             </div>
         </div>
         <div
-            class="row container tems-center q-py-xl"
+            class="row container tems-center"
+            :class="Screen.xs ? '' : 'q-pt-lg'"
             style="background-color: #ededed"
         >
             <div

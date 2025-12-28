@@ -1,117 +1,142 @@
 <template>
     <Layout title="consulta individual">
         <div class="row container bg-primary items-center text-white">
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
-                <div class="container-img-right">
-                    <img
-                        :src="`${$page.props.public_path}images/team/maria-consulta-individual.png`"
-                        alt="group-image"
-                        style="width: 50%"
-                    />
-                </div>
+            <div
+                class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center"
+                :class="{
+                    'q-pa-lg': !Screen.xs,
+                }"
+            >
+                <img
+                    :src="`${$page.props.public_path}images/team/maria-consulta-individual.png`"
+                    alt="group-image"
+                    style="width: 40%"
+                />
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
-                <p class="text-center header-subtitle">
-                    has leido mi libro <br />
-                    y quieres que te ayude <br />
-                    a desprogramarte y liberar, a sanar
-                    <br />
-                    y conseguir como yo vivir en plenitud?
+            <div
+                class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center"
+                style="font-size: 18px; line-height: 1.5"
+            >
+                <p class="text-bold">
+                    consulta individual <br />
+                    un proceso profundo de transformacion real
+                </p>
+                <p class="text-center">
+                    libera, desprograma, recupera tu verdad
                 </p>
             </div>
         </div>
-        <div class="column text-center q-mt-xl container">
-            <h4 class="text-lowercase q-mb-none">
-                solo ayudo a quien se ayuda
-            </h4>
+        <div class="column text-center q-my-xl container">
+            <h6 class="text-lowercase q-mb-md">que es una consulta conmigo?</h6>
             <p>
-                solo atiendo a personas que realmente quieren cambiar y se
-                involucran en su transformacion <br />
-                si estas listo para profundizar en tu dolor, sanarlo y
-                transmutarlo, este es tu sitio<br />
-                puedes hacer una consulta individual directamente conmigo o,
-                mejor aun, apuntarte al taller online
+                acompañarte no es solo darte tecnicas para calmarte un dia
+                <br />
+                es ayudarte a encontrar el origen real de lo que sientes,
+                desprogramarlo y recuperar tu libertad interior
+            </p>
+            <p>en cada consulta trabajamos</p>
+            <p>
+                liberar emociones atrapadas <br />
+                descubrir las creencias que sostienen el bloqueo <br />
+                desprogramar patrones inconscientes <br />
+                recuperar tu verdad interior <br />
+                tomar decisiones desde tu alma, no desde el miedo
+            </p>
+            <p>
+                mi trabajo es acompañarte hasta que sientas un cambio real, no
+                superficial
             </p>
         </div>
-        <div class="row q-pt-xl container">
-            <div class="col-md-6 col-lg-6">
-                <div class="column">
-                    <h4 class="q-mb-none text-uppercase text-black">
-                        consulta individual
-                    </h4>
-                    <p>
-                        las consultas pueden ser
-                        <b>online, telefonicas o presenciales</b>, asi que no es
-                        necesario que vivas cerca de mi o que te desplaces.
-                        claro, la magia de estar juntos se siente diferente en
-                        la distancia, pero he trabajado muchas veces asi y te
-                        aseguro que sigue siendo igual de eficaz
-                    </p>
-                    <p>
-                        me adapto siempre a cada persona y a cada situacion. por
-                        eso, si lo necesitas, podemos encontrar juntos la mejor
-                        forma de trabajar. por ejemplo, en ocasiones he
-                        trabajado con personas durante cinco dias seguidos,
-                        alojandose en mi casa o en un apartamento cercano para
-                        recibir un impulso intensivo.
-                        <b>quien quiere, siempre encuentra el cómo</b
-                        ><img
-                            :src="`${$page.props.public_path}images/icon/smile-2.png`"
-                            style="width: 22px; margin-bottom: -5px"
-                        />
-                    </p>
-                    <h4 class="q-mb-none text-uppercase text-black">
-                        consulta sin reloj
-                    </h4>
-                    <p>
-                        la duracion de la consulta es <b>indefinida</b>. puedo
-                        estar contigo una hora o cinco horas seguidas, segun lo
-                        que necesites
-                    </p>
-                    <p>
-                        en cada sesion trabajaremos con los recursos de mi
-                        libro:
-                        <b
-                            >desprogramacion de creencias, reflexion y
-                            liberacion emocional</b
-                        >, facilitando tu camino hacia la plenitud
-                    </p>
-                </div>
+        <div class="row container bg-primary text-white q-py-xl">
+            <div class="col">
+                <h6 class="text-lowercase text-white q-mb-md">como trabajo?</h6>
+                <p>mi manera de acompañarte es diferente</p>
+                <q-list>
+                    <q-item v-for="w in workList" :key="`work-${w.title}`">
+                        <q-item-section avatar>
+                            <q-icon
+                                size="md"
+                                :name="`img:${$page.props.public_path}images/icon/${w.icon}`"
+                            />
+                        </q-item-section>
+                        <q-item-section style="max-width: 250px">
+                            <q-item-label>{{ w.title }}</q-item-label>
+                        </q-item-section>
+                        <q-item-section>
+                            <q-item-label>{{ w.description }}</q-item-label>
+                        </q-item-section>
+                    </q-item>
+                </q-list>
             </div>
-            <div class="col-md-6 col-lg-6 q-pa-lg text-center">
-                <video-player
-                    :src="`${$page.props.public_path}media/consulta-individual.mp4`"
-                    :poster="`${$page.props.public_path}images/others/poster-vivir-en-plenitud.png`"
-                    controls
-                    aspectRatio="4:3"
-                    :volume="0.6"
+        </div>
+        <div class="row container tems-center q-py-xl">
+            <div
+                class="col-xl-6 col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12"
+            >
+                <h6 class="text-lowercase q-mb-md">
+                    que puedes esperar en una sesion?
+                </h6>
+                <ol class="guion-list" style="line-height: 40px">
+                    <li>
+                        te ayudare a encontrar el origen exacto de lo que estas
+                        viviendo
+                    </li>
+                    <li>
+                        liberaremos las emociones atrapadas que sostienen ese
+                        patron
+                    </li>
+                    <li>desprogramaremos creencias que no nacieron de ti</li>
+                    <li>
+                        te mostrare como funciona tu mundo interno con claridad
+                    </li>
+                    <li>y con el tiempo, aprenderas a guiarte tu mismo</li>
+                </ol>
+                <p>
+                    mi mision es que no dependas de mi <br />
+                    sino que recuperes tu poder
+                </p>
+            </div>
+            <div
+                class="col-xl-6 col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12 text-center"
+            >
+                <img
+                    :src="`${$page.props.public_path}images/others/transformacion_consulta.png`"
+                    style="width: 40%"
                 />
             </div>
         </div>
-        <div class="row container">
-            <h4 class="q-mb-none text-uppercase text-black">
-                UN PROCESO DE TRANSFORMACION CON ACOMPAÑAMIENTO
-            </h4>
-            <p>
-                suelo trabajar en un <b>marco de tres meses</b>, con
-                <b>consultas quincenales</b> y un contacto continuo entre
-                sesiones. no quiero que en ningun momento te sientas solo o sin
-                apoyo. sin embargo, siempre busco tu
-                <b>empoderamiento y autonomia</b>. al final de este periodo (que
-                puede ajustarse segun cada persona), sabras utilizar todas las
-                herramientas por ti mismo y solo necesitaras apoyo en momentos
-                puntuales
-            </p>
-            <p>
-                mis clientes se convierten en mis amigos, porque nos
-                comprendemos desde lo mas profundo. por eso, tanto durante el
-                proceso como despues, mi acompañamiento no tiene coste.
-                <b
-                    >si en algun momento me desbordo, encontrarr la forma, junto
-                    con dios, de que nunca te sientas solo en tu camino de
-                    sanacion y cambio</b
+        <div class="row container tems-center">
+            <div
+                class="col-xl-6 col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12 self-center text-center"
+            >
+                <img
+                    :src="`${$page.props.public_path}images/others/consulta_individual.png`"
+                    style="width: 60%"
+                />
+            </div>
+            <div
+                class="col-xl-6 col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12"
+            >
+                <h6 class="text-lowercase q-mb-md">el proceso completo</h6>
+                <p>como trabajaremos juntos</p>
+                <ol
+                    style="
+                        line-height: 40px;
+                        padding-left: 15px;
+                        margin-top: -5px;
+                    "
                 >
-            </p>
+                    <li>consulta profunda (sin limite de tiempo)</li>
+                    <li>informe personalizado</li>
+                    <li>dos semanas de integracion con mi acompañamiento</li>
+                    <li>siguiente sesion</li>
+                    <li>repetimos el ciclo durante 3 meses</li>
+                    <li>finalizas empoderado, con autonomia real</li>
+                </ol>
+            </div>
+            <div class="col-12 q-py-lg">
+                <hr style="height: 1px" class="bg-grey-6" />
+            </div>
         </div>
         <div class="row container q-pb-lg">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -121,9 +146,14 @@
                 >
                     <q-card
                         class="my-card q-px-md"
-                        style="width: 220px; border-radius: 15px"
+                        flat
+                        style="
+                            max-width: 400px;
+                            border-radius: 55px;
+                            border: 3px solid #407492;
+                        "
                     >
-                        <q-card-section horizontal>
+                        <q-card-section class="text-center q-pa-none">
                             <img
                                 :src="`${$page.props.public_path}images/others/euro.png`"
                                 style="
@@ -133,11 +163,16 @@
                                 "
                             />
                             <q-card-section>
-                                <h6 class="q-ma-none">
-                                    <b>PRECIO</b>
-                                </h6>
-                                <h5 class="q-ma-none">150 €</h5>
-                                <small class="q-ma-none">sesion</small>
+                                <p><b>consulta profunda</b></p>
+                                <p>
+                                    sin limite de tiempo <br />
+                                    informe detallado incluido <br />
+                                    acompañamiento entre sesiones <br />
+                                    proceso 3 meses: personalizado segun <br />
+                                    necesidades
+                                </p>
+                                <p class="text-bold q-mb-none">150 €</p>
+                                <p>sesion</p>
                             </q-card-section>
                         </q-card-section>
                     </q-card>
@@ -148,179 +183,157 @@
                     class="column q-pa-md"
                     :class="screen.xs ? 'items-center' : ''"
                 >
-                    <Link href="/contactame" class="font-black text-black">
-                        <q-card
-                            class="my-card q-px-md"
-                            style="width: 220px; border-radius: 15px"
-                        >
-                            <q-card-section horizontal>
-                                <img
-                                    :src="`${$page.props.public_path}images/others/contactos.png`"
-                                    style="
-                                        width: 50px;
-                                        height: 50px;
-                                        margin-top: 30px;
-                                    "
-                                />
-                                <q-card-section>
-                                    <h6 class="q-mt-none">
-                                        <b>CONTACTO</b>
-                                    </h6>
-                                    <small
-                                        >cuentame que <br />
-                                        necesitas</small
-                                    >
-                                </q-card-section>
+                    <q-card
+                        class="my-card q-px-md"
+                        flat
+                        style="
+                            max-width: 400px;
+                            border-radius: 55px;
+                            border: 3px solid #407492;
+                        "
+                    >
+                        <q-card-section class="text-center q-pa-none">
+                            <img
+                                :src="`${$page.props.public_path}images/others/contactos.png`"
+                                style="
+                                    width: 50px;
+                                    height: 50px;
+                                    margin-top: 30px;
+                                "
+                            />
+                            <q-card-section>
+                                <p><b>quieres que te ayude?</b></p>
+                                <p>
+                                    cuentame tu caso <br />
+                                    y te orientare personalmente <br />
+                                    (no hay reserva automatica <br />
+                                    quiero escuchar primero tu necesidad)
+                                </p>
+                                <q-btn
+                                    rounded
+                                    color="black"
+                                    label="cuentame lo que necesitas"
+                                    no-caps
+                                    class="q-my-lg"
+                                    href="/contactame"
+                                >
+                                    <q-icon
+                                        name="fa fa-long-arrow-right"
+                                        class="q-ml-md"
+                                    />
+                                </q-btn>
                             </q-card-section>
-                        </q-card>
-                    </Link>
+                        </q-card-section>
+                    </q-card>
                 </div>
             </div>
         </div>
-        <div
-            class="row items-center container bg-primary"
-            :class="screen.xs || screen.sm ? 'q-pt-xl q-pb-lg' : 'q-py-xl'"
-        >
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 bg-mariposas">
-                <div class="row items-center">
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <div class="column items-center">
-                            <q-card
-                                class="my-card text-center q-pa-none"
-                                style="
-                                    width: 160px;
-                                    max-height: 160px;
-                                    border-radius: 25px;
-                                "
-                            >
-                                <q-card-section>
-                                    <img
-                                        class="q-ma-none q-pa-none"
-                                        :src="`${$page.props.public_path}images/avatars/elena.png`"
-                                        style="margin-top: -5px"
-                                    />
-                                    <h5
-                                        class="text-lowercase q-ma-none q-pa-none"
-                                        style="margin-top: -10px"
-                                    >
-                                        Elena
-                                    </h5>
-                                    <p
-                                        style="
-                                            margin-top: -5px;
-                                            margin-bottom: 5px;
-                                        "
-                                    >
-                                        25 años
-                                    </p>
-                                    <a
-                                        class="text-primary q-ma-none q-pa-none"
-                                        target="_blank"
-                                        :href="`${$page.props.public_path}informes/consulta_individual/elena-25-anios.pdf`"
-                                        >leer<i
-                                            class="fa fa-long-arrow-right q-ml-sm"
-                                        ></i
-                                    ></a>
-                                </q-card-section>
-                            </q-card>
-
-                            <q-card
-                                class="my-card text-center q-pa-none"
-                                :class="screen.xs ? 'q-my-md' : 'q-mt-xl'"
-                                style="
-                                    width: 160px;
-                                    max-height: 160px;
-                                    border-radius: 25px;
-                                "
-                            >
-                                <q-card-section>
-                                    <img
-                                        class="q-ma-none q-pa-none"
-                                        :src="`${$page.props.public_path}images/avatars/marta.png`"
-                                        style="margin-top: -5px"
-                                    />
-                                    <h5
-                                        class="text-lowercase q-ma-none q-pa-none"
-                                        style="margin-top: -10px"
-                                    >
-                                        marta
-                                    </h5>
-                                    <p
-                                        style="
-                                            margin-top: -5px;
-                                            margin-bottom: 5px;
-                                        "
-                                    >
-                                        67 años
-                                    </p>
-                                    <a
-                                        class="text-primary q-ma-none q-pa-none"
-                                        target="_blank"
-                                        :href="`${$page.props.public_path}informes/consulta_individual/marta-67-anios.pdf`"
-                                        >leer<i
-                                            class="fa fa-long-arrow-right q-ml-sm"
-                                        ></i
-                                    ></a>
-                                </q-card-section>
-                            </q-card>
-                        </div>
+        <div class="row bg-primary text-white container q-pt-lg">
+            <div class="col-12">
+                <p class="text-h6">LO QUE DICEN DE MI TRABAJO</p>
+                <p class="text-justify">
+                    cada persona que he acompañado me ha mostrado que, cuando
+                    alguien se atreve a mirar dentro, el cambio es inevitable
+                </p>
+                <p class="text-justify">
+                    estas son algunas voces reales que han vivido esta
+                    transformacion a traves de sesiones, de mi libro o de mis
+                    conferencias
+                </p>
+                <hr style="width: 100%; height: 1px; background: #fff" />
+                <p class="text-h6 q-pt-md">video testimonio destacado</p>
+                <div class="row q-col-gutter-sm items-center">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <video-player
+                            :src="`${$page.props.public_path}media/testimonio-destacado.mp4`"
+                            controls
+                            :volume="0.6"
+                            aspectRatio="16:9"
+                        />
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <div class="column items-center">
-                            <q-card
-                                class="my-card text-center q-pa-none"
-                                style="
-                                    width: 160px;
-                                    max-height: 160px;
-                                    border-radius: 25px;
-                                "
-                            >
-                                <q-card-section>
-                                    <img
-                                        class="q-ma-none q-pa-none"
-                                        :src="`${$page.props.public_path}images/avatars/sebas.png`"
-                                        style="margin-top: -5px"
-                                    />
-                                    <h5
-                                        class="text-lowercase q-ma-none q-pa-none"
-                                        style="margin-top: -10px"
-                                    >
-                                        sebas
-                                    </h5>
-                                    <p
-                                        style="
-                                            margin-top: -5px;
-                                            margin-bottom: 5px;
-                                        "
-                                    >
-                                        60 años
-                                    </p>
-                                    <a
-                                        class="text-primary q-ma-none q-pa-none"
-                                        target="_blank"
-                                        :href="`${$page.props.public_path}informes/consulta_individual/sebas-60-anios.pdf`"
-                                        >leer<i
-                                            class="fa fa-long-arrow-right q-ml-sm"
-                                        ></i
-                                    ></a>
-                                </q-card-section>
-                            </q-card>
-                        </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <p
+                            class="text-justify"
+                            :class="!Screen.xs ? 'q-px-xl' : null"
+                        >
+                            ella vivio un proceso profundo de liberacion
+                            emocional durante varios dias de trabajo intensivo
+                            conmigo
+                        </p>
+                        <p
+                            class="text-justify"
+                            :class="!Screen.xs ? 'q-px-xl' : null"
+                        >
+                            lo que cuenta es parte de lo que tambien puedes
+                            experimentar en una consulta conmigo
+                        </p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <h4
-                    class="q-mb-none text-uppercase text-white text-bold"
-                    :class="screen.xs || screen.sm ? 'q-pt-lg' : ''"
+            <div class="col-12">
+                <hr style="width: 100%; height: 1px; background: #fff" />
+                <p class="text-h6 q-pt-md q-mb-none">testimonios destacados</p>
+                <br />
+            </div>
+        </div>
+        <div class="row container bg-primary q-col-gutter-lg q-pb-xl">
+            <div
+                v-for="(t, imgIndex) in staticTestimonies"
+                :key="imgIndex"
+                class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4"
+            >
+                <q-card class="my-card" style="border-radius: 55px">
+                    <q-card-section class="text-center">
+                        <q-img
+                            :src="`${$page.props.public_path}images/icon/heart.png`"
+                            fit="fill"
+                            width="50px"
+                        />
+                    </q-card-section>
+                    <q-card-section
+                        class="text-center text-black"
+                        style="min-height: 200px"
+                    >
+                        <span v-html="t.description"></span>
+                    </q-card-section>
+                    <q-card-actions
+                        ><p class="text-right full-width q-pr-sm">
+                            {{ t.user }}
+                        </p></q-card-actions
+                    >
+                </q-card>
+            </div>
+            <div class="col-12 text-center">
+                <q-btn
+                    rounded
+                    color="black"
+                    label="ver mas testimonios"
+                    no-caps
+                    class="q-mt-md"
+                    href="/publicaciones/2"
                 >
-                    QUE PUEDES ESPERAR DE UNA CONSULTA CONMIGO?
-                </h4>
-                <p class="text-white q-pt-lg">
-                    te dejo varios informes reales (con los nombres modificados
-                    para privacidad) para que veas como trabajo y que puedes
-                    esperar de una consulta individual conmigo
+                    <q-icon name="fa fa-long-arrow-right" class="q-ml-md" />
+                </q-btn>
+            </div>
+        </div>
+        <div class="row container q-py-xl">
+            <div class="col text-center">
+                <p>
+                    no necesitas vivir desde tu miedo, tu programacion o tu
+                    pasado <br />
+                    puedes transformarlo <br />
+                    y puedes hacerlo ahora
                 </p>
+                <q-btn
+                    rounded
+                    color="black"
+                    label="mi enfoque"
+                    no-caps
+                    class="q-mt-md"
+                    href="/mi_enfoque"
+                >
+                    <q-icon name="fa fa-long-arrow-right" class="q-ml-md" />
+                </q-btn>
             </div>
         </div>
     </Layout>
@@ -329,8 +342,8 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
 import Layout from "../../layouts/MainLayout.vue";
-import { useQuasar } from "quasar";
-import { computed } from "vue";
+import { Screen, useQuasar } from "quasar";
+import { computed, ref } from "vue";
 import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
 
@@ -343,6 +356,57 @@ const $q = useQuasar();
 const screen = computed(() => {
     return $q.screen;
 });
+
+const workList = ref([
+    {
+        icon: "icono_reloj.png",
+        title: "consulta sin reloj",
+        description:
+            "no hay prisa. podemos estar una hora o cinco. llegamos juntos donde haya que llegar",
+    },
+    {
+        icon: "icono_manos.png",
+        title: "acompañamiento entre sesiones",
+        description:
+            "no te dejo solo. tienes contacto directo conmigo para sostener tu proceso emocional y tus pasos",
+    },
+    {
+        icon: "icono_informe.png",
+        title: "informe personal detallado",
+        description:
+            "recibes un informe con tu mapa emocional, tus creencias, tus avances y los pasos claros a seguir",
+    },
+    {
+        icon: "icono_ojo.png",
+        title: "trabajo emocional + inconsciente",
+        description:
+            "integro emocion, inconsciente y verdad interior para que te entiendas, te liberes y cambies tu vida desde dentro",
+    },
+    {
+        icon: "icono_calendario.png",
+        title: "proceso personalizado (normalmente 3 meses)",
+        description:
+            "tiempo suficiente para trasformar tu programacion y hacerte autonomo, aunque el ritmo se adapta a tu momento y circunstancias",
+    },
+]);
+
+const staticTestimonies = [
+    {
+        user: "Carmen",
+        description:
+            "Conocí a María en el que creí que era el peor momento de mi vida: la muerte de mi padre. Sin embargo, la vida me sorprendió poniéndome frente a una persona que, con sus palabras y experiencias, me ayudó a despertar y a superar traumas del pasado que ni siquiera recordaba.",
+    },
+    {
+        user: "Cristina",
+        description:
+            "María me ha enseñado todo lo increíble que puede ser la vida. Sin frenos, cargada de emociones y conociéndose a uno mismo hasta el mas profundo recobeco del alma.",
+    },
+    {
+        user: "Marcos",
+        description:
+            "No soy de leer libros, pero sí soy de escuchar. desde hace años, mi madre me habla de cómo creamos nuestra realidad, de cómo el miedo nos frena y de cómo, cuando uno se atreve a vivir, la vida se transforma.",
+    },
+];
 </script>
 <style scope>
 .bg-mariposas {

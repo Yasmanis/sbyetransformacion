@@ -294,7 +294,7 @@ function toggleLeftDrawer() {
 
 const links = ref([
     {
-        title: "vivir en plenitud",
+        title: "sbye transformacion",
         url: "/",
     },
     {
