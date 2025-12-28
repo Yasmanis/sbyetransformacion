@@ -188,6 +188,7 @@
                     label="ver informes completos"
                     no-caps
                     class="q-mt-md"
+                    href="/publicaciones/12"
                 >
                     <q-icon name="fa fa-long-arrow-right" class="q-ml-md" />
                 </q-btn>
