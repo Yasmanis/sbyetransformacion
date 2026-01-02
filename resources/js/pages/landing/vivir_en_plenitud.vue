@@ -446,13 +446,13 @@
             </div>
             <q-carousel
                 v-model="slide"
-                swipeable
                 animated
-                arrows
                 padding
-                navigation
+                :arrows="!Screen.xs"
+                :navigation="Screen.xs"
                 :prev-icon="`img:${$page.props.public_path}images/icon/left.png`"
                 :next-icon="`img:${$page.props.public_path}images/icon/right.png`"
+                control-color="primary"
                 style="height: auto"
             >
                 <q-carousel-slide
@@ -471,7 +471,9 @@
                                 class="my-card rounded-borders bg-primary text-white"
                                 style="border-radius: 30px !important"
                             >
-                                <q-card-section class="q-pa-xl">
+                                <q-card-section
+                                    :class="Screen.xs ? '' : 'q-pa-xl'"
+                                >
                                     <div class="row q-col-gutter-lg">
                                         <div
                                             class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6"
@@ -488,10 +490,16 @@
                                         >
                                             <video-player
                                                 :src="`${$page.props.public_path}media/${slide.video}`"
-                                                controls
                                                 aspectRatio="1:1"
                                                 :volume="0.6"
+                                                controls
                                                 class="full-width"
+                                                :options="{
+                                                    controlBar: {
+                                                        pictureInPictureToggle:
+                                                            !Screen.xs,
+                                                    },
+                                                }"
                                             />
                                         </div>
                                     </div>
@@ -502,7 +510,7 @@
                 </q-carousel-slide>
             </q-carousel>
             <div class="column full-width">
-                <p class="text-center text-white">
+                <p class="text-center">
                     cada experiencia, cada vinculo y cada sombra nos invita a
                     recordar <br />
                     que el verdadero amor comienza en nosotros

@@ -18,16 +18,17 @@
                 style="font-size: 18px; line-height: 1.5"
             >
                 <p class="text-bold">3 meses de transformacion real</p>
-                <p class="text-center q-mb-xl">
-                    vive un proceso profundo, acompañado, continuo libera,
-                    desprograma y aprende a guiarte por ti mismo
+                <p class="text-center q-mb-lg">
+                    vive un proceso profundo, acompañado, continuo <br />
+                    libera, desprograma y aprende a guiarte por ti mismo
                 </p>
                 <q-btn
                     rounded
                     color="black"
                     label="quiero reservar plaza"
                     no-caps
-                    class="q-mt-md"
+                    class="q-mb-lg"
+                    href="/contactame"
                 >
                     <q-icon name="fa fa-long-arrow-right" class="q-ml-md" />
                 </q-btn>
@@ -40,10 +41,7 @@
                 <h6 class="text-lowercase q-mb-md">
                     que es este taller y por que es diferente
                 </h6>
-                <p>
-                    este taller no es un curso grabado ni un espacio teoricocomo
-                    trabajaremos juntos
-                </p>
+                <p>este taller no es un curso grabado ni un espacio teorico</p>
                 <p>
                     es un proceso de 3 meses, en vivo, donde trabajamos juntos
                     tu programa interno: emociones atrapadas, creencias
@@ -194,9 +192,9 @@
                 </q-btn>
             </div>
         </div>
-        <div class="row container">
+        <div class="row container q-mt-xl">
             <div class="col-12">
-                <h6 class="text-lowercase q-mb-md text-white">
+                <h6 class="text-lowercase q-mb-md">
                     convertirte en facilitador
                 </h6>
                 <p>quieres formarte como facilitador de procesos personales?</p>
@@ -224,7 +222,7 @@
                 <hr style="height: 1px" class="bg-grey-6" />
             </div>
         </div>
-        <div class="row container q-pb-lg q-col-gutter-xl q-py-lg">
+        <div class="row container q-col-gutter-xl q-py-lg q-mb-lg">
             <div
                 class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12 self-center"
             >
@@ -334,6 +332,7 @@
                     label="quiero reservar"
                     no-caps
                     class="q-mt-lg"
+                    href="/contactame"
                 >
                     <q-icon name="fa fa-long-arrow-right" class="q-ml-md" />
                 </q-btn>

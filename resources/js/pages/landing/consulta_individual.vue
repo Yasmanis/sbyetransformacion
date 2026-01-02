@@ -52,20 +52,44 @@
                 <h6 class="text-lowercase text-white q-mb-md">como trabajo?</h6>
                 <p>mi manera de acompañarte es diferente</p>
                 <q-list>
-                    <q-item v-for="w in workList" :key="`work-${w.title}`">
-                        <q-item-section avatar>
-                            <q-icon
-                                size="md"
-                                :name="`img:${$page.props.public_path}images/icon/${w.icon}`"
-                            />
-                        </q-item-section>
-                        <q-item-section style="max-width: 250px">
-                            <q-item-label>{{ w.title }}</q-item-label>
-                        </q-item-section>
-                        <q-item-section>
-                            <q-item-label>{{ w.description }}</q-item-label>
-                        </q-item-section>
-                    </q-item>
+                    <template v-for="w in workList" :key="`work-${w.title}`">
+                        <q-item v-if="!Screen.xs">
+                            <q-item-section avatar>
+                                <q-icon
+                                    size="md"
+                                    :name="`img:${$page.props.public_path}images/icon/${w.icon}`"
+                                />
+                            </q-item-section>
+                            <q-item-section style="max-width: 250px">
+                                <q-item-label>{{ w.title }}</q-item-label>
+                            </q-item-section>
+                            <q-item-section>
+                                <q-item-label>{{ w.description }}</q-item-label>
+                            </q-item-section>
+                        </q-item>
+                        <template v-else>
+                            <q-item>
+                                <q-item-section avatar>
+                                    <q-icon
+                                        size="md"
+                                        :name="`img:${$page.props.public_path}images/icon/${w.icon}`"
+                                    />
+                                </q-item-section>
+                                <q-item-section style="max-width: 250px">
+                                    <q-item-label class="text-bold">{{
+                                        w.title
+                                    }}</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label>{{
+                                        w.description
+                                    }}</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                        </template>
+                    </template>
                 </q-list>
             </div>
         </div>
@@ -107,15 +131,19 @@
         </div>
         <div class="row container tems-center">
             <div
-                class="col-xl-6 col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12 self-center text-center"
+                class="col-xl-6 col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12 text-center"
+                :class="!Screen.xs && !Screen.sm ? 'q-px-xl' : 'q-pb-lg'"
             >
-                <img
-                    :src="`${$page.props.public_path}images/others/consulta_individual.png`"
-                    style="width: 60%"
+                <video-player
+                    :src="`${$page.props.public_path}media/consulta-individual.mp4`"
+                    :poster="`${$page.props.public_path}images/others/consulta_individual.png`"
+                    controls
+                    :volume="0.6"
+                    aspectRatio="4:3"
                 />
             </div>
             <div
-                class="col-xl-6 col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12"
+                class="col-xl-6 col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12 self-center"
             >
                 <h6 class="text-lowercase q-mb-md">el proceso completo</h6>
                 <p>como trabajaremos juntos</p>
@@ -340,7 +368,6 @@
 </template>
 
 <script setup>
-import { Link } from "@inertiajs/vue3";
 import Layout from "../../layouts/MainLayout.vue";
 import { Screen, useQuasar } from "quasar";
 import { computed, ref } from "vue";

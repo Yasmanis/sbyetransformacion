@@ -69,22 +69,16 @@ const privateArea = {
     type: "boolean",
 };
 
-const searchFields = [
-    name,
-    // subtitle
-];
+const searchFields = [name, subtitle];
 
-const filterFields = [
-    // publicAccess,
-    // privateArea
-];
+const filterFields = [publicAccess, privateArea];
 
 const columns = [
     name,
-    //subtitle,
-    // description,
-    // publicAccess,
-    // privateArea,
+    subtitle,
+    description,
+    publicAccess,
+    privateArea,
     {
         field: "actions",
         name: "actions",
@@ -94,11 +88,5 @@ const columns = [
     },
 ];
 
-const fields = [
-    name,
-    // subtitle,
-    // description,
-    // publicAccess,
-    // privateArea,
-];
+const fields = [name, subtitle, description, publicAccess, privateArea];
 </script>

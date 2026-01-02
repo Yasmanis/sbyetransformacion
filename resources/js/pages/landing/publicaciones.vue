@@ -17,7 +17,7 @@
             class="row container q-mt-xl"
             :style="{ 'padding-top': screen.xs || screen.sm ? '40px' : '' }"
         >
-            <!-- <div class="col-12 q-pb-md">
+            <div class="col-12 q-pb-md">
                 <h4 class="q-mb-sm">{{ currentCategory.name }}</h4>
                 <h6
                     class="text-lowercase q-mb-md"
@@ -30,25 +30,7 @@
                     v-html="currentCategory.description"
                 >
                 </span>
-            </div> -->
-            <!-- <div
-                class="col-12 text-center q-pb-md"
-                v-if="currentCategory.name === 'para prensa'"
-            >
-                <p>
-                    “en este espacio encontraras informacion destinada a medios
-                    de comunicacion, prensa y colaboraciones
-                </p>
-                <p>
-                    aqui podras acceder a mi dossier de prensa, biografia,
-                    fotografias oficiales y material audiovisual sobre mis
-                    conferencias, libros y proyectos
-                </p>
-                <p>
-                    si deseas contactar conmigo para entrevistas, artículos o
-                    colaboraciones, puedes hacerlo a traves de contactame”
-                </p>
-            </div> -->
+            </div>
             <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                 <files-category-component :category="currentCategory" />
                 <div
@@ -251,11 +233,6 @@ const getDate = (dd) => {
     margin-top: 5px !important;
     margin-left: 83px;
     z-index: 9;
-}
-
-.q-field__control::before,
-.q-field__control::after {
-    border: 0.5px solid !important;
 }
 
 .q-textarea .q-field__native {

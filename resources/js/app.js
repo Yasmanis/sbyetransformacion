@@ -68,49 +68,36 @@ createInertiaApp({
 
 const page = usePage();
 
-router.on("success", (event) => {
-    if (!router.page.props.exclude_flash) {
-        setMessages();
+router.on("success", () => {
+    const page = usePage();
+    if (!page.props.exclude_flash) {
+        handleFlashMessages(page);
     }
 });
 
-router.on("error", (event) => {
-    setMessages();
-});
+router.on("error", () => handleFlashMessages(usePage()));
 
 router.on("start", (event) => {
-    const routes = [
-        // "/",
-        // "/consulta_individual",
-        // "/taller_online",
-        // "/publicaciones",
-        // "/contactame",
-        //"/contacts/store",
-        "/admin/schooltopics/update-video-percentaje-to-user",
-    ];
+    const routes = ["/admin/schooltopics/update-video-percentaje-to-user"];
     if (!routes.includes(event.detail.visit.url.pathname)) {
         Loading.show();
     }
 });
 
-router.on("progress", (event) => {});
+router.on("finish", () => Loading.hide());
 
-router.on("finish", (event) => {
-    Loading.hide();
-});
-
-const setMessages = () => {
+const handleFlashMessages = (page) => {
     if (page.props.flash_error) {
         error(page.props.flash_error);
     } else if (page.props.flash_success) {
         success(page.props.flash_success);
-    } else if (Object.keys(page.props.errors).length > 0) {
+    } else if (Object.keys(page.props.errors || {}).length > 0) {
         errorValidation();
     }
 };
 
-var pusher = new Pusher("e63f90f776ecf0234b4e", {
-    cluster: "us2",
+var pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
     channelAuthorization: {
         endpoint: "/pusher/auth",
     },

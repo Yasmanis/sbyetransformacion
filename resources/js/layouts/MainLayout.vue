@@ -1,78 +1,72 @@
 <template>
     <q-layout view="hHh lpR fff">
-        <q-header class="bg-primary text-white container" v-if="header">
-            <q-toolbar class="q-px-none q-pt-md">
-                <q-toolbar-title :shrink="!screen.xs && !screen.sm">
+        <q-header class="bg-primary container text-white" v-if="header">
+            <q-toolbar class="no-wrap">
+                <q-toolbar-title shrink class="q-py-sm">
                     <img
                         :src="`${$page.props.public_path}images/logo/1.png`"
                         width="180px"
+                        style="display: block"
                     />
                 </q-toolbar-title>
                 <div
-                    class="q-gutter-lg"
-                    style="flex: 1; display: flex; justify-content: center"
-                    v-if="!screen.xs && !screen.sm"
+                    class="row no-wrap items-center justify-end"
+                    style="flex: 1; overflow: hidden"
                 >
-                    <Link
-                        v-for="(l, index) in links"
-                        :key="`index-link-${index}`"
-                        :href="l.url"
-                        class="text-white"
-                        >{{ l.title }}</Link
-                    >
+                    <q-resize-observer @resize="calculateVisible" />
+
+                    <div class="row no-wrap q-gutter-x-xs justify-end">
+                        <q-btn
+                            v-for="(link, index) in visibleLinks"
+                            :key="index"
+                            no-wrap
+                            no-caps
+                            :flat="link.flat"
+                            :color="link.color"
+                            :label="link.label"
+                            :rounded="link.rounded"
+                            @click="router.get(link.url)"
+                        >
+                            <q-icon
+                                :name="link.icon"
+                                size="xs"
+                                class="q-ml-md"
+                                v-if="link.icon"
+                            />
+                        </q-btn>
+
+                        <q-btn-dropdown
+                            v-if="hiddenLinks.length > 0"
+                            flat
+                            auto-close
+                            no-caps
+                            dropdown-icon="menu"
+                        >
+                            <q-list style="min-width: 150px">
+                                <q-item
+                                    v-for="(link, index) in hiddenLinks"
+                                    :key="index"
+                                    clickable
+                                    @click="router.get(link.url)"
+                                >
+                                    <q-item-section>{{
+                                        link.label
+                                    }}</q-item-section>
+                                </q-item>
+                            </q-list>
+                        </q-btn-dropdown>
+                    </div>
                 </div>
-                <q-btn
-                    flat
-                    round
-                    dense
-                    icon="menu"
-                    v-if="screen.xs || screen.sm"
-                >
-                    <q-menu style="min-width: 300px">
-                        <q-list separator>
-                            <q-item
-                                clickable
-                                v-for="(l, indexItem) in links"
-                                :key="`index-item-${indexItem}`"
-                                @click="router.get(l.url)"
-                            >
-                                <q-item-section>{{ l.title }}</q-item-section>
-                            </q-item>
-                            <q-item
-                                clickable
-                                @click="
-                                    router.get(
-                                        authenticated ? '/admin' : '/login'
-                                    )
-                                "
-                            >
-                                <q-item-section> area privada </q-item-section>
-                            </q-item>
-                        </q-list>
-                    </q-menu>
-                </q-btn>
-                <q-btn
-                    no-caps
-                    color="black"
-                    rounded
-                    label="area privada"
-                    :href="authenticated ? '/admin' : '/login'"
-                    v-else
-                >
-                    <q-icon
-                        name="fa fa-long-arrow-right"
-                        size="xs"
-                        class="q-ml-md"
-                    />
-                </q-btn>
             </q-toolbar>
-            <p
-                class="text-center text-uppercase"
-                style="font-size: 24px"
-                v-if="title"
-            >
-                {{ title }}
-            </p>
+            <q-item class="bg-primary text-white" v-if="title">
+                <q-item-section>
+                    <q-item-label
+                        class="text-center text-uppercase"
+                        style="font-size: 24px"
+                        >{{ title }}
+                    </q-item-label>
+                </q-item-section>
+            </q-item>
         </q-header>
 
         <q-page-container>
@@ -200,10 +194,7 @@
                                     ><br />
                                 </span>
                             </div>
-                        </div>
-                    </div>
-                    <div class="column q-mt-md">
-                        <div>
+                            <br />
                             <Link href="/contactame" class="text-white"
                                 >contacto</Link
                             >
@@ -228,7 +219,7 @@
 <script setup>
 import QBtnComponent from "../components/base/QBtnComponent.vue";
 import { router } from "@inertiajs/vue3";
-import { ref, computed, onBeforeMount } from "vue";
+import { ref, computed, onBeforeMount, onMounted } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
 import { Screen, useQuasar } from "quasar";
 import axios from "axios";
@@ -247,36 +238,7 @@ const props = defineProps({
 
 const $q = useQuasar();
 
-const allCategories = ref([
-    {
-        name: "testimonios",
-        id: null,
-    },
-    {
-        name: "en los medios",
-        id: null,
-    },
-    {
-        name: "conferencias",
-        id: null,
-    },
-    {
-        name: "post",
-        id: null,
-    },
-    {
-        name: "newsletters",
-        id: null,
-    },
-    {
-        name: "archivos asociados al libro",
-        id: null,
-    },
-    {
-        name: "para prensa y medios",
-        id: null,
-    },
-]);
+const allCategories = ref([]);
 
 const allCourses = ref([
     { name: "curso aprender a liberar emocionalmente", id: null },
@@ -288,10 +250,7 @@ const activeCourses = ref([]);
 onBeforeMount(async () => {
     await axios.get("/shared_data").then((response) => {
         const { categories, courses } = response.data;
-        allCategories.value.forEach((c) => {
-            let found = categories.find((cc) => cc.name === c.name);
-            c.id = found?.id ?? null;
-        });
+        allCategories.value = categories;
         allCourses.value.forEach((c) => {
             let found = courses.find((cc) => `curso ${cc.name}` === c.name);
             c.id = found?.id ?? null;
@@ -299,48 +258,114 @@ onBeforeMount(async () => {
     });
 });
 
-const screen = computed(() => {
-    return $q.screen;
+onMounted(() => {
+    const dummy = document.createElement("div");
+    dummy.style.cssText =
+        "visibility:hidden; position:absolute; display:flex; white-space:nowrap;";
+    document.body.appendChild(dummy);
+
+    links.forEach((link) => {
+        const el = document.createElement("button");
+        el.className = "q-btn q-btn--flat q-btn--no-uppercase q-py-none";
+        el.innerHTML = `<span class="q-btn__content">${link.label}</span>`;
+        dummy.appendChild(el);
+        buttonWidths.push(el.offsetWidth + 8);
+    });
+    document.body.removeChild(dummy);
+    setTimeout(() => {
+        const initialWidth = document.querySelector(".justify-end").offsetWidth;
+        calculateVisible({ width: initialWidth });
+    }, 100);
 });
 
 const authenticated = computed(() => {
     return usePage().props.auth;
 });
 
-const links = ref([
+const links = [
     {
-        title: "sbye transformacion",
+        label: "sbye transformacion",
         url: "/",
+        flat: true,
+        rounded: false,
     },
     {
-        title: "maria",
+        label: "maria",
         url: "/maria",
+        flat: true,
+        rounded: false,
     },
     {
-        title: "mi enfoque",
+        label: "mi enfoque",
         url: "/mi_enfoque",
+        flat: true,
+        rounded: false,
     },
     {
-        title: "consulta individual",
+        label: "consulta individual",
         url: "/consulta_individual",
+        flat: true,
+        rounded: false,
     },
     {
-        title: "taller online",
+        label: "taller online",
         url: "/taller_online",
+        flat: true,
+        rounded: false,
     },
     {
-        title: "publicaciones",
+        label: "publicaciones",
         url: "/publicaciones",
+        flat: true,
+        rounded: false,
     },
     {
-        title: "tienda",
+        label: "tienda",
         url: "/tienda",
+        flat: true,
+        rounded: false,
     },
     {
-        title: "contactame",
+        label: "contactame",
         url: "/contactame",
+        flat: true,
+        rounded: false,
     },
-]);
+    {
+        label: "area privada",
+        url: authenticated.value ? "/admin" : "/login",
+        color: "black",
+        flat: false,
+        rounded: true,
+        icon: "fa fa-long-arrow-right",
+    },
+];
+
+const visibleCount = ref(links.length);
+const buttonWidths = [];
+
+const visibleLinks = computed(() => links.slice(0, visibleCount.value));
+const hiddenLinks = computed(() => links.slice(visibleCount.value));
+
+const calculateVisible = (size) => {
+    const containerWidth = size.width;
+    let totalWidthNeeded = 0;
+    let count = 0;
+    const moreBtnWidth = 90;
+
+    for (let i = 0; i < buttonWidths.length; i++) {
+        totalWidthNeeded += buttonWidths[i];
+        if (totalWidthNeeded + moreBtnWidth > containerWidth) break;
+        count++;
+    }
+
+    if (count === links.length - 1) {
+        const totalWithoutDropdown = totalWidthNeeded;
+        if (totalWithoutDropdown <= containerWidth) count = links.length;
+    }
+
+    visibleCount.value = count;
+};
 </script>
 <style scope>
 a {
