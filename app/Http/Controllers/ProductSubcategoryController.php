@@ -41,9 +41,13 @@ class ProductSubcategoryController extends Controller
             ]);
             $repository = new ProductSubcategoryRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            if ($request->hasFile('image')) {
-                $path = $request->image->store('products', 'public');
-                $data['image'] = $path;
+            if ($request->hasFile('black_image')) {
+                $path = $request->black_image->store('products', 'public');
+                $data['black_image'] = $path;
+            }
+            if ($request->hasFile('white_image')) {
+                $path = $request->white_image->store('products', 'public');
+                $data['white_image'] = $path;
             }
             $object = $repository->create($data);
             if (isset($request->subtitles)) {
@@ -76,23 +80,40 @@ class ProductSubcategoryController extends Controller
             ]);
             $repository = new ProductSubcategoryRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $current_image = null;
-            if ($request->hasFile('image')) {
-                $path = $request->image->store('products', 'public');
-                $data['image'] = $path;
+            $current_black_image = null;
+            if ($request->hasFile('black_image')) {
+                $path = $request->black_image->store('products', 'public');
+                $data['black_image'] = $path;
                 $object = $repository->getById($id);
-                if (isset($object->image)) {
-                    $current_image = $object->image;
+                if (isset($object->black_image)) {
+                    $current_black_image = $object->black_image;
                 }
-            } else if (!isset($request->image)) {
+            } else if (!isset($request->black_image)) {
                 $object = $repository->getById($id);
-                if (isset($object->image)) {
-                    $current_image = $object->image;
+                if (isset($object->black_image)) {
+                    $current_black_image = $object->black_image;
+                }
+            }
+            $current_white_image = null;
+            if ($request->hasFile('white_image')) {
+                $path = $request->white_image->store('products', 'public');
+                $data['white_image'] = $path;
+                $object = $repository->getById($id);
+                if (isset($object->white_image)) {
+                    $current_white_image = $object->white_image;
+                }
+            } else if (!isset($request->white_image)) {
+                $object = $repository->getById($id);
+                if (isset($object->white_image)) {
+                    $current_white_image = $object->white_image;
                 }
             }
             $repository->updateById($id, $data);
-            if (isset($current_image)) {
-                Storage::delete('public/' . $current_image);
+            if (isset($current_black_image)) {
+                Storage::delete('public/' . $current_black_image);
+            }
+            if (isset($current_white_image)) {
+                Storage::delete('public/' . $current_white_image);
             }
             return redirect()->back()->with('success', 'subcategoria modificada correctamente');
         }

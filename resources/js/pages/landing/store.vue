@@ -53,50 +53,53 @@
                         </q-menu>
                     </btn-list-component>
                 </q-item-section>
-                <q-item-section avatar>
-                    <select-field
-                        label="categoria"
-                        name="category"
-                        :model-value="category"
-                        :options="allCategories"
-                        @update="(name, val) => (category = val)"
-                    />
-                </q-item-section>
-                <q-item-section avatar>
-                    <select-field
-                        label="subcategoria"
-                        name="subcategory"
-                        :model-value="subcategory"
-                        :options="
-                            $page.props.subcategories
-                                .filter((c) => c.category_id === category)
-                                .map((s) => {
-                                    return {
-                                        ...s,
-                                        label: s.name,
-                                        value: s.id,
-                                    };
-                                }) ?? []
-                        "
-                        :disable="!category"
-                        @update="
-                            (name, val) => {
-                                subcategory = val;
-                            }
-                        "
-                    />
-                </q-item-section>
-                <q-item-section avatar>
-                    <text-field
-                        label="buscar por producto"
-                        name="search"
-                        @update="(name, val) => (query = val)"
-                    >
-                        <template #append>
-                            <q-btn-component icon="search" />
-                        </template>
-                    </text-field>
-                </q-item-section>
+                <template v-if="!Screen.xs">
+                    <q-item-section avatar>
+                        <select-field
+                            label="categoria"
+                            name="category"
+                            :model-value="category"
+                            :options="allCategories"
+                            @update="(name, val) => (category = val)"
+                        />
+                    </q-item-section>
+                    <q-item-section avatar>
+                        <select-field
+                            label="subcategoria"
+                            name="subcategory"
+                            :model-value="subcategory"
+                            :options="
+                                $page.props.subcategories
+                                    .filter((c) => c.category_id === category)
+                                    .map((s) => {
+                                        return {
+                                            ...s,
+                                            label: s.name,
+                                            value: s.id,
+                                        };
+                                    }) ?? []
+                            "
+                            :disable="!category"
+                            @update="
+                                (name, val) => {
+                                    subcategory = val;
+                                }
+                            "
+                        />
+                    </q-item-section>
+                    <q-item-section avatar>
+                        <text-field
+                            label="buscar por producto"
+                            name="search"
+                            @update="(name, val) => (query = val)"
+                        >
+                            <template #append>
+                                <q-btn-component icon="search" />
+                            </template>
+                        </text-field>
+                    </q-item-section>
+                </template>
+
                 <q-item-section />
                 <q-item-section
                     avatar
@@ -135,9 +138,77 @@
                     />
                 </q-item-section>
             </q-item>
+            <div class="row" v-if="Screen.xs">
+                <div class="col">
+                    <q-list dense>
+                        <q-item>
+                            <q-item-section>
+                                <select-field
+                                    label="categoria"
+                                    name="category"
+                                    :filterable="false"
+                                    :model-value="category"
+                                    :options="allCategories"
+                                    @update="(name, val) => (category = val)"
+                                />
+                            </q-item-section>
+                        </q-item>
+                        <q-item>
+                            <q-item-section>
+                                <select-field
+                                    label="subcategoria"
+                                    name="subcategory"
+                                    :filterable="false"
+                                    :model-value="subcategory"
+                                    :options="
+                                        $page.props.subcategories
+                                            .filter(
+                                                (c) =>
+                                                    c.category_id === category
+                                            )
+                                            .map((s) => {
+                                                return {
+                                                    ...s,
+                                                    label: s.name,
+                                                    value: s.id,
+                                                };
+                                            }) ?? []
+                                    "
+                                    :disable="!category"
+                                    @update="
+                                        (name, val) => {
+                                            subcategory = val;
+                                        }
+                                    "
+                                />
+                            </q-item-section>
+                        </q-item>
+                        <q-item>
+                            <q-item-section>
+                                <text-field
+                                    label="buscar por producto"
+                                    name="search"
+                                    @update="(name, val) => (query = val)"
+                                >
+                                    <template #append>
+                                        <q-btn-component icon="search" />
+                                    </template>
+                                </text-field>
+                            </q-item-section>
+                        </q-item>
+                    </q-list>
+                </div>
+                <div class="col-auto cursor-pointer" @click="showBasket = true">
+                    <div
+                        class="bg-primary q-mr-md"
+                        style="width: 30px; margin-top: -4px; height: 100%"
+                    ></div>
+                </div>
+            </div>
+
             <div class="row">
                 <div
-                    class="col-md-3 q-pt-lg q-pl-md"
+                    class="col col-auto q-pt-lg q-pl-md"
                     v-if="!Screen.xs && !Screen.sm"
                 >
                     <menu-component
@@ -226,7 +297,14 @@
                                                 "
                                             >
                                                 <q-icon
-                                                    :name="`img:${$page.props.public_path}storage/${subcategory.image}`"
+                                                    :name="`img:${
+                                                        $page.props.public_path
+                                                    }storage/${
+                                                        indexSubcategory % 2 ===
+                                                        0
+                                                            ? subcategory.white_image
+                                                            : subcategory.black_image
+                                                    }`"
                                                     size="20px"
                                                 />
                                             </q-item-section>

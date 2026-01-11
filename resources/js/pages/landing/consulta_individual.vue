@@ -135,7 +135,7 @@
                 :class="!Screen.xs && !Screen.sm ? 'q-px-xl' : 'q-pb-lg'"
             >
                 <video-player
-                    :src="`${$page.props.public_path}media/consulta-individual.mp4`"
+                    :src="`${$page.props.public_path}media/consulta individual sbye transformacion.mp4`"
                     :poster="`${$page.props.public_path}images/others/consulta_individual.png`"
                     controls
                     :volume="0.6"

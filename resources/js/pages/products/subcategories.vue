@@ -84,14 +84,29 @@ const subtitles = {
     type: "subtitles",
 };
 
-const image = {
-    field: "image",
-    name: "image",
-    label: "imagen",
+const black_image = {
+    field: "black_image",
+    name: "black_image",
+    label: "imagen negra",
     type: "file",
     othersProps: {
         icon: "mdi-image-outline",
-        titleIcon: "seleccionar imagen",
+        titleIcon: "seleccionar imagen negra",
+        accept: "image/*",
+        change: true,
+        helpCheck:
+            "marque esta casilla si desea reemplazar la imagen existente",
+    },
+};
+
+const white_image = {
+    field: "white_image",
+    name: "white_image",
+    label: "imagen blanca",
+    type: "file",
+    othersProps: {
+        icon: "mdi-image-outline",
+        titleIcon: "seleccionar imagen blanca",
         accept: "image/*",
         change: true,
         helpCheck:
@@ -106,9 +121,23 @@ const filterFields = [category];
 const columns = [
     {
         type: "image",
-        field: "image_path",
-        name: "image_path",
-        label: "",
+        field: "black_image_path",
+        name: "black_image_path",
+        label: "imagen negra",
+        align: "center",
+        sortable: false,
+        width: "100px",
+        othersProps: {
+            default: `${usePage().props.public_path}images/logo/${
+                Dark.isActive ? "1" : "2"
+            }.png`,
+        },
+    },
+    {
+        type: "image",
+        field: "white_image_path",
+        name: "white_image_path",
+        label: "imagen blanca",
         align: "center",
         sortable: false,
         width: "100px",
@@ -131,5 +160,13 @@ const columns = [
     },
 ];
 
-const fields = [name, category, image, description, subtitles, end_text];
+const fields = [
+    name,
+    category,
+    black_image,
+    white_image,
+    description,
+    subtitles,
+    end_text,
+];
 </script>

@@ -14,9 +14,9 @@ class ProductSubcategory extends Model
 
     protected $table = 'product_subcategory';
 
-    protected $fillable = ['name', 'image', 'category_id', 'description', 'end_text'];
+    protected $fillable = ['name', 'black_image', 'white_image', 'category_id', 'description', 'end_text'];
 
-    protected $appends = ['image_path', 'category_str', 'active_offer', 'active_discount', 'type'];
+    protected $appends = ['black_image_path', 'white_image_path', 'category_str', 'active_offer', 'active_discount', 'type'];
 
     public static function boot()
     {
@@ -53,9 +53,14 @@ class ProductSubcategory extends Model
         return $this->category->name;
     }
 
-    public function getImagePathAttribute()
+    public function getBlackImagePathAttribute()
     {
-        return isset($this->image) ? Storage::url($this->image) : null;
+        return isset($this->black_image) ? Storage::url($this->black_image) : null;
+    }
+
+    public function getWhiteImagePathAttribute()
+    {
+        return isset($this->white_image) ? Storage::url($this->white_image) : null;
     }
 
     public function getActiveOfferAttribute()

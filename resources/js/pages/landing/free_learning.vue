@@ -509,13 +509,62 @@
                             <q-item style="padding: 0">
                                 <q-item-section>
                                     <q-item-label
-                                        class="text-white bg-black text-center q-py-sm q-my-lg"
+                                        class="text-white bg-black text-center q-pt-sm q-mt-lg"
                                     >
                                         {{ p.price }} €
                                     </q-item-label></q-item-section
                                 >
                             </q-item>
                         </q-card-section>
+                        <q-card-actions align="center" class="q-py-md">
+                            <template v-if="p.product">
+                                <q-btn
+                                    color="black"
+                                    label="empezar ahora"
+                                    no-caps
+                                    rounded
+                                    @click="addProductToStorage(p.product)"
+                                    v-if="
+                                        getProductFromStorage(p.product) ===
+                                        null
+                                    "
+                                >
+                                    <q-icon
+                                        name="mdi-cart-outline"
+                                        size="xs"
+                                        class="q-ml-md"
+                                    />
+                                </q-btn>
+                                <q-btn
+                                    color="black"
+                                    label="empezar ahora"
+                                    no-caps
+                                    rounded
+                                    disable
+                                    v-else
+                                >
+                                    <q-icon
+                                        name="mdi-cart-outline"
+                                        size="xs"
+                                        class="q-ml-md"
+                                    />
+                                </q-btn>
+                            </template>
+                            <q-btn
+                                color="black"
+                                label="empezar ahora"
+                                no-caps
+                                rounded
+                                disable
+                                v-else
+                            >
+                                <q-icon
+                                    name="mdi-cart-off"
+                                    size="xs"
+                                    class="q-ml-md"
+                                />
+                            </q-btn>
+                        </q-card-actions>
                     </q-card>
                 </div>
             </div>

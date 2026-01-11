@@ -14,24 +14,27 @@
     </Head>
     <Layout title="contactame">
         <div class="row container bg-primary items-center q-pa-md">
-            <div class="col-lg-5 col-md-5 text-center">
+            <div class="col-xs-12 col-sm-12 col-lg-5 col-md-5 text-center">
                 <img
                     :src="`${$page.props.public_path}images/team/maria-contacto.png`"
                     style="width: 80%"
                 />
             </div>
-            <div class="col-lg-7 col-md-7">
+            <div class="col-xs-12 col-sm-12 col-lg-7 col-md-7">
+                <h6 class="text-lowercase text-white q-mb-md">
+                    registro para acceder a la zona privada del libro
+                </h6>
                 <div class="column self-center">
-                    <p
-                        class="text-white"
-                        :style="{
-                            'margin-top': screen.xs || screen.sm ? '-40px' : '',
-                        }"
-                    >
-                        si quieres registrarte en el area privada no olvides
-                        cubrir todos los campos para que podamos comprobar y
-                        darte de alta
+                    <p class="text-white">
+                        rellena este formulario para validar tu compra y acceder
+                        a los recursos privados del libro: videos, audios,
+                        plantillas, el libro narrado en video y contenido extra
+                        que iremos ampliando
                     </p>
+                    <p class="text-white">
+                        te responderemos por email en un plazo maximo de 24h
+                    </p>
+
                     <q-form ref="formRef" class="custom-check" greedy>
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -178,6 +181,26 @@
                                     label="contacto para que me deis de alta en el
                                                 area privada"
                                 />
+                                <div v-if="contactPrivateArea">
+                                    <p
+                                        class="text-bold q-mt-xs"
+                                        style="
+                                            padding-left: 30px;
+                                            margin-bottom: -10px !important;
+                                        "
+                                    >
+                                        para validar tu compra necesitamos
+                                    </p>
+                                    <ul
+                                        style="
+                                            margin-left: 20px !important;
+                                            margin-bottom: 0;
+                                        "
+                                    >
+                                        <li>la fecha de compra</li>
+                                        <li>el ticket o factura de amazon</li>
+                                    </ul>
+                                </div>
                             </div>
                             <div
                                 class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-right q-mt-lg"
@@ -295,14 +318,14 @@
                             >
                                 <i
                                     class="mdi mdi-asterisk text-red"
-                                    style="margin-left: 410px"
+                                    style="margin-left: 485px"
                                     v-if="!form.other_people"
                                 />
                                 <q-input
                                     v-model="form.other_people"
                                     type="text"
                                     name="other_people"
-                                    placeholder="nombre de la persona que aparece en el pedido"
+                                    placeholder="indica el nombre de la persona que aparece en el pedido"
                                     dense
                                     rounded
                                     outlined
@@ -408,6 +431,10 @@
                             multiple
                             class="hidden"
                         />
+                        <p class="text-white q-mt-md">
+                            tras enviar el formulario confirmaremos tus datos y
+                            te enviaremos tu acceso en unas horas
+                        </p>
                         <q-btn
                             rounded
                             color="black"
