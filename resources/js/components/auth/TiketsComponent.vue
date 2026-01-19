@@ -2,7 +2,7 @@
     <q-table
         row-key="id"
         :columns="columns"
-        :rows="rows"
+        :rows="$page.props.tikets"
         :loading="loading"
         :filter="filter"
         wrap-cells
@@ -10,6 +10,7 @@
         class="no-padding"
         selection="multiple"
         v-model:selected="selected"
+        color="primary"
         :rows-per-page-options="[10, 20, 30, 50, 100]"
     >
         <template v-slot:top>
@@ -29,36 +30,93 @@
                 </div>
                 <q-space />
                 <div class="col-auto q-gutter-sm q-mr-md">
-                    <btn-reload-component @click="load" />
+                    <btn-reload-component @click="router.reload()" />
+                    <delete-component
+                        :objects="selected"
+                        url="/admin/tikets"
+                        @deleted="selected = []"
+                        v-if="selected.length > 0"
+                    />
                 </div>
             </q-toolbar>
         </template>
-        <template v-slot:body-cell-description="props">
-            <q-td :class="props.row.id === highlightedId ? 'text-bold' : null">
-                <span v-html="props.row.description" class="no-padding"></span>
-            </q-td>
+
+        <template v-slot:header="props">
+            <q-tr :props="props">
+                <q-th auto-width />
+                <q-th auto-width>
+                    <q-checkbox dense v-model="props.selected" />
+                </q-th>
+                <q-th v-for="col in props.cols" :key="col.name" :props="props">
+                    {{ col.label }}
+                </q-th>
+            </q-tr>
         </template>
-        <template v-slot:body-cell-read="props">
-            <q-td>
-                <q-chip
-                    dense
-                    size="sm"
-                    style="max-width: min-content"
-                    :color="props.value ? 'black' : 'blue-2'"
-                    :text-color="props.value ? 'white' : 'black'"
-                    :icon="props.value ? 'check' : 'error'"
-                    :label="props.value ? 'Si' : 'No'"
-                />
-            </q-td>
-        </template>
-        <template v-slot:body-cell-actions="props">
-            <q-td style="width: 100px">
-                <delete-component
-                    :objects="[props.row]"
-                    url="/auth/delete-notification"
-                    @deleted="selected = []"
-                />
-            </q-td>
+
+        <template v-slot:body="props">
+            <q-tr :props="props">
+                <q-td auto-width>
+                    <q-btn
+                        round
+                        dense
+                        flat
+                        :icon="props.expand ? 'remove' : 'add'"
+                        :disable="props.row.tikets.length === 0"
+                        @click="props.expand = !props.expand"
+                    /> </q-td
+                ><q-td auto-width>
+                    <q-checkbox dense v-model="props.selected" />
+                </q-td>
+                <q-td v-for="col in props.cols" :key="col.name" :props="props">
+                    <span
+                        class="no-padding"
+                        v-html="col.value"
+                        v-if="col.name === 'description'"
+                    >
+                    </span>
+                    <q-chip
+                        dense
+                        size="sm"
+                        style="max-width: min-content"
+                        :color="props.value ? 'black' : 'blue-2'"
+                        :text-color="props.value ? 'white' : 'black'"
+                        :icon="props.value ? 'check' : 'error'"
+                        :label="props.value ? 'Si' : 'No'"
+                        v-else-if="col.name === 'read'"
+                    />
+                    <delete-component
+                        :objects="[props.row]"
+                        url="/admin/tikets"
+                        @deleted="selected = []"
+                        v-else-if="col.name === 'actions'"
+                    />
+                    <span v-else>{{ col.value }}</span>
+                </q-td>
+            </q-tr>
+            <q-tr v-show="props.expand" :props="props">
+                <q-td colspan="100%">
+                    <div class="q-px-md q-gutter-md">
+                        <q-list dense>
+                            <q-item
+                                v-for="t in props.row.tikets"
+                                :key="`tiket-${t.id}`"
+                            >
+                                <q-item-section>
+                                    <q-item-label class="text-weight-bold">{{
+                                        t.user_str
+                                    }}</q-item-label>
+                                    <q-item-label caption>
+                                        <span v-html="t.message"></span>
+                                    </q-item-label>
+                                </q-item-section>
+                                <q-item-section side top>
+                                    {{ t.date_humans }}
+                                </q-item-section>
+                            </q-item>
+                        </q-list>
+                    </div>
+                </q-td>
+            </q-tr>
         </template>
     </q-table>
 
@@ -76,12 +134,12 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import ConfirmComponent from "../base/ConfirmComponent.vue";
 import DeleteComponent from "../table/actions/DeleteComponent.vue";
 import BtnReloadComponent from "../btn/BtnReloadComponent.vue";
 import { date } from "quasar";
-import axios from "axios";
+import { router } from "@inertiajs/vue3";
 
 defineOptions({
     name: "TiketsComponent",
@@ -129,8 +187,6 @@ const columns = ref([
         align: "left",
         style: "width: 200px",
         format: (val) => {
-            console.log(val);
-
             return date.formatDate(val, "DD/MM/YYYY hh:mm a");
         },
     },
@@ -144,24 +200,6 @@ const columns = ref([
         },
     },
 ]);
-
-const rows = ref([]);
-
-onMounted(() => {
-    load();
-});
-
-const load = async () => {
-    loading.value = true;
-    axios
-        .get("/admin/tikets")
-        .then((result) => {
-            rows.value = result.data;
-        })
-        .finally(() => {
-            loading.value = false;
-        });
-};
 </script>
 <style>
 span.no-padding p {

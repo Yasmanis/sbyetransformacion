@@ -12,6 +12,8 @@ class ContactAdmin extends Model
 
     protected $fillable = ['subject', 'description'];
 
+    protected $with = ['tikets'];
+
     public static function boot()
     {
         parent::boot();
@@ -34,5 +36,10 @@ class ContactAdmin extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function tikets()
+    {
+        return $this->hasMany(TiketReply::class, 'tiket_id');
     }
 }

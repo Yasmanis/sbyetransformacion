@@ -2,12 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Notifications\DatabaseNotification;
 use Inertia\Middleware;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class HandleInertiaRequests extends Middleware
 {

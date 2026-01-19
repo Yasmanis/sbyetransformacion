@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\Models\ContactAdmin;
 use App\Models\User;
 use App\Models\UserNotifications;
 use App\Notifications\StandardNotification;
@@ -90,9 +91,11 @@ class AuthController extends Controller
 
     public function profile()
     {
-        $books = Contact::where('user_id', auth()->user()->id)->get();
+        $user = auth()->user();
+        $books = Contact::where('user_id', $user->id)->get();
         return Inertia('auth/profile', [
-            'books' => $books
+            'books' => $books,
+            'tikets' => $user->tikets()->latest()->get()
         ]);
     }
 

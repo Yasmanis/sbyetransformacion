@@ -7,6 +7,7 @@
         flat
         class="no-padding"
         selection="multiple"
+        color="primary"
         v-model:selected="selected"
         v-model:pagination="pagination"
         :rows-per-page-options="[10, 20, 30, 50, 100]"
@@ -67,7 +68,13 @@
         </template>
         <template v-slot:body-cell-actions="props">
             <q-td style="width: 120px">
-                <!-- <form-reply-component :object="props.row" /> -->
+                <form-reply-component
+                    :object="
+                        props.row.code === 'help_from_contact'
+                            ? props.row
+                            : null
+                    "
+                />
                 <btn-show-hide-component
                     titleHide="marcar como no leido"
                     titlePublic="marcar como leido"
@@ -195,8 +202,6 @@ const columns = ref([
 onMounted(() => {
     if (props.notificationFromEmail) {
         const { model, id } = props.notificationFromEmail;
-        console.log(model, id, notifications.value);
-
         const foundRecord = notifications.value.find(
             (record) => record.model === model && record.model_id === id
         );
@@ -205,26 +210,24 @@ onMounted(() => {
             const recordIndex = notifications.value.findIndex(
                 (record) => record.model === model && record.model_id === id
             );
-
             const targetPage = Math.floor(recordIndex / rowsPerPage) + 1;
-
             pagination.value.page = targetPage;
-
             highlightedId.value = foundRecord.id;
         }
-        console.log(foundRecord);
     }
 });
 
 const notifications = computed(() => {
     let notifications = [];
     usePage().props.auth.user.notifications.forEach((n) => {
-        const { title, priority, description, model, model_id } = n.data[0];
+        const { title, priority, description, model, model_id, code } =
+            n.data[0];
         notifications.push({
             id: n.id,
             type: n.type,
             title,
             priority,
+            code,
             description,
             model,
             model_id,

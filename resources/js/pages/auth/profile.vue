@@ -22,7 +22,7 @@
                         icon="mdi-book-open-page-variant-outline"
                         label="tomos adquiridos"
                     />
-                    <!-- <q-tab name="tikets" icon="mdi-send" label="tikets" /> -->
+                    <q-tab name="tikets" icon="mdi-send" label="tikets" />
                     <q-tab
                         name="notifications"
                         icon="mdi-bell-cog-outline"

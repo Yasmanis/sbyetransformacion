@@ -16,6 +16,10 @@ class BrevoService
 
     public function sendEmail($subject, $view, $params, $to = null)
     {
+        // $to = [
+        //     'email' => 'yfdezmerino91@gmail.com',
+        //     'name' => 'Yosvani'
+        // ];
         $url = 'https://api.brevo.com/v3/smtp/email';
         $html = View::make(sprintf('emails.%s', $view), $params)->render();
         $html = preg_replace('/>\s+</', '><', $html);

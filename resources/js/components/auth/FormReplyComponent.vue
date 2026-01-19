@@ -1,6 +1,5 @@
 <template>
-    <btn-reply-component @click="showDialog = true" />
-
+    <btn-reply-component :disable="!object" @click="showDialog = true" />
     <q-dialog
         v-model="showDialog"
         persistent

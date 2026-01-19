@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactAdmin;
+use App\Models\TiketReply;
 use App\Models\User;
 use App\Models\UserNotifications;
 use App\Notifications\StandardNotification;
@@ -42,5 +43,12 @@ class ContactAdminController extends Controller
         $users = User::isAdmin()->get();
         Notification::send($users, new StandardNotification($notification));
         return redirect()->back()->with('success', 'solicitud enviada correctamente');
+    }
+
+    public function destroy(Request $request)
+    {
+        $ids = $request->ids;
+        ContactAdmin::whereIn('id', $ids)->delete();
+        return redirect()->back()->with('success', count($ids) === 1 ?  'tiket eliminado correctamente' : 'tikets eliminados correctamente');
     }
 }

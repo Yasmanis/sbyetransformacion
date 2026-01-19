@@ -509,7 +509,7 @@
                             <q-item style="padding: 0">
                                 <q-item-section>
                                     <q-item-label
-                                        class="text-white bg-black text-center q-pt-sm q-mt-lg"
+                                        class="text-white bg-black text-center q-py-sm"
                                     >
                                         {{ p.price }} €
                                     </q-item-label></q-item-section

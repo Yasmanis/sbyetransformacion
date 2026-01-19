@@ -14,6 +14,10 @@ class TiketReply extends Model
 
     protected $fillable = ['tiket_id', 'message'];
 
+    protected $appends = ['user_str', 'date_humans'];
+    protected $hidden = ['user'];
+    protected $casts = ['created_at' => 'datetime'];
+
     public static function boot()
     {
         parent::boot();
@@ -41,5 +45,15 @@ class TiketReply extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getUserStrAttribute()
+    {
+        return $this->user->full_name;
+    }
+
+    public function getDateHumansAttribute()
+    {
+        return $this->created_at->diffForHumans();
     }
 }
