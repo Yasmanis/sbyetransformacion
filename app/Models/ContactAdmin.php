@@ -27,7 +27,13 @@ class ContactAdmin extends Model
             $params = [
                 'email' => $user->email,
                 'name' => $user->full_name,
-                'url' => sprintf('%s/auth/profile#%s', env('APP_URL'), base64_encode('notifications-ContactAdmin-' . $obj->id))
+                'url' => sprintf('%s/auth/profile#%s', env('APP_URL'), base64_encode(json_encode(
+                    [
+                        'tab' => 'notifications',
+                        'model' => 'ContactAdmin',
+                        'id' => $obj->id
+                    ]
+                )))
             ];
             $brevo->sendEmail('AVISO – contestar MENSAJE FORMULARIO CONTACTAR', 'admin.contact', $params);
         });

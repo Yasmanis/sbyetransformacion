@@ -2,7 +2,11 @@
     <q-table
         row-key="id"
         :columns="columns"
-        :rows="notifications"
+        :rows="
+            reads.length > 0
+                ? notifications.filter((n) => reads.includes(n.read))
+                : notifications
+        "
         wrap-cells
         flat
         class="no-padding"
@@ -14,12 +18,25 @@
     >
         <template v-slot:top>
             <q-toolbar dense>
+                <div class="col col-auto q-gutter-sm">
+                    <q-option-group
+                        name="accepted_genres"
+                        v-model="reads"
+                        :options="[
+                            { label: 'leidas', value: true },
+                            { label: 'sin leer', value: false },
+                        ]"
+                        type="checkbox"
+                        color="primary"
+                        inline
+                    />
+                </div>
                 <q-space />
                 <div class="col-auto q-gutter-sm">
                     <btn-clear-component
-                        tooltips="quitar resaltado"
+                        tooltips="quitar filtro/resaltado"
                         @click="onClear"
-                        v-if="highlightedId"
+                        v-if="highlightedId || reads.length === 1"
                     />
                     <btn-show-hide-component
                         titlePublic="marcar todas las notificaciones como leida"
@@ -81,7 +98,7 @@
                     :public="props.row.read"
                     @click="
                         router.post(
-                            `/auth/read-unread-notification/${props.row.id}`
+                            `/auth/read-unread-notification/${props.row.id}`,
                         )
                     "
                 />
@@ -108,13 +125,14 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeMount, onMounted, ref } from "vue";
 import { usePage, router } from "@inertiajs/vue3";
 import ConfirmComponent from "../base/ConfirmComponent.vue";
 import BtnShowHideComponent from "../btn/BtnShowHideComponent.vue";
 import DeleteComponent from "../table/actions/DeleteComponent.vue";
 import BtnClearComponent from "../btn/BtnClearComponent.vue";
 import FormReplyComponent from "./FormReplyComponent.vue";
+import FilterComponent from "../table/actions/FilterComponent.vue";
 
 defineOptions({
     name: "NotificationsManagerComponent",
@@ -127,6 +145,8 @@ const confirm = ref(false);
 const noti_id = ref(null);
 const selected = ref([]);
 const highlightedId = ref(false);
+const page = usePage();
+const reads = ref([true, false]);
 
 const pagination = ref({
     page: 1,
@@ -200,26 +220,34 @@ const columns = ref([
 ]);
 
 onMounted(() => {
-    if (props.notificationFromEmail) {
-        const { model, id } = props.notificationFromEmail;
-        const foundRecord = notifications.value.find(
-            (record) => record.model === model && record.model_id === id
-        );
-        if (foundRecord) {
-            const rowsPerPage = pagination.value.rowsPerPage;
-            const recordIndex = notifications.value.findIndex(
-                (record) => record.model === model && record.model_id === id
+    let hash = window.location.hash;
+    if (hash && hash.trim() !== "") {
+        hash = JSON.parse(atob(hash.substring(1)));
+        let model = hash.model,
+            id = hash.id;
+        if (model && id) {
+            const foundRecord = notifications.value.find(
+                (record) => record.model === model && record.model_id === id,
             );
-            const targetPage = Math.floor(recordIndex / rowsPerPage) + 1;
-            pagination.value.page = targetPage;
-            highlightedId.value = foundRecord.id;
+            if (foundRecord) {
+                const rowsPerPage = pagination.value.rowsPerPage;
+                const recordIndex = notifications.value.findIndex(
+                    (record) =>
+                        record.model === model && record.model_id === id,
+                );
+                const targetPage = Math.floor(recordIndex / rowsPerPage) + 1;
+                pagination.value.page = targetPage;
+                highlightedId.value = foundRecord.id;
+            }
+        } else if (hash.filters?.reads) {
+            reads.value = hash.filters?.reads;
         }
     }
 });
 
 const notifications = computed(() => {
     let notifications = [];
-    usePage().props.auth.user.notifications.forEach((n) => {
+    page.props.auth.user.notifications.forEach((n) => {
         const { title, priority, description, model, model_id, code } =
             n.data[0];
         notifications.push({
@@ -242,6 +270,7 @@ const notifications = computed(() => {
 const onClear = () => {
     highlightedId.value = null;
     window.location.hash = "";
+    reads.value = [true, false];
 };
 </script>
 <style>

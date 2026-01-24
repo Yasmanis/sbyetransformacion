@@ -132,15 +132,8 @@ const notificationFromEmail = ref(null);
 onBeforeMount(() => {
     let hash = window.location.hash;
     if (hash && hash.trim() !== "") {
-        hash = atob(hash.substring(1));
-        const temp = hash.split("-");
-        if (temp[0] === "notifications") {
-            notificationFromEmail.value = {
-                model: temp[1],
-                id: parseInt(temp[2]),
-            };
-            tab.value = "notifications";
-        }
+        hash = JSON.parse(atob(hash.substring(1)));
+        tab.value = hash.tab;
     }
 });
 

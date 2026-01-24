@@ -172,7 +172,7 @@
                         }
                     "
                 />
-                <btn-save-component />
+                <btn-save-component @click="save" />
             </q-card-actions>
         </q-card>
     </q-dialog>
@@ -317,6 +317,10 @@ const getUrlFromFile = (f) => {
 
 const onRejected = (e) => {
     error("el fichero seleccionado no es una imagen");
+};
+
+const save = () => {
+    console.log(formData.sections);
 };
 </script>
 

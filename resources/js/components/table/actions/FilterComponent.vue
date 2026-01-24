@@ -149,7 +149,7 @@ const onBeforeShow = () => {
                 setExcludesValue(f);
             } else {
                 let exist = currentFilters.value.find(
-                    (ff) => ff.name === f.name
+                    (ff) => ff.name === f.name,
                 );
                 f.value = exist ? exist.value : null;
             }
@@ -205,7 +205,7 @@ const onUpdate = (name, val, full) => {
 
 const setFilters = () => {
     let currentFilters = filters.value.filter(
-        (f) => f.value !== undefined && f.value !== null
+        (f) => f.value !== undefined && f.value !== null,
     );
     if (currentFilters.length > 0) {
         currentFilters = currentFilters.map((f) => {
@@ -220,7 +220,7 @@ const setFilters = () => {
     emit(
         "refresh-data",
         "filters",
-        currentFilters.length > 0 ? currentFilters : null
+        currentFilters.length > 0 ? currentFilters : null,
     );
 };
 </script>

@@ -7,9 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    protected $fillable = ['title', 'message', 'importance', 'message_id', 'start_at', 'end_at', 'assigned_to'];
+    protected $fillable = ['title', 'message', 'importance', 'message_id', 'start_at', 'end_at', 'assigned_to', 'periodicity'];
 
     protected $appends = ['sections_id', 'sections_str', 'assigned_to_object', 'users_id_object'];
+
+    protected $casts = [
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
+        'periodicity' => 'json'
+    ];
 
     public static function boot()
     {
@@ -19,14 +25,12 @@ class Message extends Model
             if ($user) {
                 $obj->created_by = $user->id;
             }
-            $obj->start_at = Carbon::createFromFormat('d/m/Y h:i A', $obj->start_at);
         });
         static::updating(function ($obj) {
             $user = auth()->user();
             if ($user) {
                 $obj->created_by = $user->id;
             }
-            $obj->start_at = Carbon::createFromFormat('d/m/Y h:i A', $obj->start_at);
         });
     }
 

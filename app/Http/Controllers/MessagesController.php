@@ -34,6 +34,10 @@ class MessagesController extends Controller
             } else {
                 $data['assigned_to'] = null;
             }
+            $data['start_at'] = Carbon::createFromFormat('d/m/Y h:i A', $request->start_at);
+            if (isset($request->end_at)) {
+                $data['end_at'] = Carbon::createFromFormat('d/m/Y h:i A', $request->end_at);
+            }
             $object = $repository->create($data);
             if (isset($request->sections_id)) {
                 $object->sections()->attach($request->sections_id);
@@ -61,6 +65,10 @@ class MessagesController extends Controller
                 $data['assigned_to'] = $request->assigned_to[0];
             } else {
                 $data['assigned_to'] = null;
+            }
+            $data['start_at'] = Carbon::createFromFormat('d/m/Y h:i A', $request->start_at);
+            if (isset($request->end_at)) {
+                $data['end_at'] = Carbon::createFromFormat('d/m/Y h:i A', $request->end_at);
             }
             $object = $repository->updateById($id, $data);
             if (isset($request->sections_id)) {
