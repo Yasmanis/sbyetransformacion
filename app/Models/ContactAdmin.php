@@ -30,7 +30,7 @@ class ContactAdmin extends Model
                 'url' => sprintf('%s/auth/profile#%s', env('APP_URL'), base64_encode(json_encode(
                     [
                         'tab' => 'notifications',
-                        'model' => 'ContactAdmin',
+                        'model' => ContactAdmin::class,
                         'id' => $obj->id
                     ]
                 )))

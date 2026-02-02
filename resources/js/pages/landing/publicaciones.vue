@@ -64,7 +64,11 @@
                                             ? 'q-pb-none'
                                             : 'border-dashed-bottom-1'
                                     "
-                                    :href="`${$page.props.public_path}storage/${f.path}`"
+                                    :href="
+                                        f.type === 'link'
+                                            ? f.name
+                                            : `${$page.props.public_path}storage/${f.path}`
+                                    "
                                     target="_blank"
                                     clickable
                                 >

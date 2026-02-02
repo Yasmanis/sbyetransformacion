@@ -176,7 +176,7 @@ watch(
     () => props.show,
     (n) => {
         showDialog.value = n;
-    }
+    },
 );
 
 const onStepChange = () => {
@@ -217,7 +217,7 @@ const createPayment = async () => {
             });
             if (response.data.id) {
                 const approveLink = response.data.links.find(
-                    (link) => link.rel === "approve"
+                    (link) => link.rel === "approve",
                 );
                 if (approveLink) {
                     window.location.href = approveLink.href;
@@ -225,9 +225,7 @@ const createPayment = async () => {
             }
         } catch (err) {
             error(
-                `error al crear el pago: ${
-                    err.response?.data?.message || err.message
-                }`
+                `error al crear el pago: ${err.response?.data?.error || err.message}`,
             );
         } finally {
             Loading.hide();

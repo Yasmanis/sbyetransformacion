@@ -49,15 +49,13 @@ defineOptions({
 });
 
 const props = defineProps({
-    object: {
-        type: Object,
-        required: true,
-    },
+    object: Object,
 });
 
 const showDialog = ref(false);
 const form = ref(null);
 const formData = useForm({
+    id: null,
     tiket_id: null,
     message: null,
 });
@@ -67,8 +65,9 @@ const emits = defineEmits(["success"]);
 onMounted(() => {});
 
 const onBeforeShow = () => {
-    const obj = props.object;
-    formData.tiket_id = obj.model_id;
+    const { id, model_id } = props.object;
+    formData.id = id;
+    formData.tiket_id = model_id;
 };
 
 const save = () => {

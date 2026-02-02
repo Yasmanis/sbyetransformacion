@@ -45,29 +45,35 @@ class FileController extends Controller
     public function store(Request $request)
     {
         if (auth()->user()->hasCreate('file')) {
+            $repository = new FileRepository();
+            $data = $request->only((new ($repository->model()))->getFillable());
+            try {
+                $data['public_date'] = Carbon::createFromFormat('d/m/Y', $request->public_date);
+            } catch (\Throwable $th) {
+                $data['public_date'] = null;
+            }
+            $data['public_access'] = $request->public_access == 'true' ? true : false;
             if ($request->hasFile('file')) {
-                $repository = new FileRepository();
-                $data = $request->only((new ($repository->model()))->getFillable());
-                try {
-                    $data['public_date'] = Carbon::createFromFormat('d/m/Y', $request->public_date);
-                } catch (\Throwable $th) {
-                    $data['public_date'] = null;
-                }
                 $properties = $this->getPropertiesFromFile($request->file('file'));
                 $data['name'] = $properties['originalName'];
                 $data['path'] = $properties['path'];
                 $data['type'] = $properties['type'];
                 $data['size'] = $properties['size'];
-                $data['public_access'] = $request->public_access == 'true' ? true : false;
-                $repository->create($data);
+            } else {
+                $data['type'] = 'link';
+                if ($request->hasFile('poster')) {
+                    $path = $request->file('poster')->store('files/poster', 'public');
+                    $data['poster'] = $path;
+                }
             }
+            $repository->create($data);
             return redirect()->back()->with('success', 'archivo adicionado correctamente');
         }
         return $this->deny_access($request);
     }
 
     public function update(Request $request, $id)
-    {        
+    {
         if (auth()->user()->hasUpdate('file')) {
             $repository = new FileRepository();
             $public_access = $repository->getById($id)->public_access;
@@ -75,7 +81,7 @@ class FileController extends Controller
             if (isset($request->public_date)) {
                 $data['public_date'] = Carbon::createFromFormat('d/m/Y', $request->public_date);
             }
-            $old_file= null;
+            $old_file = null;
             if ($request->hasFile('file')) {
                 $properties = $this->getPropertiesFromFile($request->file('file'));
                 $data['path'] = $properties['path'];

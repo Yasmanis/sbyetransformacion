@@ -3,9 +3,11 @@
         row-key="id"
         :columns="columns"
         :rows="
-            reads.length > 0
-                ? notifications.filter((n) => reads.includes(n.read))
-                : notifications
+            noti_id
+                ? filteredById()
+                : reads.length > 0
+                  ? filteredByReads()
+                  : notifications
         "
         wrap-cells
         flat
@@ -19,6 +21,13 @@
         <template v-slot:top>
             <q-toolbar dense>
                 <div class="col col-auto q-gutter-sm">
+                    <q-btn
+                        no-caps
+                        color="black"
+                        label="mostrar todas las notificaciones"
+                        @click="onClear"
+                        v-if="noti_id && notifications.length > 1"
+                    ></q-btn>
                     <q-option-group
                         name="accepted_genres"
                         v-model="reads"
@@ -29,6 +38,7 @@
                         type="checkbox"
                         color="primary"
                         inline
+                        v-else
                     />
                 </div>
                 <q-space />
@@ -110,29 +120,16 @@
             </q-td>
         </template>
     </q-table>
-
-    <confirm-component
-        :show="confirm"
-        @hide="confirm = false"
-        @ok="
-            router.delete(`/auth/delete-notification/${noti_id}`, {
-                onSuccess: () => {
-                    confirm = false;
-                },
-            })
-        "
-    />
 </template>
 
 <script setup>
-import { computed, onBeforeMount, onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { usePage, router } from "@inertiajs/vue3";
 import ConfirmComponent from "../base/ConfirmComponent.vue";
 import BtnShowHideComponent from "../btn/BtnShowHideComponent.vue";
 import DeleteComponent from "../table/actions/DeleteComponent.vue";
 import BtnClearComponent from "../btn/BtnClearComponent.vue";
 import FormReplyComponent from "./FormReplyComponent.vue";
-import FilterComponent from "../table/actions/FilterComponent.vue";
 
 defineOptions({
     name: "NotificationsManagerComponent",
@@ -141,7 +138,7 @@ defineOptions({
 const props = defineProps({
     notificationFromEmail: Object,
 });
-const confirm = ref(false);
+
 const noti_id = ref(null);
 const selected = ref([]);
 const highlightedId = ref(false);
@@ -224,21 +221,20 @@ onMounted(() => {
     if (hash && hash.trim() !== "") {
         hash = JSON.parse(atob(hash.substring(1)));
         let model = hash.model,
-            id = hash.id;
-        if (model && id) {
-            const foundRecord = notifications.value.find(
+            id = hash.id,
+            uniqueId = hash.filters?.uniqueId ?? null;
+        let foundRecord;
+        if (uniqueId) {
+            foundRecord = notifications.value.find(
+                (record) => record.id === uniqueId,
+            );
+        } else if (model && id) {
+            foundRecord = notifications.value.find(
                 (record) => record.model === model && record.model_id === id,
             );
-            if (foundRecord) {
-                const rowsPerPage = pagination.value.rowsPerPage;
-                const recordIndex = notifications.value.findIndex(
-                    (record) =>
-                        record.model === model && record.model_id === id,
-                );
-                const targetPage = Math.floor(recordIndex / rowsPerPage) + 1;
-                pagination.value.page = targetPage;
-                highlightedId.value = foundRecord.id;
-            }
+        }
+        if (foundRecord) {
+            noti_id.value = foundRecord.id;
         } else if (hash.filters?.reads) {
             reads.value = hash.filters?.reads;
         }
@@ -267,8 +263,17 @@ const notifications = computed(() => {
     return notifications;
 });
 
+const filteredById = () => {
+    return notifications.value.filter((n) => n.id === noti_id.value);
+};
+
+const filteredByReads = () => {
+    return notifications.value.filter((n) => reads.value.includes(n.read));
+};
+
 const onClear = () => {
     highlightedId.value = null;
+    noti_id.value = null;
     window.location.hash = "";
     reads.value = [true, false];
 };

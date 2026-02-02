@@ -194,7 +194,11 @@
                     <form-component
                         :object="props.row"
                         :title="current_module.singular_label"
-                        :fields="updateFields"
+                        :fields="
+                            props.row.type === 'link'
+                                ? updateFields.filter((f) => f.name !== 'file')
+                                : updateFields
+                        "
                         :module="current_module"
                         post-on-update
                         size="sm"
@@ -214,7 +218,7 @@
                         :public="props.row.public_access"
                         @click="
                             router.post(
-                                `${current_module.base_url}/public-access/${props.row.id}`
+                                `${current_module.base_url}/public-access/${props.row.id}`,
                             )
                         "
                         v-if="has_edit"
@@ -313,7 +317,7 @@
                                             :public="props.row.public_access"
                                             @click="
                                                 router.post(
-                                                    `${current_module.base_url}/public-access/${props.row.id}`
+                                                    `${current_module.base_url}/public-access/${props.row.id}`,
                                                 )
                                             "
                                             v-if="has_edit"
@@ -432,7 +436,7 @@ watch(
     {
         immediate: true,
         deep: true,
-    }
+    },
 );
 
 onBeforeMount(() => {
@@ -467,7 +471,7 @@ const onRequest = async (attrs) => {
         { page, rowsPerPage, search, filters, sortBy, sortDirection },
         {
             preserveState: true,
-        }
+        },
     );
 };
 </script>

@@ -27,13 +27,24 @@ class TiketReply extends Model
 
         static::created(function ($obj) {
             $brevo = new BrevoService();
-            $user = $obj->tiket()->with('user')->first();
-            $params = [
-                'email' => $user->email,
-                'name' => $user->full_name,
-                'url' => sprintf('%s/auth/profile#%s', env('APP_URL'), base64_encode('notifications-ContactAdmin-' . $obj->id))
-            ];
-            //$brevo->sendEmail('AVISO – contestar MENSAJE FORMULARIO CONTACTAR', 'admin.contact', $params);
+            $tiket = $obj->tiket()->with('user')->first();
+            if ($tiket) {
+                $user = $tiket->user;
+                $params = [
+                    'tiket' => $tiket->subject,
+                    'email' => $obj->user->email,
+                    'name' => $obj->user->full_name,
+                    'url' => sprintf('%s/auth/profile#%s', env('APP_URL'), base64_encode(json_encode([
+                        'tab' => 'notifications',
+                        'model' => TiketReply::class,
+                        'id' => $obj->id
+                    ])))
+                ];
+                $brevo->sendEmail('AVISO – respuesta FORMULARIO CONTACTAR', 'admin.reply', $params, [
+                    'email' => $user->email,
+                    'name' => $user->full_name,
+                ]);
+            }
         });
     }
 

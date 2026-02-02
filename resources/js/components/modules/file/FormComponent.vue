@@ -7,6 +7,7 @@
         persistent
         :position="position"
         :full-hight="fullHeight"
+        @before-show=""
         @show="setDefault = !setDefault"
         @hide="onHide"
     >
@@ -48,6 +49,29 @@
                         />
                     </div>
                     <div class="form-field">
+                        <select-field
+                            name="type"
+                            label="tipo"
+                            :model-value="type"
+                            :clearable="false"
+                            :othersProps="{
+                                required: true,
+                            }"
+                            :options="[
+                                {
+                                    label: 'archivo',
+                                    value: 'file',
+                                },
+                                {
+                                    label: 'link',
+                                    value: 'link',
+                                },
+                            ]"
+                            :filterable="false"
+                            @update="(name, val) => (type = val)"
+                        />
+                    </div>
+                    <div class="form-field" v-if="type === 'file'">
                         <uploader-field
                             ref="uploader"
                             label="ficheros"
@@ -59,6 +83,31 @@
                             @uploaded="onUploaded"
                         />
                     </div>
+                    <template v-else>
+                        <div class="form-field">
+                            <text-field
+                                name="name"
+                                label="link"
+                                :othersProps="{
+                                    required: 'true',
+                                    type: 'url',
+                                }"
+                                @update="onUpdateField"
+                            />
+                        </div>
+                        <div class="form-field">
+                            <file-field
+                                name="poster"
+                                label="portada"
+                                :othersProps="{
+                                    accept: 'image/*',
+                                    icon: 'mdi-image-outline',
+                                }"
+                                @update="onUpdateField"
+                            />
+                        </div>
+                    </template>
+
                     <div class="form-field">
                         <date-field
                             label="publicacion"
@@ -82,7 +131,7 @@ defineOptions({
     name: "FormComponent",
 });
 
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import BtnAddComponent from "../../btn/BtnAddComponent.vue";
 import BtnEditComponent from "../../btn/BtnEditComponent.vue";
@@ -92,7 +141,9 @@ import SelectField from "../../form/input/SelectField.vue";
 import DateField from "../../form/input/DateField.vue";
 import UploaderField from "../../form/input/UploaderField.vue";
 import CheckboxField from "../../form/input/CheckboxField.vue";
-import { usePage } from "@inertiajs/vue3";
+import FileField from "../../form/input/FileField.vue";
+import TextField from "../../form/input/TextField.vue";
+import { useForm, usePage } from "@inertiajs/vue3";
 import { success, errorValidation } from "../../../helpers/notifications";
 import { Dark } from "quasar";
 
@@ -147,11 +198,21 @@ const formFields = ref([
         name: "public_date",
         value: null,
     },
+    {
+        name: "poster",
+        value: null,
+    },
+    {
+        name: "name",
+        value: null,
+    },
 ]);
 
 const form = ref(null);
 
 const page = usePage();
+
+const type = ref("file");
 
 onMounted(() => {
     if (props.object != null) {
@@ -164,6 +225,39 @@ onMounted(() => {
         icon.value = "mdi-plus";
     }
 });
+
+watch(type, () => {
+    formFields.value
+        .filter((f) => ["poster", "name"].includes(f.name))
+        .forEach((f) => {
+            f.value = null;
+        });
+});
+
+const initForm = () => {
+    formFields.value = [
+        {
+            name: "category_id",
+            value: null,
+        },
+        {
+            name: "public_access",
+            value: false,
+        },
+        {
+            name: "public_date",
+            value: null,
+        },
+        {
+            name: "poster",
+            value: null,
+        },
+        {
+            name: "name",
+            value: null,
+        },
+    ];
+};
 
 const onHide = () => {
     setDefault.value = !setDefault.value;
@@ -178,7 +272,23 @@ const onUpdateField = (field, val, full) => {
 const save = async () => {
     form.value.validate().then((success) => {
         if (success) {
-            upload.value = true;
+            if (type.value === "file") {
+                upload.value = true;
+            } else {
+                let data = {};
+                formFields.value.forEach((f) => {
+                    data[f.name] = f.value;
+                });
+                if (data.poster !== null) {
+                    data["_method"] = "post";
+                }
+                const formData = useForm(data);
+                formData.post("/admin/files", {
+                    onSuccess: () => {
+                        showDialog.value = false;
+                    },
+                });
+            }
         } else {
             errorValidation();
         }
@@ -189,19 +299,6 @@ const onUploaded = () => {
     emits("save");
     success("fichero(s) adicionado(s) correctamente");
     showDialog.value = false;
-    formFields.value = [
-        {
-            name: "category_id",
-            value: null,
-        },
-        {
-            name: "public_access",
-            value: false,
-        },
-        {
-            name: "public_date",
-            value: null,
-        },
-    ];
+    initForm();
 };
 </script>

@@ -122,7 +122,9 @@
                                 :ratio="16 / 9"
                                 @click="
                                     open(
-                                        `${$page.props.public_path}storage/${file.path}`
+                                        file.type === 'link'
+                                            ? file.name
+                                            : `${$page.props.public_path}storage/${file.path}`,
                                     )
                                 "
                                 v-else
@@ -134,7 +136,7 @@
                                     file.name.indexOf(".") >= 0
                                         ? file.name.substring(
                                               0,
-                                              file.name.lastIndexOf(".")
+                                              file.name.lastIndexOf("."),
                                           )
                                         : file.name
                                 }}
@@ -144,7 +146,11 @@
                             >
                                 <a
                                     class="text-uppercase text-primary"
-                                    :href="`${$page.props.public_path}storage/${file.path}`"
+                                    :href="
+                                        file.type === 'link'
+                                            ? file.name
+                                            : `${$page.props.public_path}storage/${file.path}`
+                                    "
                                     target="_blank"
                                     ><small>ver</small></a
                                 >
@@ -195,7 +201,7 @@
                                     file.name.indexOf(".") >= 0
                                         ? file.name.substring(
                                               0,
-                                              file.name.lastIndexOf(".")
+                                              file.name.lastIndexOf("."),
                                           )
                                         : file.name
                                 }}

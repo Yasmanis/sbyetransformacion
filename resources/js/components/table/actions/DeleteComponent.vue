@@ -2,11 +2,14 @@
     <btn-delete-component @click="confirm = true" :disable="disable" />
     <confirm-component
         :show="confirm"
+        :cancel="cancel"
         title="confirmar eliminacion"
         :message="
-            objects.length > 1
-                ? 'confirma que deseas eliminar los objetos seleccionados'
-                : 'confirma que deseas eliminar este objeto'
+            message
+                ? message
+                : objects.length > 1
+                  ? 'confirma que deseas eliminar los objetos seleccionados'
+                  : 'confirma que deseas eliminar este objeto'
         "
         @ok="handleDelete"
         @hide="confirm = false"
@@ -43,7 +46,9 @@ const props = defineProps({
         type: Boolean,
         defaul: false,
     },
+    cancel: Boolean,
     axios: Boolean,
+    message: String,
 });
 
 const emit = defineEmits(["deleted"]);
@@ -74,7 +79,7 @@ const handleDelete = async () => {
                     emit("deleted");
                     confirm.value = false;
                 },
-            }
+            },
         );
     }
 };

@@ -37,7 +37,7 @@ class ContactAdminController extends Controller
         $notification->user_id = auth()->user()->id;
         $notification->description = $request->description;
         $notification->code = 'help_from_contact';
-        $notification->model = 'ContactAdmin';
+        $notification->model = ContactAdmin::class;
         $notification->model_id = $contact->id;
         $notification->save();
         $users = User::isAdmin()->get();

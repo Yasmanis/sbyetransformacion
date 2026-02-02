@@ -112,8 +112,11 @@ class User extends Authenticatable implements CanResetPassword
         $notifications = $this->notifications()->get();
         foreach ($notifications as $n) {
             $n['time'] = Carbon::parse($n['created_at'])->diffForHumans();
-            $user = User::find($n->notifiable_id);
-            $n['user'] = $user != null ? $user->full_name : '';
+            $id = $n['data'][0]['user_id'] ?? null;
+            if (isset($id)) {
+                $user = User::find($id);
+                $n['user'] = $user->full_name ?? '';
+            }
         }
         return $notifications;
     }

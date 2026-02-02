@@ -16,10 +16,14 @@ class BrevoService
 
     public function sendEmail($subject, $view, $params, $to = null)
     {
-        // $to = [
-        //     'email' => 'yfdezmerino91@gmail.com',
-        //     'name' => 'Yosvani'
-        // ];
+
+        // if ($to === null) {
+        //     $to = [
+        //         'email' => 'yfdezmerino91@gmail.com',
+        //         'name' => 'Yosvani'
+        //     ];
+        // }
+
         $url = 'https://api.brevo.com/v3/smtp/email';
         $html = View::make(sprintf('emails.%s', $view), $params)->render();
         $html = preg_replace('/>\s+</', '><', $html);
@@ -39,14 +43,20 @@ class BrevoService
             'htmlContent' => $html,
             'tags' => ['transactional']
         ];
-        $response = Http::withHeaders([
-            'api-key' => $this->apiKey,
-            'Content-Type' => 'application/json',
-        ])->withOptions(['verify' => false])->post($url, $data);
-        if ($response->successful()) {
-            return ['success' => true, 'data' => $response->json()];
-        } else {
-            return ['success' => false, 'error' => $response->json()];
+
+        try {
+            $response = Http::withHeaders([
+                'api-key' => $this->apiKey,
+                'Content-Type' => 'application/json',
+            ])->withOptions(['verify' => false])->post($url, $data);
+
+            if ($response->successful()) {
+                return ['success' => true, 'data' => $response->json()];
+            } else {
+                return ['success' => false, 'error' => $response->json()];
+            }
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
         }
     }
 }

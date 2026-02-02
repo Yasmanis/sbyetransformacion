@@ -17,7 +17,7 @@
             transition-hide="scale"
         >
             <q-card flat>
-                <q-card-section>
+                <q-card-section class="bg-custom-blue">
                     <div class="text-h6">
                         usted tiene
                         {{

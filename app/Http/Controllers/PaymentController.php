@@ -51,7 +51,6 @@ class PaymentController extends Controller
         if ($amount > 0) {
 
             $response = $this->paypalService->createOrder($request->amount, $method, $information);
-
             if (isset($response['id']) && $response['status'] === 'CREATED') {
                 $object = Payment::create([
                     'user_id' => auth()->id(),
@@ -70,6 +69,8 @@ class PaymentController extends Controller
 
                 session(['source_url' => url()->previous()]);
                 return $response;
+            } else if (isset($response['error'])) {
+                return response()->json(['error' => $response['error']['message'] ?? $response['error']], 500);
             }
         }
 

@@ -32,14 +32,23 @@
         </q-item-section>
 
         <q-item-section avatar>
+            <form-reply-component
+                :object="
+                    notification.data[0].code === 'help_from_contact'
+                        ? {
+                              id: notification.id,
+                              model_id: notification.data[0].model_id,
+                          }
+                        : null
+                "
+            />
+        </q-item-section>
+
+        <q-item-section avatar>
             <btn-show-hide-component
                 :public="false"
-                titlePublic="marcar como leida"
-                @click="
-                    router.post(
-                        `/auth/read-unread-notification/${notification.id}`
-                    )
-                "
+                titlePublic="ver"
+                @click="router.visit(`/auth/profile#${getStr(notification)}`)"
             />
         </q-item-section>
     </q-item>
@@ -47,6 +56,7 @@
 
 <script setup>
 import BtnShowHideComponent from "../btn/BtnShowHideComponent.vue";
+import FormReplyComponent from "../auth/FormReplyComponent.vue";
 import { router } from "@inertiajs/vue3";
 
 defineOptions({
@@ -59,4 +69,15 @@ defineProps({
         required: true,
     },
 });
+
+const getStr = (n) => {
+    return btoa(
+        JSON.stringify({
+            tab: "notifications",
+            filters: {
+                uniqueId: n.id,
+            },
+        }),
+    );
+};
 </script>

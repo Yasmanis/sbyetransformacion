@@ -43,7 +43,6 @@
 
         <template v-slot:header="props">
             <q-tr :props="props">
-                <q-th auto-width />
                 <q-th auto-width>
                     <q-checkbox dense v-model="props.selected" />
                 </q-th>
@@ -56,15 +55,6 @@
         <template v-slot:body="props">
             <q-tr :props="props">
                 <q-td auto-width>
-                    <q-btn
-                        round
-                        dense
-                        flat
-                        :icon="props.expand ? 'remove' : 'add'"
-                        :disable="props.row.tikets.length === 0"
-                        @click="props.expand = !props.expand"
-                    /> </q-td
-                ><q-td auto-width>
                     <q-checkbox dense v-model="props.selected" />
                 </q-td>
                 <q-td v-for="col in props.cols" :key="col.name" :props="props">
@@ -84,12 +74,23 @@
                         :label="props.value ? 'Si' : 'No'"
                         v-else-if="col.name === 'read'"
                     />
-                    <delete-component
-                        :objects="[props.row]"
-                        url="/admin/tikets"
-                        @deleted="selected = []"
-                        v-else-if="col.name === 'actions'"
-                    />
+                    <template v-else-if="col.name === 'actions'">
+                        <btn-show-hide-component
+                            :public="props.expand"
+                            :disable="props.row.tikets.length === 0"
+                            title-public="ver respuesta"
+                            title-hide="ocultar respuesta"
+                            @click="props.expand = !props.expand"
+                        />
+                        <delete-component
+                            :objects="[props.row]"
+                            :cancel="true"
+                            message="al eliminar este tiket no podra recibir mas respuestas sobre el mismo, confirma su eliminacion"
+                            url="/admin/tikets"
+                            @deleted="selected = []"
+                        />
+                    </template>
+
                     <span v-else>{{ col.value }}</span>
                 </q-td>
             </q-tr>
@@ -119,25 +120,13 @@
             </q-tr>
         </template>
     </q-table>
-
-    <confirm-component
-        :show="confirm"
-        @hide="confirm = false"
-        @ok="
-            router.delete(`/auth/delete-notification/${noti_id}`, {
-                onSuccess: () => {
-                    confirm = false;
-                },
-            })
-        "
-    />
 </template>
 
 <script setup>
 import { ref } from "vue";
-import ConfirmComponent from "../base/ConfirmComponent.vue";
 import DeleteComponent from "../table/actions/DeleteComponent.vue";
 import BtnReloadComponent from "../btn/BtnReloadComponent.vue";
+import BtnShowHideComponent from "../btn/BtnShowHideComponent.vue";
 import { date } from "quasar";
 import { router } from "@inertiajs/vue3";
 
@@ -150,8 +139,6 @@ const props = defineProps({
 });
 
 const loading = ref(false);
-const confirm = ref(false);
-const noti_id = ref(null);
 const selected = ref([]);
 const highlightedId = ref(false);
 const filter = ref("");
