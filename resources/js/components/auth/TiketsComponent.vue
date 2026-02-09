@@ -2,7 +2,7 @@
     <q-table
         row-key="id"
         :columns="columns"
-        :rows="$page.props.tikets"
+        :rows="objectId ? filteredById() : rows"
         :loading="loading"
         :filter="filter"
         wrap-cells
@@ -29,6 +29,15 @@
                     </q-input>
                 </div>
                 <q-space />
+                <div class="col col-auto q-gutter-sm q-mr-md">
+                    <q-btn
+                        no-caps
+                        color="black"
+                        label="mostrar todos los tikets"
+                        @click="onClear"
+                        v-if="objectId && rows.length > 1"
+                    ></q-btn>
+                </div>
                 <div class="col-auto q-gutter-sm q-mr-md">
                     <btn-reload-component @click="router.reload()" />
                     <delete-component
@@ -58,12 +67,6 @@
                     <q-checkbox dense v-model="props.selected" />
                 </q-td>
                 <q-td v-for="col in props.cols" :key="col.name" :props="props">
-                    <span
-                        class="no-padding"
-                        v-html="col.value"
-                        v-if="col.name === 'description'"
-                    >
-                    </span>
                     <q-chip
                         dense
                         size="sm"
@@ -72,12 +75,12 @@
                         :text-color="props.value ? 'white' : 'black'"
                         :icon="props.value ? 'check' : 'error'"
                         :label="props.value ? 'Si' : 'No'"
-                        v-else-if="col.name === 'read'"
+                        v-if="col.name === 'read'"
                     />
                     <template v-else-if="col.name === 'actions'">
                         <btn-show-hide-component
                             :public="props.expand"
-                            :disable="props.row.tikets.length === 0"
+                            :disable="props.row.responses.length === 0"
                             title-public="ver respuesta"
                             title-hide="ocultar respuesta"
                             @click="props.expand = !props.expand"
@@ -90,31 +93,42 @@
                             @deleted="selected = []"
                         />
                     </template>
-
                     <span v-else>{{ col.value }}</span>
                 </q-td>
             </q-tr>
-            <q-tr v-show="props.expand" :props="props">
+            <q-tr :props="props">
                 <q-td colspan="100%">
-                    <div class="q-px-md q-gutter-md">
-                        <q-list dense>
-                            <q-item
-                                v-for="t in props.row.tikets"
-                                :key="`tiket-${t.id}`"
-                            >
-                                <q-item-section>
-                                    <q-item-label class="text-weight-bold">{{
-                                        t.user_str
-                                    }}</q-item-label>
-                                    <q-item-label caption>
-                                        <span v-html="t.message"></span>
-                                    </q-item-label>
-                                </q-item-section>
-                                <q-item-section side top>
-                                    {{ t.date_humans }}
-                                </q-item-section>
-                            </q-item>
-                        </q-list>
+                    <q-list style="padding-left: 35px; padding-right: 10px">
+                        <q-item class="q-my-xs">
+                            <q-item-section avatar>
+                                <q-icon name="mdi-email-outline"> </q-icon>
+                            </q-item-section>
+                            <q-item-section>
+                                <q-item-label>
+                                    <span
+                                        v-html="props.row.description"
+                                        class="no-padding"
+                                    ></span>
+                                </q-item-label>
+                            </q-item-section>
+                        </q-item>
+                        <attachments-component
+                            :attachments="props.row.attachments"
+                            base-url="/admin/tikets/download-attachment"
+                        />
+                    </q-list>
+                    <div
+                        class="row justify-center"
+                        style="padding-left: 45px; padding-right: 30px"
+                        v-if="props.row.responses.length > 0"
+                    >
+                        <div style="width: 100%">
+                            <chat-message-component
+                                :messages="props.row.responses"
+                                :from-parent="true"
+                                :has-reply="true"
+                            />
+                        </div>
                     </div>
                 </q-td>
             </q-tr>
@@ -123,12 +137,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import DeleteComponent from "../table/actions/DeleteComponent.vue";
 import BtnReloadComponent from "../btn/BtnReloadComponent.vue";
 import BtnShowHideComponent from "../btn/BtnShowHideComponent.vue";
+import AttachmentsComponent from "../others/AttachmentsComponent.vue";
+import ChatMessageComponent from "../others/ChatMessageComponent.vue";
+import FormReplyComponent from "./FormReplyComponent.vue";
 import { date } from "quasar";
-import { router } from "@inertiajs/vue3";
+import { router, usePage } from "@inertiajs/vue3";
 
 defineOptions({
     name: "TiketsComponent",
@@ -138,6 +155,7 @@ const props = defineProps({
     notificationFromEmail: Object,
 });
 
+const page = usePage();
 const loading = ref(false);
 const selected = ref([]);
 const highlightedId = ref(false);
@@ -153,26 +171,11 @@ const columns = ref([
         },
     },
     {
-        field: "description",
-        name: "description",
-        label: "mensaje",
-        align: "left",
-        classes: (row) => {
-            return row.id === highlightedId.value ? "text-bold" : null;
-        },
-    },
-    {
-        field: "attachments",
-        name: "attachments",
-        label: "adjuntos",
-        align: "left",
-    },
-    {
         field: "created_at",
         name: "created_at",
         label: "fecha",
         align: "left",
-        style: "width: 200px",
+        style: "width: 220px",
         format: (val) => {
             return date.formatDate(val, "DD/MM/YYYY hh:mm a");
         },
@@ -182,11 +185,46 @@ const columns = ref([
         name: "actions",
         label: "",
         align: "center",
+        style: "width: 150px",
         classes: (row) => {
             return row.id === highlightedId.value ? "text-bold" : null;
         },
     },
 ]);
+const objectId = ref(null);
+
+onMounted(() => {
+    let hash = window.location.hash;
+    if (hash && hash.trim() !== "") {
+        hash = JSON.parse(atob(hash.substring(1)));
+        let uniqueId = hash.filters?.uniqueId ?? null;
+        let foundRecord;
+        if (uniqueId) {
+            console.log(uniqueId, rows.value);
+
+            foundRecord = rows.value.find((record) => record.id === uniqueId);
+            console.log(foundRecord);
+
+            if (foundRecord) {
+                objectId.value = foundRecord.id;
+            }
+        }
+    }
+    console.log(rows.value);
+});
+
+const rows = computed(() => {
+    return page.props.tikets;
+});
+
+const filteredById = () => {
+    return rows.value.filter((n) => n.id === objectId.value);
+};
+
+const onClear = () => {
+    objectId.value = null;
+    window.location.hash = "";
+};
 </script>
 <style>
 span.no-padding p {

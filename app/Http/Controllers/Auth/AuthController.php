@@ -95,7 +95,7 @@ class AuthController extends Controller
         $books = Contact::where('user_id', $user->id)->get();
         return Inertia('auth/profile', [
             'books' => $books,
-            'tikets' => $user->tikets()->latest()->get()
+            'tikets' => $user->tikets
         ]);
     }
 

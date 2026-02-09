@@ -35,7 +35,25 @@
                         }"
                         @update="onUpdateField"
                     />
-                    <uploader-field label="adjuntos" name="attachments" />
+                    <uploader-field
+                        label="adjuntos"
+                        name="file"
+                        url="/admin/tikets/add-attachment"
+                        :formFields="[
+                            {
+                                name: 'id',
+                                value: tiket?.id,
+                            },
+                        ]"
+                        :noThumbnails="true"
+                        :upload="upload"
+                        @change-files="
+                            (files) => {
+                                totalFiles = files;
+                            }
+                        "
+                        @finish="onFinishUploaded"
+                    />
                 </q-form>
             </q-card-section>
             <q-separator />
@@ -59,37 +77,58 @@ import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import TextField from "../form/input/TextField.vue";
 import EditorField from "../form/input/EditorField.vue";
 import UploaderField from "../form/input/UploaderField.vue";
-import { useForm } from "@inertiajs/vue3";
-import { errorValidation, error } from "../../helpers/notifications";
+import { errorValidation, error, success } from "../../helpers/notifications";
+import { Loading } from "quasar";
+import axios from "axios";
+import { router } from "@inertiajs/vue3";
 defineOptions({
     name: "ContactComponent",
 });
 
 const showDialog = ref(false);
 const form = ref(null);
-const formData = useForm({
+const formData = ref({
     subject: null,
     description: null,
 });
+const tiket = ref(null);
+const upload = ref(false);
+const totalFiles = ref(0);
 
 const onUpdateField = (name, val) => {
-    formData[name] = val;
+    formData.value[name] = val;
 };
 
 const save = () => {
-    form.value.validate().then((success) => {
+    form.value.validate().then(async (success) => {
         if (success) {
             if (
-                formData.description === null ||
-                formData.description.trim() === ""
+                formData.value.description === null ||
+                formData.value.description.trim() === ""
             ) {
                 error("especifique en que desea que lo/la ayudemos");
             } else {
-                formData.post("/admin/tikets", {
-                    onSuccess: () => {
-                        showDialog.value = false;
-                    },
-                });
+                Loading.show();
+                await axios
+                    .post("/admin/tikets", formData.value)
+                    .then((response) => {
+                        if (response.data.success) {
+                            tiket.value = response.data.object;
+                            if (totalFiles.value === 0) {
+                                onFinishUploaded();
+                            } else {
+                                setTimeout(() => {
+                                    upload.value = true;
+                                }, 1000);
+                            }
+                        } else {
+                            error("error al tratar de enviar esta solicitud");
+                        }
+                    })
+                    .catch(() => {
+                        error("error al tratar de enviar esta solicitud");
+                        Loading.hide();
+                    });
             }
         } else {
             errorValidation();
@@ -98,7 +137,18 @@ const save = () => {
 };
 
 const onHide = () => {
-    formData.reset();
+    formData.value = {
+        subject: null,
+        description: null,
+    };
     form.value.resetValidation();
+};
+
+const onFinishUploaded = () => {
+    success("solicitud enviada correctamente");
+    Loading.hide();
+    showDialog.value = false;
+    upload.value = false;
+    router.reload({}, "preserveState");
 };
 </script>

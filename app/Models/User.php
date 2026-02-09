@@ -74,7 +74,7 @@ class User extends Authenticatable implements CanResetPassword
 
     public function tikets()
     {
-        return $this->hasMany(ContactAdmin::class, 'created_by');
+        return $this->hasMany(ContactAdmin::class, 'created_by')->whereNull('root_parent_id');
     }
 
     public function books()
@@ -112,10 +112,18 @@ class User extends Authenticatable implements CanResetPassword
         $notifications = $this->notifications()->get();
         foreach ($notifications as $n) {
             $n['time'] = Carbon::parse($n['created_at'])->diffForHumans();
-            $id = $n['data'][0]['user_id'] ?? null;
-            if (isset($id)) {
-                $user = User::find($id);
+            $data = $n['data'][0];
+            $userId = $data['user_id'] ?? null;
+            if (isset($userId)) {
+                $user = User::find($userId);
                 $n['user'] = $user->full_name ?? '';
+            }
+            if ($data['code'] === 'help_from_contact') {
+                $n['attachments'] = ContactAdminAttachment::where('contact_id', $data['model_id'])->get();
+                $n['responses'] = ContactAdmin::where('root_parent_id', $data['model_id'])->get();
+            } else {
+                $n['attachments'] = [];
+                $n['responses'] = [];
             }
         }
         return $notifications;

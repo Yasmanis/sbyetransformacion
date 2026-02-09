@@ -33,14 +33,12 @@
 
         <q-item-section avatar>
             <form-reply-component
-                :object="
+                :tiket-id="
                     notification.data[0].code === 'help_from_contact'
-                        ? {
-                              id: notification.id,
-                              model_id: notification.data[0].model_id,
-                          }
+                        ? notification.data[0].model_id
                         : null
                 "
+                target="notifications"
             />
         </q-item-section>
 
@@ -71,11 +69,22 @@ defineProps({
 });
 
 const getStr = (n) => {
+    let data = n.data[0],
+        tab = "notifications";
+    let { id, target, code, row_id } = data;
+    if (code === "help_from_contact") {
+        id = n.id;
+    } else if (code === "reply_contact") {
+        if (row_id) {
+            id = row_id;
+            tab = target;
+        }
+    }
     return btoa(
         JSON.stringify({
-            tab: "notifications",
+            tab: tab,
             filters: {
-                uniqueId: n.id,
+                uniqueId: id,
             },
         }),
     );

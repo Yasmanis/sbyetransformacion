@@ -3,9 +3,7 @@
 namespace App\Services;
 
 use App\Models\Country;
-use Carbon\Carbon;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
-use Illuminate\Support\Str;
 
 class PayPalService
 {
@@ -16,12 +14,19 @@ class PayPalService
         $this->provider = new PayPalClient;
         $this->provider->setApiCredentials(config('paypal'));
         $this->provider->getAccessToken();
+
+        // $token = $this->provider->getAccessToken();
+        // if (isset($token['error'])) {
+        //     dd([
+        //         'Causa' => 'Error de Autenticación',
+        //         'Detalle' => $token,
+        //         'Config_Usada' => config('paypal.mode')
+        //     ]);
+        // }
     }
 
     public function createOrder($amount, $method = null, $information = null, $currency = 'EUR')
     {
-        // $requestId = 'PAYPAL_' . Str::uuid();
-        // $this->provider->setRequestHeader('PayPal-Request-Id', $requestId);
         $config  = [
             'intent' => 'CAPTURE',
             'purchase_units' => [
@@ -37,20 +42,6 @@ class PayPalService
                 'cancel_url' => route('payment.cancel'),
                 'locale' => 'es-ES'
             ],
-            // 'payment_source' => [
-            //     'card' => [
-            //         'number' => str_replace(' ', '', $method['number']),
-            //         'expiry' => Carbon::createFromFormat('m/Y', $method['defeat'])->format('Y-m'),
-            //         'name' => $method['name'],
-            //         'billing_address' => [
-            //             "address_line_1" => $information['address'],
-            //             "admin_area_2" => $information['province'],
-            //             "postal_code" => $information['postal_code'],
-            //             "country_code" => $country->iso2
-            //         ]
-            //     ]
-            // ],
-
         ];
         if (isset($information)) {
             $country = Country::find($information['country_id']);

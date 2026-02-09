@@ -22,6 +22,35 @@
                 </div>
             </div>
 
+            <q-page-sticky
+                position="top-right"
+                :offset="[45, 148]"
+                style="z-index: 9"
+            >
+                <div
+                    class="row q-gutter-y-sm bg-primary q-pa-xs"
+                    style="
+                        border-top-left-radius: 10px;
+                        border-bottom-left-radius: 10px;
+                    "
+                >
+                    <div class="col">
+                        <my-wishes-component only-btn tooltips="mis deseos" />
+                    </div>
+
+                    <div class="col">
+                        <btn-basket-component @click="showBasket = true">
+                            <q-badge
+                                floating
+                                style="margin-top: -3px; margin-right: -5px"
+                                v-if="selectedProducts.length > 0"
+                                >{{ selectedProducts.length }}</q-badge
+                            ></btn-basket-component
+                        >
+                    </div>
+                </div>
+            </q-page-sticky>
+
             <q-toolbar>
                 <q-toolbar-title></q-toolbar-title>
                 <dialog-auth-component
@@ -105,21 +134,12 @@
                     avatar
                     style="min-width: 20px; width: 30px; padding: 0"
                 >
-                    <my-wishes-component only-btn tooltips="mis deseos" />
                 </q-item-section>
                 <q-item-section
                     avatar
                     class="q-ml-sm"
                     style="min-width: 20px; width: 30px; padding: 0"
                 >
-                    <btn-basket-component @click="showBasket = true">
-                        <q-badge
-                            floating
-                            style="margin-top: -3px; margin-right: -5px"
-                            v-if="selectedProducts.length > 0"
-                            >{{ selectedProducts.length }}</q-badge
-                        ></btn-basket-component
-                    >
                 </q-item-section>
                 <q-item-section
                     avatar
@@ -164,7 +184,7 @@
                                         $page.props.subcategories
                                             .filter(
                                                 (c) =>
-                                                    c.category_id === category
+                                                    c.category_id === category,
                                             )
                                             .map((s) => {
                                                 return {
@@ -482,7 +502,7 @@ onMounted(() => {
         let subCategId = parseInt(location.hash.substring(1));
         for (let i = 0; i < categoriesList.length; i++) {
             let temp = categoriesList[i].subcategories.find(
-                (s) => s.id === subCategId
+                (s) => s.id === subCategId,
             );
             if (temp) {
                 category.value = temp.category_id;
@@ -547,7 +567,7 @@ const filter = () => {
         list.forEach((categ) => {
             categ.subcategories.forEach((subcateg) => {
                 subcateg.products = subcateg.products.filter(
-                    (p) => p.offers_or_promo
+                    (p) => p.offers_or_promo,
                 );
             });
         });
@@ -557,7 +577,7 @@ const filter = () => {
         list.forEach((cat) => {
             cat.subcategories.forEach((sub) => {
                 sub.products = sub.products.filter((p) =>
-                    p.name.toLowerCase().includes(searchTerm)
+                    p.name.toLowerCase().includes(searchTerm),
                 );
             });
         });

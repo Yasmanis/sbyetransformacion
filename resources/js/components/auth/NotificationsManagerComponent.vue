@@ -75,7 +75,7 @@
                 </div>
             </q-toolbar>
         </template>
-        <template v-slot:body-cell-description="props">
+        <!-- <template v-slot:body-cell-description="props">
             <q-td :class="props.row.id === highlightedId ? 'text-bold' : null">
                 <span v-html="props.row.description" class="no-padding"></span>
             </q-td>
@@ -94,13 +94,16 @@
             </q-td>
         </template>
         <template v-slot:body-cell-actions="props">
-            <q-td style="width: 120px">
+            <q-td style="width: 150px">
                 <form-reply-component
                     :object="
                         props.row.code === 'help_from_contact'
                             ? props.row
                             : null
                     "
+                />
+                <btn-attachment-component
+                    :disable="props.row.attachments.length === 0"
                 />
                 <btn-show-hide-component
                     titleHide="marcar como no leido"
@@ -118,6 +121,127 @@
                     @deleted="selected = []"
                 />
             </q-td>
+        </template> -->
+        <template v-slot:header="props">
+            <q-tr :props="props">
+                <q-th auto-width>
+                    <q-checkbox dense v-model="props.selected" />
+                </q-th>
+                <q-th v-for="col in props.cols" :key="col.name" :props="props">
+                    {{ col.label }}
+                </q-th>
+            </q-tr>
+        </template>
+        <template v-slot:body="props">
+            <q-tr :props="props">
+                <q-td auto-width>
+                    <q-checkbox dense v-model="props.selected" />
+                </q-td>
+                <q-td v-for="col in props.cols" :key="col.name" :props="props">
+                    <template v-if="col.name === 'title'">
+                        <!-- <span v-if="props.row.code === 'reply_contact'"
+                            >{{
+                                props.row.title.substring(
+                                    0,
+                                    props.row.title.indexOf('"'),
+                                )
+                            }}
+                            <span
+                                class="cursor-pointer text-primary"
+                                @click="
+                                    router.visit(
+                                        `/auth/profile#${getStr(props.row)}`,
+                                    )
+                                "
+                            >
+                                {{
+                                    props.row.title.substring(
+                                        props.row.title.indexOf('"'),
+                                    )
+                                }}
+                                <q-tooltip> click para ir al tiket </q-tooltip>
+                            </span>
+                        </span>
+                        <span v-else>
+                            {{ props.row.title }}
+                        </span> -->
+                        {{ props.row.title }}
+                    </template>
+
+                    <q-chip
+                        dense
+                        size="sm"
+                        style="max-width: min-content"
+                        :color="props.value ? 'black' : 'blue-2'"
+                        :text-color="props.value ? 'white' : 'black'"
+                        :icon="props.value ? 'check' : 'error'"
+                        :label="props.value ? 'Si' : 'No'"
+                        v-else-if="col.name === 'read'"
+                    />
+                    <template v-else-if="col.name === 'actions'">
+                        <form-reply-component
+                            :tiket-id="
+                                props.row.code === 'help_from_contact'
+                                    ? props.row.data[0].model_id
+                                    : null
+                            "
+                            target="notifications"
+                        />
+                        <btn-show-hide-component
+                            titleHide="marcar como no leido"
+                            titlePublic="marcar como leido"
+                            :public="props.row.read"
+                            @click="
+                                router.post(
+                                    `/auth/read-unread-notification/${props.row.id}`,
+                                )
+                            "
+                        />
+                        <delete-component
+                            :objects="[props.row]"
+                            url="/auth/delete-notification"
+                            @deleted="selected = []"
+                        />
+                    </template>
+
+                    <span v-else>{{ col.value }}</span>
+                </q-td>
+            </q-tr>
+            <q-tr :props="props" v-if="props.row.code !== 'reply_contact'">
+                <q-td colspan="100%">
+                    <q-list style="padding-left: 35px; padding-right: 10px">
+                        <q-item class="q-my-xs">
+                            <q-item-section avatar>
+                                <q-icon name="mdi-email-outline"> </q-icon>
+                            </q-item-section>
+                            <q-item-section>
+                                <q-item-label>
+                                    <span
+                                        v-html="props.row.description"
+                                        class="no-padding"
+                                    ></span>
+                                </q-item-label>
+                            </q-item-section>
+                        </q-item>
+                        <attachments-component
+                            :attachments="props.row.attachments"
+                            base-url="/admin/tikets/download-attachment"
+                        />
+                    </q-list>
+                    <div
+                        class="row justify-center"
+                        style="padding-left: 45px; padding-right: 30px"
+                        v-if="props.row.responses.length > 0"
+                    >
+                        <div style="width: 100%">
+                            <chat-message-component
+                                :messages="props.row.responses"
+                                target="notifications"
+                            />
+                        </div>
+                    </div>
+                </q-td>
+            </q-tr>
         </template>
     </q-table>
 </template>
@@ -125,11 +249,12 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { usePage, router } from "@inertiajs/vue3";
-import ConfirmComponent from "../base/ConfirmComponent.vue";
 import BtnShowHideComponent from "../btn/BtnShowHideComponent.vue";
 import DeleteComponent from "../table/actions/DeleteComponent.vue";
 import BtnClearComponent from "../btn/BtnClearComponent.vue";
 import FormReplyComponent from "./FormReplyComponent.vue";
+import AttachmentsComponent from "../others/AttachmentsComponent.vue";
+import ChatMessageComponent from "../others/ChatMessageComponent.vue";
 
 defineOptions({
     name: "NotificationsManagerComponent",
@@ -164,15 +289,6 @@ const columns = ref([
         field: "priority",
         name: "priority",
         label: "prioridad",
-        align: "left",
-        classes: (row) => {
-            return row.id === highlightedId.value ? "text-bold" : null;
-        },
-    },
-    {
-        field: "description",
-        name: "description",
-        label: "mensaje",
         align: "left",
         classes: (row) => {
             return row.id === highlightedId.value ? "text-bold" : null;
@@ -258,6 +374,9 @@ const notifications = computed(() => {
             time: n.time,
             user: n.user,
             read: n.read_at !== null,
+            attachments: n.attachments,
+            responses: n.responses,
+            data: n.data,
         });
     });
     return notifications;
@@ -276,6 +395,26 @@ const onClear = () => {
     noti_id.value = null;
     window.location.hash = "";
     reads.value = [true, false];
+};
+
+const getStr = (n) => {
+    let data = n.data[0],
+        tab = "notifications";
+    let { id, target, code, row_id } = data;
+    if (code === "reply_contact") {
+        if (row_id) {
+            id = row_id;
+            tab = target;
+        }
+    }
+    return btoa(
+        JSON.stringify({
+            tab: tab,
+            filters: {
+                uniqueId: id,
+            },
+        }),
+    );
 };
 </script>
 <style>

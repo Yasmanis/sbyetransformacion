@@ -15,6 +15,7 @@ class VerifyCsrfToken extends Middleware
         '/pusher/auth',
         '/admin/files',
         '/admin/schooltopics/addResources',
-        '/admin/schooltopics/add-attachment-message'
+        '/admin/schooltopics/add-attachment-message',
+        '/admin/tikets/add-attachment'
     ];
 }

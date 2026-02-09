@@ -51,3 +51,12 @@ Route::get('/send-email', function (Request $request) {
         return response()->json(['error' => 'Error al enviar el correo', 'details' => $result['error']], 500);
     }
 });
+
+Route::get('/debug-paypal', function () {
+    return response()->json([
+        'mode' => config('paypal.mode'),
+        'client_id' => config('paypal.live.client_id'),
+        'secret_leido' => substr(config('paypal.live.client_secret'), 0, 5) . '...',
+        'app_id' => config('paypal.live.app_id'),
+    ]);
+});

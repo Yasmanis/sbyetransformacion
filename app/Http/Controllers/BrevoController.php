@@ -25,7 +25,7 @@ class BrevoController extends Controller
         ];
         $client = new Client([
             'base_uri' => 'https://api.brevo.com/v3/contacts',
-            'verify' => false,
+            'verify' => env('VERIFY_SSL', true),
             'headers' => [
                 'api-key' => env('BREVO_API_KEY'),
                 'Content-Type' => 'application/json',

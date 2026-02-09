@@ -59,7 +59,6 @@
 import { computed } from "vue";
 import NotificationItemComponent from "./NotificationItemComponent.vue";
 import QBtnComponent from "../base/QBtnComponent.vue";
-import BtnShowHideComponent from "../btn/BtnShowHideComponent.vue";
 import { usePage, router } from "@inertiajs/vue3";
 import { Dark } from "quasar";
 

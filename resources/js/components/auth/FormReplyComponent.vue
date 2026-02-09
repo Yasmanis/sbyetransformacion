@@ -1,5 +1,5 @@
 <template>
-    <btn-reply-component :disable="!object" @click="showDialog = true" />
+    <btn-reply-component :disable="!tiketId" @click="showDialog = true" />
     <q-dialog
         v-model="showDialog"
         persistent
@@ -15,8 +15,9 @@
             />
             <q-card-section class="col q-pt-none">
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
+                    {{ formData }}
                     <editor-field
-                        name="message"
+                        name="description"
                         :othersProps="{ required: true }"
                         @update="(name, val) => (formData[name] = val)"
                     />
@@ -49,15 +50,22 @@ defineOptions({
 });
 
 const props = defineProps({
-    object: Object,
+    tiketId: {
+        type: Number,
+        default: null,
+    },
+    target: {
+        type: String,
+        default: "tikets",
+    },
 });
 
 const showDialog = ref(false);
 const form = ref(null);
 const formData = useForm({
     id: null,
-    tiket_id: null,
-    message: null,
+    description: null,
+    target: null,
 });
 
 const emits = defineEmits(["success"]);
@@ -65,15 +73,14 @@ const emits = defineEmits(["success"]);
 onMounted(() => {});
 
 const onBeforeShow = () => {
-    const { id, model_id } = props.object;
-    formData.id = id;
-    formData.tiket_id = model_id;
+    formData.id = props.tiketId;
+    formData.target = props.target;
 };
 
 const save = () => {
     form.value.validate().then((success) => {
         if (success) {
-            formData.post("/admin/tikets-reply", {
+            formData.post("/admin/tikets/reply", {
                 onSuccess: () => {
                     showDialog.value = false;
                 },

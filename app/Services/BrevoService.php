@@ -48,7 +48,7 @@ class BrevoService
             $response = Http::withHeaders([
                 'api-key' => $this->apiKey,
                 'Content-Type' => 'application/json',
-            ])->withOptions(['verify' => false])->post($url, $data);
+            ])->withOptions(['verify' => env('VERIFY_SSL', true)])->post($url, $data);
 
             if ($response->successful()) {
                 return ['success' => true, 'data' => $response->json()];
@@ -56,7 +56,10 @@ class BrevoService
                 return ['success' => false, 'error' => $response->json()];
             }
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            return [
+                'success' => false,
+                'error' => $th->getMessage()
+            ];
         }
     }
 }
