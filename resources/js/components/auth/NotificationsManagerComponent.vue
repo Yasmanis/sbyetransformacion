@@ -139,7 +139,7 @@
                 </q-td>
                 <q-td v-for="col in props.cols" :key="col.name" :props="props">
                     <template v-if="col.name === 'title'">
-                        <!-- <span v-if="props.row.code === 'reply_contact'"
+                        <span v-if="props.row.code === 'reply_contact'"
                             >{{
                                 props.row.title.substring(
                                     0,
@@ -164,8 +164,7 @@
                         </span>
                         <span v-else>
                             {{ props.row.title }}
-                        </span> -->
-                        {{ props.row.title }}
+                        </span>
                     </template>
 
                     <q-chip

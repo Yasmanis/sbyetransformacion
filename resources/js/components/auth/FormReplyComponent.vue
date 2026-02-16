@@ -15,7 +15,6 @@
             />
             <q-card-section class="col q-pt-none">
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
-                    {{ formData }}
                     <editor-field
                         name="description"
                         :othersProps="{ required: true }"

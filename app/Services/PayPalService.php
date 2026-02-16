@@ -14,15 +14,6 @@ class PayPalService
         $this->provider = new PayPalClient;
         $this->provider->setApiCredentials(config('paypal'));
         $this->provider->getAccessToken();
-
-        // $token = $this->provider->getAccessToken();
-        // if (isset($token['error'])) {
-        //     dd([
-        //         'Causa' => 'Error de Autenticación',
-        //         'Detalle' => $token,
-        //         'Config_Usada' => config('paypal.mode')
-        //     ]);
-        // }
     }
 
     public function createOrder($amount, $method = null, $information = null, $currency = 'EUR')

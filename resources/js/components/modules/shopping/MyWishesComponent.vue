@@ -1,7 +1,7 @@
 <template>
     <q-btn-component
         label="Mis deseos"
-        color="black"
+        :color="color"
         :flat="false"
         :round="false"
         padding="5px"
@@ -60,7 +60,12 @@ defineOptions({
     name: "MyWishesComponent",
 });
 
-const props = defineProps({});
+const props = defineProps({
+    color: {
+        type: String,
+        default: "black",
+    },
+});
 
 const showDialog = ref(false);
 </script>

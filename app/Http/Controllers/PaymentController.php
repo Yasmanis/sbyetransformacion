@@ -49,7 +49,6 @@ class PaymentController extends Controller
         }
 
         if ($amount > 0) {
-
             $response = $this->paypalService->createOrder($request->amount, $method, $information);
             if (isset($response['id']) && $response['status'] === 'CREATED') {
                 $object = Payment::create([

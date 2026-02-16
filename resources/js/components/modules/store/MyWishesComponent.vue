@@ -1,12 +1,13 @@
 <template>
     <btn-heart-component
         :tooltips="tooltips"
+        :color="color"
         @click="showDialog = true"
         v-if="onlyBtn"
     />
     <q-btn-component
         label="Mis deseos"
-        color="black"
+        :color="color"
         :flat="false"
         :round="false"
         padding="5px"
@@ -69,6 +70,10 @@ defineOptions({
 const props = defineProps({
     onlyBtn: Boolean,
     tooltips: String,
+    color: {
+        type: String,
+        default: "black",
+    },
 });
 
 const showDialog = ref(false);

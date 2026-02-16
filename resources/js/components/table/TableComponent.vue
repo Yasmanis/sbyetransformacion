@@ -409,7 +409,7 @@ watch(
     {
         immediate: true,
         deep: true,
-    }
+    },
 );
 
 onBeforeMount(() => {
@@ -444,7 +444,7 @@ const onRequest = async (attrs) => {
         { page, rowsPerPage, search, filters, sortBy, sortDirection },
         {
             preserveState: true,
-        }
+        },
     );
 };
 </script>
@@ -456,29 +456,6 @@ const onRequest = async (attrs) => {
 
 .q-table__top .q-btn {
     margin-left: 5px;
-}
-
-.doc-card-title {
-    margin-left: -24px;
-    padding: 2px 10px 2px 24px;
-    position: relative;
-    border-radius: 3px 5px 5px 0;
-}
-
-.doc-card-title:after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 0;
-    height: 0;
-    border: 0 solid transparent;
-    border-top-color: var(--q-primary);
-    border-width: 9px 0 0 11px;
-}
-
-.doc-card-title .q-icon {
-    margin-top: -3px;
 }
 
 th:nth-child(1),

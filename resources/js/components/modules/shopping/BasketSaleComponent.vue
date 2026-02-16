@@ -1,20 +1,26 @@
 <template>
-    <q-btn-component
-        :label="label"
-        :round="false"
-        :flat="false"
-        :class="class"
-        padding="5px 10px"
-        @click="showDialog = true"
-        v-if="label"
-    /><q-btn-component
-        icon="mdi-basket-plus-outline"
-        tooltips="volver a comprar"
-        :class="class"
-        @click="showDialog = true"
-        v-else
-    />
-    <q-dialog v-model="showDialog" @before-show="onBeforeShow">
+    <template v-if="showBtn">
+        <q-btn-component
+            :label="label"
+            :round="false"
+            :flat="false"
+            :class="class"
+            padding="5px 10px"
+            @click="showDialog = true"
+            v-if="label"
+        /><q-btn-component
+            icon="mdi-basket-plus-outline"
+            tooltips="volver a comprar"
+            :class="class"
+            @click="showDialog = true"
+            v-else
+        />
+    </template>
+    <q-dialog
+        v-model="showDialog"
+        @before-show="onBeforeShow"
+        @hide="emits('hide')"
+    >
         <q-card style="width: 800px; max-width: 90vw">
             <dialog-header-component
                 icon="mdi-basket"
@@ -160,7 +166,13 @@ const props = defineProps({
     label: String,
     class: String,
     show: Boolean,
+    showBtn: {
+        type: Boolean,
+        default: true,
+    },
 });
+
+const emits = defineEmits(["hide"]);
 
 const showDialog = ref(false);
 const step = ref(1);

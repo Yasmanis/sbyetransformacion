@@ -382,7 +382,7 @@ watch(
     {
         immediate: true,
         deep: true,
-    }
+    },
 );
 
 onBeforeMount(() => {
@@ -417,7 +417,7 @@ const onRequest = async (attrs) => {
         { page, rowsPerPage, search, filters, sortBy, sortDirection },
         {
             preserveState: true,
-        }
+        },
     );
 };
 </script>

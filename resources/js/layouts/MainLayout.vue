@@ -382,20 +382,6 @@ a {
     font-size: 24px;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    color: #223645;
-    font-weight: 400;
-    font-size: 21px;
-    text-transform: uppercase;
-    margin: 0;
-    line-height: 1.22;
-}
-
 .ck-editor h1,
 .ck-editor h2,
 .ck-editor h3,

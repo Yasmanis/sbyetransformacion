@@ -3,7 +3,7 @@
         :icon="onlyBtn ? 'mdi-basket' : 'mdi-chevron-double-left'"
         flat
         rounded
-        color="black"
+        :color="color"
         padding="2px"
         :style="style"
         :class="cls"
@@ -11,7 +11,7 @@
     >
         <q-badge
             floating
-            style="margin-top: -3px; margin-right: -5px"
+            style="margin-top: -3px; margin-right: -2px"
             v-if="onlyBtn && products.length > 0"
             >{{ products.length }}</q-badge
         >
@@ -25,10 +25,10 @@
         </q-tooltip>
         <q-menu
             v-model="menu"
-            :transition-show="onlyBtn ? '' : 'slide-left'"
-            :transition-hide="onlyBtn ? '' : 'slide-right'"
+            transition-show="slide-left"
+            transition-hide="slide-right"
+            :offset="offset"
             style="width: 500px"
-            :offset="[2, -38]"
             @before-show="emits('show')"
             @hide="emits('hide')"
         >
@@ -170,12 +170,20 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    color: {
+        type: String,
+        default: "black",
+    },
     style: Object,
     cls: String,
     authBtn: Boolean,
     show: Boolean,
     showPayment: Boolean,
     size: String,
+    offset: {
+        type: Array,
+        default: [12, -35],
+    },
 });
 
 const emits = defineEmits(["show", "hide", "remove-product"]);
@@ -183,6 +191,7 @@ const menu = ref(false);
 const page = usePage();
 const showAuth = ref(false);
 const showPaymentOnLogin = ref(false);
+
 onBeforeMount(() => {
     loadProductsFromStorage();
 });
@@ -198,6 +207,6 @@ watch(
             menu.value = true;
             emits("show");
         }
-    }
+    },
 );
 </script>
