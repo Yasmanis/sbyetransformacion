@@ -5,18 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductSubcategory;
-use App\Models\PushMessageConfigNotification;
-use App\Models\PushMessageFixedUser;
 use App\Models\User;
 use App\Models\UserNotifications;
 use App\Notifications\StandardNotification;
 use Illuminate\Http\Request;
-use App\Repositories\PushMessageRepository;
 use App\Services\BrevoService;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
-use Inertia\Inertia;
 
 class StoreController extends PushMessageController
 {

@@ -75,53 +75,6 @@
                 </div>
             </q-toolbar>
         </template>
-        <!-- <template v-slot:body-cell-description="props">
-            <q-td :class="props.row.id === highlightedId ? 'text-bold' : null">
-                <span v-html="props.row.description" class="no-padding"></span>
-            </q-td>
-        </template>
-        <template v-slot:body-cell-read="props">
-            <q-td>
-                <q-chip
-                    dense
-                    size="sm"
-                    style="max-width: min-content"
-                    :color="props.value ? 'black' : 'blue-2'"
-                    :text-color="props.value ? 'white' : 'black'"
-                    :icon="props.value ? 'check' : 'error'"
-                    :label="props.value ? 'Si' : 'No'"
-                />
-            </q-td>
-        </template>
-        <template v-slot:body-cell-actions="props">
-            <q-td style="width: 150px">
-                <form-reply-component
-                    :object="
-                        props.row.code === 'help_from_contact'
-                            ? props.row
-                            : null
-                    "
-                />
-                <btn-attachment-component
-                    :disable="props.row.attachments.length === 0"
-                />
-                <btn-show-hide-component
-                    titleHide="marcar como no leido"
-                    titlePublic="marcar como leido"
-                    :public="props.row.read"
-                    @click="
-                        router.post(
-                            `/auth/read-unread-notification/${props.row.id}`,
-                        )
-                    "
-                />
-                <delete-component
-                    :objects="[props.row]"
-                    url="/auth/delete-notification"
-                    @deleted="selected = []"
-                />
-            </q-td>
-        </template> -->
         <template v-slot:header="props">
             <q-tr :props="props">
                 <q-th auto-width>
@@ -160,7 +113,18 @@
                                     )
                                 }}
                                 <q-tooltip> click para ir al tiket </q-tooltip>
-                            </span>
+                            </span> </span
+                        ><span v-else-if="props.row.code === 'chat_writter'"
+                            >{{ props.row.title }}
+                            <q-btn
+                                dense
+                                size="xs"
+                                icon="mdi-arrow-right-top"
+                                color="black"
+                                :href="`/admin/${props.row.chat}`"
+                            >
+                                <q-tooltip> click para ir al chat </q-tooltip>
+                            </q-btn>
                         </span>
                         <span v-else>
                             {{ props.row.title }}
@@ -181,7 +145,7 @@
                         <form-reply-component
                             :tiket-id="
                                 props.row.code === 'help_from_contact'
-                                    ? props.row.data[0].model_id
+                                    ? parseInt(props.row.data[0].model_id)
                                     : null
                             "
                             target="notifications"
@@ -376,6 +340,7 @@ const notifications = computed(() => {
             attachments: n.attachments,
             responses: n.responses,
             data: n.data,
+            chat: n.chat,
         });
     });
     return notifications;

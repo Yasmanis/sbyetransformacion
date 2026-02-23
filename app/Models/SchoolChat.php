@@ -18,23 +18,6 @@ class SchoolChat extends Model
         'from_visible' => 'boolean'
     ];
 
-    public static function boot()
-    {
-        parent::boot();
-
-        static::created(function ($obj) {
-            $brevo = new BrevoService();
-            $user = auth()->user();
-            $params = [
-                'email' => $user->email,
-                'name' => $user->full_name,
-                'course' => $obj->topic->section->getNameByCategory(),
-                'url' => sprintf('%s/admin/school/#chat-%s-%s-%s', env('APP_URL'), $obj->id, $obj->topic_id, $obj->topic->section_id)
-            ];
-            $brevo->sendEmail('AVISO – contestar NUEVO MENSAJE DE CHAT', 'admin.chat', $params);
-        });
-    }
-
     public function getFromNameAttribute()
     {
         return $this->from->full_name;
@@ -109,7 +92,7 @@ class SchoolChat extends Model
         }
     }
 
-    public function sendNotifications($edit)
+    public function sendNotifications($edit = false)
     {
         $notification = new UserNotifications();
         $notification->title = $edit ? 'modificación de mensaje en el chat' : 'tiene un nuevo mensaje en el chat';
@@ -124,7 +107,20 @@ class SchoolChat extends Model
         $notification->model = 'SchoolChat';
         $notification->model_id = $this->id;
         $notification->save();
-        Notification::send($this->users()->get(), new StandardNotification($notification));
+        $user = auth()->user();
+        Notification::send(User::where('id', 1)->get(), new StandardNotification(
+            $notification,
+            'AVISO – contestar NUEVO MENSAJE DE CHAT',
+            'admin.chat',
+            ['database', 'brevo'],
+            [
+                'email' => $user->email,
+                'name' => $user->full_name,
+                'course' => $this->topic->section->getNameByCategory(),
+                'url' => sprintf('%s/admin/school/#chat-%s-%s-%s', env('APP_URL'), $this->id, $this->topic_id, $this->topic->section_id)
+            ]
+        ));
+
         return true;
     }
 

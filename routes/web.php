@@ -375,6 +375,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/configuration/save', [ConfigurationController::class, 'save']);
     Route::resource('/admin/tikets', ContactAdminController::class)->only(['index', 'store', 'destroy']);
     Route::post('/admin/tikets/reply', [ContactAdminController::class, 'reply']);
+    Route::post('/admin/tikets/reply/{id}', [ContactAdminController::class, 'updateReply']);
     Route::post('/admin/tikets/add-attachment', [ContactAdminController::class, 'addAttachment']);
     Route::get('/admin/tikets/download-attachment/{id}', [ContactAdminController::class, 'download']);
     Route::resource('/admin/tikets-reply', TiketReplyController::class)->only(['store']);

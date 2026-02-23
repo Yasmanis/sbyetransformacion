@@ -36,17 +36,6 @@ class ContactAdminController extends Controller
         $contact->subject = $request->subject;
         $contact->description = $request->description;
         $contact->save();
-        $notification = new UserNotifications();
-        $notification->title = 'ayuda desde contacto';
-        $notification->priority = 'Alta';
-        $notification->user_id = auth()->user()->id;
-        $notification->description = $request->description;
-        $notification->code = 'help_from_contact';
-        $notification->model = ContactAdmin::class;
-        $notification->model_id = $contact->id;
-        $notification->save();
-        $users = User::isAdmin()->get();
-        Notification::send($users, new StandardNotification($notification));
         $contact->setMessage();
         return response()->json(['success' => true, 'object' => $contact]);
     }
@@ -83,10 +72,13 @@ class ContactAdminController extends Controller
         $target = $request->target;
         $row_id = null;
         if ($exist) {
-
+            $id = $exist->root_parent_id ?? $exist->id;
             $noti = DB::table('notifications')
-                ->whereJsonContains('data', ['model_id' => $exist->root_parent_id ?? $exist->id])
                 ->whereJsonContains('data', ['model' => ContactAdmin::class])
+                ->where(function ($query) use ($id) {
+                    $query->whereJsonContains('data', ['model_id' => (string) $id])
+                        ->orWhereJsonContains('data', ['model_id' => (int) $id]);
+                })
                 ->first();
 
             if ($target === 'notifications') {
@@ -127,6 +119,17 @@ class ContactAdminController extends Controller
             return redirect()->back()->with('success', 'respuesta enviada correctamente');
         }
         return redirect()->back()->with('error', 'no se ha podido responder; el tiket ya fue eliminado por el usuario');
+    }
+
+    public function updateReply(Request $request, $id)
+    {
+        $request->validate([
+            'description' => ['required'],
+        ]);
+        $object = ContactAdmin::find($request->id);
+        $object->description = $request->description;
+        $object->save();
+        return redirect()->back()->with('success', 'respuesta editada correctamente');
     }
 
     public function destroy(Request $request)

@@ -26,7 +26,7 @@ class TiketReply extends Model
         });
 
         static::created(function ($obj) {
-            $brevo = new BrevoService();
+
             $tiket = $obj->tiket()->with('user')->first();
             if ($tiket) {
                 $user = $tiket->user;
@@ -40,6 +40,7 @@ class TiketReply extends Model
                         'id' => $obj->id
                     ])))
                 ];
+                $brevo = new BrevoService();
                 $brevo->sendEmail('AVISO – respuesta FORMULARIO CONTACTAR', 'admin.reply', $params, [
                     'email' => $user->email,
                     'name' => $user->full_name,

@@ -3,6 +3,7 @@
         :class="
             filteredBy && filteredBy.length > 0 ? 'animated pulse infinite' : ''
         "
+        :color="color"
         tooltips="filtrar"
         icon="filter_alt"
         @click="showDialog = true"
@@ -125,6 +126,7 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    color: String,
 });
 
 const emit = defineEmits(["refresh-data"]);

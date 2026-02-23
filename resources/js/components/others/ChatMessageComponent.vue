@@ -15,7 +15,17 @@
                     </q-item-label>
                 </q-item-section>
                 <q-item-section avatar v-if="hasReply && !t.send">
-                    <form-reply-component :tiket-id="t.id" :target="target" />
+                    <form-reply-component
+                        :tiket-id="parseInt(t.id)"
+                        :target="target"
+                    />
+                </q-item-section>
+                <q-item-section avatar v-if="t.send">
+                    <form-reply-component
+                        :tiket-id="parseInt(t.id)"
+                        :target="target"
+                        :object="t"
+                    />
                 </q-item-section>
             </q-item>
         </template>
@@ -27,6 +37,7 @@
 
 <script setup>
 import FormReplyComponent from "../auth/FormReplyComponent.vue";
+import BtnEditComponent from "../btn/BtnEditComponent.vue";
 const props = defineProps({
     messages: {
         type: Array,

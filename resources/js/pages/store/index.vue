@@ -14,109 +14,41 @@
                 align="left"
                 class="text-white"
             >
-                <q-tab name="sales" icon="mdi-cart" label="mis compras" />
+                <q-tab name="payments" icon="mdi-cart" label="mis compras" />
                 <q-tab name="wishes" icon="mdi-cart-heart" label="mis deseos" />
                 <q-tab name="store" icon="mdi-cart-variant" label="tienda" />
+                <q-space />
+                <template v-if="tab === 'payments'">
+                    <filter-component
+                        color="white"
+                        :fields="filterFields"
+                        @refresh-data="onChangeFilters"
+                    />
+                    <q-btn-component
+                        tooltips="limpiar todo"
+                        icon="mdi-eraser"
+                        color="white"
+                        @click="router.get('/admin/shopping')"
+                        v-if="currentFilters"
+                    />
+                </template>
+                <car-component
+                    :only-btn="true"
+                    size="15px"
+                    color="white"
+                    style="margin-right: 5px !important"
+                    v-if="tab !== 'store'"
+                />
             </q-tabs>
 
             <q-separator />
 
             <q-tab-panels v-model="tab" animated class="q-mt-xs">
-                <q-tab-panel name="sales" style="padding: 0px !important">
-                    <q-item style="padding: 0">
-                        <q-item-section>
-                            <q-card>
-                                <q-card-section class="no-padding">
-                                    <panel-header-component
-                                        icon="mdi-cart-variant"
-                                        title="mis compras"
-                                    >
-                                        <slot>
-                                            <btn-heart-component
-                                                tooltips="mis deseos"
-                                            />
-
-                                            <btn-basket-component
-                                                tooltips="cesta en proceso de compra"
-                                            >
-                                                <q-badge
-                                                    floating
-                                                    style="
-                                                        margin-top: -3px;
-                                                        margin-right: -5px;
-                                                    "
-                                                    v-if="
-                                                        selectedProducts.length >
-                                                        0
-                                                    "
-                                                    >{{
-                                                        selectedProducts.length
-                                                    }}</q-badge
-                                                ></btn-basket-component
-                                            >
-                                        </slot>
-                                    </panel-header-component>
-                                    <q-separator />
-                                    <q-item style="padding: 0">
-                                        <q-item-section>
-                                            <q-card flat>
-                                                <q-card-section>
-                                                    <q-item style="padding: 0">
-                                                        <q-item-section>
-                                                            <q-item-label
-                                                                class="text-bold"
-                                                                >mis compras
-                                                                activas</q-item-label
-                                                            >
-                                                        </q-item-section>
-                                                        <q-item-section avatar>
-                                                            <sales-dates-component />
-                                                        </q-item-section>
-                                                        <q-item-section avatar>
-                                                            <btn-list-component
-                                                                list
-                                                            />
-                                                        </q-item-section>
-                                                    </q-item>
-                                                    <div class="row">
-                                                        <div
-                                                            class="col-md-3 col-lg-3 col-xl-2 col-sm-4 col-xs-12 q-pa-xs"
-                                                            v-for="(
-                                                                item, index
-                                                            ) in items"
-                                                            :key="`item-${index}`"
-                                                        >
-                                                            <card-product-component />
-                                                        </div>
-                                                    </div>
-                                                </q-card-section>
-                                                <q-card-section>
-                                                    <q-item-label
-                                                        class="text-bold q-pb-md"
-                                                        >historico de
-                                                        compras</q-item-label
-                                                    >
-                                                    <div class="row">
-                                                        <div
-                                                            class="col-md-3 col-lg-3 col-xl-2"
-                                                        >
-                                                            <card-product-component />
-                                                        </div>
-                                                    </div>
-                                                </q-card-section>
-                                            </q-card>
-                                        </q-item-section>
-                                    </q-item>
-                                </q-card-section>
-                            </q-card>
-                        </q-item-section>
-                    </q-item>
+                <q-tab-panel name="payments" style="padding: 0px !important">
+                    <payments-users @sales-again="(p) => onNewSale(p)" />
                 </q-tab-panel>
 
-                <q-tab-panel name="wishes">
-                    <div class="text-h6">Alarms</div>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                </q-tab-panel>
+                <q-tab-panel name="wishes"> panel mis deseos </q-tab-panel>
 
                 <q-tab-panel name="store">
                     <shopping-component />
@@ -128,17 +60,14 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted, ref } from "vue";
+import { computed, onBeforeMount, ref, watch } from "vue";
 import Layout from "../../layouts/AdminLayout.vue";
-import CardProductComponent from "../../components/modules/shopping/CardProductComponent.vue";
-import BtnHeartComponent from "../../components/btn/BtnHeartComponent.vue";
-import BtnListComponent from "../../components/btn/BtnListComponent.vue";
-import SalesDatesComponent from "../../components/modules/shopping/userdata/SalesDatesComponent.vue";
-import BtnBasketComponent from "../../components/btn/BtnBasketComponent.vue";
-import PanelHeaderComponent from "../../components/base/PanelHeaderComponent.vue";
 import ShoppingComponent from "../../components/modules/shopping/ShoppingComponent.vue";
-import { products as selectedProducts } from "../../services/shopping";
-import { usePage } from "@inertiajs/vue3";
+import PaymentsUsers from "../../components/modules/shopping/PaymentsUsers.vue";
+import { router, usePage } from "@inertiajs/vue3";
+import FilterComponent from "../../components/table/actions/FilterComponent.vue";
+import QBtnComponent from "../../components/base/QBtnComponent.vue";
+import CarComponent from "../../components/modules/shopping/components/CarComponent.vue";
 
 defineOptions({
     name: "SalesPage",
@@ -147,15 +76,51 @@ defineOptions({
 const tab = ref(null);
 const page = usePage();
 
-const items = [
-    "el nivel 1 dentro de la metodologia sbyetransformacion",
-    "el nivel 2 dentro de la metodologia sbyetransformacion",
-    "el nivel 3 dentro de la metodologia sbyetransformacion",
-    "el nivel 4 dentro de la metodologia sbyetransformacion",
-    "el nivel 5 dentro de la metodologia sbyetransformacion",
+const currentFilters = ref(null);
+
+const filterFields = [
+    {
+        field: "created_at",
+        name: "created_at",
+        label: "fecha",
+        type: "date",
+    },
 ];
 
 onBeforeMount(() => {
-    tab.value = page.props.show_payment ? "store" : "sales";
+    tab.value = page.props.show_payment ? "store" : "payments";
 });
+
+const properties = computed(() => {
+    return page.props;
+});
+
+watch(
+    properties,
+    (val) => {
+        currentFilters.value = val.filters ? JSON.stringify(val.filters) : null;
+    },
+    {
+        immediate: true,
+        deep: true,
+    },
+);
+
+const onNewSale = (p) => {
+    // let data = {
+    //     scrollTo: `#product-store-${p.id}`,
+    // };
+    // location.hash = btoa(JSON.stringify(data));
+    tab.value = "store";
+};
+
+const onChangeFilters = (name, data) => {
+    router.get(
+        "",
+        { filters: data ? JSON.stringify(data) : null },
+        {
+            preserveState: true,
+        },
+    );
+};
 </script>

@@ -7,7 +7,12 @@ export const modules = () => {
 };
 
 export const getActiveModule = () => {
-    const url = page.url.split("?")[0];
+    let url = page.url.split("?")[0];
+    if (url.includes("?")) {
+        url = url.split("?")[0];
+    } else if (url.includes("#")) {
+        url = url.split("#")[0];
+    }
     const data = modules();
     let active = data.find((m) => m.base_url === url);
     return active;

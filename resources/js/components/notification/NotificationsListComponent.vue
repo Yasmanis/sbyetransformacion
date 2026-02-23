@@ -34,7 +34,7 @@
                     class="scroll no-padding"
                 >
                     <notification-item-component
-                        v-for="n in notifications.splice(0, 5)"
+                        v-for="n in notifications.slice(0, 5)"
                         :key="n.id"
                         :notification="n"
                     />

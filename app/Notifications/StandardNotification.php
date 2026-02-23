@@ -2,28 +2,35 @@
 
 namespace App\Notifications;
 
+use App\Services\BrevoService;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\SerializesModels;
 
-class StandardNotification extends Notification
+class StandardNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, SerializesModels;
 
     protected $model;
-    protected $via;
+    protected $mode;
     protected $emailProps;
+    protected $view;
+    protected $title;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($model, $via = ['database'], $emailProps = null)
+    public function __construct($model, $title = null, $view = null, $mode = ['database'], $emailProps = null)
     {
         $this->model = $model;
-        $this->via = $via;
+        $this->mode = $mode;
         $this->emailProps = $emailProps;
+        $this->view = $view;
+        $this->title = $title;
         $this->afterCommit();
     }
 
@@ -35,32 +42,13 @@ class StandardNotification extends Notification
      */
     public function via($notifiable)
     {
-        return $this->via;
+        return $this->mode;
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param mixed $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
+    public function toBrevo($notifiable)
     {
-        $email = (new MailMessage)
-            ->from(env('MAIL_FROM_ADDRESS'))
-            ->greeting('Hola!')
-            ->line($this->emailProps['title']);
-        if (isset($this->emailProps)) {
-            if (isset($this->emailProps['url'])) {
-                $email = $email->line('Por favor click sobre el siguiente botón para más información');
-                $email = $email->action('Ver', $this->emailProps['url']);
-            }
-            if (isset($this->emailProps['attachments'])) {
-                $email = $email->attachMany($this->emailProps['attachments']);
-            }
-        }
-        $email = $email->line('Gracias por utilizar nuestra aplicación!');
-        return $email;
+        $brevo = new BrevoService();
+        $brevo->sendEmail($this->title, $this->view, $this->emailProps, $notifiable);
     }
 
     /**

@@ -22,6 +22,6 @@ class Payment extends Model
 
     public function products()
     {
-        return $this->hasMany(PaymentProduct::class, 'product_id', 'payment_id');
+        return $this->belongsToMany(Product::class, 'payment_products')->withPivot('amount');
     }
 }

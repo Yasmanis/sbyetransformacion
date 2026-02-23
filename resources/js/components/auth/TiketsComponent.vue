@@ -125,7 +125,6 @@
                         <div style="width: 100%">
                             <chat-message-component
                                 :messages="props.row.responses"
-                                :from-parent="true"
                                 :has-reply="true"
                             />
                         </div>
@@ -143,7 +142,6 @@ import BtnReloadComponent from "../btn/BtnReloadComponent.vue";
 import BtnShowHideComponent from "../btn/BtnShowHideComponent.vue";
 import AttachmentsComponent from "../others/AttachmentsComponent.vue";
 import ChatMessageComponent from "../others/ChatMessageComponent.vue";
-import FormReplyComponent from "./FormReplyComponent.vue";
 import { date } from "quasar";
 import { router, usePage } from "@inertiajs/vue3";
 
@@ -200,17 +198,14 @@ onMounted(() => {
         let uniqueId = hash.filters?.uniqueId ?? null;
         let foundRecord;
         if (uniqueId) {
-            console.log(uniqueId, rows.value);
-
-            foundRecord = rows.value.find((record) => record.id === uniqueId);
-            console.log(foundRecord);
-
+            foundRecord = rows.value.find(
+                (record) => record.id.toString() === uniqueId.toString(),
+            );
             if (foundRecord) {
                 objectId.value = foundRecord.id;
             }
         }
     }
-    console.log(rows.value);
 });
 
 const rows = computed(() => {

@@ -9,7 +9,7 @@
                             tooltips="agregar a la cesta"
                             icon="mdi-cart-plus"
                             @click="addProductToStorage(product)"
-                            v-if="getProductFromStorage(product) === null"
+                            v-if="!hasProductInStorage(product)"
                         />
                         <btn-shoppin-car-component
                             tooltips="quitar de la cesta"
@@ -76,7 +76,6 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
 import BtnShareComponent from "../../btn/BtnShareComponent.vue";
 import BtnShoppinCarComponent from "../../btn/BtnShoppinCarComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
@@ -84,9 +83,8 @@ import ProductInformation from "../shopping/ProductInformation.vue";
 import HelpQuestion from "./HelpQuestion.vue";
 import {
     addProductToStorage,
-    getProductFromStorage,
-    products,
     removeProductFromStorage,
+    hasProductInStorage,
 } from "../../../services/shopping";
 defineOptions({
     name: "ProductComponent",
@@ -97,6 +95,4 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["add-product"]);
-
-const rating = ref(0);
 </script>

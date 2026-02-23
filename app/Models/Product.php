@@ -96,6 +96,11 @@ class Product extends Model
         return $this->hasMany(ProductDiscount::class, 'product_id');
     }
 
+    public function payments()
+    {
+        return $this->belongsToMany(Payment::class, 'payment_products',)->withPivot('amount')->withTimestamps();;
+    }
+
     public function scopePublic($query)
     {
         return $query->where('public', true);

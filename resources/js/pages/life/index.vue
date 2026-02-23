@@ -166,7 +166,7 @@ watch(sections, (n, o) => {
 watch(currentTopic, (n, o) => {
     if (n) {
         tIndex.value = currentSection.value.topics.findIndex(
-            (t) => t.id === currentTopic.value.id
+            (t) => t.id === currentTopic.value.id,
         );
         updateLastCourses(n);
     } else tIndex.value = 0;
@@ -176,7 +176,7 @@ watch(
     () => page.url,
     (n) => {
         setDefaults();
-    }
+    },
 );
 
 onBeforeMount(() => {
@@ -225,7 +225,7 @@ const setDefaults = () => {
                 if (section) {
                     currentSection.value = section;
                     const topic = section.topics.find(
-                        (t) => t.id === parseInt(ids[1])
+                        (t) => t.id === parseInt(ids[1]),
                     );
                     if (topic) {
                         currentTopic.value = topic;
@@ -240,10 +240,10 @@ const setDefaults = () => {
                     currentSection.value =
                         n.find((s) => s.id === latest.section_id) || n[0];
                     currentTopic.value = currentSection.value.topics.find(
-                        (t) => t.id === latest.topic_id
+                        (t) => t.id === latest.topic_id,
                     );
                     sIndex.value = n.findIndex(
-                        (s) => s.id === latest.section_id
+                        (s) => s.id === latest.section_id,
                     );
                 } else {
                     currentSection.value = n[0];
@@ -253,13 +253,13 @@ const setDefaults = () => {
         }
         if (currentTopic.value) {
             let exist = currentSection.value.topics.find(
-                (t) => t.id === currentTopic.value.id
+                (t) => t.id === currentTopic.value.id,
             );
             currentTopic.value = exist
                 ? exist
                 : currentSection.value.topics.length > 0
-                ? currentSection.value.topics[0]
-                : null;
+                  ? currentSection.value.topics[0]
+                  : null;
         } else {
             currentTopic.value =
                 currentSection.value.topics.length > 0
@@ -296,7 +296,7 @@ const resetHash = () => {
 const getLatest = () => {
     return (
         page.props?.auth.user.latest_courses.find(
-            (l) => l.category === segment.value
+            (l) => l.category === segment.value,
         ) ?? null
     );
 };

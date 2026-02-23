@@ -9,7 +9,7 @@ watch(
     (n) => {
         LocalStorage.setItem("products_to_car", n);
     },
-    { deep: true }
+    { deep: true },
 );
 
 export const loadProductsFromStorage = () => {
@@ -33,6 +33,10 @@ export const updateProductsStorage = (prod) => {
 
 export const getProductFromStorage = (prod) => {
     return products.value.find((p) => p.id === prod.id) ?? null;
+};
+
+export const hasProductInStorage = (prod) => {
+    return getProductFromStorage(prod) !== null;
 };
 
 export const addProductToStorage = (prod) => {

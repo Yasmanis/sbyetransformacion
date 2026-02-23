@@ -97,6 +97,11 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasMany(BillingInformation::class, 'user_id');
     }
 
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'user_id');
+    }
+
     public function getHasTestimonyAttribute()
     {
         return Testimony::active()->where('user_id', $this->id)->count() > 0;
@@ -118,13 +123,21 @@ class User extends Authenticatable implements CanResetPassword
                 $user = User::find($userId);
                 $n['user'] = $user->full_name ?? '';
             }
+            $attachments = [];
+            $responses = [];
+            $chat = null;
             if ($data['code'] === 'help_from_contact') {
-                $n['attachments'] = ContactAdminAttachment::where('contact_id', $data['model_id'])->get();
-                $n['responses'] = ContactAdmin::where('root_parent_id', $data['model_id'])->get();
-            } else {
-                $n['attachments'] = [];
-                $n['responses'] = [];
+                $attachments = ContactAdminAttachment::where('contact_id', $data['model_id'])->get();
+                $responses = ContactAdmin::where('root_parent_id', $data['model_id'])->get();
+            } else if ($data['code'] === 'chat_writter') {
+                $msg = SchoolChat::find($data['model_id']);
+                if ($msg) {
+                    $chat = sprintf('%s#chat-%s-%s-%s', $msg->segment, $msg->id, $msg->topic_id, $msg->section_id);
+                }
             }
+            $n['attachments'] = $attachments;
+            $n['responses'] = $responses;
+            $n['chat'] = $chat;
         }
         return $notifications;
     }

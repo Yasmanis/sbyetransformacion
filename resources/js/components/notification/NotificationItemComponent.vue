@@ -35,7 +35,7 @@
             <form-reply-component
                 :tiket-id="
                     notification.data[0].code === 'help_from_contact'
-                        ? notification.data[0].model_id
+                        ? parseInt(notification.data[0].model_id)
                         : null
                 "
                 target="notifications"
@@ -46,7 +46,7 @@
             <btn-show-hide-component
                 :public="false"
                 titlePublic="ver"
-                @click="router.visit(`/auth/profile#${getStr(notification)}`)"
+                @click="showNotification(notification)"
             />
         </q-item-section>
     </q-item>
@@ -68,11 +68,21 @@ defineProps({
     },
 });
 
-const getStr = (n) => {
+const showNotification = (n) => {
+    let code = n.data[0].code,
+        attributes = getAttributes(n);
+    if (code === "chat_writter") {
+        location.href = `/admin/${n.chat}`;
+    } else {
+        router.visit(`/auth/profile#${attributes}`);
+    }
+};
+
+const getAttributes = (n) => {
     let data = n.data[0],
         tab = "notifications";
     let { id, target, code, row_id } = data;
-    if (code === "help_from_contact") {
+    if (code === "help_from_contact" || code === "chat_writter") {
         id = n.id;
     } else if (code === "reply_contact") {
         if (row_id) {

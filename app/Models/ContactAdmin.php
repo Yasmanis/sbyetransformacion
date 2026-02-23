@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Notifications\StandardNotification;
 use App\Services\BrevoService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Notification;
 
 class ContactAdmin extends Model
 {
@@ -41,7 +43,16 @@ class ContactAdmin extends Model
 
     public function setMessage()
     {
-        $brevo = new BrevoService();
+        $notification = new UserNotifications();
+        $notification->title = 'ayuda desde contacto';
+        $notification->priority = 'Alta';
+        $notification->user_id = auth()->user()->id;
+        $notification->description = $this->description;
+        $notification->code = 'help_from_contact';
+        $notification->model = ContactAdmin::class;
+        $notification->model_id = $this->id;
+        $notification->save();
+
         $user = $this->user()->first();
         $params = [
             'email' => $user->email,
@@ -54,7 +65,8 @@ class ContactAdmin extends Model
                 ]
             )))
         ];
-        return $brevo->sendEmail('AVISO – contestar MENSAJE FORMULARIO CONTACTAR', 'admin.contact', $params);
+        $users = User::isAdmin()->get();
+        Notification::send($users, new StandardNotification($notification, 'AVISO – contestar MENSAJE FORMULARIO CONTACTAR', 'admin.contact', ['database', 'brevo'], $params));
     }
 
     public function getDateHumansAttribute()
@@ -69,6 +81,6 @@ class ContactAdmin extends Model
 
     public function getSendAttribute()
     {
-        return auth()->user()->id === $this->created_by;
+        return auth()->user()?->id === $this->created_by ?? false;
     }
 }

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
+use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductSubcategory;
 use App\Repositories\ShoppingRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ShoppingController extends Controller
 {
@@ -35,9 +38,43 @@ class ShoppingController extends Controller
         $subcategories = ProductSubcategory::whereHas('products', fn($productQuery) => $productQuery->active())
             ->orderBy('order', 'asc')
             ->get();
+
+
+        $filters = $request->filters;
+        $user = auth()->user();
+        $query = Product::query();
+        $query->whereHas('payments', function ($query) use ($user, $filters) {
+            $query->where('user_id', $user->id);
+            if (isset($filters)) {
+                $filters = json_decode($filters);
+                foreach ($filters as $f) {
+                    if ($f->name === 'created_at') {
+                        $from = date('Y-m-d 00:00:00', strtotime($f->value[0]));
+                        $to = date('Y-m-d 23:59:59', strtotime($f->value[1]));
+                        $query->whereBetween('payments.' . $f->name, [$from, $to]);
+                    }
+                }
+            }
+        });
+        $query->with(['payments' => function ($query) use ($user, $filters) {
+            $query->where('user_id', $user->id);
+            if (isset($filters)) {
+                $filters = json_decode($filters);
+                foreach ($filters as $f) {
+                    if ($f->name === 'created_at') {
+                        $from = date('Y-m-d 00:00:00', strtotime($f->value[0]));
+                        $to = date('Y-m-d 23:59:59', strtotime($f->value[1]));
+                        $query->whereBetween('payments.' . $f->name, [$from, $to]);
+                    }
+                }
+            }
+        }]);
+
         return Inertia('store/index', [
             'categories' => $categories,
-            'subcategories' => $subcategories
+            'subcategories' => $subcategories,
+            'payments' => $query->get(),
+            'filters' => isset($request->filters) ? json_decode($request->filters) : null,
         ]);
     }
 
