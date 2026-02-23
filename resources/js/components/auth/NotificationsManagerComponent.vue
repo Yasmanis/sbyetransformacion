@@ -305,11 +305,13 @@ onMounted(() => {
         let foundRecord;
         if (uniqueId) {
             foundRecord = notifications.value.find(
-                (record) => record.id === uniqueId,
+                (record) => record.id.toString() === uniqueId.toString(),
             );
         } else if (model && id) {
             foundRecord = notifications.value.find(
-                (record) => record.model === model && record.model_id === id,
+                (record) =>
+                    record.model === model &&
+                    record.model_id.toString() === id.toString(),
             );
         }
         if (foundRecord) {
