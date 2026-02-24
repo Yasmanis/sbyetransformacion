@@ -19,6 +19,7 @@
         "pusher/pusher-php-server": "^7.2",
         "pusher/pusher-push-notifications": "^2.0",
         "spatie/laravel-permission": "^6.9",
+        "srmklive/paypal": "^3.0",
         "symfony/brevo-mailer": "6.4",
         "tightenco/ziggy": "^2.3"
     },
