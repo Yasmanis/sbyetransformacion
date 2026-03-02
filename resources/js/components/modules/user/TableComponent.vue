@@ -51,6 +51,8 @@
                             size="sm"
                             v-if="createFields.length > 0 && has_add"
                         />
+                        <btn-highlight-component />
+                        <btn-note-component tooltips="añadir nota" />
                         <btn-reload-component @click="onRequest" />
                         <visible-columns-component
                             :columns="columns"
@@ -219,6 +221,8 @@
                         size="sm"
                         v-if="has_delete"
                     />
+                    <btn-calendar-plus-component />
+                    <btn-list-component list tooltips="historico" />
                 </q-td>
             </template>
 
@@ -332,6 +336,10 @@ import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import BtnFullScreenComponent from "../../btn/BtnFullScreenComponent.vue";
 import BtnClearComponent from "../../btn/BtnClearComponent.vue";
 import BtnUserCardComponent from "../../btn/BtnUserCardComponent.vue";
+import BtnCalendarPlusComponent from "../../btn/BtnCalendarPlusComponent.vue";
+import BtnListComponent from "../../btn/BtnListComponent.vue";
+import BtnNoteComponent from "../../btn/BtnNoteComponent.vue";
+import BtnHighlightComponent from "../../btn/BtnHighlightComponent.vue";
 import FormComponent from "../../form/FormComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
