@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Buyer;
 use App\Models\Contact;
 use App\Models\ContactAdmin;
 use App\Models\User;
@@ -93,9 +94,11 @@ class AuthController extends Controller
     {
         $user = auth()->user();
         $books = Contact::where('user_id', $user->id)->get();
+        $buyer = Buyer::firstWhere('user_id', $user->id);
         return Inertia('auth/profile', [
             'books' => $books,
-            'tikets' => $user->tikets
+            'tikets' => $user->tikets,
+            'buyer' => $buyer
         ]);
     }
 
@@ -105,11 +108,24 @@ class AuthController extends Controller
         $request->validate([
             'name' => ['required'],
             'surname' => ['required'],
+            'country_id' => ['required'],
+            'province' => ['required'],
+            'genre' => ['required'],
+            'birthdate' => ['required'],
             'username' => ['required', Rule::unique('users', 'username')->ignore($id)],
             'email' => ['required', Rule::unique('users', 'email')->ignore($id)],
         ]);
         $repository = new UserRepository();
         $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+        $repository = new BuyerRepository();
+        $buyer = $repository->getByColumn($id, 'user_id');
+        if ($buyer) {
+            $repository->updateById($buyer->id, $request->only((new ($repository->model()))->getFillable()));
+        } else {
+            $data = $request->only((new ($repository->model()))->getFillable());
+            $data['user_id'] = $id;
+            $repository->create($data);
+        }
         return redirect()->back()->with('success', 'su información ha sido actualizada correctamente');
     }
 

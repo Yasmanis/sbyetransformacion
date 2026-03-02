@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PaymentMethod;
 use App\Repositories\BillingInformationRepository;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class BillingInformationController extends Controller
 {
     public function store(Request $request)
     {
         $request->validate([
+            'address' => ['required'],
             'road' => ['required'],
             'province' => ['required'],
             'postal_code' => ['required'],
@@ -20,7 +19,7 @@ class BillingInformationController extends Controller
         $repository = new BillingInformationRepository();
         $object = $repository->create($request->only((new ($repository->model()))->getFillable()));
         return redirect()->back()->with([
-            'success' => 'dato de facturacion adicionado correctamente',
+            'success' => 'datos de facturacion adicionado correctamente',
             'object' => $object
         ]);
     }
@@ -28,28 +27,36 @@ class BillingInformationController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => ['required'],
-            'defeat' => ['required']
+            'address' => ['required'],
+            'road' => ['required'],
+            'province' => ['required'],
+            'postal_code' => ['required'],
+            'country_id' => ['required'],
         ]);
         $repository = new BillingInformationRepository();
         $data = $request->only((new ($repository->model()))->getFillable());
         $repository->updateById($id, $data);
-        return redirect()->back()->with('success', 'dato de facturacion modificado correctamente');
+        return redirect()->back()->with('success', 'datos de facturacion modificado correctamente');
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy($ids)
     {
         $repository = new BillingInformationRepository();
-        $repository->deleteById($id);
-        return redirect()->back()->with('success', 'dato de facturacion eliminado correctamente');
+        $ids = explode(',', $ids);
+        if (count($ids) == 1) {
+            $repository->deleteById($ids[0]);
+        } else {
+            $repository->deleteMultipleById($ids);
+        }
+        return redirect()->back()->with('success', count($ids) == 1 ? 'datos de facturacion eliminado correctamente' : 'datos de facturacion eliminados correctamente');
     }
 
-    public function predetermined(Request $request, $id)
+    public function predetermined($id)
     {
         $repository = new BillingInformationRepository();
         $object = $repository->getById($id);
         $object->predetermined = !$object->predetermined;
         $object->save();
-        return redirect()->back()->with('success', 'dato de facturacion establecido como predeterminado correctamente');
+        return redirect()->back()->with('success', 'datos de facturacion establecido como predeterminado correctamente');
     }
 }

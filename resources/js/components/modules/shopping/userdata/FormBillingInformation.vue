@@ -1,11 +1,24 @@
 <template>
-    <btn-add-component @click="showDialog = true" tooltips="adicionar" />
-
-    <q-dialog v-model="showDialog" persistent @hide="onHide">
+    <btn-edit-component
+        @click="showDialog = true"
+        tooltips="editar"
+        v-if="object"
+    />
+    <btn-add-component @click="showDialog = true" tooltips="adicionar" v-else />
+    <q-dialog
+        v-model="showDialog"
+        persistent
+        @hide="onHide"
+        @before-show="onBeforeShow"
+    >
         <q-card style="width: 900px; max-width: 100vw">
             <dialog-header-component
                 icon="mdi-card-account-details-outline"
-                title="añadir datos de facturacion"
+                :title="
+                    object
+                        ? 'editar datos de facturacion'
+                        : 'añadir datos de facturacion'
+                "
                 closable
                 @close="showDialog = false"
             />
@@ -19,7 +32,10 @@
                             <text-field
                                 name="name"
                                 label="nombre"
-                                :model-value="user.name"
+                                :model-value="formData.name"
+                                :othersProps="{
+                                    required: true,
+                                }"
                                 @update="(name, val) => (formData[name] = val)"
                             />
                         </div>
@@ -30,7 +46,7 @@
                             <text-field
                                 name="surname"
                                 label="apellidos"
-                                :model-value="user.surname"
+                                :model-value="formData.surname"
                                 @update="(name, val) => (formData[name] = val)"
                             />
                         </div>
@@ -41,6 +57,7 @@
                             <text-field
                                 name="nif_cif"
                                 label="nif/cif"
+                                :model-value="formData.nif_cif"
                                 @update="(name, val) => (formData[name] = val)"
                             />
                         </div>
@@ -53,6 +70,7 @@
                             <text-field
                                 name="road"
                                 label="tipo via"
+                                :model-value="formData.road"
                                 :othersProps="{
                                     required: true,
                                 }"
@@ -66,6 +84,7 @@
                             <text-field
                                 name="address"
                                 label="direccion"
+                                :model-value="formData.address"
                                 :othersProps="{
                                     required: true,
                                 }"
@@ -81,6 +100,7 @@
                             <select-field
                                 name="country_id"
                                 label="pais"
+                                :model-value="formData.country_id"
                                 :othersProps="{
                                     required: true,
                                     url_to_options: '/countries',
@@ -95,6 +115,7 @@
                             <text-field
                                 name="province"
                                 label="provincia"
+                                :model-value="formData.province"
                                 :othersProps="{
                                     required: true,
                                 }"
@@ -108,6 +129,7 @@
                             <text-field
                                 name="postal_code"
                                 label="cp"
+                                :model-value="formData.postal_code"
                                 :othersProps="{
                                     required: true,
                                 }"
@@ -143,6 +165,7 @@ import DialogHeaderComponent from "../../../base/DialogHeaderComponent.vue";
 import BtnConfirmComponent from "../../../btn/BtnConfirmComponent.vue";
 import BtnCancelComponent from "../../../btn/BtnCancelComponent.vue";
 import BtnAddComponent from "../../../btn/BtnAddComponent.vue";
+import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
 import SelectField from "../../../form/input/SelectField.vue";
 import CheckboxField from "../../../form/input/CheckboxField.vue";
 import TextField from "../../../form/input/TextField.vue";
@@ -181,6 +204,34 @@ const formData = useForm({
 const user = computed(() => {
     return usePage().props.auth.user;
 });
+
+const onBeforeShow = () => {
+    if (props.object) {
+        let {
+            name,
+            surname,
+            nif_cif,
+            road,
+            address,
+            postal_code,
+            province,
+            country_id,
+            predetermined,
+        } = props.object;
+        formData.name = name;
+        formData.surname = surname;
+        formData.nif_cif = nif_cif;
+        formData.road = road;
+        formData.address = address;
+        formData.postal_code = postal_code;
+        formData.province = province;
+        formData.country_id = country_id;
+        formData.predetermined = predetermined;
+    } else {
+        formData.name = user.value.name ?? null;
+        formData.surname = user.value.surname ?? null;
+    }
+};
 
 const save = async () => {
     form.value.validate().then((success) => {

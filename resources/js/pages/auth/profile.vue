@@ -18,6 +18,12 @@
                         label="informacion general"
                     />
                     <q-tab
+                        name="buyer"
+                        icon="mdi-account-cash-outline"
+                        label="datos de compra"
+                        v-if="$page.props.buyer"
+                    />
+                    <q-tab
                         name="books"
                         icon="mdi-book-open-page-variant-outline"
                         label="tomos adquiridos"
@@ -48,6 +54,10 @@
             <q-tab-panels v-model="tab" animated>
                 <q-tab-panel name="info">
                     <info-component />
+                </q-tab-panel>
+
+                <q-tab-panel name="buyer" style="padding: 10px 0px">
+                    <buyer-info-component />
                 </q-tab-panel>
 
                 <q-tab-panel name="books">
@@ -110,6 +120,7 @@ import BtnAddComponent from "../../components/btn/BtnAddComponent.vue";
 import BtnSaveComponent from "../../components/btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../components/btn/BtnCancelComponent.vue";
 import InfoComponent from "../../components/auth/InfoComponent.vue";
+import BuyerInfoComponent from "../../components/auth/buyer/BuyerInfoComponent.vue";
 import BooksComponent from "../../components/auth/BooksComponent.vue";
 import NotificationsManagerComponent from "../../components/auth/NotificationsManagerComponent.vue";
 import TiketsComponent from "../../components/auth/TiketsComponent.vue";

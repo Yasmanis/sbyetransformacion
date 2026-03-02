@@ -317,6 +317,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/product-subcategories', ProductSubcategoryController::class);
     Route::post('/admin/product-subcategories/sort', [ProductSubcategoryController::class, 'sort']);
     Route::resource('/admin/users/payment-methods', PaymentMethodController::class)->except('index');
+    Route::post('/admin/users/payment-methods/predetermined/{id}', [PaymentMethodController::class, 'predetermined']);
     Route::resource('/admin/users/billing-information', BillingInformationController::class)->except('index');
     Route::post('/admin/users/billing-information/predetermined/{id}', [BillingInformationController::class, 'predetermined']);
     Route::get('/admin/campaigns/logo/{id}', [CampaignController::class, 'logo']);

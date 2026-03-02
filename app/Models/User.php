@@ -68,7 +68,7 @@ class User extends Authenticatable implements CanResetPassword
         'subscripted' => 'boolean',
     ];
 
-    protected $appends = ['permissions', 'roles', 'full_name', 'notifications', 'has_testimony'];
+    protected $appends = ['permissions', 'roles', 'roles_str', 'full_name', 'notifications', 'has_testimony'];
 
     protected $with = ['latestCourses', 'paymentMethods', 'billingsInformation'];
 
@@ -145,6 +145,11 @@ class User extends Authenticatable implements CanResetPassword
     public function getRolesAttribute()
     {
         return $this->roles()->get()->pluck('id');
+    }
+
+    public function getRolesStrAttribute()
+    {
+        return $this->roles()->get()->pluck('name');
     }
 
     public function getFullNameAttribute()

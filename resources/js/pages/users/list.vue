@@ -152,18 +152,23 @@ const filterFields = [
 ];
 
 const columns = [
-    {
-        field: "avatar",
-        name: "avatar",
-        align: "center",
-        type: "avatar",
-    },
-    username,
     name,
     surname,
-    email,
-    sa,
     active,
+    {
+        name: "roles_str",
+        label: "roles",
+        field: "roles_str",
+        type: "list",
+        align: "left",
+    },
+    {
+        name: "facilitador_asignado",
+        label: "facilitador asignado",
+        field: "facilitador_asignado",
+        type: "list",
+        align: "left",
+    },
     actions,
 ];
 

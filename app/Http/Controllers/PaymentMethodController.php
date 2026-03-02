@@ -33,10 +33,24 @@ class PaymentMethodController extends Controller
         return redirect()->back()->with('success', 'metodo de pago modificado correctamente');
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy($ids)
     {
         $repository = new PaymentMethodRepository();
-        $repository->deleteById($id);
-        return redirect()->back()->with('success', 'metodo de pago eliminado correctamente');
+        $ids = explode(',', $ids);
+        if (count($ids) == 1) {
+            $repository->deleteById($ids[0]);
+        } else {
+            $repository->deleteMultipleById($ids);
+        }
+        return redirect()->back()->with('success', count($ids) == 1 ? 'metodo de pago eliminado correctamente' : 'metodos de pago eliminados correctamente');
+    }
+
+    public function predetermined($id)
+    {
+        $repository = new PaymentMethodRepository();
+        $object = $repository->getById($id);
+        $object->predetermined = !$object->predetermined;
+        $object->save();
+        return redirect()->back()->with('success', 'metodo de pago establecido como predeterminado correctamente');
     }
 }

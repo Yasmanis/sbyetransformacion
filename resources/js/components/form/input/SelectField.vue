@@ -126,7 +126,7 @@ const props = defineProps({
     newObject: Object,
 });
 
-const emits = defineEmits(["add", "update", "error"]);
+const emits = defineEmits(["add", "update", "error", "loaded-options"]);
 
 const page = usePage();
 const model = ref(null);
@@ -153,7 +153,7 @@ watch(
     () => props.modelValue,
     (n, o) => {
         setModelValue();
-    }
+    },
 );
 
 watch(
@@ -163,21 +163,21 @@ watch(
             currentOptions.value.push(n);
             model.value = n;
         }
-    }
+    },
 );
 
 watch(
     () => props.options,
     (n, o) => {
         setData();
-    }
+    },
 );
 
 watch(
     () => props.othersProps?.url_to_options,
     (n, o) => {
         setData();
-    }
+    },
 );
 
 const errorMsg = computed(() => {
@@ -199,6 +199,7 @@ const setData = async () => {
         });
     }
     allOptions.value = currentOptions.value;
+    emits("loaded-options", allOptions.value);
     setModelValue();
 };
 
@@ -225,7 +226,7 @@ const setModelValue = async () => {
             model.value = [];
             props.modelValue.forEach((o) => {
                 let option = currentOptions.value.find(
-                    (opt) => opt.value === o
+                    (opt) => opt.value === o,
                 );
                 if (option) {
                     model.value.push(option);
@@ -237,7 +238,7 @@ const setModelValue = async () => {
                     opt.value ===
                     (Array.isArray(props.modelValue)
                         ? props.modelValue[0]
-                        : props.modelValue)
+                        : props.modelValue),
             );
             if (option) {
                 model.value = option;
@@ -259,7 +260,7 @@ const filterFn = (val, update, abort) => {
                     currentOptions.value = allOptions.value.filter((v) =>
                         v.label
                             ? v.label.toLowerCase().indexOf(needle) > -1
-                            : v.toLowerCase().indexOf(needle) > -1
+                            : v.toLowerCase().indexOf(needle) > -1,
                     );
                 }
             },
@@ -272,7 +273,7 @@ const filterFn = (val, update, abort) => {
                     ref.moveOptionSelection(1, true);
                     ref.toggleOption(ref.options[ref.optionIndex], true);
                 }
-            }
+            },
         );
     }, 100);
 };

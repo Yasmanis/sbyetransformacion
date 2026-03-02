@@ -164,6 +164,16 @@
                             </b>
                         </span>
                     </template>
+                    <template v-else-if="props.col.type === 'list'">
+                        <ol class="no-padding" style="list-style: none">
+                            <li
+                                v-for="item in props.row[props.col.field]"
+                                :key="`item-${item}`"
+                            >
+                                - {{ item }}
+                            </li>
+                        </ol>
+                    </template>
                     <template v-else>
                         {{ props.row[props.col.field] }}
                     </template>
@@ -180,6 +190,7 @@
                     }"
                     class="actions-def"
                 >
+                    <btn-user-card-component />
                     <form-component
                         :object="props.row"
                         :title="current_module.singular_label"
@@ -320,6 +331,7 @@ import { useQuasar } from "quasar";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import BtnFullScreenComponent from "../../btn/BtnFullScreenComponent.vue";
 import BtnClearComponent from "../../btn/BtnClearComponent.vue";
+import BtnUserCardComponent from "../../btn/BtnUserCardComponent.vue";
 import FormComponent from "../../form/FormComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
@@ -365,8 +377,6 @@ const $q = useQuasar();
 const page = usePage();
 
 const loading = ref(false);
-
-const list = ref([]);
 
 const current_module = ref(null);
 
