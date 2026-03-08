@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Buyer;
 use App\Models\SchoolSection;
 use App\Models\User;
 use App\Models\UserLastCourse;
@@ -20,6 +21,17 @@ class UserController extends Controller
             $repository->filters($request->filters);
             $repository->orderBy($request->sortBy, $request->sortDirection);
             return $this->data_index($repository, $request);
+        }
+        return $this->deny_access($request);
+    }
+
+    public function show(Request $request, $id)
+    {
+        if (auth()->user()->hasView('user')) {
+            $repository = new UserRepository();
+            $user = $repository->getById($id);
+            $buyer = Buyer::firstWhere('user_id', $id);
+            return Inertia('users/card', ['user' => $user, 'buyer' => $buyer]);
         }
         return $this->deny_access($request);
     }
@@ -79,7 +91,7 @@ class UserController extends Controller
             } else {
                 $repository->deleteMultipleById($ids);
             }
-            return redirect()->back()->with('success', count($ids) == 1 ? 'usuario eliminado correctamente' : 'usuarios eliminados correctamente');
+            return redirect('/admin/users')->with('success', count($ids) == 1 ? 'usuario eliminado correctamente' : 'usuarios eliminados correctamente');
         }
         return $this->deny_access($request);
     }
@@ -88,6 +100,9 @@ class UserController extends Controller
     {
         if (auth()->user()->hasUpdate('user')) {
             $user = User::find($id);
+            if ($user->username === 'sa' && $user->active) {
+                return redirect()->back()->with('error', 'este usuario no puede ser dado de baja');
+            }
             $user->active = !$user->active;
             $user->save();
             return redirect()->back()->with('success', $user->active ? 'usuario dado de alta correctamente' : 'usuario dado de baja correctamente');
@@ -177,5 +192,15 @@ class UserController extends Controller
             ]);
         }
         return response()->json($last);
+    }
+
+    public function saveColors(Request $request)
+    {
+        $user = auth()->user();
+        $config = $user->configuration;
+        $config['colors'] = $request->colors;
+        $user->configuration = $config;
+        $user->save();
+        return redirect()->back()->with('success', 'colores configurados correctamente');
     }
 }

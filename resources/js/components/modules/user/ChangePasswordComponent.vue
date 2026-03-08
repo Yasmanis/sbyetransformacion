@@ -1,5 +1,6 @@
 <template>
     <q-btn-component
+        :color="color"
         tooltips="cambiar contraseña"
         icon="mdi-account-key-outline"
         @click="showDialog = true"
@@ -53,6 +54,10 @@ const props = defineProps({
     object: {
         type: Object,
         required: true,
+    },
+    color: {
+        type: String,
+        default: "black",
     },
 });
 

@@ -43,7 +43,7 @@ import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import PasswordField from "../../form/input/PasswordField.vue";
 import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
-import { usePage, useForm } from "@inertiajs/vue3";
+import { useForm } from "@inertiajs/vue3";
 import { errorValidation } from "../../../helpers/notifications";
 defineOptions({
     name: "ChangePasswordComponent",

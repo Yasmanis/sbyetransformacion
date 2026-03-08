@@ -22,6 +22,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\NotesController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PrivateMsgController;
@@ -253,7 +254,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/auth/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/auth/profile', [AuthController::class, 'saveProfile']);
     Route::post('/auth/subscribe', [AuthController::class, 'subscribe']);
-    Route::post('/auth/change-avatar', [AuthController::class, 'changeAvatar']);
+    Route::post('/auth/change-avatar/{id?}', [AuthController::class, 'changeAvatar']);
     Route::post('/auth/store-new-book', [AuthController::class, 'storeNewBook']);
     Route::delete('/auth/delete-notification/{ids}', [AuthController::class, 'deleteNotification']);
     Route::post('/auth/read-unread-notification/{id}', [AuthController::class, 'readUnreadNotification']);
@@ -269,6 +270,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/users/change-theme', [UserController::class, 'changeTheme']);
     Route::post('/admin/users/progress/{id}', [UserController::class, 'progress']);
     Route::post('/admin/users/comments/{id}', [UserController::class, 'comments']);
+    Route::post('/admin/users/save-colors', [UserController::class, 'saveColors']);
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
 
@@ -380,6 +382,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/tikets/add-attachment', [ContactAdminController::class, 'addAttachment']);
     Route::get('/admin/tikets/download-attachment/{id}', [ContactAdminController::class, 'download']);
     Route::resource('/admin/tikets-reply', TiketReplyController::class)->only(['store']);
+
+    Route::resource('/admin/notes', NotesController::class)->only(['store', 'update', 'destroy']);
 
     Route::post('/contacts/change-book-volume/{id}', [ContactsController::class, 'changeBookVolume']);
 

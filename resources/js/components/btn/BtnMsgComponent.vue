@@ -1,27 +1,23 @@
 <template>
     <q-btn-component
         :tooltips="tooltips"
-        :icon="`img:${$page.props.public_path}images/icon/${
-            Dark.isActive || color === 'white' ? 'white' : 'black'
-        }-edit.png`"
-        size="12px"
+        icon="mdi-message-processing-outline"
         @click="onClick"
-    />
+        ><slot></slot
+    ></q-btn-component>
 </template>
 
 <script setup>
 import QBtnComponent from "../base/QBtnComponent.vue";
-import { Dark } from "quasar";
 defineOptions({
-    name: "BtnEditComponent",
+    name: "BtnMsgComponent",
 });
 
 const props = defineProps({
     tooltips: {
         type: String,
-        default: "editar",
+        default: "mensajes",
     },
-    color: String,
 });
 
 const emits = defineEmits(["click"]);

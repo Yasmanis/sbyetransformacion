@@ -6,13 +6,14 @@
                 ? 'mdi-account-cancel-outline'
                 : 'mdi-account-check-outline'
         "
+        :disable="disable"
         @click="
             router.post(
                 `/admin/users/lockUnlock/${object.id}`,
                 {},
                 {
                     onSuccess: () => emits('success'),
-                }
+                },
             )
         "
     />
@@ -30,6 +31,7 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    disable: Boolean,
 });
 
 const emits = defineEmits(["success"]);

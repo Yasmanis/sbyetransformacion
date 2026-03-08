@@ -1,6 +1,7 @@
 <template>
     <btn-book-component
         :disabled="books.length === 0"
+        :color="color"
         @click="showDialog = true"
     />
 
@@ -69,7 +70,7 @@
                                             col.value
                                                 .substring(
                                                     col.value.lastIndexOf('.') +
-                                                        1
+                                                        1,
                                                 )
                                                 .toLowerCase() === 'pdf'
                                                 ? `${
@@ -87,7 +88,7 @@
                                         fit="fill"
                                         @click="
                                             openTicket(
-                                                `${$page.props.public_path}storage/${col.value}`
+                                                `${$page.props.public_path}storage/${col.value}`,
                                             )
                                         "
                                         v-else
@@ -172,6 +173,10 @@ const props = defineProps({
     has_edit: {
         type: Boolean,
         default: false,
+    },
+    color: {
+        type: String,
+        default: "black",
     },
 });
 

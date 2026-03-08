@@ -52,7 +52,12 @@
                             v-if="createFields.length > 0 && has_add"
                         />
                         <btn-highlight-component />
-                        <btn-note-component tooltips="añadir nota" />
+                        <form-note-component
+                            :notables="selected"
+                            :model="current_module.model"
+                            :disable="selected.length === 0"
+                            v-if="has_edit"
+                        />
                         <btn-reload-component @click="onRequest" />
                         <visible-columns-component
                             :columns="columns"
@@ -64,7 +69,9 @@
                             v-if="filterFields.length > 0"
                         />
                         <delete-component
-                            :objects="selected"
+                            :objects="
+                                selected.filter((s) => s.username !== 'sa')
+                            "
                             :url="current_module.base_url"
                             @deleted="selected = []"
                             v-if="selected.length > 0 && has_delete"
@@ -141,6 +148,12 @@
                             />
                         </q-avatar>
                     </template>
+                    <template v-if="props.col.type === 'notes'">
+                        <menu-note-component
+                            :object="props.value"
+                            v-if="props.value"
+                        />
+                    </template>
                     <template v-else-if="props.col.type === 'boolean'">
                         <q-chip
                             dense
@@ -192,33 +205,31 @@
                     }"
                     class="actions-def"
                 >
-                    <btn-user-card-component />
+                    <btn-user-card-component
+                        @click="router.get(`/admin/users/${props.row.id}`)"
+                    />
                     <form-component
                         :object="props.row"
                         :title="current_module.singular_label"
-                        :fields="updateFields"
+                        :fields="
+                            props.row.username === 'sa'
+                                ? updateFields.filter(
+                                      (f) =>
+                                          !['sa', 'active', 'email'].includes(
+                                              f.name,
+                                          ),
+                                  )
+                                : updateFields
+                        "
                         :module="current_module"
                         size="sm"
                         v-if="updateFields.length > 0 && has_edit"
-                    />
-                    <!-- <user-card-component /> -->
-                    <book-info-component
-                        :has_edit="has_edit"
-                        :object="props.row"
-                    />
-                    <progress-component :object="props.row" />
-                    <lock-unlock-component
-                        :object="props.row"
-                        v-if="has_edit"
-                    />
-                    <change-password-component
-                        :object="props.row"
-                        v-if="has_edit"
                     />
                     <delete-component
                         :objects="[props.row]"
                         :url="current_module.base_url"
                         size="sm"
+                        :disable="props.row.username === 'sa'"
                         v-if="has_delete"
                     />
                     <btn-calendar-plus-component />
@@ -274,6 +285,21 @@
                                             :label="col.value ? 'Si' : 'No'"
                                         />
                                     </q-item-label>
+                                    <template v-else-if="col.type === 'list'">
+                                        <q-item-label caption>
+                                            <ol
+                                                class="no-padding no-margin"
+                                                style="list-style: none"
+                                            >
+                                                <li
+                                                    v-for="item in col.value"
+                                                    :key="`item-${item}`"
+                                                >
+                                                    - {{ item }}
+                                                </li>
+                                            </ol>
+                                        </q-item-label>
+                                    </template>
                                     <q-item-label caption v-else>{{
                                         col.value ? col.value : "..."
                                     }}</q-item-label>
@@ -283,6 +309,13 @@
                                 >
                                     <q-separator />
                                     <div class="q-pa-sm q-gutter-sm text-right">
+                                        <btn-user-card-component
+                                            @click="
+                                                router.get(
+                                                    `/admin/users/${props.row.id}`,
+                                                )
+                                            "
+                                        />
                                         <form-component
                                             :object="props.row"
                                             :title="
@@ -295,22 +328,6 @@
                                                 updateFields.length > 0 &&
                                                 has_edit
                                             "
-                                        />
-                                        <!-- <user-card-component /> -->
-                                        <book-info-component
-                                            :has_edit="has_edit"
-                                            :object="props.row"
-                                        />
-                                        <progress-component
-                                            :object="props.row"
-                                        />
-                                        <lock-unlock-component
-                                            :object="props.row"
-                                            v-if="has_edit"
-                                        />
-                                        <change-password-component
-                                            :object="props.row"
-                                            v-if="has_edit"
                                         />
                                         <delete-component
                                             :objects="[props.row]"
@@ -338,18 +355,15 @@ import BtnClearComponent from "../../btn/BtnClearComponent.vue";
 import BtnUserCardComponent from "../../btn/BtnUserCardComponent.vue";
 import BtnCalendarPlusComponent from "../../btn/BtnCalendarPlusComponent.vue";
 import BtnListComponent from "../../btn/BtnListComponent.vue";
-import BtnNoteComponent from "../../btn/BtnNoteComponent.vue";
+
 import BtnHighlightComponent from "../../btn/BtnHighlightComponent.vue";
 import FormComponent from "../../form/FormComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";
-import LockUnlockComponent from "./LockUnlockComponent.vue";
-import ChangePasswordComponent from "./ChangePasswordComponent.vue";
-import BookInfoComponent from "./BookInfoComponent.vue";
-import ProgressComponent from "./ProgressComponent.vue";
-import UserCardComponent from "./UserCardComponent.vue";
+import FormNoteComponent from "../notes/FormNoteComponent.vue";
+import MenuNoteComponent from "../notes/MenuNoteComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
 

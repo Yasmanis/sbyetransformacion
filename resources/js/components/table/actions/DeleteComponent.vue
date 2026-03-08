@@ -1,5 +1,9 @@
 <template>
-    <btn-delete-component @click="confirm = true" :disable="disable" />
+    <btn-delete-component
+        @click="confirm = true"
+        :disable="disable"
+        v-if="objects.length > 0"
+    />
     <confirm-component
         :show="confirm"
         :cancel="cancel"

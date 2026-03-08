@@ -1,8 +1,9 @@
 <template>
     <q-btn-component
+        :color="color"
         :tooltips="tooltips"
         :icon="`img:${$page.props.public_path}images/icon/${
-            Dark.isActive ? 'white' : 'black'
+            Dark.isActive || color === 'white' ? 'white' : 'black'
         }-files-on-folder.png`"
         size="12px"
         @click="onClick"
@@ -21,6 +22,7 @@ const props = defineProps({
         type: String,
         default: "informes",
     },
+    color: String,
 });
 
 const emits = defineEmits(["click"]);

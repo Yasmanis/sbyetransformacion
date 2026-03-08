@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Buyer extends Model
@@ -22,7 +23,7 @@ class Buyer extends Model
         'birthdate'
     ];
 
-    protected $appends = ['country_str', 'birthdate_str'];
+    protected $appends = ['country_str', 'birthdate_str', 'age'];
 
     protected $casts = ['birthdate' => 'date'];
 
@@ -39,5 +40,10 @@ class Buyer extends Model
     public function getBirthdateStrAttribute()
     {
         return $this->birthdate ? $this->birthdate->format('d/m/Y') : null;
+    }
+
+    public function getAgeAttribute()
+    {
+        return Carbon::parse($this->birth_date)->age;
     }
 }

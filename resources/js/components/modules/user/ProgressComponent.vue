@@ -1,5 +1,5 @@
 <template>
-    <btn-files-folder-component @click="showDialog = true" />
+    <btn-files-folder-component :color="color" @click="showDialog = true" />
 
     <q-dialog
         v-model="showDialog"
@@ -74,7 +74,7 @@
                                                             :label="`${
                                                                 Math.round(
                                                                     s.percent *
-                                                                        100
+                                                                        100,
                                                                 ) / 100
                                                             } %`"
                                                         />
@@ -111,7 +111,7 @@
                                                                 :label="`${
                                                                     Math.round(
                                                                         ss.percent *
-                                                                            100
+                                                                            100,
                                                                     ) / 100
                                                                 } %`"
                                                             />
@@ -149,7 +149,7 @@
                                                                     :label="`${
                                                                         Math.round(
                                                                             t.percent *
-                                                                                100
+                                                                                100,
                                                                         ) / 100
                                                                     } %`"
                                                                 />
@@ -194,6 +194,10 @@ const props = defineProps({
     object: {
         type: Object,
         required: true,
+    },
+    color: {
+        type: String,
+        default: "black",
     },
 });
 

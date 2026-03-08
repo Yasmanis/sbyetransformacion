@@ -392,7 +392,7 @@ const handleFile = (file) => {
 };
 
 const onFinishCropper = (name, img) => {
-    const form = useForm({
+    useForm({
         avatar: img,
     }).post("/auth/change-avatar", {
         onSuccess: () => {

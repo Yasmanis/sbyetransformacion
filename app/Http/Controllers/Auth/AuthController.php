@@ -129,9 +129,9 @@ class AuthController extends Controller
         return redirect()->back()->with('success', 'su información ha sido actualizada correctamente');
     }
 
-    public function changeAvatar(Request $request)
+    public function changeAvatar(Request $request, $id)
     {
-        $user = auth()->user();
+        $user = isset($id) ? User::find($id) : auth()->user();
         $avatar  = $request->input('avatar');
         $path = null;
         if (isset($avatar)) {

@@ -152,6 +152,12 @@ const filterFields = [
 ];
 
 const columns = [
+    {
+        name: "note",
+        field: "note",
+        label: "",
+        type: "notes",
+    },
     name,
     surname,
     active,

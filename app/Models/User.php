@@ -68,7 +68,7 @@ class User extends Authenticatable implements CanResetPassword
         'subscripted' => 'boolean',
     ];
 
-    protected $appends = ['permissions', 'roles', 'roles_str', 'full_name', 'notifications', 'has_testimony'];
+    protected $appends = ['permissions', 'roles', 'roles_str', 'full_name', 'notifications', 'has_testimony', 'antique', 'note'];
 
     protected $with = ['latestCourses', 'paymentMethods', 'billingsInformation'];
 
@@ -100,6 +100,11 @@ class User extends Authenticatable implements CanResetPassword
     public function payments()
     {
         return $this->hasMany(Payment::class, 'user_id');
+    }
+
+    public function notes()
+    {
+        return $this->morphMany(Note::class, 'notable');
     }
 
     public function getHasTestimonyAttribute()
@@ -147,6 +152,11 @@ class User extends Authenticatable implements CanResetPassword
         return $this->roles()->get()->pluck('id');
     }
 
+    public function getAntiqueAttribute()
+    {
+        return $this->created_at->diffForHumans();
+    }
+
     public function getRolesStrAttribute()
     {
         return $this->roles()->get()->pluck('name');
@@ -155,6 +165,15 @@ class User extends Authenticatable implements CanResetPassword
     public function getFullNameAttribute()
     {
         return isset($this->name) || isset($this->surname) ? ($this->name . ' ' . $this->surname) : $this->username;
+    }
+
+    public function getNoteAttribute()
+    {
+        $user = auth()->user();
+        if ($user) {
+            return $this->notes()->firstWhere('user_id', $user->id);
+        }
+        return null;
     }
 
     public function scopeFilterByRegex($query, $regex)
