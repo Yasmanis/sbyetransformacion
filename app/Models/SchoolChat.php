@@ -164,12 +164,15 @@ class SchoolChat extends Model
     }
     public function scopeSend($query)
     {
-        return $query->where('from_id', auth()->user()->id)->where('from_deleted', false);
+        $userId = auth()->id() ?? 0;
+        return $query->where('from_id', $userId)->where('from_deleted', false);
     }
+
     public function scopeReceived($query)
     {
-        return $query->whereHas('users', function (Builder $query) {
-            $query->where('user_id', auth()->user()->id);
+        $userId = auth()->id() ?? 0;
+        return $query->whereHas('users', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
         });
     }
     public function scopeFromTopic($query, $topic)
