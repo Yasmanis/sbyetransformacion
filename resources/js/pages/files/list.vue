@@ -45,6 +45,19 @@ const name = {
     },
 };
 
+const link = {
+    field: "link",
+    name: "link",
+    label: "link",
+    align: "left",
+    sortable: true,
+    type: "text",
+    required: true,
+    othersProps: {
+        required: true,
+    },
+};
+
 const type = {
     field: "type",
     name: "type",
@@ -122,6 +135,7 @@ const columns = [
 
 const fields = [
     name,
+    link,
     {
         field: "category_id",
         name: "category_id",

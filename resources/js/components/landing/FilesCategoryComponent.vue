@@ -123,7 +123,7 @@
                                 @click="
                                     open(
                                         file.type === 'link'
-                                            ? file.name
+                                            ? (file.link ?? file.name)
                                             : `${$page.props.public_path}storage/${file.path}`,
                                     )
                                 "
@@ -148,7 +148,7 @@
                                     class="text-uppercase text-primary"
                                     :href="
                                         file.type === 'link'
-                                            ? file.name
+                                            ? (file.link ?? file.name)
                                             : `${$page.props.public_path}storage/${file.path}`
                                     "
                                     target="_blank"

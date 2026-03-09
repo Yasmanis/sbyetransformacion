@@ -7,7 +7,6 @@
         persistent
         :position="position"
         :full-hight="fullHeight"
-        @before-show=""
         @show="setDefault = !setDefault"
         @hide="onHide"
     >
@@ -87,6 +86,16 @@
                         <div class="form-field">
                             <text-field
                                 name="name"
+                                label="nombre"
+                                :othersProps="{
+                                    required: 'true',
+                                }"
+                                @update="onUpdateField"
+                            />
+                        </div>
+                        <div class="form-field">
+                            <text-field
+                                name="link"
                                 label="link"
                                 :othersProps="{
                                     required: 'true',
@@ -206,6 +215,10 @@ const formFields = ref([
         name: "name",
         value: null,
     },
+    {
+        name: "link",
+        value: null,
+    },
 ]);
 
 const form = ref(null);
@@ -254,6 +267,10 @@ const initForm = () => {
         },
         {
             name: "name",
+            value: null,
+        },
+        {
+            name: "link",
             value: null,
         },
     ];
