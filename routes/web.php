@@ -271,6 +271,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/users/progress/{id}', [UserController::class, 'progress']);
     Route::post('/admin/users/comments/{id}', [UserController::class, 'comments']);
     Route::post('/admin/users/save-colors', [UserController::class, 'saveColors']);
+    Route::post('/admin/users/highlighted', [UserController::class, 'highlighted']);
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
 

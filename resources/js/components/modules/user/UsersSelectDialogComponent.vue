@@ -1,20 +1,33 @@
 <template>
     <q-list dense class="q-pa-none q-ma-none full-width">
-        <q-item style="padding: 0px" v-if="default_selected.length > 0">
+        <q-item
+            style="padding: 0px"
+            v-if="default_selected.length > 0 && showLabelWhenSelected"
+        >
             <q-item-section>
                 <q-item-label>{{ label }} </q-item-label>
             </q-item-section>
         </q-item>
         <q-item style="padding: 0px">
-            <q-item-section v-if="default_selected.length === 0">
+            <q-item-section
+                class="cursor-pointer"
+                v-if="default_selected.length === 0"
+                @click="showDialog = true"
+            >
                 <q-input
                     dense
                     readonly
                     hide-bottom-space
                     :label="label"
-                    :hint="!errorMsg ? (required ? 'requerido' : '') : ''"
                     :rules="rules"
-                />
+                >
+                    <template #label v-if="label"
+                        >{{ label }}
+                        <span class="text-red" v-if="required">
+                            *</span
+                        ></template
+                    >
+                </q-input>
                 <q-item-label
                     class="q-field--error"
                     v-if="errorMsg"
@@ -31,7 +44,6 @@
             </q-item-section>
 
             <users-selected-component
-                :imgbase="imgbase"
                 :list="default_selected"
                 @clear="onClear"
                 @remove-item="onRemove"
@@ -43,7 +55,7 @@
                     :tooltips="`seleccionar ${
                         multiple ? 'usuarios' : 'usuario'
                     }`"
-                    icon="mdi-account-circle"
+                    :icon="icon"
                     v-if="multiple"
                 >
                     <q-menu ref="menuRef">
@@ -93,8 +105,9 @@
                     </q-menu>
                 </q-btn-component>
                 <q-btn-component
-                    tooltips="seleccionar usuario"
-                    icon="mdi-account-circle"
+                    :tooltips="`seleccionar ${label ?? 'usuario'}`"
+                    :icon="icon"
+                    :size="iconSize"
                     @click="showDialog = true"
                     v-else
                 />
@@ -105,20 +118,19 @@
     <q-dialog v-model="showDialog" persistent position="right">
         <q-card>
             <dialog-header-component
-                icon="mdi-account-circle"
-                :title="
-                    multiple ? 'seleccionar usuarios' : 'seleccionar usuario'
-                "
+                :icon="icon"
+                :icon-size="iconSize"
+                title="seleccionar..."
                 closable
                 @close="showDialog = false"
             />
             <q-card-section>
                 <users-select-component
-                    :imgbase="imgbase"
                     :url="url"
-                    @change="onChange"
                     :modelValue="current_selected"
                     :multiple="multiple"
+                    :selected-role="selectedRole"
+                    @change="onChange"
                 />
             </q-card-section>
             <q-separator />
@@ -156,6 +168,14 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    icon: {
+        type: String,
+        default: "mdi-account-circle",
+    },
+    iconSize: {
+        type: String,
+        default: "md",
+    },
     errors: {
         type: Object,
         default: null,
@@ -168,18 +188,21 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    showLabelWhenSelected: {
+        type: Boolean,
+        default: true,
+    },
     url: String,
-    imgbase: String,
     modelValue: {
         type: Array,
         default: [],
     },
+    selectedRole: String | Number,
 });
 
 const emits = defineEmits(["update"]);
 const page = usePage();
 const showDialog = ref(false);
-const menuRef = ref(null);
 const default_selected = ref([]);
 const current_selected = ref([]);
 const rules = ref(null);
@@ -202,7 +225,7 @@ const onChange = (users) => {
 
 const onRemove = (usr) => {
     default_selected.value = default_selected.value.filter(
-        (u) => u.value !== usr.value
+        (u) => u.value !== usr.value,
     );
 };
 

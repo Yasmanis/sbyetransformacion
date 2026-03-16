@@ -55,7 +55,7 @@
                         <form-note-component
                             :notables="selected"
                             :model="current_module.model"
-                            :disable="selected.length === 0"
+                            @created="selected = []"
                             v-if="has_edit"
                         />
                         <btn-reload-component @click="onRequest" />
@@ -225,12 +225,10 @@
                         size="sm"
                         v-if="updateFields.length > 0 && has_edit"
                     />
-                    <delete-component
-                        :objects="[props.row]"
-                        :url="current_module.base_url"
-                        size="sm"
-                        :disable="props.row.username === 'sa'"
-                        v-if="has_delete"
+                    <lock-unlock-component
+                        :object="props.row"
+                        :disable="props.row.name === 'sa'"
+                        v-if="has_edit"
                     />
                     <btn-calendar-plus-component />
                     <btn-list-component list tooltips="historico" />
@@ -329,11 +327,10 @@
                                                 has_edit
                                             "
                                         />
-                                        <delete-component
-                                            :objects="[props.row]"
-                                            :url="current_module.base_url"
-                                            size="sm"
-                                            v-if="has_delete"
+                                        <lock-unlock-component
+                                            :object="props.row"
+                                            :disable="props.row.name === 'sa'"
+                                            v-if="has_edit"
                                         />
                                     </div>
                                 </q-item-section>
@@ -355,7 +352,7 @@ import BtnClearComponent from "../../btn/BtnClearComponent.vue";
 import BtnUserCardComponent from "../../btn/BtnUserCardComponent.vue";
 import BtnCalendarPlusComponent from "../../btn/BtnCalendarPlusComponent.vue";
 import BtnListComponent from "../../btn/BtnListComponent.vue";
-
+import LockUnlockComponent from "./LockUnlockComponent.vue";
 import BtnHighlightComponent from "../../btn/BtnHighlightComponent.vue";
 import FormComponent from "../../form/FormComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";

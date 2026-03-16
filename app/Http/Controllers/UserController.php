@@ -203,4 +203,14 @@ class UserController extends Controller
         $user->save();
         return redirect()->back()->with('success', 'colores configurados correctamente');
     }
+
+    public function highlighted(Request $request)
+    {
+        $objects = User::whereIn('id', $request->highlighs)->get();
+        foreach ($objects as $obj) {
+            $obj->highlighted = !$obj->highlighted;
+            $obj->save();
+        }
+        return redirect()->back()->with('success', 'operacion realizada correctamente');
+    }
 }

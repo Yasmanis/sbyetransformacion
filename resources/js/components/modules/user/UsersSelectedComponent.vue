@@ -140,7 +140,6 @@ defineOptions({
 });
 
 const props = defineProps({
-    imgbase: String,
     chip: {
         type: Boolean,
         default: true,
@@ -163,7 +162,7 @@ watch(
     () => props.list,
     (n, o) => {
         setDefault();
-    }
+    },
 );
 const setDefault = () => {
     chip_0.value = null;

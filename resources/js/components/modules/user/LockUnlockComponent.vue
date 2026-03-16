@@ -1,11 +1,7 @@
 <template>
     <q-btn-component
         :tooltips="object.active ? 'dar baja' : 'dar alta'"
-        :icon="
-            object.active
-                ? 'mdi-account-cancel-outline'
-                : 'mdi-account-check-outline'
-        "
+        :icon="object.active ? 'mdi-cancel' : 'mdi-check-circle-outline'"
         :disable="disable"
         @click="
             router.post(

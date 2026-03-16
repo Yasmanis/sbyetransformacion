@@ -7,7 +7,6 @@
                     v-if="current_selected && current_selected.length > 0"
                 >
                     <users-selected-component
-                        :imgbase="imgbase"
                         :list="current_selected"
                         @clear="onClearSelected"
                         @remove-item="onRemoveItemSelected"
@@ -31,9 +30,15 @@
                     <q-item-section>
                         <select-field
                             label="rol"
+                            :model-value="role"
+                            :disable="
+                                selectedRole !== null &&
+                                selectedRole !== undefined
+                            "
                             :othersProps="{
                                 url_to_options: '/roles',
                             }"
+                            @loaded-options="onLoadedRoles"
                             @update="onUpdateRole"
                         />
                     </q-item-section>
@@ -58,6 +63,13 @@
                     style="padding-right: 0px; padding-left: 0px"
                     v-for="(u, indexUser) in paginatedLists"
                     :key="`user_${indexUser}`"
+                    clickable
+                    @click="
+                        () => {
+                            u.checked = !u.checked;
+                            onChangeUser(u);
+                        }
+                    "
                 >
                     <q-item-section
                         avatar
@@ -68,22 +80,25 @@
                     <q-item-section>
                         <q-item-label>{{ u.label }}</q-item-label>
                     </q-item-section>
-                    <q-item-section side>
-                        <q-checkbox
-                            dense
-                            v-model="u.checked"
-                            @update:model-value="onChangeUser(u)"
+                    <q-item-section avatar side>
+                        <q-icon
+                            :name="
+                                u.checked
+                                    ? 'mdi-checkbox-marked'
+                                    : 'mdi-square-outline'
+                            "
+                            :color="u.checked ? 'primary' : 'grey'"
                             v-if="multiple"
-                        ></q-checkbox>
-                        <q-radio
-                            v-model="u.checked"
-                            checked-icon="task_alt"
-                            unchecked-icon="panorama_fish_eye"
-                            :val="u"
-                            @update:model-value="onChangeUser(u)"
-                            color="primary"
+                        />
+                        <q-icon
+                            :name="
+                                u.checked
+                                    ? 'check_circle'
+                                    : 'radio_button_unchecked'
+                            "
+                            :color="u.checked ? 'primary' : 'grey'"
                             v-else
-                        ></q-radio>
+                        />
                     </q-item-section>
                 </q-item>
             </q-list>
@@ -116,7 +131,6 @@ defineOptions({
 
 const props = defineProps({
     url: String,
-    imgbase: String,
     modelValue: {
         type: Array,
         default: [],
@@ -129,6 +143,7 @@ const props = defineProps({
         type: Number,
         default: -1,
     },
+    selectedRole: String | Number,
 });
 
 const emits = defineEmits(["change"]);
@@ -149,7 +164,7 @@ watch(
     () => props.modelValue,
     (n, o) => {
         current_selected.value = n;
-    }
+    },
 );
 
 watch(search, () => {
@@ -201,7 +216,7 @@ const onChangePaginate = (l) => {
 const onChangeUser = async (u) => {
     if (props.multiple) {
         const index = current_selected.value.findIndex(
-            (c) => c.value === u.value
+            (c) => c.value === u.value,
         );
         if (index === -1 && u.checked) {
             current_selected.value.push(u);
@@ -213,7 +228,7 @@ const onChangeUser = async (u) => {
     } else {
         if (current_selected.value.length > 0) {
             let user = lists.value.find(
-                (e) => e.value === current_selected.value[0].value
+                (e) => e.value === current_selected.value[0].value,
             );
             if (user) {
                 user.checked = false;
@@ -233,7 +248,7 @@ const onClearSelected = async () => {
 
 const onRemoveItemSelected = (usr) => {
     current_selected.value = current_selected.value.filter(
-        (u) => u.value !== usr.value
+        (u) => u.value !== usr.value,
     );
     emits("change", current_selected.value);
     refreshList();
@@ -245,5 +260,15 @@ const refreshList = () => {
             current_selected.value.find((u) => u.value === l.value) !==
             undefined;
     });
+};
+
+const onLoadedRoles = (opts) => {
+    if (props.selectedRole) {
+        let opt = opts.find((o) => o.label === props.selectedRole);
+        if (opt) {
+            role.value = opt.value;
+            getList();
+        }
+    }
 };
 </script>

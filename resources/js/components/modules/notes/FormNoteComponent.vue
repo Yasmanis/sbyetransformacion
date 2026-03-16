@@ -4,7 +4,11 @@
         @click="showDialog = true"
         v-if="object"
     />
-    <btn-note-component :disable="disable" @click="showDialog = true" v-else />
+    <btn-note-component
+        :disable="disable || notablesHasNotes.length === 0"
+        @click="showDialog = true"
+        v-else
+    />
     <q-dialog v-model="showDialog" persistent @before-show="beforeShow">
         <q-card style="width: 400px; max-width: 50vw">
             <dialog-header-component
@@ -65,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import BtnNoteComponent from "../../btn/BtnNoteComponent.vue";
 import BtnEditComponent from "../../btn/BtnEditComponent.vue";
@@ -92,6 +96,8 @@ const props = defineProps({
     color: String,
 });
 
+const emits = defineEmits(["created"]);
+
 const showDialog = ref(false);
 const form = ref(null);
 
@@ -103,33 +109,38 @@ const formData = useForm({
     notables: [],
 });
 
+const notablesHasNotes = computed(() => {
+    return props.notables.filter((n) => !n.note);
+});
+
 const beforeShow = () => {
     let obj = props.object;
     formData.content = obj?.content ?? null;
     formData.t_color = obj?.t_color ?? "#fff";
     formData.b_color = obj?.b_color ?? "#407492";
     formData.model = props.model;
-    formData.notables = props.notables.map((n) => n.id);
+    formData.notables = notablesHasNotes.value.map((n) => n.id);
 };
 
 const save = async () => {
-    // form.value.validate().then((success) => {
-    //     if (success) {
-    //         if (props.object?.id) {
-    //             update();
-    //         } else {
-    //             store();
-    //         }
-    //     } else {
-    //         errorValidation();
-    //     }
-    // });
+    form.value.validate().then((success) => {
+        if (success) {
+            if (props.object?.id) {
+                update();
+            } else {
+                store();
+            }
+        } else {
+            errorValidation();
+        }
+    });
 };
 
 const store = async () => {
     formData.post("/admin/notes", {
         onSuccess: () => {
             showDialog.value = false;
+            emits("created");
         },
     });
 };

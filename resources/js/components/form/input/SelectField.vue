@@ -189,15 +189,8 @@ const errorMsg = computed(() => {
 });
 
 const setData = async () => {
-    currentOptions.value = [];
+    currentOptions.value = props.options ?? [];
     await setDataFromServer();
-    if (currentOptions.value.length === 0) {
-        currentOptions.value = props.options;
-    } else {
-        props.options.forEach((o) => {
-            currentOptions.value.push(o);
-        });
-    }
     allOptions.value = currentOptions.value;
     emits("loaded-options", allOptions.value);
     setModelValue();

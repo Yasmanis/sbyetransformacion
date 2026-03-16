@@ -32,22 +32,19 @@
                     <div
                         class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 q-pb-md"
                     >
-                        <text-field
-                            name="user_process"
+                        <users-select-dialog-component
+                            name="assigned_user"
                             label="facilitador de procesos"
-                            :model-value="formData.user_process"
-                            :readonly="true"
-                            :othersProps="{
-                                required: true,
-                            }"
-                        >
-                            <template #after>
-                                <q-btn-component
-                                    icon="mdi-account-tie"
-                                    tooltips="seleccionar"
-                                />
-                            </template>
-                        </text-field>
+                            icon="fas fa-user-plus"
+                            icon-size="sm"
+                            selected-role="facilitador"
+                            :multiple="false"
+                            :show-label-when-selected="false"
+                            @update="
+                                (name, val) =>
+                                    (formData[name] = val[0]?.value ?? null)
+                            "
+                        />
                     </div>
                     <div
                         class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 q-pb-md"
@@ -218,7 +215,7 @@
                         />
                     </div>
                     <div
-                        class="col-xl-2 col-lg-2 col-md-2col-sm-6 col-xs-12 q-pb-md"
+                        class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-xs-12 q-pb-md"
                     >
                         <text-field
                             name="nif_cif"
@@ -232,21 +229,162 @@
                     <div
                         class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12 q-pb-md"
                     >
-                        <text-field
+                        <users-select-dialog-component
                             name="gestor"
-                            :model-value="formData.gestor"
                             label="gestor"
-                            readonly
-                            :othersProps="{
-                                required: true,
-                            }"
-                            ><template #after>
-                                <q-btn-component
-                                    icon="mdi-account-tie"
-                                    tooltips="seleccionar"
-                                />
-                                <btn-basket-component /> </template
-                        ></text-field>
+                            icon="mdi-account-voice"
+                            :multiple="false"
+                            :show-label-when-selected="false"
+                            @update="
+                                (name, val) =>
+                                    (formData[name] = val[0]?.value ?? null)
+                            "
+                        />
+                    </div>
+                </div>
+                <div class="row q-col-gutter-md">
+                    <div
+                        class="col-xs-12 col-xl-2 col-lg-2 col-md-2 col-sm-12"
+                        :style="{
+                            'padding-top':
+                                Screen.xs || Screen.sm ? null : '50px',
+                        }"
+                    >
+                        <text-field label="programa" />
+                    </div>
+                    <div
+                        class="col-xs-12 col-sm-12 col-xl-3 col-lg-3 col-md-3 q-col-gutter-sm q-pt-lg"
+                    >
+                        <q-item-label caption>consultas</q-item-label>
+                        <div class="row q-col-gutter-md">
+                            <div
+                                :class="
+                                    Screen.xs || Screen.sm
+                                        ? 'col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4'
+                                        : 'col-12'
+                                "
+                            >
+                                <text-field label="totales" />
+                            </div>
+                            <div
+                                :class="
+                                    Screen.xs || Screen.sm
+                                        ? 'col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4'
+                                        : 'col-12'
+                                "
+                            >
+                                <text-field label="consumidas" />
+                            </div>
+                            <div
+                                :class="
+                                    Screen.xs || Screen.sm
+                                        ? 'col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4'
+                                        : 'col-12'
+                                "
+                            >
+                                <text-field label="proxima" />
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="col-xs-12 col-sm-6 col-xl-2 col-lg-2 col-md-2 q-col-gutter-md"
+                        :style="{
+                            'padding-top':
+                                Screen.xs || Screen.sm ? null : '50px',
+                        }"
+                    >
+                        <text-field label="ultimo pago" />
+                        <text-field />
+                    </div>
+                    <div
+                        class="col-xs-12 col-sm-6 col-xl-2 col-lg-2 col-md-2 q-col-gutter-md"
+                        :style="{
+                            'padding-top':
+                                Screen.xs || Screen.sm ? null : '50px',
+                        }"
+                    >
+                        <date-field label="proximo pago" />
+                        <text-field />
+                    </div>
+                    <div
+                        class="col-xs-12 col-xl-3 col-lg-3 col-md-3 q-col-gutter-sm col-sm-12 q-pt-lg"
+                    >
+                        <q-item-label caption>consolidacion</q-item-label>
+                        <div class="row q-col-gutter-md">
+                            <div
+                                :class="
+                                    Screen.xs || Screen.sm
+                                        ? 'col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4'
+                                        : 'col-12'
+                                "
+                            >
+                                <text-field label="totales" />
+                            </div>
+                            <div
+                                :class="
+                                    Screen.xs || Screen.sm
+                                        ? 'col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4'
+                                        : 'col-12'
+                                "
+                            >
+                                <text-field label="consumidas" />
+                            </div>
+                            <div
+                                :class="
+                                    Screen.xs || Screen.sm
+                                        ? 'col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4'
+                                        : 'col-12'
+                                "
+                            >
+                                <date-field label="proxima" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <q-item style="padding: 0" class="q-mt-md">
+                    <q-item-section
+                        ><text-field
+                            name="characteristics"
+                            type="textarea"
+                            label="caracteristicas"
+                            autogrow
+                            @update="onUpdateField"
+                    /></q-item-section>
+                    <q-item-section avatar>
+                        <q-icon name="mdi-image-plus">
+                            <q-tooltip-component title="subir imagen" />
+                        </q-icon>
+                    </q-item-section>
+                </q-item>
+                <div class="row q-mt-md">
+                    <div class="col">
+                        <text-field
+                            name="observations"
+                            type="textarea"
+                            label="observaciones"
+                            autogrow
+                            @update="onUpdateField"
+                        />
+                    </div>
+                </div>
+                <div class="row q-mt-xs q-col-gutter-md">
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                        <text-field
+                            name="observations"
+                            type="textarea"
+                            label="fecha gestion"
+                            autogrow
+                            @update="onUpdateField"
+                        />
+                    </div>
+                    <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 col-xl-8">
+                        <text-field
+                            name="observations"
+                            type="textarea"
+                            label="citas y gestiones"
+                            autogrow
+                            @update="onUpdateField"
+                        />
                     </div>
                 </div>
             </q-form>
@@ -272,7 +410,7 @@
 </template>
 
 <script setup>
-import { onMounted, watch, ref } from "vue";
+import { onMounted, watch, ref, readonly } from "vue";
 import BtnHighlightComponent from "../../btn/BtnHighlightComponent.vue";
 import BtnMsgComponent from "../../btn/BtnMsgComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
@@ -281,15 +419,18 @@ import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import TextField from "../../form/input/TextField.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import DateField from "../../form/input/DateField.vue";
-import CountryField from "../../form/input/CountryField.vue";
-import PhoneField from "../../form/input/PhoneField.vue";
+import ImageField from "../../form/input/ImageField.vue";
 import BtnBasketComponent from "../../btn/BtnBasketComponent.vue";
+import QTooltipComponent from "../../base/QTooltipComponent.vue";
 
 import FormNoteComponent from "../notes/FormNoteComponent.vue";
 import MenuNoteComponent from "../notes/MenuNoteComponent.vue";
+import UsersSelectDialogComponent from "./UsersSelectDialogComponent.vue";
 import { useForm } from "@inertiajs/vue3";
 
 import { useUtils } from "../../../composables/useUtils.js";
+import { map } from "lodash";
+import { Screen } from "quasar";
 defineOptions({
     name: "UserCardComponent",
 });

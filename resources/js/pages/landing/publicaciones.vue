@@ -66,7 +66,7 @@
                                     "
                                     :href="
                                         f.type === 'link'
-                                            ? f.name
+                                            ? f.link
                                             : `${$page.props.public_path}storage/${f.path}`
                                     "
                                     target="_blank"

@@ -1,9 +1,9 @@
 <template>
     <q-toolbar :class="cls" ref="draggableRef">
         <q-icon :name="icon" :size="iconSize"></q-icon>
-        <q-toolbar-title style="padding-left: 5px" class="text-lowercase">{{
-            title
-        }}</q-toolbar-title>
+        <q-toolbar-title style="padding-left: 7px" class="text-lowercase">
+            {{ title }}</q-toolbar-title
+        >
         <q-btn
             dense
             flat
