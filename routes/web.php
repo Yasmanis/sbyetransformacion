@@ -45,6 +45,7 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SubtitleController;
 use App\Http\Controllers\TestimonyController;
 use App\Http\Controllers\TiketReplyController;
+use App\Http\Controllers\UtilsController;
 use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
@@ -251,6 +252,12 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         return $token;
     });
 
+
+    Route::group(['prefix' => 'utils'], function () {
+        Route::post('/highlight', [UtilsController::class, 'highlight']);
+    });
+
+
     Route::get('/auth/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/auth/profile', [AuthController::class, 'saveProfile']);
     Route::post('/auth/subscribe', [AuthController::class, 'subscribe']);
@@ -263,6 +270,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         return Inertia('home');
     });
     Route::resource('/admin/users', UserController::class);
+    Route::get('/admin/users/calendar/{id}', [UserController::class, 'calendar']);
     Route::post('/admin/users/lockUnlock/{id}', [UserController::class, 'lockUnlock']);
     Route::post('/admin/users/change-password/{id}', [UserController::class, 'changePassword']);
     Route::post('/admin/users/change-my-password', [UserController::class, 'changeMyPassword']);

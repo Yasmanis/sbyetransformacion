@@ -197,7 +197,7 @@
                         :fields="
                             props.row.type === 'link'
                                 ? updateFields.filter((f) => f.name !== 'file')
-                                : updateFields
+                                : updateFields.filter((f) => f.name !== 'link')
                         "
                         :module="current_module"
                         post-on-update

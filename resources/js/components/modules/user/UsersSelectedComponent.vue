@@ -151,7 +151,6 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["remove-item", "clear"]);
-const users = ref([]);
 const chip_0 = ref(null);
 const chip_1 = ref(null);
 const chip_2 = ref(null);

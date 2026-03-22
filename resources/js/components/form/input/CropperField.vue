@@ -16,7 +16,8 @@
                         aspectRatio: 1,
                     }"
                     @crop="imagePreview = cropper.getDataURL()"
-                />
+                >
+                </VuePictureCropper>
             </div>
             <div class="col text-center q-pt-md">
                 <q-btn-component
@@ -48,14 +49,15 @@
         </div>
         <div class="col-md-4 col-lg-4 col-sm-4 col-xs-12 self-center">
             <div class="column items-center">
-                <q-avatar size="120px" class="shadow-10" v-if="avatar">
+                <q-avatar
+                    size="120px"
+                    :class="{
+                        'shadow-10': !square,
+                    }"
+                    :square="square"
+                >
                     <img :src="imagePreview" />
                 </q-avatar>
-                <img
-                    :src="imagePreview"
-                    style="width: 100%; height: 100%"
-                    v-else
-                />
             </div>
             <div class="col text-center q-pt-md">vista previa</div>
         </div>
@@ -71,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount, watch } from "vue";
+import { ref, onBeforeMount } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnConfirmComponent from "../../btn/BtnConfirmComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
@@ -87,6 +89,10 @@ const props = defineProps({
     },
     image: String,
     avatar: {
+        type: Boolean,
+        default: false,
+    },
+    square: {
         type: Boolean,
         default: false,
     },

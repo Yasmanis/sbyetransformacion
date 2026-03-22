@@ -183,10 +183,10 @@ class User extends Authenticatable implements CanResetPassword
             ->orWhere('surname', 'like', '%' . $regex . '%');
     }
 
-    public function scopeFilterByRole($query, $value)
+    public function scopeFilterByRole($query, $value, $column = 'id')
     {
-        return $query->whereHas('roles', function ($query) use ($value) {
-            $query->where('id', $value);
+        return $query->whereHas('roles', function ($query) use ($column, $value) {
+            $query->where($column, $value);
         });
     }
 

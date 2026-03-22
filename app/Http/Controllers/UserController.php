@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buyer;
-use App\Models\SchoolSection;
 use App\Models\User;
 use App\Models\UserLastCourse;
+use App\Repositories\BuyerRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -36,6 +36,16 @@ class UserController extends Controller
         return $this->deny_access($request);
     }
 
+    public function calendar(Request $request, $id)
+    {
+        if (auth()->user()->hasView('user')) {
+            $repository = new UserRepository();
+            $user = $repository->getById($id);
+            return Inertia('users/calendar', ['user' => $user]);
+        }
+        return $this->deny_access($request);
+    }
+
     public function store(Request $request)
     {
         if (auth()->user()->hasCreate('user')) {
@@ -60,21 +70,41 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('user')) {
+        $user = auth()->user();
+        if ($user->hasUpdate('user')) {
             $request->validate([
+                'name' => ['required'],
+                'surname' => ['required'],
+                'country_id' => ['required'],
+                'province' => ['required'],
+                'genre' => ['required'],
+                'birthdate' => ['required'],
+                'username' => ['required', Rule::unique('users', 'username')->ignore($id)],
                 'email' => ['required', Rule::unique('users', 'email')->ignore($id)],
             ]);
             $repository = new UserRepository();
             $user = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+            $repository = new BuyerRepository();
+            $buyer = $repository->getByColumn($id, 'user_id');
+            if ($buyer) {
+                $repository->updateById($buyer->id, $request->only((new ($repository->model()))->getFillable()));
+            } else {
+                $data = $request->only((new ($repository->model()))->getFillable());
+                $data['user_id'] = $id;
+                $repository->create($data);
+            }
             if (isset($request->roles)) {
                 $user->roles()->sync($request->roles);
             } else {
                 $user->roles()->detach();
             }
-            if (isset($request->permissions)) {
-                $user->permissions()->sync($request->permissions);
-            } else {
-                $user->permissions()->detach();
+            // if (isset($request->permissions)) {
+            //     $user->permissions()->sync($request->permissions);
+            // } else {
+            //     $user->permissions()->detach();
+            // }
+            if ($request->toList) {
+                return redirect('/admin/users')->with('success', 'usuario modificado correctamente');
             }
             return redirect()->back()->with('success', 'usuario modificado correctamente');
         }

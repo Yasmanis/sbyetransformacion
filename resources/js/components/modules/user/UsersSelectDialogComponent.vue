@@ -2,7 +2,7 @@
     <q-list dense class="q-pa-none q-ma-none full-width">
         <q-item
             style="padding: 0px"
-            v-if="default_selected.length > 0 && showLabelWhenSelected"
+            v-if="defaultSelected.length > 0 && showLabelWhenSelected"
         >
             <q-item-section>
                 <q-item-label>{{ label }} </q-item-label>
@@ -11,7 +11,7 @@
         <q-item style="padding: 0px">
             <q-item-section
                 class="cursor-pointer"
-                v-if="default_selected.length === 0"
+                v-if="defaultSelected.length === 0"
                 @click="showDialog = true"
             >
                 <q-input
@@ -44,9 +44,9 @@
             </q-item-section>
 
             <users-selected-component
-                :list="default_selected"
-                @clear="onClear"
-                @remove-item="onRemove"
+                :list="defaultSelected"
+                @clear="onClearSelected"
+                @remove-item="onRemoveItem"
                 v-else
             />
 
@@ -84,8 +84,9 @@
                             <q-item
                                 clickable
                                 v-close-popup
-                                @click="allUsers"
+                                @click="onSelectAllUsers"
                                 style="padding-left: 0"
+                                v-if="allUsers.length > 0"
                             >
                                 <q-item-section
                                     avatar
@@ -127,7 +128,7 @@
             <q-card-section>
                 <users-select-component
                     :url="url"
-                    :modelValue="current_selected"
+                    :modelValue="modelValue"
                     :multiple="multiple"
                     :selected-role="selectedRole"
                     @change="onChange"
@@ -135,7 +136,7 @@
             </q-card-section>
             <q-separator />
             <q-card-actions align="right">
-                <btn-confirm-component @click="onSave" />
+                <btn-confirm-component @click="onConfirm" />
                 <btn-cancel-component
                     :cancel="true"
                     @click="showDialog = false"
@@ -146,7 +147,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, computed } from "vue";
+import { ref, watch, computed, onBeforeMount } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import BtnConfirmComponent from "../../btn/BtnConfirmComponent.vue";
@@ -156,7 +157,7 @@ import UsersSelectedComponent from "./UsersSelectedComponent.vue";
 import { Loading } from "quasar";
 import { usePage } from "@inertiajs/vue3";
 import axios from "axios";
-import { error, error500 } from "../../../helpers/notifications";
+import { error500 } from "../../../helpers/notifications";
 
 defineOptions({
     name: "UsersSelectDialogComponent",
@@ -193,52 +194,51 @@ const props = defineProps({
         default: true,
     },
     url: String,
-    modelValue: {
-        type: Array,
-        default: [],
-    },
+    modelValue: Array | Number,
     selectedRole: String | Number,
 });
 
 const emits = defineEmits(["update"]);
 const page = usePage();
 const showDialog = ref(false);
-const default_selected = ref([]);
-const current_selected = ref([]);
 const rules = ref(null);
+const allUsers = ref([]);
+const defaultSelected = ref([]);
+const currentSelected = ref([]);
 
-onMounted(() => {
-    default_selected.value = props.modelValue;
+onBeforeMount(() => {
     if (props.required) {
         rules.value = [(val) => !!val || "requerido"];
     }
+    loadUsers();
 });
 
-watch(default_selected, (n) => {
-    setDefaults(current_selected, n);
-    emits("update", props.name, n);
-});
-
-const onChange = (users) => {
-    current_selected.value = users;
+const onChange = (opts) => {
+    currentSelected.value = opts ? (Array.isArray(opts) ? opts : [opts]) : [];
 };
 
-const onRemove = (usr) => {
-    default_selected.value = default_selected.value.filter(
-        (u) => u.value !== usr.value,
-    );
-};
-
-const onClear = () => {
-    default_selected.value = [];
-};
-
-const allUsers = async () => {
+const loadUsers = async () => {
+    let data = {
+        roleStr: props.selectedRole,
+    };
     Loading.show();
     await axios
-        .get("/users")
+        .post("/users", data)
         .then((response) => {
-            default_selected.value = response.data.options;
+            allUsers.value = response.data.options;
+            if (props.modelValue) {
+                if (Array.isArray(props.modelValue)) {
+                    defaultSelected.value = allUsers.value.filter((u) =>
+                        props.modelValue.includes(u.value),
+                    );
+                } else {
+                    let found = allUsers.value.find(
+                        (u) => props.modelValue === u.value,
+                    );
+                    defaultSelected.value = found ? [found] : [];
+                }
+            }
+            onUpdate();
         })
         .catch((error) => {
             error500();
@@ -248,21 +248,42 @@ const allUsers = async () => {
         });
 };
 
-const setDefaults = (arr, items) => {
-    let selected = [];
-    for (let i = 0; i < items.length; i++) {
-        selected.push(items[i]);
-    }
-    arr.value = selected;
+const onSelectAllUsers = () => {
+    defaultSelected.value = [...allUsers.value];
+    onUpdate();
 };
 
-const onSave = () => {
-    let selected = [];
-    for (let i = 0; i < current_selected.value.length; i++) {
-        selected.push(current_selected.value[i]);
-    }
-    default_selected.value = selected;
+const onRemoveItem = (item) => {
+    defaultSelected.value = defaultSelected.value.filter(
+        (s) => s.value !== item.value,
+    );
+    onUpdate();
+};
+
+const onClearSelected = () => {
+    defaultSelected.value = [];
+    onUpdate();
+};
+
+const onConfirm = () => {
+    defaultSelected.value = [...currentSelected.value];
+    onUpdate();
     showDialog.value = false;
+};
+
+const onUpdate = () => {
+    let n = defaultSelected.value;
+    emits(
+        "update",
+        props.name,
+        n.length > 0
+            ? props.multiple
+                ? n.map((s) => s.value)
+                : n[0].value
+            : props.multiple
+              ? []
+              : null,
+    );
 };
 
 const errorMsg = computed(() => {

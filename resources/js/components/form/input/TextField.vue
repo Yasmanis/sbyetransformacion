@@ -10,6 +10,8 @@
         :clearable="clearable"
         :type="type"
         :autogrow="autogrow"
+        :readonly="othersProps?.readonly ?? false"
+        :disable="othersProps?.disable ?? false"
         lazy-rules
         reactive-rules
         hide-bottom-space
@@ -107,7 +109,7 @@ watch(
             n = n.trim();
         }
         model.value = n === "" ? null : n;
-    }
+    },
 );
 
 const errorMsg = computed(() => {

@@ -113,6 +113,8 @@ class SelectsController extends Controller
         $users = User::query();
         if (isset($request->role)) {
             $users = $users->filterByRole($request->role);
+        } else if (isset($request->roleStr)) {
+            $users = $users->filterByRole($request->roleStr, 'name');
         }
         if (isset($request->regex)) {
             $users = $users->filterByRegex($request->regex);

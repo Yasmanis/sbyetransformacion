@@ -30,6 +30,7 @@
                                     label="usuario"
                                     :othersProps="{
                                         required: true,
+                                        readonly: formData.username === 'sa',
                                     }"
                                     @update="onUpdateField"
                                 />
@@ -319,7 +320,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed, ref } from "vue";
+import { onMounted, computed, ref, readonly } from "vue";
 import BtnDeleteComponent from "../btn/BtnDeleteComponent.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import CropperField from "../form/input/CropperField.vue";

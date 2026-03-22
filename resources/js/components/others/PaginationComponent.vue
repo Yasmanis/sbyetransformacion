@@ -63,7 +63,7 @@ watch(
     (n, o) => {
         lists.value = n;
         initPaginate();
-    }
+    },
 );
 const initPaginate = () => {
     pagination.value = {
@@ -72,10 +72,10 @@ const initPaginate = () => {
             perPage.value === "todos"
                 ? 1
                 : lists.value.length > perPage.value
-                ? lists.value.length % perPage.value === 0
-                    ? lists.value.length / perPage.value
-                    : lists.value.length / perPage.value + 1
-                : 1,
+                  ? lists.value.length % perPage.value === 0
+                      ? lists.value.length / perPage.value
+                      : lists.value.length / perPage.value + 1
+                  : 1,
     };
     onChangePage();
 };

@@ -20,7 +20,15 @@ class Buyer extends Model
         'genre',
         'phone',
         'phone_code',
-        'birthdate'
+        'birthdate',
+        'observations',
+        'characteristics_img',
+        'characteristics',
+        'managers_dates',
+        'managers_quotes',
+        'manager_id',
+        'nif_cif',
+        'facilitator_id',
     ];
 
     protected $appends = ['country_str', 'birthdate_str', 'age'];

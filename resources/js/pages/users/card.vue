@@ -16,7 +16,10 @@
                                 color="white"
                                 :object="user"
                             /> </q-item-section
-                        ><q-item-section avatar v-if="has_edit">
+                        ><q-item-section
+                            avatar
+                            v-if="has_edit && user.name !== 'sa'"
+                        >
                             <lock-unlock-component
                                 color="white"
                                 :object="user"

@@ -51,7 +51,10 @@
                             size="sm"
                             v-if="createFields.length > 0 && has_add"
                         />
-                        <btn-highlight-component />
+                        <highlight-component
+                            :items="selected"
+                            :module="current_module"
+                        />
                         <form-note-component
                             :notables="selected"
                             :model="current_module.model"
@@ -136,6 +139,11 @@
                 <q-td
                     :props="props"
                     :align="props.col.align"
+                    :class="
+                        props.row['highlighted']
+                            ? 'highlighted text-primary'
+                            : null
+                    "
                     v-if="props.col.type !== 'hidden'"
                 >
                     <template v-if="props.col.type === 'avatar'">
@@ -208,27 +216,11 @@
                     <btn-user-card-component
                         @click="router.get(`/admin/users/${props.row.id}`)"
                     />
-                    <form-component
-                        :object="props.row"
-                        :title="current_module.singular_label"
-                        :fields="
-                            props.row.username === 'sa'
-                                ? updateFields.filter(
-                                      (f) =>
-                                          !['sa', 'active', 'email'].includes(
-                                              f.name,
-                                          ),
-                                  )
-                                : updateFields
-                        "
-                        :module="current_module"
-                        size="sm"
-                        v-if="updateFields.length > 0 && has_edit"
-                    />
-                    <lock-unlock-component
-                        :object="props.row"
+                    <delete-component
+                        :objects="[props.row]"
+                        url="/admin/users"
                         :disable="props.row.name === 'sa'"
-                        v-if="has_edit"
+                        v-if="has_delete"
                     />
                     <btn-calendar-plus-component />
                     <btn-list-component list tooltips="historico" />
@@ -314,19 +306,6 @@
                                                 )
                                             "
                                         />
-                                        <form-component
-                                            :object="props.row"
-                                            :title="
-                                                current_module.singular_label
-                                            "
-                                            :fields="updateFields"
-                                            :module="current_module"
-                                            size="sm"
-                                            v-if="
-                                                updateFields.length > 0 &&
-                                                has_edit
-                                            "
-                                        />
                                         <lock-unlock-component
                                             :object="props.row"
                                             :disable="props.row.name === 'sa'"
@@ -353,7 +332,6 @@ import BtnUserCardComponent from "../../btn/BtnUserCardComponent.vue";
 import BtnCalendarPlusComponent from "../../btn/BtnCalendarPlusComponent.vue";
 import BtnListComponent from "../../btn/BtnListComponent.vue";
 import LockUnlockComponent from "./LockUnlockComponent.vue";
-import BtnHighlightComponent from "../../btn/BtnHighlightComponent.vue";
 import FormComponent from "../../form/FormComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
@@ -361,6 +339,7 @@ import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";
 import FormNoteComponent from "../notes/FormNoteComponent.vue";
 import MenuNoteComponent from "../notes/MenuNoteComponent.vue";
+import HighlightComponent from "../../others/HighlightComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
 

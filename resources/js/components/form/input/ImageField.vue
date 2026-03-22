@@ -101,7 +101,7 @@ const hasDefaultImage = ref(false);
 const defaultImage = ref(
     `${page.props.public_path}images/icon/img-upload-${
         Dark.isActive ? "white" : "black"
-    }.png`
+    }.png`,
 );
 
 onBeforeMount(() => {
@@ -124,7 +124,7 @@ watch(
     () => props.reset,
     (n, o) => {
         if (n) resetImg();
-    }
+    },
 );
 
 const onChangeFile = (f) => {

@@ -1,7 +1,7 @@
 <template>
     <q-card flat>
         <q-card-section>
-            <q-form ref="formRef" greedy>
+            <q-form ref="form" greedy>
                 <div class="row q-col-gutter-x-lg">
                     <div
                         class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 q-pb-md"
@@ -32,22 +32,36 @@
                     <div
                         class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 q-pb-md"
                     >
+                        <select-field
+                            label="rol"
+                            name="roles"
+                            :model-value="formData.roles"
+                            :multiple="true"
+                            :others-props="{
+                                url_to_options: '/roles',
+                            }"
+                            @update="onUpdateField"
+                        />
+                    </div>
+                    <div
+                        class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 q-pb-md"
+                    >
                         <users-select-dialog-component
-                            name="assigned_user"
+                            name="facilitator_id"
                             label="facilitador de procesos"
                             icon="fas fa-user-plus"
                             icon-size="sm"
                             selected-role="facilitador"
                             :multiple="false"
                             :show-label-when-selected="false"
-                            @update="
-                                (name, val) =>
-                                    (formData[name] = val[0]?.value ?? null)
-                            "
+                            :model-value="formData.facilitator_id"
+                            @update="onUpdateField"
                         />
                     </div>
+                </div>
+                <div class="row q-col-gutter-x-lg">
                     <div
-                        class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 q-pb-md"
+                        class="col-xl-2 col-lg-2 col-md-2 col-sm-4 col-xs-12 q-pb-md"
                     >
                         <select-field
                             label="genero"
@@ -70,10 +84,8 @@
                             @update="onUpdateField"
                         />
                     </div>
-                </div>
-                <div class="row q-col-gutter-x-lg">
                     <div
-                        class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-xs-12 q-pb-md"
+                        class="col-xl-2 col-lg-2 col-md-2 col-sm-4 col-xs-12 q-pb-md"
                     >
                         <date-field
                             label="fecha de nacimiento"
@@ -87,13 +99,16 @@
                         />
                     </div>
                     <div
-                        class="col-xl-2 col-lg-2 col-md-2 col-sm-4 col-xs-12 q-pb-md"
+                        class="col-xl-1 col-lg-1 col-md-1 col-sm-4 col-xs-12 q-pb-md"
                     >
                         <text-field
                             name="age"
                             label="edad"
                             readonly
                             :model-value="formData.age?.toString() ?? '0'"
+                            :othersProps="{
+                                readonly: true,
+                            }"
                         />
                     </div>
                     <div
@@ -104,10 +119,13 @@
                             :model-value="formData.antique"
                             :readonly="true"
                             label="antigüedad"
+                            :othersProps="{
+                                readonly: true,
+                            }"
                         />
                     </div>
                     <div
-                        class="col-xl-3 col-lg-3 col-md-3 col-sm-8 col-xs-12 q-pb-md"
+                        class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-xs-12 q-pb-md"
                     >
                         <select-field
                             label="pais"
@@ -212,6 +230,7 @@
                                 required: true,
                                 type: 'email',
                             }"
+                            @update="onUpdateField"
                         />
                     </div>
                     <div
@@ -224,21 +243,21 @@
                             :othersProps="{
                                 required: true,
                             }"
+                            @update="onUpdateField"
                         />
                     </div>
                     <div
                         class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12 q-pb-md"
                     >
                         <users-select-dialog-component
-                            name="gestor"
+                            name="manager_id"
                             label="gestor"
-                            icon="mdi-account-voice"
+                            :icon="`img:${$page.props.public_path}images/icon/${Dark.isActive ? 'white' : 'black'}-manager.png`"
+                            selected-role="facilitador"
                             :multiple="false"
                             :show-label-when-selected="false"
-                            @update="
-                                (name, val) =>
-                                    (formData[name] = val[0]?.value ?? null)
-                            "
+                            :model-value="formData.manager_id"
+                            @update="onUpdateField"
                         />
                     </div>
                 </div>
@@ -250,7 +269,13 @@
                                 Screen.xs || Screen.sm ? null : '50px',
                         }"
                     >
-                        <text-field label="programa" />
+                        <text-field
+                            label="programa"
+                            name="program"
+                            :othersProps="{
+                                readonly: true,
+                            }"
+                        />
                     </div>
                     <div
                         class="col-xs-12 col-sm-12 col-xl-3 col-lg-3 col-md-3 q-col-gutter-sm q-pt-lg"
@@ -264,7 +289,12 @@
                                         : 'col-12'
                                 "
                             >
-                                <text-field label="totales" />
+                                <text-field
+                                    label="totales"
+                                    :othersProps="{
+                                        readonly: true,
+                                    }"
+                                />
                             </div>
                             <div
                                 :class="
@@ -273,7 +303,12 @@
                                         : 'col-12'
                                 "
                             >
-                                <text-field label="consumidas" />
+                                <text-field
+                                    label="consumidas"
+                                    :othersProps="{
+                                        readonly: true,
+                                    }"
+                                />
                             </div>
                             <div
                                 :class="
@@ -282,7 +317,12 @@
                                         : 'col-12'
                                 "
                             >
-                                <text-field label="proxima" />
+                                <text-field
+                                    label="proxima"
+                                    :othersProps="{
+                                        readonly: true,
+                                    }"
+                                />
                             </div>
                         </div>
                     </div>
@@ -293,8 +333,17 @@
                                 Screen.xs || Screen.sm ? null : '50px',
                         }"
                     >
-                        <text-field label="ultimo pago" />
-                        <text-field />
+                        <text-field
+                            label="ultimo pago"
+                            :othersProps="{
+                                readonly: true,
+                            }"
+                        />
+                        <text-field
+                            :othersProps="{
+                                readonly: true,
+                            }"
+                        />
                     </div>
                     <div
                         class="col-xs-12 col-sm-6 col-xl-2 col-lg-2 col-md-2 q-col-gutter-md"
@@ -303,8 +352,17 @@
                                 Screen.xs || Screen.sm ? null : '50px',
                         }"
                     >
-                        <date-field label="proximo pago" />
-                        <text-field />
+                        <date-field
+                            label="proximo pago"
+                            :othersProps="{
+                                readonly: true,
+                            }"
+                        />
+                        <text-field
+                            :othersProps="{
+                                readonly: true,
+                            }"
+                        />
                     </div>
                     <div
                         class="col-xs-12 col-xl-3 col-lg-3 col-md-3 q-col-gutter-sm col-sm-12 q-pt-lg"
@@ -318,7 +376,12 @@
                                         : 'col-12'
                                 "
                             >
-                                <text-field label="totales" />
+                                <text-field
+                                    label="totales"
+                                    :othersProps="{
+                                        readonly: true,
+                                    }"
+                                />
                             </div>
                             <div
                                 :class="
@@ -327,7 +390,12 @@
                                         : 'col-12'
                                 "
                             >
-                                <text-field label="consumidas" />
+                                <text-field
+                                    label="consumidas"
+                                    :othersProps="{
+                                        readonly: true,
+                                    }"
+                                />
                             </div>
                             <div
                                 :class="
@@ -336,7 +404,12 @@
                                         : 'col-12'
                                 "
                             >
-                                <date-field label="proxima" />
+                                <date-field
+                                    label="proxima"
+                                    :othersProps="{
+                                        readonly: true,
+                                    }"
+                                />
                             </div>
                         </div>
                     </div>
@@ -348,12 +421,17 @@
                             type="textarea"
                             label="caracteristicas"
                             autogrow
+                            :model-value="formData.characteristics"
                             @update="onUpdateField"
                     /></q-item-section>
                     <q-item-section avatar>
-                        <q-icon name="mdi-image-plus">
-                            <q-tooltip-component title="subir imagen" />
-                        </q-icon>
+                        <form-cropper-field
+                            name="characteristics_img"
+                            size="40px"
+                            :square="true"
+                            :model-value="formData.characteristics_img"
+                            @update="onUpdateField"
+                        />
                     </q-item-section>
                 </q-item>
                 <div class="row q-mt-md">
@@ -363,6 +441,7 @@
                             type="textarea"
                             label="observaciones"
                             autogrow
+                            :model-value="formData.observations"
                             @update="onUpdateField"
                         />
                     </div>
@@ -370,19 +449,21 @@
                 <div class="row q-mt-xs q-col-gutter-md">
                     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
                         <text-field
-                            name="observations"
+                            name="managers_dates"
                             type="textarea"
                             label="fecha gestion"
                             autogrow
+                            :model-value="formData.managers_dates"
                             @update="onUpdateField"
                         />
                     </div>
                     <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 col-xl-8">
                         <text-field
-                            name="observations"
+                            name="managers_quotes"
                             type="textarea"
                             label="citas y gestiones"
                             autogrow
+                            :model-value="formData.managers_quotes"
                             @update="onUpdateField"
                         />
                     </div>
@@ -393,16 +474,26 @@
         <q-card-actions>
             <q-toolbar class="no-padding" style="min-height: 20px !important">
                 <btn-msg-component />
-                <btn-highlight-component />
+                <highlight-component
+                    :module="{
+                        model: 'User',
+                        singular_label: 'Usuario',
+                    }"
+                    :items="[user]"
+                />
                 <menu-note-component :object="user.note" v-if="user?.note" />
                 <form-note-component model="User" :notables="[user]" v-else />
                 <q-space />
 
-                <btn-save-component />
-                <delete-component
-                    :objects="[user]"
-                    url="/admin/users"
-                    v-if="user.name !== 'sa' && hasDelete"
+                <btn-save-component @click="save" />
+                <q-btn-component
+                    icon="mdi-content-save-move-outline"
+                    tooltips="guardar y volver a la lista"
+                    @click="save(true)"
+                />
+                <lock-unlock-component
+                    :object="user"
+                    v-if="hasEdit && user.name !== 'sa'"
                 />
             </q-toolbar>
         </q-card-actions>
@@ -410,27 +501,23 @@
 </template>
 
 <script setup>
-import { onMounted, watch, ref, readonly } from "vue";
-import BtnHighlightComponent from "../../btn/BtnHighlightComponent.vue";
-import BtnMsgComponent from "../../btn/BtnMsgComponent.vue";
+import { watch, ref, onBeforeMount } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
+import BtnMsgComponent from "../../btn/BtnMsgComponent.vue";
 import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
-import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import TextField from "../../form/input/TextField.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import DateField from "../../form/input/DateField.vue";
-import ImageField from "../../form/input/ImageField.vue";
-import BtnBasketComponent from "../../btn/BtnBasketComponent.vue";
-import QTooltipComponent from "../../base/QTooltipComponent.vue";
-
+import LockUnlockComponent from "./LockUnlockComponent.vue";
 import FormNoteComponent from "../notes/FormNoteComponent.vue";
 import MenuNoteComponent from "../notes/MenuNoteComponent.vue";
 import UsersSelectDialogComponent from "./UsersSelectDialogComponent.vue";
+import HighlightComponent from "../../others/HighlightComponent.vue";
+import FormCropperField from "../../form/input/FormCropperField.vue";
 import { useForm } from "@inertiajs/vue3";
 
 import { useUtils } from "../../../composables/useUtils.js";
-import { map } from "lodash";
-import { Screen } from "quasar";
+import { Dark, Screen } from "quasar";
 defineOptions({
     name: "UserCardComponent",
 });
@@ -456,15 +543,18 @@ const props = defineProps({
 
 const { getPhoneCodesFromCountry } = useUtils();
 
-const formData = useForm({});
+const form = ref(null);
+const formData = ref({
+    birthdate: null,
+});
 const phoneCodes = ref([]);
 
-onMounted(() => {
+onBeforeMount(() => {
     setData();
 });
 
 watch(
-    () => formData.birthdate,
+    () => formData.value.birthdate,
     (n) => {
         if (!n || n.length < 10) return null;
 
@@ -482,41 +572,68 @@ watch(
         ) {
             edadCalculada--;
         }
-        formData.age = edadCalculada;
+        formData.value.age = edadCalculada;
     },
 );
 
 const setData = () => {
-    let { name, surname, email, antique } = props.user;
+    let { id, name, surname, email, antique, roles, username } = props.user;
     const buyer = props.buyer;
-    formData.name = name;
-    formData.surname = surname;
-    formData.antique = antique ?? null;
-    formData.genre = buyer?.genre ?? null;
-    formData.age = buyer?.age ?? null;
-    formData.birthdate = buyer?.birthdate_str ?? null;
-    formData.province = buyer?.province ?? null;
-    formData.city = buyer?.city ?? null;
-    formData.road = buyer?.road ?? null;
-    formData.address = buyer?.address ?? null;
-    formData.nif_cif = buyer?.nif_cif ?? null;
-    formData.email = email ?? null;
-    formData.country_id = buyer?.country_id ?? null;
-    formData.phone_code = buyer?.phone_code ?? null;
-    formData.phone = buyer?.phone ?? null;
+    formData.value = {
+        name,
+        surname,
+        email,
+        antique,
+        roles,
+        username,
+        genre: buyer?.genre ?? null,
+        age: buyer?.age ?? null,
+        birthdate: buyer?.birthdate_str ?? null,
+        province: buyer?.province ?? null,
+        city: buyer?.city ?? null,
+        road: buyer?.road ?? null,
+        address: buyer?.address ?? null,
+        nif_cif: buyer?.nif_cif ?? null,
+        country_id: buyer?.country_id ?? null,
+        phone_code: buyer?.phone_code ?? null,
+        phone: buyer?.phone ?? null,
+        user_id: buyer?.user_id ?? id,
+        manager_id: buyer?.manager_id ?? null,
+        facilitator_id: buyer?.facilitator_id ?? null,
+        characteristics: buyer?.characteristics ?? null,
+        observations: buyer?.observations ?? null,
+        managers_dates: buyer?.managers_dates ?? null,
+        managers_quotes: buyer?.managers_quotes ?? null,
+        characteristics_img: buyer?.characteristics_img ?? null,
+    };
 };
 
 const onUpdateField = (name, value, full) => {
     if (name === "country_id" && value !== null) {
         phoneCodes.value = getPhoneCodesFromCountry(full);
+        formData.value.phone_code = null;
     }
-    formData[name] = value;
+    formData.value[name] = value;
 };
 
 const onLoadedOptions = (opts) => {
-    let opt = opts.find((o) => o.value === formData.country_id) ?? null;
+    let opt = opts.find((o) => o.value === formData.value.country_id) ?? null;
     if (opt) {
         phoneCodes.value = getPhoneCodesFromCountry(opt);
     }
+};
+
+const save = (toList = false) => {
+    form.value.validate().then((success) => {
+        if (success) {
+            const send = useForm({
+                ...formData.value,
+                toList,
+            });
+            send.put(`/admin/users/${props.user.id}`);
+        } else {
+            errorValidation();
+        }
+    });
 };
 </script>

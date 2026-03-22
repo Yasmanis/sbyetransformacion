@@ -4,10 +4,10 @@
             <q-list dense>
                 <q-item
                     style="padding-right: 0px; padding-left: 0px"
-                    v-if="current_selected && current_selected.length > 0"
+                    v-if="selected.length > 0"
                 >
                     <users-selected-component
-                        :list="current_selected"
+                        :list="selected"
                         @clear="onClearSelected"
                         @remove-item="onRemoveItemSelected"
                     />
@@ -38,14 +38,13 @@
                             :othersProps="{
                                 url_to_options: '/roles',
                             }"
-                            @loaded-options="onLoadedRoles"
                             @update="onUpdateRole"
                         />
                     </q-item-section>
                 </q-item>
                 <q-item
                     style="padding-right: 0px; padding-left: 0px"
-                    v-if="lists && lists.length > 0 && multiple"
+                    v-if="lists?.length > 0 && multiple"
                 >
                     <q-item-section
                         avatar
@@ -54,56 +53,64 @@
                         <q-checkbox
                             dense
                             v-model="selectAllRole"
-                            @update:model-value="onUpdateSelectAllRole"
                             label="todos los usuarios"
+                            @update:model-value="onSelectAllRole"
                         ></q-checkbox>
                     </q-item-section>
                 </q-item>
-                <q-item
-                    style="padding-right: 0px; padding-left: 0px"
-                    v-for="(u, indexUser) in paginatedLists"
-                    :key="`user_${indexUser}`"
-                    clickable
-                    @click="
-                        () => {
-                            u.checked = !u.checked;
-                            onChangeUser(u);
-                        }
-                    "
+                <q-option-group
+                    v-model="model"
+                    :options="paginatedLists"
+                    :type="multiple ? 'checkbox' : 'radio'"
+                    left-label
+                    class="custom-option-group"
+                    @update:model-value="onChangeSelected"
+                    v-if="lists?.length > 0"
                 >
-                    <q-item-section
-                        avatar
-                        style="min-width: 20px !important; padding-right: 5px"
-                    >
-                        <q-icon name="mdi-account-circle" size="22px"></q-icon>
-                    </q-item-section>
-                    <q-item-section>
-                        <q-item-label>{{ u.label }}</q-item-label>
-                    </q-item-section>
-                    <q-item-section avatar side>
-                        <q-icon
-                            :name="
-                                u.checked
-                                    ? 'mdi-checkbox-marked'
-                                    : 'mdi-square-outline'
-                            "
-                            :color="u.checked ? 'primary' : 'grey'"
-                            v-if="multiple"
-                        />
-                        <q-icon
-                            :name="
-                                u.checked
-                                    ? 'check_circle'
-                                    : 'radio_button_unchecked'
-                            "
-                            :color="u.checked ? 'primary' : 'grey'"
-                            v-else
-                        />
-                    </q-item-section>
-                </q-item>
+                    <template v-slot:label="opt">
+                        <div
+                            class="row items-center justify-between full-width"
+                        >
+                            <span class="q-mr-sm"
+                                ><q-icon
+                                    name="mdi-account-circle"
+                                    size="22px"
+                                />
+                                {{ opt.label }}</span
+                            >
+
+                            <q-icon
+                                :name="
+                                    model?.includes(opt.value)
+                                        ? 'mdi-checkbox-marked'
+                                        : 'mdi-square-outline'
+                                "
+                                :color="
+                                    model?.includes(opt.value)
+                                        ? 'primary'
+                                        : 'grey'
+                                "
+                                size="24px"
+                                v-if="multiple"
+                            />
+                            <q-icon
+                                :name="
+                                    model === opt.value
+                                        ? 'check_circle'
+                                        : 'radio_button_unchecked'
+                                "
+                                :color="
+                                    model === opt.value ? 'primary' : 'grey'
+                                "
+                                size="24px"
+                                v-else
+                            />
+                        </div> </template
+                ></q-option-group>
+                <p v-else>no existen usuarios</p>
             </q-list>
         </q-card-section>
-        <q-card-section style="padding: 0" v-if="lists && lists.length > 0">
+        <q-card-section style="padding: 0" v-if="lists?.length > 0">
             <pagination-component
                 :current_list="lists"
                 @change-paginate="onChangePaginate"
@@ -118,33 +125,27 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import PaginationComponent from "../../others/PaginationComponent.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import UsersSelectedComponent from "./UsersSelectedComponent.vue";
 import axios from "axios";
-import { error, error500 } from "../../../helpers/notifications";
+import { error500 } from "../../../helpers/notifications";
 
 defineOptions({
     name: "UsersSelectComponent",
 });
 
 const props = defineProps({
-    url: String,
-    modelValue: {
-        type: Array,
-        default: [],
-    },
+    modelValue: Array | Number,
     multiple: {
         type: Boolean,
         default: true,
     },
-    remove_item: {
-        type: Number,
-        default: -1,
-    },
     selectedRole: String | Number,
 });
+
+const model = ref(null);
 
 const emits = defineEmits(["change"]);
 const loading = ref(false);
@@ -153,27 +154,53 @@ const role = ref(null);
 const selectAllRole = ref(false);
 const lists = ref([]);
 const paginatedLists = ref([]);
-const current_selected = ref([]);
 
 onMounted(() => {
-    current_selected.value = props.modelValue;
+    if (props.modelValue) {
+        model.value = props.modelValue;
+    } else {
+        model.value = props.multiple ? [] : null;
+    }
     getList();
 });
-
-watch(
-    () => props.modelValue,
-    (n, o) => {
-        current_selected.value = n;
-    },
-);
 
 watch(search, () => {
     getList();
 });
 
+const selected = computed(() => {
+    if (props.multiple) {
+        return model.value?.length > 0
+            ? lists.value.filter((u) => model.value.includes(u.value))
+            : [];
+    } else {
+        return model.value
+            ? lists.value.filter((u) => u.value === model.value)
+            : [];
+    }
+});
+
+const onSelectAllRole = (val) => {
+    model.value = val ? lists.value.map((u) => u.value) : [];
+    onChangeSelected(model.value);
+};
+
+const onChangeSelected = (val) => {
+    let opts = null;
+    if (val) {
+        if (!props.multiple) {
+            opts = lists.value.find((u) => val === u.value) ?? null;
+        } else {
+            if (val.length > 0) {
+                opts = lists.value.filter((u) => val.includes(u.value));
+            }
+        }
+    }
+    emits("change", opts);
+};
+
 const onUpdateRole = (f, val, opt) => {
     role.value = val;
-    selectAllRole.value = false;
     getList();
 };
 
@@ -181,17 +208,13 @@ const getList = () => {
     let data = {
         regex: search.value,
         role: role.value,
+        roleStr: props.selectedRole,
     };
     loading.value = true;
     axios
         .post("/users", data)
         .then((response) => {
-            let data = response.data.options;
-            data.forEach((d) => {
-                const checked = props.modelValue.find((u) => u.id === d.id);
-                d["checked"] = checked ? true : false;
-            });
-            lists.value = data;
+            lists.value = response.data.options;
         })
         .catch((error) => {
             error500();
@@ -201,74 +224,42 @@ const getList = () => {
         });
 };
 
-const onUpdateSelectAllRole = () => {
-    lists.value.forEach((e) => {
-        e["checked"] = selectAllRole.value;
-        onChangeUser(e);
-    });
-};
-
 const onChangePaginate = (l) => {
     paginatedLists.value = l;
-    refreshList();
-};
-
-const onChangeUser = async (u) => {
-    if (props.multiple) {
-        const index = current_selected.value.findIndex(
-            (c) => c.value === u.value,
-        );
-        if (index === -1 && u.checked) {
-            current_selected.value.push(u);
-        } else {
-            if (!u.checked) {
-                current_selected.value.splice(index, 1);
-            }
-        }
-    } else {
-        if (current_selected.value.length > 0) {
-            let user = lists.value.find(
-                (e) => e.value === current_selected.value[0].value,
-            );
-            if (user) {
-                user.checked = false;
-            }
-        }
-        current_selected.value = [u];
-    }
-    emits("change", current_selected.value);
 };
 
 const onClearSelected = async () => {
+    model.value = props.multiple ? [] : null;
     selectAllRole.value = false;
-    current_selected.value = [];
-    emits("change", current_selected.value);
-    refreshList();
+    onChangeSelected(model.value);
 };
 
 const onRemoveItemSelected = (usr) => {
-    current_selected.value = current_selected.value.filter(
-        (u) => u.value !== usr.value,
-    );
-    emits("change", current_selected.value);
-    refreshList();
-};
-
-const refreshList = () => {
-    paginatedLists.value.forEach((l) => {
-        l.checked =
-            current_selected.value.find((u) => u.value === l.value) !==
-            undefined;
-    });
-};
-
-const onLoadedRoles = (opts) => {
-    if (props.selectedRole) {
-        let opt = opts.find((o) => o.label === props.selectedRole);
-        if (opt) {
-            role.value = opt.value;
-            getList();
-        }
+    if (props.multiple) {
+        model.value = model.value.filter((m) => m !== usr.value);
+    } else {
+        model.value = null;
     }
+    onChangeSelected(model.value);
 };
 </script>
+<style lang="scss">
+.custom-option-group {
+    .q-radio,
+    .q-checkbox {
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .q-radio__inner,
+    .q-checkbox__inner {
+        display: none;
+    }
+
+    .q-radio__label,
+    .q-checkbox__label {
+        width: 100%;
+    }
+}
+</style>
