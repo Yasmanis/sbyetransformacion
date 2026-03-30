@@ -18,10 +18,11 @@
         bottom-slots
         v-model="model"
         class="full-width"
+        :input-style="inputStyle"
         @update:model-value="(val) => update(val)"
     >
         <template #label v-if="label">
-            {{ label }}
+            <span :style="labelStyle">{{ label }}</span>
             <span class="text-red" v-if="othersProps?.required">*</span>
         </template>
         <template v-slot:before v-if="$slots.before">
@@ -81,6 +82,7 @@ const props = defineProps({
         type: String,
         default: "text",
     },
+    highlighteds: Object,
 });
 
 const emits = defineEmits(["update"]);
@@ -118,6 +120,34 @@ const errorMsg = computed(() => {
             ? page.props.errors[props.name]
             : null
         : null;
+});
+
+const highlighted = computed(() => {
+    let highlighteds = props.highlighteds;
+    return model.value && highlighteds ? highlighteds[props.name] : null;
+});
+
+const inputStyle = computed(() => {
+    let h = highlighted.value,
+        style = {};
+    if (h) {
+        if (h.bColor) {
+            style["background-color"] = h.bColor;
+        }
+        if (h.tColor) {
+            style["color"] = h.tColor;
+        }
+    }
+    return style;
+});
+
+const labelStyle = computed(() => {
+    let h = highlighted.value,
+        style = {};
+    if (h && h.tColor) {
+        style["color"] = h.tColor;
+    }
+    return style;
 });
 
 function update(val) {

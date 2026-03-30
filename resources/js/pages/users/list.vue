@@ -169,10 +169,10 @@ const columns = [
         align: "left",
     },
     {
-        name: "facilitador_asignado",
+        name: "facilitator",
         label: "facilitador asignado",
-        field: "facilitador_asignado",
-        type: "list",
+        field: "facilitator",
+        type: "text",
         align: "left",
     },
     actions,

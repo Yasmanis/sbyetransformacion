@@ -1,7 +1,7 @@
 <template>
     <Layout>
         <q-page padding>
-            <div class="row items-center q-mb-md">
+            <div class="row items-center q-mb-md" v-if="user">
                 <div class="col">
                     <q-item class="no-padding">
                         <q-item-section avatar>
@@ -85,11 +85,11 @@ defineOptions({
 });
 
 const user = computed(() => {
-    return usePage().props.user;
+    return usePage().props.user ?? null;
 });
 
 const buyer = computed(() => {
-    return usePage().props.buyer;
+    return usePage().props.buyer ?? null;
 });
 
 const current_module = ref(null);

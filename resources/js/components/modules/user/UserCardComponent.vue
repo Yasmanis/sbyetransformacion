@@ -10,6 +10,9 @@
                             :modelValue="formData.name"
                             name="name"
                             label="nombre"
+                            :highlighteds="
+                                user?.row_config?.highlighteds_columns ?? null
+                            "
                             :othersProps="{
                                 required: true,
                             }"
@@ -23,6 +26,9 @@
                             :modelValue="formData.surname"
                             name="surname"
                             label="apellidos"
+                            :highlighteds="
+                                user?.row_config?.highlighteds_columns ?? null
+                            "
                             :othersProps="{
                                 required: true,
                             }"
@@ -104,7 +110,6 @@
                         <text-field
                             name="age"
                             label="edad"
-                            readonly
                             :model-value="formData.age?.toString() ?? '0'"
                             :othersProps="{
                                 readonly: true,
@@ -117,7 +122,6 @@
                         <text-field
                             name="old_age"
                             :model-value="formData.antique"
-                            :readonly="true"
                             label="antigüedad"
                             :othersProps="{
                                 readonly: true,
@@ -290,6 +294,7 @@
                                 "
                             >
                                 <text-field
+                                    name="totales"
                                     label="totales"
                                     :othersProps="{
                                         readonly: true,
@@ -304,6 +309,7 @@
                                 "
                             >
                                 <text-field
+                                    name="consumidas"
                                     label="consumidas"
                                     :othersProps="{
                                         readonly: true,
@@ -318,6 +324,7 @@
                                 "
                             >
                                 <text-field
+                                    name="proxima"
                                     label="proxima"
                                     :othersProps="{
                                         readonly: true,
@@ -335,11 +342,13 @@
                     >
                         <text-field
                             label="ultimo pago"
+                            name="last_payment"
                             :othersProps="{
                                 readonly: true,
                             }"
                         />
                         <text-field
+                            name="name"
                             :othersProps="{
                                 readonly: true,
                             }"
@@ -354,11 +363,13 @@
                     >
                         <date-field
                             label="proximo pago"
+                            name="next_payment"
                             :othersProps="{
                                 readonly: true,
                             }"
                         />
                         <text-field
+                            name="name"
                             :othersProps="{
                                 readonly: true,
                             }"
@@ -377,6 +388,7 @@
                                 "
                             >
                                 <text-field
+                                    name="totals"
                                     label="totales"
                                     :othersProps="{
                                         readonly: true,
@@ -391,6 +403,7 @@
                                 "
                             >
                                 <text-field
+                                    name="consumidas"
                                     label="consumidas"
                                     :othersProps="{
                                         readonly: true,
@@ -405,6 +418,7 @@
                                 "
                             >
                                 <date-field
+                                    name="proxima"
                                     label="proxima"
                                     :othersProps="{
                                         readonly: true,
@@ -468,21 +482,52 @@
                         />
                     </div>
                 </div>
+                <div class="row q-mt-md q-col-gutter-md" v-if="!user">
+                    <div
+                        class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-12 q-pb-md"
+                    >
+                        <text-field
+                            name="username"
+                            label="usuario"
+                            :othersProps="{
+                                required: true,
+                            }"
+                            @update="onUpdateField"
+                        />
+                    </div>
+                    <div
+                        class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12 q-pb-md"
+                    >
+                        <password-field
+                            ref="passwordRef"
+                            label="contraseña"
+                            inline
+                            name="password"
+                            :othersProps="{ required: true }"
+                            @update="onUpdateField"
+                            @confirm="onUpdateField"
+                        />
+                    </div>
+                </div>
             </q-form>
         </q-card-section>
         <q-separator />
         <q-card-actions>
             <q-toolbar class="no-padding" style="min-height: 20px !important">
                 <btn-msg-component />
-                <highlight-component
-                    :module="{
-                        model: 'User',
-                        singular_label: 'Usuario',
-                    }"
-                    :items="[user]"
-                />
-                <menu-note-component :object="user.note" v-if="user?.note" />
-                <form-note-component model="User" :notables="[user]" v-else />
+                <highlighted-component v-if="user" />
+                <template v-if="user">
+                    <menu-note-component
+                        :object="user.note"
+                        v-if="user?.note"
+                    />
+                    <form-note-component
+                        model="User"
+                        :notables="[user]"
+                        v-else
+                    />
+                </template>
+
                 <q-space />
 
                 <btn-save-component @click="save" />
@@ -490,10 +535,11 @@
                     icon="mdi-content-save-move-outline"
                     tooltips="guardar y volver a la lista"
                     @click="save(true)"
+                    v-if="user"
                 />
                 <lock-unlock-component
                     :object="user"
-                    v-if="hasEdit && user.name !== 'sa'"
+                    v-if="user && hasEdit && user.name !== 'sa'"
                 />
             </q-toolbar>
         </q-card-actions>
@@ -501,23 +547,25 @@
 </template>
 
 <script setup>
-import { watch, ref, onBeforeMount } from "vue";
+import { watch, ref, onMounted } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnMsgComponent from "../../btn/BtnMsgComponent.vue";
 import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import TextField from "../../form/input/TextField.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import DateField from "../../form/input/DateField.vue";
+import PasswordField from "../../form/input/PasswordField.vue";
 import LockUnlockComponent from "./LockUnlockComponent.vue";
 import FormNoteComponent from "../notes/FormNoteComponent.vue";
 import MenuNoteComponent from "../notes/MenuNoteComponent.vue";
 import UsersSelectDialogComponent from "./UsersSelectDialogComponent.vue";
-import HighlightComponent from "../../others/HighlightComponent.vue";
 import FormCropperField from "../../form/input/FormCropperField.vue";
+import HighlightedComponent from "../../table/actions/HighlightedComponent.vue";
 import { useForm } from "@inertiajs/vue3";
 
 import { useUtils } from "../../../composables/useUtils.js";
 import { Dark, Screen } from "quasar";
+import { errorValidation } from "../../../helpers/notifications.js";
 defineOptions({
     name: "UserCardComponent",
 });
@@ -548,8 +596,9 @@ const formData = ref({
     birthdate: null,
 });
 const phoneCodes = ref([]);
+const passwordRef = ref(null);
 
-onBeforeMount(() => {
+onMounted(() => {
     setData();
 });
 
@@ -577,15 +626,15 @@ watch(
 );
 
 const setData = () => {
-    let { id, name, surname, email, antique, roles, username } = props.user;
-    const buyer = props.buyer;
+    const user = props.user,
+        buyer = props.buyer;
     formData.value = {
-        name,
-        surname,
-        email,
-        antique,
-        roles,
-        username,
+        name: user?.name ?? null,
+        surname: user?.surname ?? null,
+        email: user?.email ?? null,
+        antique: user?.antique ?? null,
+        roles: user?.roles ?? null,
+        username: user?.username ?? null,
         genre: buyer?.genre ?? null,
         age: buyer?.age ?? null,
         birthdate: buyer?.birthdate_str ?? null,
@@ -597,7 +646,7 @@ const setData = () => {
         country_id: buyer?.country_id ?? null,
         phone_code: buyer?.phone_code ?? null,
         phone: buyer?.phone ?? null,
-        user_id: buyer?.user_id ?? id,
+        user_id: user?.id ?? null,
         manager_id: buyer?.manager_id ?? null,
         facilitator_id: buyer?.facilitator_id ?? null,
         characteristics: buyer?.characteristics ?? null,
@@ -606,9 +655,12 @@ const setData = () => {
         managers_quotes: buyer?.managers_quotes ?? null,
         characteristics_img: buyer?.characteristics_img ?? null,
     };
+    passwordRef.value?.reset();
 };
 
 const onUpdateField = (name, value, full) => {
+    console.log(name, value);
+
     if (name === "country_id" && value !== null) {
         phoneCodes.value = getPhoneCodesFromCountry(full);
         formData.value.phone_code = null;
@@ -630,7 +682,11 @@ const save = (toList = false) => {
                 ...formData.value,
                 toList,
             });
-            send.put(`/admin/users/${props.user.id}`);
+            if (props.user) {
+                send.put(`/admin/users/${props.user.id}`);
+            } else {
+                send.post(`/admin/users`);
+            }
         } else {
             errorValidation();
         }

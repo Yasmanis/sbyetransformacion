@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use App\Models\RowConfig;
 use App\Repositories\NoteRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -12,22 +13,62 @@ class UtilsController extends Controller
 {
     public function highlight(Request $request)
     {
-        $model = $request->model ?? null;
-        $highlights = $request->highlights ?? [];
-        if ($model && !empty($highlights)) {
-            $modelClass = "App\\Models\\" . $model;
+        $modelName = $request->modelName ?? null;
+        $modelId = $request->modelId ?? null;
+        $columnName = $request->columnName ?? null;
+        if ($modelName && $modelId && $columnName) {
+            $modelClass = "App\\Models\\" . $modelName;
             if (!class_exists($modelClass)) {
-                return redirect()->back()->with('error', 'el modelo especificado no es valido');
+                return redirect()->back()->with('error', 'modelo especificado no valido');
             }
             $model = app()->make($modelClass);
             if (!$model instanceof Model) {
-                return redirect()->back()->with('error', 'el modelo especificado no es valido');
+                return redirect()->back()->with('error', 'modelo especificado no valido');
             }
-            $model::whereIn('id', $highlights)->update([
-                'highlighted' => $request->state
-            ]);
-
-            return redirect()->back()->with('success', sprintf('%s(s) resaltado(s) correctamente', Str::lower($request->label) ?? 'objeto(s)'));
+            $row = RowConfig::where('configable_type', $modelClass)->where('configable_id', $modelId)->first();
+            if ($row) {
+                $highlighteds = $row->highlighteds_columns;
+                $highlighteds[$columnName] = $request->highlight;
+                $row->highlighteds_columns = $highlighteds;
+                $row->save();
+            } else {
+                RowConfig::create([
+                    'configable_type' => $modelClass,
+                    'configable_id' => $modelId,
+                    'user_id' => auth()->user()->id,
+                    'highlighteds_columns' => [
+                        $columnName => $request->highlight
+                    ]
+                ]);
+            }
+            return redirect()->back()->with('success', 'columna resaltada correctamente');
         }
+        return redirect()->back()->with('error', 'modelo especificado no valido');
+    }
+
+    public function removeHighlighted(Request $request)
+    {
+        $modelName = $request->modelName ?? null;
+        $modelId = $request->modelId ?? null;
+        $columnName = $request->columnName ?? null;
+        if ($modelName && $modelId && $columnName) {
+            $modelClass = "App\\Models\\" . $modelName;
+            if (!class_exists($modelClass)) {
+                return redirect()->back()->with('error', 'modelo especificado no valido');
+            }
+            $model = app()->make($modelClass);
+            if (!$model instanceof Model) {
+                return redirect()->back()->with('error', 'modelo especificado no valido');
+            }
+            $row = RowConfig::where('configable_type', $modelClass)->where('configable_id', $modelId)->first();
+            if ($row) {
+                $highlighteds = $row->highlighteds_columns;
+                unset($highlighteds[$columnName]);
+                $row->highlighteds_columns = $highlighteds;
+                $row->save();
+            }
+            return redirect()->back()->with('success', 'resaltado quitado correctamente');
+        }
+        return redirect()->back()->with('error', 'modelo especificado no valido');
     }
 }

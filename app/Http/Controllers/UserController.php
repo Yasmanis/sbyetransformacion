@@ -25,6 +25,14 @@ class UserController extends Controller
         return $this->deny_access($request);
     }
 
+    public function create(Request $request)
+    {
+        if (auth()->user()->hasCreate('user')) {
+            return Inertia('users/card');
+        }
+        return $this->deny_access($request);
+    }
+
     public function show(Request $request, $id)
     {
         if (auth()->user()->hasView('user')) {
@@ -54,6 +62,10 @@ class UserController extends Controller
                 'email' => ['required', 'unique:users'],
                 'password' => ['required', 'min:8'],
                 'password_confirmed' => ['required', 'same:password'],
+                'country_id' => ['required'],
+                'province' => ['required'],
+                'genre' => ['required'],
+                'birthdate' => ['required'],
             ]);
             $repository = new UserRepository();
             $user = $repository->create($request->only((new ($repository->model()))->getFillable()));
@@ -63,7 +75,15 @@ class UserController extends Controller
             if (isset($request->permissions)) {
                 $user->permissions()->sync($request->permissions);
             }
-            return redirect()->back()->with('success', 'usuario adicionado correctamente');
+            $repository = new BuyerRepository();
+            $data = $request->only((new ($repository->model()))->getFillable());
+            $data['user_id'] = $user->id;
+            $repository->create($data);
+            return redirect('/admin/users')->with('success', 'usuario adicionado correctamente');
+            // if ($request->toList) {
+            //     return redirect('/admin/users')->with('success', 'usuario adicionado correctamente');
+            // }
+            // return redirect('/admin/users/' . $user->id, 302, ['method' => 'get'])->with('success', 'usuario adicionado correctamente');
         }
         return $this->deny_access($request);
     }

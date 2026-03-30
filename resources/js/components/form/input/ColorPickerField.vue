@@ -1,5 +1,12 @@
 <template>
-    <text-field dense readonly :name="name" :label="label" :model-value="model">
+    <text-field
+        dense
+        readonly
+        :name="name"
+        :label="label"
+        :model-value="model"
+        v-if="hasInput"
+    >
         <template #after
             ><q-icon
                 name="colorize"
@@ -9,7 +16,12 @@
         </template>
     </text-field>
 
-    <q-dialog v-model="showDialog" persistent @show="onShowDialog">
+    <q-dialog
+        v-model="showDialog"
+        persistent
+        @show="onShowDialog"
+        @hide="emits('hide')"
+    >
         <q-card style="width: 300px; max-width: 40vw">
             <dialog-header-component
                 icon="colorize"
@@ -20,8 +32,10 @@
             <q-card-section style="height: 60vh" class="scroll">
                 <q-color
                     v-model="model"
-                    no-header
-                    no-footer
+                    :no-header="noHeader"
+                    :no-footer="noFooter"
+                    :default-view="defaultView"
+                    format-model="hex"
                     class="q-mb-sm"
                     @update:model-value="onUpdateHex"
                 ></q-color>
@@ -141,19 +155,30 @@
                 </div>
             </q-card-section>
             <q-separator />
-            <q-card-actions align="right">
-                <btn-confirm-component
-                    tooltips="aceptar"
-                    @click="saveChanges"
-                />
-                <btn-cancel-component cancel @click="showDialog = false" />
+            <q-card-actions>
+                <div class="row" style="width: 100%">
+                    <div class="col col-auto">
+                        <slot name="actions"></slot>
+                    </div>
+
+                    <div class="col text-right">
+                        <btn-confirm-component
+                            tooltips="aceptar"
+                            @click="saveChanges"
+                        />
+                        <btn-cancel-component
+                            cancel
+                            @click="showDialog = false"
+                        />
+                    </div>
+                </div>
             </q-card-actions>
         </q-card>
     </q-dialog>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import TextField from "./TextField.vue";
 import BtnConfirmComponent from "../../btn/BtnConfirmComponent.vue";
@@ -172,9 +197,26 @@ const props = defineProps({
     modelValue: String,
     name: String,
     label: String,
+    defaultView: {
+        type: String,
+        default: "spectrum",
+    },
+    noHeader: {
+        type: Boolean,
+        default: true,
+    },
+    noFooter: {
+        type: Boolean,
+        default: true,
+    },
+    hasInput: {
+        type: Boolean,
+        default: true,
+    },
+    show: Boolean,
 });
 
-const emits = defineEmits(["change"]);
+const emits = defineEmits(["change", "hide"]);
 
 const showDialog = ref(false);
 const model = ref(null);
@@ -195,6 +237,13 @@ const luminance = computed(() => {
 onMounted(() => {
     model.value = props.modelValue;
 });
+
+watch(
+    () => props.show,
+    (n) => {
+        showDialog.value = n;
+    },
+);
 
 const onShowDialog = async () => {
     model.value = props.modelValue;

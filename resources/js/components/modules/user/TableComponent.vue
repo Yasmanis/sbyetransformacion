@@ -44,6 +44,9 @@
                     </section>
                     <q-space />
                     <div class="col-auto">
+                        <btn-add-component
+                            @click="router.get(`/admin/users/create`)"
+                        />
                         <form-component
                             :title="current_module.singular_label"
                             :fields="createFields"
@@ -51,9 +54,12 @@
                             size="sm"
                             v-if="createFields.length > 0 && has_add"
                         />
-                        <highlight-component
-                            :items="selected"
-                            :module="current_module"
+                        <highlighted-component
+                            :column="currentColumn"
+                            :show="showHighlight"
+                            size="11px"
+                            @hide="showHighlight = false"
+                            v-if="has_edit"
                         />
                         <form-note-component
                             :notables="selected"
@@ -139,11 +145,11 @@
                 <q-td
                     :props="props"
                     :align="props.col.align"
-                    :class="
-                        props.row['highlighted']
-                            ? 'highlighted text-primary'
-                            : null
-                    "
+                    :style="{
+                        'background-color': getCellColor(props, 'bColor'),
+                        color: getCellColor(props, 'tColor'),
+                    }"
+                    @click="onCellClick(props)"
                     v-if="props.col.type !== 'hidden'"
                 >
                     <template v-if="props.col.type === 'avatar'">
@@ -232,7 +238,9 @@
                     <q-card style="margin-left: 10px; margin-right: 10px">
                         <q-list>
                             <q-item
-                                v-for="col in props.cols"
+                                v-for="col in props.cols.filter(
+                                    (c) => c.type !== 'notes',
+                                )"
                                 :key="col.name"
                                 :class="col.type === 'hidden' ? 'hidden' : ''"
                             >
@@ -299,6 +307,10 @@
                                 >
                                     <q-separator />
                                     <div class="q-pa-sm q-gutter-sm text-right">
+                                        <menu-note-component
+                                            :object="props.row.note"
+                                            v-if="props.row.note"
+                                        />
                                         <btn-user-card-component
                                             @click="
                                                 router.get(
@@ -306,10 +318,11 @@
                                                 )
                                             "
                                         />
-                                        <lock-unlock-component
-                                            :object="props.row"
+                                        <delete-component
+                                            :objects="[props.row]"
+                                            url="/admin/users"
                                             :disable="props.row.name === 'sa'"
-                                            v-if="has_edit"
+                                            v-if="has_delete"
                                         />
                                     </div>
                                 </q-item-section>
@@ -339,7 +352,8 @@ import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";
 import FormNoteComponent from "../notes/FormNoteComponent.vue";
 import MenuNoteComponent from "../notes/MenuNoteComponent.vue";
-import HighlightComponent from "../../others/HighlightComponent.vue";
+import HighlightedComponent from "../../table/actions/HighlightedComponent.vue";
+import BtnAddComponent from "../../btn/BtnAddComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
 
@@ -377,6 +391,8 @@ const page = usePage();
 const loading = ref(false);
 
 const current_module = ref(null);
+const currentColumn = ref(null);
+const showHighlight = ref(false);
 
 const pagination = ref({
     descending: false,
@@ -462,6 +478,37 @@ const onRequest = async (attrs) => {
             preserveState: true,
         },
     );
+};
+
+const onCellClick = (props) => {
+    let highlighted = getHighlighted(props);
+    if (props.value || highlighted) {
+        currentColumn.value = {
+            modelName: current_module.value.model,
+            modelId: props.row.id,
+            columnValue: props.value,
+            columnName: props.col.name,
+            highlighted,
+        };
+        showHighlight.value = true;
+    }
+};
+
+const getHighlighted = (props) => {
+    let highlighteds = props.row?.row_config?.highlighteds_columns ?? null,
+        col = props.col.name;
+    if (highlighteds && highlighteds[col]) {
+        return highlighteds[col];
+    }
+    return null;
+};
+
+const getCellColor = (props, type) => {
+    let highlighted = getHighlighted(props);
+    if (highlighted) {
+        return highlighted[type];
+    }
+    return null;
 };
 </script>
 <style>

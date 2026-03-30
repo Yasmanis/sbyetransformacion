@@ -68,7 +68,7 @@ class User extends Authenticatable implements CanResetPassword
         'subscripted' => 'boolean',
     ];
 
-    protected $appends = ['permissions', 'roles', 'roles_str', 'full_name', 'notifications', 'has_testimony', 'antique', 'note'];
+    protected $appends = ['permissions', 'roles', 'roles_str', 'full_name', 'notifications', 'has_testimony', 'antique', 'note', 'facilitator', 'row_config'];
 
     protected $with = ['latestCourses', 'paymentMethods', 'billingsInformation'];
 
@@ -105,6 +105,16 @@ class User extends Authenticatable implements CanResetPassword
     public function notes()
     {
         return $this->morphMany(Note::class, 'notable');
+    }
+
+    public function rowConfig()
+    {
+        return $this->morphMany(RowConfig::class, 'configable');
+    }
+
+    public function buyer()
+    {
+        return $this->hasOne(Buyer::class);
     }
 
     public function getHasTestimonyAttribute()
@@ -172,6 +182,24 @@ class User extends Authenticatable implements CanResetPassword
         $user = auth()->user();
         if ($user) {
             return $this->notes()->firstWhere('user_id', $user->id);
+        }
+        return null;
+    }
+
+    public function getRowConfigAttribute()
+    {
+        $user = auth()->user();
+        if ($user) {
+            return $this->rowConfig()->firstWhere('user_id', $user->id);
+        }
+        return null;
+    }
+
+    public function getFacilitatorAttribute()
+    {
+        $buyer = Buyer::firstWhere('user_id', $this->id);
+        if ($buyer) {
+            return $buyer->facilitator?->full_name ?? null;
         }
         return null;
     }

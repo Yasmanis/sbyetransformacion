@@ -255,6 +255,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
     Route::group(['prefix' => 'utils'], function () {
         Route::post('/highlight', [UtilsController::class, 'highlight']);
+        Route::post('/remove-highlighted', [UtilsController::class, 'removeHighlighted']);
     });
 
 

@@ -40,6 +40,16 @@ class Buyer extends Model
         return $this->belongsTo(Country::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function facilitator()
+    {
+        return $this->belongsTo(User::class, 'facilitator_id');
+    }
+
     public function getCountryStrAttribute()
     {
         return $this->country()->first()->name;
