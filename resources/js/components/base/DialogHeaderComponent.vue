@@ -45,15 +45,15 @@ const props = defineProps({
     },
     closable: {
         type: Boolean,
-        defaul: true,
+        default: true,
     },
     maximizeable: {
         type: Boolean,
-        defaul: false,
+        default: false,
     },
     draggable: {
         type: Boolean,
-        defaul: false,
+        default: false,
     },
     class: String,
 });

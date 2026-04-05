@@ -46,13 +46,7 @@
                     <div class="col-auto">
                         <btn-add-component
                             @click="router.get(`/admin/users/create`)"
-                        />
-                        <form-component
-                            :title="current_module.singular_label"
-                            :fields="createFields"
-                            :module="current_module"
-                            size="sm"
-                            v-if="createFields.length > 0 && has_add"
+                            v-if="has_add"
                         />
                         <highlighted-component
                             :column="currentColumn"
@@ -187,9 +181,10 @@
                             >{{ props.row[props.col.field].substring(0, 17) }}
                             <b>
                                 ...
-                                <q-tooltip class="bg-brown"
-                                    >Click para ver detalles</q-tooltip
-                                >
+                                <q-tooltip-component
+                                    class="bg-brown"
+                                    title="click para ver detalles"
+                                />
                             </b>
                         </span>
                     </template>
@@ -239,7 +234,7 @@
                         <q-list>
                             <q-item
                                 v-for="col in props.cols.filter(
-                                    (c) => c.type !== 'notes',
+                                    (c) => c.type !== 'notes'
                                 )"
                                 :key="col.name"
                                 :class="col.type === 'hidden' ? 'hidden' : ''"
@@ -314,7 +309,7 @@
                                         <btn-user-card-component
                                             @click="
                                                 router.get(
-                                                    `/admin/users/${props.row.id}`,
+                                                    `/admin/users/${props.row.id}`
                                                 )
                                             "
                                         />
@@ -354,6 +349,7 @@ import FormNoteComponent from "../notes/FormNoteComponent.vue";
 import MenuNoteComponent from "../notes/MenuNoteComponent.vue";
 import HighlightedComponent from "../../table/actions/HighlightedComponent.vue";
 import BtnAddComponent from "../../btn/BtnAddComponent.vue";
+import QTooltipComponent from "../../base/QTooltipComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
 
@@ -440,7 +436,7 @@ watch(
     {
         immediate: true,
         deep: true,
-    },
+    }
 );
 
 onBeforeMount(() => {
@@ -476,7 +472,7 @@ const onRequest = async (attrs) => {
         { page, rowsPerPage, search, filters, sortBy, sortDirection },
         {
             preserveState: true,
-        },
+        }
     );
 };
 

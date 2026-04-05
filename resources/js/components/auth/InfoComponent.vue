@@ -10,7 +10,7 @@
                     <img :src="image" />
                 </q-avatar>
                 <btn-delete-component
-                    tooltips="quitar avatar"
+                    tooltips="quitar"
                     @click="onFinishCropper('avatar', null)"
                     v-if="user.avatar"
                 />

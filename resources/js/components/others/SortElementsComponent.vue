@@ -55,7 +55,7 @@ defineOptions({
 const props = defineProps({
     items: {
         type: Array,
-        defaul: [],
+        default: [],
     },
     tooltips: {
         type: String,

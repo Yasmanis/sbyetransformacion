@@ -51,15 +51,15 @@ const props = defineProps({
     tooltipsColor: String,
     tooltipsAnchor: {
         type: String,
-        defaul: "bottom middle",
+        default: "top middle",
     },
     tooltipsSelf: {
         type: String,
-        defaul: "top middle",
+        default: "bottom middle",
     },
     tooltipsOffset: {
         type: Array,
-        default: () => [5, 5],
+        default: [5, 5],
     },
     class: String,
     label: String,

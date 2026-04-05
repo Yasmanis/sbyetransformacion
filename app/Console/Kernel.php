@@ -17,6 +17,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('event')->everyMinute();
+        //$schedule->command('recycle-bin:clean-auto-deleted')->dailyAt('00:00');
+        $schedule->command('recycle-bin:clean-orphans-recyclables')->dailyAt('00:00');
     }
 
     /**

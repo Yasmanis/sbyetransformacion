@@ -39,19 +39,20 @@
                         class="q-my-xs q-mr-sm cursor-pointer text-subtitle1"
                     >
                         <div class="doc-card-title bg-primary text-white">
-                            <q-icon :name="current_module?.ico" size="22px" />
+                            <q-icon
+                                :name="
+                                    current_module.ico_from_path
+                                        ? `img:${$page.props.public_path}${current_module.ico}`
+                                        : current_module.ico
+                                "
+                                size="22px"
+                                v-if="current_module"
+                            />
                             {{ current_module?.plural_label }}
                         </div>
                     </section>
                     <q-space />
                     <div class="col-auto">
-                        <form-file
-                            :title="current_module.singular_label"
-                            :module="current_module"
-                            size="sm"
-                            @save="onRequest"
-                            v-if="has_add"
-                        />
                         <btn-reload-component @click="onRequest" />
                         <visible-columns-component
                             :columns="columns"
@@ -61,6 +62,15 @@
                             :fields="filterFields"
                             @refresh-data="onRefreshData"
                             v-if="filterFields.length > 0"
+                        />
+                        <restore-component
+                            :objects="selected"
+                            @restored="selected = []"
+                            v-if="has_edit && selected.length > 0"
+                        />
+                        <empty-component
+                            :disable="rows.length === 0"
+                            v-if="has_delete"
                         />
                         <delete-component
                             :objects="selected"
@@ -139,16 +149,31 @@
                     :align="props.col.align"
                     v-if="props.col.type !== 'hidden'"
                 >
-                    <template v-if="props.col.type === 'avatar'">
-                        <q-avatar v-if="props.value">
+                    <template
+                        v-if="
+                            props.col.type === 'avatar' ||
+                            props.col.type === 'image'
+                        "
+                    >
+                        <q-avatar v-if="props.col.type === 'avatar'">
                             <q-img :src="props.value" loading="lazy" />
                         </q-avatar>
-                        <q-avatar v-else>
-                            <q-img
-                                src="~assets/default-avatar.png"
-                                loading="lazy"
-                            />
-                        </q-avatar>
+                        <q-img
+                            :src="
+                                props.value ??
+                                props.col.othersProps?.default ??
+                                null
+                            "
+                            loading="lazy"
+                            width="70px"
+                            v-else
+                        />
+                    </template>
+                    <template v-else-if="props.col.name === 'icon'">
+                        <q-icon :name="props.row.icon" size="20px" />
+                    </template>
+                    <template v-else-if="props.col.name === 'model'">
+                        {{ props.row.model.singular_label }}
                     </template>
                     <template v-else-if="props.col.type === 'boolean'">
                         <q-chip
@@ -161,23 +186,10 @@
                             :label="props.value ? 'Si' : 'No'"
                         />
                     </template>
-                    <template v-else-if="props.col.type === 'textarea'">
-                        <span v-if="props.row[props.col.field].length <= 20">
-                            {{ props.row[props.col.field] }}
-                        </span>
-                        <span v-else
-                            >{{ props.row[props.col.field].substring(0, 17) }}
-                            <b>
-                                ...
-                                <q-tooltip-component
-                                    class="bg-brown"
-                                    title="click para ver detalles"
-                                />
-                            </b>
-                        </span>
-                    </template>
                     <template v-else>
-                        {{ props.row[props.col.field] }}
+                        <q-item-label lines="5">
+                            <span v-html="props.row[props.col.field]"> </span>
+                        </q-item-label>
                     </template>
                 </q-td>
             </template>
@@ -191,37 +203,8 @@
                         width: props.col.width,
                     }"
                     class="actions-def"
-                >
-                    <form-component
-                        :object="props.row"
-                        :title="current_module.singular_label"
-                        :fields="
-                            props.row.type === 'link'
-                                ? updateFields.filter((f) => f.name !== 'file')
-                                : updateFields.filter((f) => f.name !== 'link')
-                        "
-                        :module="current_module"
-                        post-on-update
-                        size="sm"
-                        v-if="has_edit"
-                    />
-                    <form-poster :object="props.row" v-if="has_edit" />
-                    <shared-link-component
-                        tooltips="link para compartir"
-                        url="shared-file"
-                        :params="{
-                            id: props.row.id,
-                        }"
-                        v-if="has_edit"
-                    />
-
-                    <btn-public-component
-                        :public="props.row.public_access"
-                        @click="
-                            router.post(
-                                `${current_module.base_url}/public-access/${props.row.id}`
-                            )
-                        "
+                    ><restore-component
+                        :objects="[props.row]"
                         v-if="has_edit"
                     />
                     <delete-component
@@ -238,7 +221,9 @@
                     <q-card style="margin-left: 10px; margin-right: 10px">
                         <q-list>
                             <q-item
-                                v-for="col in props.cols"
+                                v-for="col in props.cols.filter(
+                                    (c) => c.name !== 'icon'
+                                )"
                                 :key="col.name"
                                 :class="col.type === 'hidden' ? 'hidden' : ''"
                             >
@@ -247,21 +232,24 @@
                                         {{ col.label }}
                                     </q-item-label>
                                     <q-item-label
-                                        v-if="col.type === 'avatar'"
+                                        v-if="
+                                            col.type === 'avatar' ||
+                                            col.type === 'image'
+                                        "
                                         class="text-center"
                                     >
-                                        <q-avatar v-if="col.value">
+                                        <q-avatar v-if="col.type === 'avatar'">
                                             <q-img
                                                 :src="col.value"
                                                 loading="lazy"
                                             />
                                         </q-avatar>
-                                        <q-avatar v-else>
-                                            <q-img
-                                                src="~assets/default-avatar.png"
-                                                loading="lazy"
-                                            />
-                                        </q-avatar>
+                                        <q-img
+                                            :src="col.value"
+                                            loading="lazy"
+                                            width="100px"
+                                            v-else
+                                        />
                                     </q-item-label>
                                     <q-item-label
                                         v-else-if="col.type === 'boolean'"
@@ -282,45 +270,33 @@
                                             :label="col.value ? 'Si' : 'No'"
                                         />
                                     </q-item-label>
-                                    <q-item-label caption v-else>{{
-                                        col.value ? col.value : "..."
-                                    }}</q-item-label>
+                                    <q-item-label
+                                        caption
+                                        v-else-if="col.name === 'type'"
+                                    >
+                                        <q-icon
+                                            :name="props.row.icon"
+                                            size="20px"
+                                        />
+                                        {{ col.value }}
+                                    </q-item-label>
+
+                                    <q-item-label
+                                        caption
+                                        v-else-if="col.name !== 'type'"
+                                    >
+                                        <span
+                                            v-html="col.value ? col.value : ''"
+                                        ></span>
+                                    </q-item-label>
                                 </q-item-section>
                                 <q-item-section
                                     v-else-if="col.name === 'actions'"
                                 >
                                     <q-separator />
                                     <div class="q-pa-sm q-gutter-sm text-right">
-                                        <form-component
-                                            :object="props.row"
-                                            :title="
-                                                current_module.singular_label
-                                            "
-                                            :fields="updateFields"
-                                            :module="current_module"
-                                            post-on-update
-                                            size="sm"
-                                            v-if="has_edit"
-                                        />
-                                        <form-poster
-                                            :object="props.row"
-                                            v-if="has_edit"
-                                        />
-                                        <shared-link-component
-                                            tooltips="link para compartir"
-                                            url="shared-file"
-                                            :params="{
-                                                id: props.row.id,
-                                            }"
-                                            v-if="has_edit"
-                                        />
-                                        <btn-public-component
-                                            :public="props.row.public_access"
-                                            @click="
-                                                router.post(
-                                                    `${current_module.base_url}/public-access/${props.row.id}`
-                                                )
-                                            "
+                                        <restore-component
+                                            :objects="[props.row]"
                                             v-if="has_edit"
                                         />
                                         <delete-component
@@ -343,18 +319,14 @@
 <script setup>
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
 import { useQuasar } from "quasar";
-import FormFile from "./FormComponent.vue";
-import FormPoster from "./FormPoster.vue";
-import FormComponent from "../../form/FormComponent.vue";
-import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
-import SharedLinkComponent from "../../others/SharedLinkComponent.vue";
+import RestoreComponent from "../../table/actions/RestoreComponent.vue";
+import EmptyComponent from "../../table/actions/EmptyComponent.vue";
 import SearchComponent from "../../table/actions/SearchComponent.vue";
 import FilterComponent from "../../table/actions/FilterComponent.vue";
-import QTooltipComponent from "../../base/QTooltipComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
 
@@ -382,6 +354,14 @@ const props = defineProps({
     createFields: {
         type: Array,
         default: () => [],
+    },
+    postOnUpdate: {
+        type: Boolean,
+        default: false,
+    },
+    newOnCreate: {
+        type: Boolean,
+        default: true,
     },
 });
 

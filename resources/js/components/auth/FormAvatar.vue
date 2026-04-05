@@ -8,7 +8,7 @@
             <img :src="image" />
         </q-avatar>
         <q-btn-component
-            tooltips="quitar avatar"
+            tooltips="quitar"
             icon="mdi-trash-can-outline"
             :flat="false"
             color="dark"

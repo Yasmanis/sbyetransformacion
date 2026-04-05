@@ -43,7 +43,7 @@
                     class="cursor-pointer"
                     @click="reset"
                 >
-                    <q-tooltip class="bg-brown">limpiar</q-tooltip>
+                    <q-tooltip-component class="bg-brown" title="limpiar" />
                 </q-icon>
             </template>
             <template v-slot:after>
@@ -74,7 +74,7 @@
             v-if="$page.props.search"
             @click="reset"
         >
-            <q-tooltip class="bg-brown">limpiar</q-tooltip>
+            <q-tooltip-component class="bg-brown" title="limpiar" />
         </q-btn>
     </q-btn-group>
 
@@ -147,6 +147,7 @@
 import { ref, onBeforeMount, computed, watch } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
+import QTooltipComponent from "../../base/QTooltipComponent.vue";
 import { useQuasar } from "quasar";
 import { errorValidation } from "../../../helpers/notifications";
 import { usePage } from "@inertiajs/vue3";

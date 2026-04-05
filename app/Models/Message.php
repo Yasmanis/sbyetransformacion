@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
+
     protected $fillable = ['title', 'message', 'importance', 'message_id', 'start_at', 'end_at', 'assigned_to', 'periodicity'];
 
     protected $appends = ['sections_id', 'sections_str', 'assigned_to_object', 'users_id_object'];

@@ -106,7 +106,7 @@
                     </q-menu>
                 </q-btn-component>
                 <q-btn-component
-                    :tooltips="`seleccionar ${label ?? 'usuario'}`"
+                    tooltips="seleccionar"
                     :icon="icon"
                     :size="iconSize"
                     @click="showDialog = true"

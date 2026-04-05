@@ -6,8 +6,8 @@
             noti_id
                 ? filteredById()
                 : reads.length > 0
-                  ? filteredByReads()
-                  : notifications
+                ? filteredByReads()
+                : notifications
         "
         wrap-cells
         flat
@@ -96,23 +96,25 @@
                             >{{
                                 props.row.title.substring(
                                     0,
-                                    props.row.title.indexOf('"'),
+                                    props.row.title.indexOf('"')
                                 )
                             }}
                             <span
                                 class="cursor-pointer text-primary"
                                 @click="
                                     router.visit(
-                                        `/auth/profile#${getStr(props.row)}`,
+                                        `/auth/profile#${getStr(props.row)}`
                                     )
                                 "
                             >
                                 {{
                                     props.row.title.substring(
-                                        props.row.title.indexOf('"'),
+                                        props.row.title.indexOf('"')
                                     )
                                 }}
-                                <q-tooltip> click para ir al tiket </q-tooltip>
+                                <q-tooltip-component
+                                    title="click para ir al tiket"
+                                />
                             </span> </span
                         ><span v-else-if="props.row.code === 'chat_writter'"
                             >{{ props.row.title }}
@@ -123,7 +125,9 @@
                                 color="black"
                                 :href="`/admin/${props.row.chat}`"
                             >
-                                <q-tooltip> click para ir al chat </q-tooltip>
+                                <q-tooltip-component
+                                    title="click para ir al chat"
+                                />
                             </q-btn>
                         </span>
                         <span v-else>
@@ -156,7 +160,7 @@
                             :public="props.row.read"
                             @click="
                                 router.post(
-                                    `/auth/read-unread-notification/${props.row.id}`,
+                                    `/auth/read-unread-notification/${props.row.id}`
                                 )
                             "
                         />
@@ -218,6 +222,7 @@ import BtnClearComponent from "../btn/BtnClearComponent.vue";
 import FormReplyComponent from "./FormReplyComponent.vue";
 import AttachmentsComponent from "../others/AttachmentsComponent.vue";
 import ChatMessageComponent from "../others/ChatMessageComponent.vue";
+import QTooltipComponent from "../base/QTooltipComponent.vue";
 
 defineOptions({
     name: "NotificationsManagerComponent",
@@ -305,13 +310,13 @@ onMounted(() => {
         let foundRecord;
         if (uniqueId) {
             foundRecord = notifications.value.find(
-                (record) => record.id.toString() === uniqueId.toString(),
+                (record) => record.id.toString() === uniqueId.toString()
             );
         } else if (model && id) {
             foundRecord = notifications.value.find(
                 (record) =>
                     record.model === model &&
-                    record.model_id.toString() === id.toString(),
+                    record.model_id.toString() === id.toString()
             );
         }
         if (foundRecord) {
@@ -379,7 +384,7 @@ const getStr = (n) => {
             filters: {
                 uniqueId: id,
             },
-        }),
+        })
     );
 };
 </script>

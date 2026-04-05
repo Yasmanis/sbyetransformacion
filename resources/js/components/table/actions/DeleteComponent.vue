@@ -48,7 +48,7 @@ const props = defineProps({
     },
     disable: {
         type: Boolean,
-        defaul: false,
+        default: false,
     },
     cancel: Boolean,
     axios: Boolean,

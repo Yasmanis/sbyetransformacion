@@ -256,7 +256,9 @@
                         <users-select-dialog-component
                             name="manager_id"
                             label="gestor"
-                            :icon="`img:${$page.props.public_path}images/icon/${Dark.isActive ? 'white' : 'black'}-manager.png`"
+                            :icon="`img:${$page.props.public_path}images/icon/${
+                                Dark.isActive ? 'white' : 'black'
+                            }-manager.png`"
                             selected-role="facilitador"
                             :multiple="false"
                             :show-label-when-selected="false"
@@ -535,7 +537,6 @@
                     icon="mdi-content-save-move-outline"
                     tooltips="guardar y volver a la lista"
                     @click="save(true)"
-                    v-if="user"
                 />
                 <lock-unlock-component
                     :object="user"
@@ -573,11 +574,9 @@ defineOptions({
 const props = defineProps({
     user: {
         type: Object,
-        required: true,
     },
     buyer: {
         type: Object,
-        required: true,
     },
     hasEdit: {
         type: Boolean,
@@ -622,7 +621,7 @@ watch(
             edadCalculada--;
         }
         formData.value.age = edadCalculada;
-    },
+    }
 );
 
 const setData = () => {
@@ -659,8 +658,6 @@ const setData = () => {
 };
 
 const onUpdateField = (name, value, full) => {
-    console.log(name, value);
-
     if (name === "country_id" && value !== null) {
         phoneCodes.value = getPhoneCodesFromCountry(full);
         formData.value.phone_code = null;
@@ -685,7 +682,9 @@ const save = (toList = false) => {
             if (props.user) {
                 send.put(`/admin/users/${props.user.id}`);
             } else {
-                send.post(`/admin/users`);
+                send.post(`/admin/users`, {
+                    preserveState: false,
+                });
             }
         } else {
             errorValidation();

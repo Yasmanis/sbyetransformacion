@@ -38,6 +38,7 @@ use App\Http\Controllers\ProductSubcategoryOffersController;
 use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\RealityController;
 use App\Http\Controllers\ReasonForReturnController;
+use App\Http\Controllers\RecycleBinController;
 use App\Http\Controllers\SchoolTopicsController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\ShoppingController;
@@ -374,6 +375,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/roles', [SelectsController::class, 'roles']);
     Route::get('/permissions', [SelectsController::class, 'permissions']);
     Route::get('/users', [SelectsController::class, 'users']);
+    Route::get('/select/models', [SelectsController::class, 'models']);
     Route::get('/reasons-for-return', [SelectsController::class, 'reasonsForReturn']);
     Route::post('/users', [SelectsController::class, 'users']);
     Route::get('/category-nomenclatures/{key}', [SelectsController::class, 'sections']);
@@ -398,6 +400,13 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/contacts/change-book-volume/{id}', [ContactsController::class, 'changeBookVolume']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
+
+    Route::prefix('admin/recycle-bin')->name('recycle-bin')->group(function () {
+        Route::get('/', [RecycleBinController::class, 'index'])->name('index');
+        Route::delete('/{id}', [RecycleBinController::class, 'destroy'])->name('destroy');
+        Route::post('/restore', [RecycleBinController::class, 'restore'])->name('restore');
+        Route::post('/empty-all', [RecycleBinController::class, 'emptyAll'])->name('empty-all');
+    });
 });
 
 Route::get('/categories', [SelectsController::class, 'categories']);

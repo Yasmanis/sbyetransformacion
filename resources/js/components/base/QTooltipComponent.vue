@@ -24,11 +24,11 @@ const props = defineProps({
     class: { type: String, default: "bg-dark" },
     anchor: {
         type: String,
-        defaul: "bottom middle",
+        default: "top middle",
     },
     self: {
         type: String,
-        defaul: "top middle",
+        default: "bottom middle",
     },
     offset: {
         type: Array,

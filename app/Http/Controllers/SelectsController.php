@@ -138,4 +138,11 @@ class SelectsController extends Controller
             'options' => Product::select('id as value', 'name as label')->get()
         ]);
     }
+
+    public function models()
+    {
+        return response()->json([
+            'options' => Module::select('model as value', 'singular_label as label')->where('recycle', true)->get()
+        ]);
+    }
 }

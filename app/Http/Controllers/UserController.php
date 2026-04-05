@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserLastCourse;
 use App\Repositories\BuyerRepository;
 use App\Repositories\UserRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -77,13 +78,13 @@ class UserController extends Controller
             }
             $repository = new BuyerRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
+            $data['birthdate']=Carbon::createFromFormat('d/m/Y', $data['birthdate']);
             $data['user_id'] = $user->id;
             $repository->create($data);
-            return redirect('/admin/users')->with('success', 'usuario adicionado correctamente');
-            // if ($request->toList) {
-            //     return redirect('/admin/users')->with('success', 'usuario adicionado correctamente');
-            // }
-            // return redirect('/admin/users/' . $user->id, 302, ['method' => 'get'])->with('success', 'usuario adicionado correctamente');
+            if ($request->toList) {
+                return redirect('/admin/users')->with('success', 'usuario adicionado correctamente');
+            }
+            return redirect('/admin/users/' . $user->id)->with('success', 'usuario adicionado correctamente');
         }
         return $this->deny_access($request);
     }
@@ -105,11 +106,12 @@ class UserController extends Controller
             $repository = new UserRepository();
             $user = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
             $repository = new BuyerRepository();
+            $data = $request->only((new ($repository->model()))->getFillable());
+            $data['birthdate']=Carbon::createFromFormat('d/m/Y', $data['birthdate']);
             $buyer = $repository->getByColumn($id, 'user_id');
             if ($buyer) {
-                $repository->updateById($buyer->id, $request->only((new ($repository->model()))->getFillable()));
+                $repository->updateById($buyer->id, $data);
             } else {
-                $data = $request->only((new ($repository->model()))->getFillable());
                 $data['user_id'] = $id;
                 $repository->create($data);
             }

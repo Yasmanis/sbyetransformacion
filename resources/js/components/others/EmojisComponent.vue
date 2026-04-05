@@ -57,8 +57,8 @@
                     name="tab-close"
                     style="padding: 0px !important"
                 >
-                    <q-tooltip class="text-body2">cerrar</q-tooltip></q-tab
-                >
+                    <q-tooltip-component class="text-body2" title="cerrar"
+                /></q-tab>
             </q-tabs>
             <q-separator />
             <q-tab-panels
@@ -90,14 +90,15 @@
                             dense
                             flat
                             size="20px"
-                            v-for="(b, indexBtn) in filter_result"
+                            v-for="b in filter_result"
                             :key="`btn-${b.order}`"
                             :label="b.unicode"
                             @click="onClick(b.unicode)"
                         >
-                            <q-tooltip class="text-body2">{{
-                                b.label
-                            }}</q-tooltip>
+                            <q-tooltip-component
+                                class="text-body2"
+                                :title="b.label"
+                            />
                         </q-btn>
                     </q-scroll-area>
                 </q-tab-panel>
@@ -134,14 +135,15 @@
                             dense
                             flat
                             size="20px"
-                            v-for="(b, indexBtn) in c.emojis"
+                            v-for="b in c.emojis"
                             :key="`btn-${b.order}`"
                             :label="b.unicode"
                             @click="onClick(b.unicode)"
                         >
-                            <q-tooltip class="text-body2">{{
-                                b.label
-                            }}</q-tooltip>
+                            <q-tooltip-component
+                                class="text-body2"
+                                :title="b.label"
+                            />
                         </q-btn>
                     </q-scroll-area>
                 </q-tab-panel>
@@ -153,6 +155,7 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { categories, emojis } from "../../helpers/emojis";
+import QTooltipComponent from "../base/QTooltipComponent.vue";
 
 defineOptions({
     name: "EmojisComponent",

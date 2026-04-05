@@ -2,7 +2,7 @@
     <q-btn-component
         icon="mdi-image-outline"
         tooltips="portada"
-        :disable="object.type.startsWith('image/')"
+        :disable="object?.type?.startsWith('image/')"
         @click="showDialog = true"
     />
     <q-dialog
