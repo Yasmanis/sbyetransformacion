@@ -5,6 +5,12 @@
                 <div class="col">
                     <q-item class="no-padding">
                         <q-item-section avatar>
+                            <btn-msg-component color="white" tooltips="chat" />
+                        </q-item-section>
+                        <q-item-section avatar>
+                            <documents-component :user="user" />
+                        </q-item-section>
+                        <q-item-section avatar>
                             <book-info-component
                                 color="white"
                                 :object="user"
@@ -75,7 +81,9 @@ import LockUnlockComponent from "../../components/modules/user/LockUnlockCompone
 import ChangePasswordComponent from "../../components/modules/user/ChangePasswordComponent.vue";
 import UserCardComponent from "../../components/modules/user/UserCardComponent.vue";
 import BtnReplyComponent from "../../components/btn/BtnReplyComponent.vue";
+import BtnMsgComponent from "../../components/btn/BtnMsgComponent.vue";
 import FormAvatar from "../../components/auth/FormAvatar.vue";
+import DocumentsComponent from "../../components/modules/user/DocumentsComponent.vue";
 import { computed, onMounted, ref } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { modules } from "../../services/current_module";

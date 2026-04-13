@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
+    use Recyclable;
+
     protected $fillable = [
         'id',
         'name',

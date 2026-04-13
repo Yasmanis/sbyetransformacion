@@ -142,7 +142,7 @@ class SelectsController extends Controller
     public function models()
     {
         return response()->json([
-            'options' => Module::select('model as value', 'singular_label as label')->where('recycle', true)->get()
+            'options' => config('recyclables', [])
         ]);
     }
 }

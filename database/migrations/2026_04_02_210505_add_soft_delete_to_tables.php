@@ -88,10 +88,5 @@ return new class extends Migration
         }
 
         Schema::dropIfExists('recycle_bin');
-
-        $module = Module::firstWhere('model', 'ProductSubcategory');
-        if ($module) {
-            $module->delete();
-        }
     }
 };

@@ -1,6 +1,7 @@
 <template>
     <q-btn-component
         :tooltips="tooltips"
+        :color="color"
         icon="mdi-message-processing-outline"
         @click="onClick"
         ><slot></slot
@@ -18,6 +19,7 @@ const props = defineProps({
         type: String,
         default: "mensajes",
     },
+    color: String,
 });
 
 const emits = defineEmits(["click"]);

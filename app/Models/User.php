@@ -9,7 +9,6 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -20,7 +19,7 @@ use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable implements CanResetPassword
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, Recyclable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, Recyclable;
 
     public static function boot()
     {

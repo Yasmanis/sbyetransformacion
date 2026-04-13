@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Model;
 
 class Note extends Model

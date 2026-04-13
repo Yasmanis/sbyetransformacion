@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\RecycleBin;
 
-use App\Models\Module;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -29,7 +28,7 @@ class CleanOrphaned extends Command
      */
     public function handle()
     {
-        $models = Module::where('recycle', true)->get();
+        $models = config('recyclables', []);
         foreach ($models as $m) {
             $fullClassName = "\\App\\Models\\" . $m->model;
             if (!class_exists($fullClassName)) {

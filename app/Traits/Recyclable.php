@@ -3,9 +3,12 @@
 namespace App\Traits;
 
 use App\Models\RecycleBin;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 trait Recyclable
 {
+    use SoftDeletes;
+
     public static function bootRecyclable()
     {
         static::deleting(function ($model) {

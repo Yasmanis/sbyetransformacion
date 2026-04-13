@@ -516,6 +516,9 @@
         <q-separator />
         <q-card-actions>
             <q-toolbar class="no-padding" style="min-height: 20px !important">
+                <q-btn-component icon="mdi-inbox-arrow-down-outline" />
+                <q-btn-component icon="mdi-calendar-check" />
+                <q-btn-component icon="mdi-checkbox-marked-outline" />
                 <btn-msg-component />
                 <highlighted-component v-if="user" />
                 <template v-if="user">
@@ -621,7 +624,7 @@ watch(
             edadCalculada--;
         }
         formData.value.age = edadCalculada;
-    }
+    },
 );
 
 const setData = () => {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Recyclable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class File extends Model
 {
-    use HasFactory;
+    use HasFactory, Recyclable;
 
     protected $table = 'file';
 

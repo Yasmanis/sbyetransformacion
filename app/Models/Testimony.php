@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Testimony extends Model
 {
-    use HasFactory;
+    use HasFactory, Recyclable;
 
     protected $fillable = ['title', 'message', 'type', 'user_id', 'publicated', 'name_to_show', 'anonimous', 'msg_to_admin', 'amazon_image', 'order', 'book_volume'];
 
@@ -45,12 +46,12 @@ class Testimony extends Model
 
     public function getUserNameAttribute()
     {
-        return $this->user->full_name;
+        return $this->user?->full_name ?? null;
     }
 
     public function getVolumesAttribute()
     {
-        return $this->user->book_volumes;
+        return $this->user?->book_volumes ?? null;
     }
 
     public function getNameAttribute()

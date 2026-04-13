@@ -72,7 +72,7 @@
                     :multiple="f.multiple"
                     :required="f.required"
                     :model-value="formData[f.name]"
-                    @update="onUpdateUsers"
+                    @update="onUpdateField"
                     v-else-if="f.type === 'users'"
                 />
                 <campaign-field
@@ -91,7 +91,7 @@
                     @remove="
                         (id) =>
                             (formData[f.name] = formData[f.name].filter(
-                                (s) => s.id !== id
+                                (s) => s.id !== id,
                             ))
                     "
                     v-else-if="f.type === 'subtitles'"
@@ -379,8 +379,8 @@ const setDefaultData = () => {
             formData.value[f.name] = props.object
                 ? props.object[f.name]
                 : f.othersProps && f.othersProps.defaultValue
-                ? f.othersProps.defaultValue
-                : null;
+                  ? f.othersProps.defaultValue
+                  : null;
         }
     });
 
@@ -390,10 +390,6 @@ const setDefaultData = () => {
 const onUpdateField = (name, val) => {
     formData.value[name] = val;
     emits("update-field", name, val);
-};
-
-const onUpdateUsers = (name, val) => {
-    formData.value[name] = val.map((v) => v.value);
 };
 
 const save = async (hide) => {
@@ -429,7 +425,7 @@ const update = async () => {
         saveAxiosRequest(
             `${props.module.base_url}/${props.object.id}`,
             "put",
-            true
+            true,
         );
     } else {
         if (props.postOnUpdate) {
@@ -464,7 +460,7 @@ const saveAxiosRequest = async (url, method, hide) => {
                 emits(
                     method === "post" ? "created" : "updated",
                     data.object,
-                    hide
+                    hide,
                 );
             }
         })

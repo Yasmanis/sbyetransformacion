@@ -8,6 +8,7 @@ use App\Models\TiketReply;
 use App\Models\User;
 use App\Models\UserNotifications;
 use App\Notifications\StandardNotification;
+use App\Repositories\TicketRepository;
 use App\Traits\FileSave;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -134,8 +135,9 @@ class ContactAdminController extends Controller
 
     public function destroy(Request $request)
     {
+        $repository = new TicketRepository();
         $ids = $request->ids;
-        ContactAdmin::whereIn('id', $ids)->delete();
+        $repository->deleteMultipleById($ids);
         return redirect()->back()->with('success', count($ids) === 1 ?  'tiket eliminado correctamente' : 'tikets eliminados correctamente');
     }
 }

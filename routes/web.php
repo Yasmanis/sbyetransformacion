@@ -19,6 +19,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\ContactAdminController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\MessagesController;
@@ -407,6 +408,9 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::post('/restore', [RecycleBinController::class, 'restore'])->name('restore');
         Route::post('/empty-all', [RecycleBinController::class, 'emptyAll'])->name('empty-all');
     });
+
+    Route::post('admin/documents/index/{id}', [DocumentController::class, 'index'])->name('index');
+    Route::resource('/admin/documents', DocumentController::class)->only(['store', 'update', 'destroy']);
 });
 
 Route::get('/categories', [SelectsController::class, 'categories']);

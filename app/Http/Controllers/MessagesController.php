@@ -29,11 +29,6 @@ class MessagesController extends Controller
             ]);
             $repository = new MessageRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            if (isset($request->assigned_to) && count($request->assigned_to) > 0) {
-                $data['assigned_to'] = $request->assigned_to[0];
-            } else {
-                $data['assigned_to'] = null;
-            }
             $data['start_at'] = Carbon::createFromFormat('d/m/Y h:i A', $request->start_at);
             if (isset($request->end_at)) {
                 $data['end_at'] = Carbon::createFromFormat('d/m/Y h:i A', $request->end_at);

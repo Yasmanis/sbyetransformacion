@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Services\BrevoService;
+use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TiketReply extends Model
 {
-    use HasFactory;
+    use HasFactory, Recyclable;
 
     protected $table = 'tikets_reply';
 

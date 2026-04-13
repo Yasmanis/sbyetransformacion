@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use App\Notifications\StandardNotification;
-use App\Services\BrevoService;
+use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Notification;
 
 class ContactAdmin extends Model
 {
-    use HasFactory;
+    use HasFactory, Recyclable;
 
     protected $fillable = ['subject', 'description'];
 
@@ -82,5 +82,10 @@ class ContactAdmin extends Model
     public function getSendAttribute()
     {
         return auth()->user()?->id === $this->created_by ?? false;
+    }
+
+    protected function getRecycleBinTitle()
+    {
+        return $this->subject;
     }
 }

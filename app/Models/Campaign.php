@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Recyclable;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Campaign extends Model
 {
-    use HasFactory;
+    use HasFactory, Recyclable;
 
     protected $table = 'campaigns';
     protected $fillable = ['title', 'start_at', 'end_at', 'url', 'logo'];
@@ -70,21 +71,6 @@ class Campaign extends Model
         return $this->assignedTo()->get();
     }
 
-    public function verificaSiEstaEsCampaignSection($value)
-    {
-        return null;
-        $val = null;
-        $campaignSections = CampaignSection::all()->pluck('id', 'name');
-        foreach ($campaignSections as $key => $section) {
-            if ($value == $key) {
-                $val = $section;
-            }
-        }
-        return $val;
-    }
-
-
-
     // accessors
 
     public function getSectionsAttribute()
@@ -111,17 +97,6 @@ class Campaign extends Model
     {
         $user = User::find($val);
         return $user != null ? $user->full_name : null;
-    }
-
-    // scope
-
-    public function scopefilterByRegex($query, $regex)
-    {
-
-        $section = $this->verificaSiEstaEsCampaignSection($regex);
-        return $query
-            ->where('campaign', 'like', '%' . $regex . '%')
-            ->orWhere('section_id', 'like', '%' . $section . '%');
     }
 
     public function scopeFilterRole($query, $val)

@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Recyclable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
+    use Recyclable;
 
     protected $fillable = ['title', 'message', 'importance', 'message_id', 'start_at', 'end_at', 'assigned_to', 'periodicity'];
 

@@ -24,7 +24,7 @@ class RecycleBin extends Model
         'auto_delete_at' => 'datetime',
     ];
 
-    protected $appends = ['model', 'icon', 'type', 'user', 'deleted_at', 'permanent_deleted'];
+    protected $appends = ['model', 'user', 'deleted_at', 'permanent_deleted'];
 
     public function recyclable()
     {
@@ -41,22 +41,17 @@ class RecycleBin extends Model
         $base_model = class_basename($this->recyclable_type);
         $module = Module::firstWhere('model', $base_model);
         if ($module) {
-            return $module;
+            return [
+                'type' => $module->singular_label,
+                'ico_from_path' => $module->ico_from_path,
+                'icon' => $module->ico
+            ];
         }
         return [
-            'singular_label' => $base_model,
-            'ico' => 'mdi-trash'
+            'type' => $base_model ?? 'desconocido',
+            'icon' => 'help',
+            'ico_from_path' => false,
         ];
-    }
-
-    public function getIconAttribute()
-    {
-        return $this->model->ico;
-    }
-
-    public function getTypeAttribute()
-    {
-        return $this->model->singular_label;
     }
 
     public function getUserAttribute()

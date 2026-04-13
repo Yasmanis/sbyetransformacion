@@ -170,10 +170,17 @@
                         />
                     </template>
                     <template v-else-if="props.col.name === 'icon'">
-                        <q-icon :name="props.row.icon" size="20px" />
+                        <q-icon
+                            :name="
+                                props.row.model.ico_from_path
+                                    ? `img:${$page.props.public_path}${!Dark.isActive ? props.row.model.icon.replace('white', 'black') : props.row.model.icon}`
+                                    : props.row.model.icon
+                            "
+                            size="20px"
+                        />
                     </template>
-                    <template v-else-if="props.col.name === 'model'">
-                        {{ props.row.model.singular_label }}
+                    <template v-else-if="props.col.name === 'type'">
+                        {{ getType(props.row.model.type) }}
                     </template>
                     <template v-else-if="props.col.type === 'boolean'">
                         <q-chip
@@ -222,7 +229,7 @@
                         <q-list>
                             <q-item
                                 v-for="col in props.cols.filter(
-                                    (c) => c.name !== 'icon'
+                                    (c) => c.name !== 'icon',
                                 )"
                                 :key="col.name"
                                 :class="col.type === 'hidden' ? 'hidden' : ''"
@@ -318,7 +325,7 @@
 
 <script setup>
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
-import { useQuasar } from "quasar";
+import { Dark, useQuasar } from "quasar";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import VisibleColumnsComponent from "../../table/actions/VisibleColumnsComponent.vue";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
@@ -418,7 +425,7 @@ watch(
     {
         immediate: true,
         deep: true,
-    }
+    },
 );
 
 onBeforeMount(() => {
@@ -435,6 +442,12 @@ onMounted(() => {
         .filter((c) => c.type !== "hidden" && !c.required)
         .map((c) => c.field);
 });
+
+const getType = (type) => {
+    if (type === "ContactAdmin") return "Ticket";
+    if (type === "Mensaje") return "Mensaje push";
+    return type;
+};
 
 const onRefreshData = (prop, data) => {
     pagination.value[prop] =
@@ -453,7 +466,7 @@ const onRequest = async (attrs) => {
         { page, rowsPerPage, search, filters, sortBy, sortDirection },
         {
             preserveState: true,
-        }
+        },
     );
 };
 </script>
