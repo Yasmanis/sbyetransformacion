@@ -74,49 +74,56 @@
         </q-page-container>
 
         <q-footer class="bg-black text-white q-pa-xl">
-            <div class="text-center">
+            <div class="text-center q-gutter-sm">
                 <q-btn-component
-                    size="md"
-                    color="grey-9"
+                    size="sm"
+                    padding="sm"
+                    icon="fab fa-facebook-f"
                     href="https://www.facebook.com/profile.php?id=61563937152210"
-                    target="blank"
-                    :flat="false"
-                    padding="8px"
-                >
-                    <q-icon name="fab fa-facebook-f" size="xs" />
-                </q-btn-component>
-                <q-btn-component
-                    size="md"
+                    target="_blank"
                     color="grey-9"
-                    style="margin-left: 10px; margin-right: 10px"
+                    :flat="false"
+                />
+
+                <q-btn-component
+                    size="sm"
+                    padding="sm"
+                    icon="fab fa-youtube"
                     href="https://www.youtube.com/@sbyetransformacion"
-                    target="blank"
-                    :flat="false"
-                    padding="8px"
-                >
-                    <q-icon name="fab fa-youtube" size="xs" />
-                </q-btn-component>
-                <q-btn-component
-                    size="md"
+                    target="_blank"
                     color="grey-9"
-                    style="margin-right: 10px"
+                    :flat="false"
+                />
+
+                <q-btn-component
+                    size="sm"
+                    padding="sm"
+                    icon="fab fa-instagram"
                     href="https://www.instagram.com/sbyetransformacion/"
-                    target="blank"
-                    :flat="false"
-                    padding="8px"
-                >
-                    <q-icon name="fab fa-instagram" size="xs" />
-                </q-btn-component>
-                <q-btn-component
-                    size="md"
+                    target="_blank"
                     color="grey-9"
-                    href="https://www.tiktok.com/@sbyetransformacion"
-                    target="blank"
                     :flat="false"
-                    padding="8px"
-                >
-                    <q-icon name="fab fa-tiktok" size="xs" />
-                </q-btn-component>
+                />
+
+                <q-btn-component
+                    size="sm"
+                    padding="sm"
+                    icon="fab fa-tiktok"
+                    href="https://www.tiktok.com/@sbyetransformacion"
+                    target="_blank"
+                    color="grey-9"
+                    :flat="false"
+                />
+
+                <q-btn-component
+                    size="sm"
+                    padding="sm"
+                    icon="fab fa-linkedin"
+                    href="https://www.linkedin.com/in/maría-garriga-domínguez-25173233a/"
+                    target="_blank"
+                    color="grey-9"
+                    :flat="false"
+                />
             </div>
             <div class="text-center q-py-lg">
                 <Link href="/legal" class="text-white q-mr-md">

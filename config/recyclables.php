@@ -49,4 +49,8 @@ return [
         'label' => 'Ticket',
         'value' => 'ContactAdmin'
     ],
+    [
+        'label' => 'Documentos',
+        'value' => 'Document'
+    ],
 ];

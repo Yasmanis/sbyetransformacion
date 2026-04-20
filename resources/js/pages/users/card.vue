@@ -8,7 +8,7 @@
                             <btn-msg-component color="white" tooltips="chat" />
                         </q-item-section>
                         <q-item-section avatar>
-                            <documents-component :user="user" />
+                            <documents-component />
                         </q-item-section>
                         <q-item-section avatar>
                             <book-info-component

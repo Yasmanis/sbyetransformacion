@@ -10,12 +10,15 @@
         <q-card class="scroll">
             <dialog-header-component
                 icon="mdi-file-account-outline"
-                :title="`documentos de ${user.full_name}`"
+                :title="`documentos de ${$page.props.user.full_name}`"
                 closable
                 @close="showDialog = false"
             />
             <q-card-section class="scroll q-pa-none">
-                <table-component :user="user" />
+                <table-component
+                    :user="$page.props.user"
+                    :documents="$page.props.documents"
+                />
             </q-card-section>
             <q-separator />
             <q-card-actions align="right">
@@ -43,10 +46,6 @@ defineOptions({
 });
 
 const props = defineProps({
-    user: {
-        type: Object,
-        required: true,
-    },
     has_edit: {
         type: Boolean,
         default: false,

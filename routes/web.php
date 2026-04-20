@@ -409,7 +409,13 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::post('/empty-all', [RecycleBinController::class, 'emptyAll'])->name('empty-all');
     });
 
-    Route::post('admin/documents/index/{id}', [DocumentController::class, 'index'])->name('index');
+    Route::prefix('admin/documents')->group(function () {
+
+        Route::post('/index/{id}', [DocumentController::class, 'index']);
+        Route::post('/move/{id}', [DocumentController::class, 'move']);
+        Route::get('/open/{id}', [DocumentController::class, 'open'])->name('documents.open');
+        Route::get('/download/{id}', [DocumentController::class, 'download'])->name('documents.download');
+    });
     Route::resource('/admin/documents', DocumentController::class)->only(['store', 'update', 'destroy']);
 });
 

@@ -2,19 +2,31 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\EloquentSortable\Sortable;
+use Spatie\EloquentSortable\SortableTrait;
 
-class Document extends Model
+class Document extends Model implements Sortable
 {
+    use SortableTrait, Recyclable;
 
-    protected $fillable = ['name', 'is_folder', 'parent_id', 'user_id', 'type', 'size', 'path'];
+    public $sortable = [
+        'order_column_name' => 'sort_order',
+        'sort_when_creating' => true,
+    ];
+    protected $fillable = ['name', 'is_folder', 'parent_id', 'user_id', 'type', 'size', 'path', 'sort_order'];
 
     protected $appends = ['has_childs'];
 
     protected $casts = [
         'is_folder' => 'boolean',
     ];
+
+    public function buildSortQuery()
+    {
+        return static::query()->where('parent_id', $this->parent_id);
+    }
 
     public function sharedWith()
     {

@@ -18,6 +18,7 @@
         "paypal/rest-api-sdk-php": "^1.14",
         "pusher/pusher-php-server": "^7.2",
         "pusher/pusher-push-notifications": "^2.0",
+        "spatie/eloquent-sortable": "*",
         "spatie/laravel-permission": "^6.9",
         "srmklive/paypal": "^3.0",
         "symfony/brevo-mailer": "6.4",

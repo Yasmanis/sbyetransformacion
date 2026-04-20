@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buyer;
+use App\Models\Document;
 use App\Models\User;
 use App\Models\UserLastCourse;
 use App\Repositories\BuyerRepository;
@@ -40,7 +41,8 @@ class UserController extends Controller
             $repository = new UserRepository();
             $user = $repository->getById($id);
             $buyer = Buyer::firstWhere('user_id', $id);
-            return Inertia('users/card', ['user' => $user, 'buyer' => $buyer]);
+            $documents = Document::accessibleBy($id)->get();
+            return Inertia('users/card', ['user' => $user, 'buyer' => $buyer, 'documents' => $documents]);
         }
         return $this->deny_access($request);
     }
@@ -78,7 +80,7 @@ class UserController extends Controller
             }
             $repository = new BuyerRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $data['birthdate']=Carbon::createFromFormat('d/m/Y', $data['birthdate']);
+            $data['birthdate'] = Carbon::createFromFormat('d/m/Y', $data['birthdate']);
             $data['user_id'] = $user->id;
             $repository->create($data);
             if ($request->toList) {
@@ -107,7 +109,7 @@ class UserController extends Controller
             $user = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
             $repository = new BuyerRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $data['birthdate']=Carbon::createFromFormat('d/m/Y', $data['birthdate']);
+            $data['birthdate'] = Carbon::createFromFormat('d/m/Y', $data['birthdate']);
             $buyer = $repository->getByColumn($id, 'user_id');
             if ($buyer) {
                 $repository->updateById($buyer->id, $data);

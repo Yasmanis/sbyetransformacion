@@ -180,43 +180,49 @@
                     </span></q-toolbar-title
                 >
                 <q-btn-component
-                    size="md"
+                    size="sm"
+                    padding="sm"
+                    icon="fab fa-facebook-f"
                     href="https://www.facebook.com/profile.php?id=61563937152210"
-                    target="blank"
-                    color="white"
-                    padding="8px"
-                >
-                    <q-icon name="fab fa-facebook-f" size="xs" />
-                </q-btn-component>
+                    target="_blank"
+                    color="whiite"
+                />
+
                 <q-btn-component
-                    size="md"
-                    style="margin-left: 10px; margin-right: 10px"
+                    size="sm"
+                    padding="sm"
+                    icon="fab fa-youtube"
                     href="https://www.youtube.com/@sbyetransformacion"
-                    target="blank"
-                    color="white"
-                    padding="8px"
-                >
-                    <q-icon name="fab fa-youtube" size="xs" />
-                </q-btn-component>
+                    target="_blank"
+                    color="whiite"
+                />
+
                 <q-btn-component
-                    size="md"
-                    style="margin-right: 10px"
+                    size="sm"
+                    padding="sm"
+                    icon="fab fa-instagram"
                     href="https://www.instagram.com/sbyetransformacion/"
-                    target="blank"
-                    color="white"
-                    padding="8px"
-                >
-                    <q-icon name="fab fa-instagram" size="xs" />
-                </q-btn-component>
+                    target="_blank"
+                    color="whiite"
+                />
+
                 <q-btn-component
-                    size="md"
+                    size="sm"
+                    padding="sm"
+                    icon="fab fa-tiktok"
                     href="https://www.tiktok.com/@sbyetransformacion"
-                    target="blank"
-                    color="white"
-                    padding="8px"
-                >
-                    <q-icon name="fab fa-tiktok" size="xs" />
-                </q-btn-component>
+                    target="_blank"
+                    color="whiite"
+                />
+
+                <q-btn-component
+                    size="sm"
+                    padding="sm"
+                    icon="fab fa-linkedin"
+                    href="https://www.linkedin.com/in/maría-garriga-domínguez-25173233a/"
+                    target="_blank"
+                    color="whiite"
+                />
             </q-toolbar>
         </q-footer>
     </q-layout>
@@ -326,7 +332,11 @@ const links = ref([
 onMounted(() => {
     const config = usePage().props.auth.user.configuration;
     Dark.set(
-        config ? (config["dark"] !== undefined ? config["dark"] : false) : false
+        config
+            ? config["dark"] !== undefined
+                ? config["dark"]
+                : false
+            : false,
     );
 });
 

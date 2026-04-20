@@ -52,7 +52,7 @@
                                 }}</q-item-label
                             >
                         </q-card-section>
-                        <q-card-section align="center">
+                        <q-card-section class="q-gutter-sm" align="center">
                             <q-btn-component
                                 size="sm"
                                 padding="sm"
@@ -69,7 +69,6 @@
                                 icon="fab fa-facebook-f"
                                 tooltipsColor="black"
                                 tooltips="facebook"
-                                class="q-mx-md"
                                 href="https://www.facebook.com/profile.php?id=61563937152210"
                                 target="_blank"
                                 :flat="false"
@@ -92,7 +91,6 @@
                                 icon="fab fa-instagram"
                                 tooltipsColor="black"
                                 tooltips="instagram"
-                                class="q-mx-md"
                                 href="https://www.instagram.com/sbyetransformacion/"
                                 target="_blank"
                                 :flat="false"
@@ -106,6 +104,18 @@
                                 tooltipsColor="black"
                                 tooltips="tiktok"
                                 href="https://www.tiktok.com/@sbyetransformacion"
+                                target="_blank"
+                                :flat="false"
+                                color="black"
+                            />
+
+                            <q-btn-component
+                                size="sm"
+                                padding="sm"
+                                icon="fab fa-linkedin"
+                                tooltipsColor="black"
+                                tooltips="linkedin"
+                                href="https://www.linkedin.com/in/maría-garriga-domínguez-25173233a/"
                                 target="_blank"
                                 :flat="false"
                                 color="black"

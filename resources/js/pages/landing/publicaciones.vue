@@ -159,6 +159,20 @@
                                         target="_blank"
                                     />
                                 </div>
+                                <div
+                                    class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-pa-sm"
+                                >
+                                    <q-btn
+                                        color="primary"
+                                        icon="fab fa-linkedin"
+                                        label="linkedin"
+                                        class="full-width"
+                                        no-caps
+                                        align="left"
+                                        href="https://www.linkedin.com/in/maría-garriga-domínguez-25173233a/"
+                                        target="_blank"
+                                    />
+                                </div>
                             </div>
                         </q-card-section>
                     </q-card>

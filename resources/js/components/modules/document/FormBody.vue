@@ -22,6 +22,7 @@
                     :filterable="false"
                     class="q-mb-md"
                     @update="onUpdateField"
+                    v-if="!object"
                 />
                 <text-field
                     v-model="formData['name']"
@@ -32,7 +33,7 @@
                     }"
                     :modelValue="formData['name']"
                     @update="onUpdateField"
-                    v-if="formData.type === 'folder'"
+                    v-if="formData.type === 'folder' || object"
                 />
                 <uploader-field
                     ref="uploader"
@@ -68,7 +69,7 @@ import SelectField from "../../form/input/SelectField.vue";
 import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import UploaderField from "../../form/input/UploaderField.vue";
-import { useForm } from "@inertiajs/vue3";
+import { router, useForm } from "@inertiajs/vue3";
 import {
     error,
     errorValidation,
@@ -78,6 +79,7 @@ import {
 const props = defineProps({
     parent: Object,
     user: Object,
+    object: Object,
 });
 
 const emits = defineEmits(["created", "updated", "cancel"]);
@@ -111,8 +113,13 @@ watch(
 const setDefaultData = () => {
     const object = props.object;
     formData.value["type"] = object?.type ?? "folder";
-    formData.value["name"] = object?.name ?? null;
+    formData.value["name"] = object
+        ? object.is_folder
+            ? object.name
+            : object.name.substring(0, object.name.lastIndexOf("."))
+        : null;
     formData.value["user_id"] = props.user.id;
+    formData.value["parent_id"] = props.parent?.id ?? null;
 };
 
 const onUpdateField = (name, val) => {
@@ -122,7 +129,11 @@ const onUpdateField = (name, val) => {
 const save = async (hide) => {
     form.value.validate().then((success) => {
         if (success) {
-            if (!formData.value.is_folder && files.value === 0) {
+            if (
+                !formData.value.is_folder &&
+                files.value === 0 &&
+                !props.object
+            ) {
                 error("debe agregar al menos un archivo");
             } else {
                 if (props.object) {
@@ -137,16 +148,16 @@ const save = async (hide) => {
     });
 };
 
-const store = async (hide) => {
+const store = async () => {
     if (formData.value.is_folder) {
         const send = useForm({
             ...formData.value,
             user_id: props.user.id,
+            parent_id: props.parent?.id ?? null,
         });
         send.post("/admin/documents", {
             onSuccess: () => {
-                setDefaultData();
-                emits("created", null, hide);
+                emits("created");
             },
         });
     } else {
@@ -154,19 +165,19 @@ const store = async (hide) => {
     }
 };
 
-const update = async (hide) => {
-    formData.value["_method"] = "put";
-    const send = useForm(formData.value);
-    send.post(`${props.module.base_url}/${props.object.id}`, {
+const update = async () => {
+    const send = useForm({
+        name: formData.value.name,
+    });
+    send.put(`/admin/documents/${props.object.id}`, {
         onSuccess: () => {
-            setDefaultData();
-            emits("updated", null, hide);
+            emits("updated");
         },
     });
 };
 
 const onUploaded = () => {
-    emits("created");
+    router.reload();
     success("fichero(s) adicionado(s) correctamente");
 };
 

@@ -106,10 +106,7 @@ onMounted(() => {
 
 watch(
     () => props.modelValue,
-    (n, o) => {
-        if (props.type === "text" && n !== null) {
-            n = n.trim();
-        }
+    (n) => {
         model.value = n === "" ? null : n;
     },
 );
