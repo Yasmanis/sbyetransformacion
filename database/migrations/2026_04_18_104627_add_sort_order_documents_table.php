@@ -16,7 +16,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('documents', function (Blueprint $table) {
-            $table->integer('sort_order')->default(0)->after('size');
+            if (!Schema::hasColumns('documents', ['sort_order'])) {
+                $table->integer('sort_order')->default(0)->after('size');
+            }
         });
 
         $users = User::all();
