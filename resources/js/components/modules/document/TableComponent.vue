@@ -404,21 +404,21 @@ const onDrop = (event, targetRow) => {
         newParentId = targetRow.parent_id;
     }
 
-    // useForm({
-    //     parent_id: newParentId,
-    //     target_id: targetRow.id,
-    //     drop_position: position,
-    // }).post(`/admin/documents/move/${dragged.id}`, {
-    //     preserveScroll: true,
-    //     onSuccess: () => {
-    //         if (
-    //             position === "inside" &&
-    //             !expandedIds.value.includes(targetRow.id)
-    //         ) {
-    //             expandedIds.value.push(targetRow.id);
-    //         }
-    //     },
-    // });
+    useForm({
+        parent_id: newParentId,
+        target_id: targetRow.id,
+        drop_position: position,
+    }).post(`/admin/documents/move/${dragged.id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            if (
+                position === "inside" &&
+                !expandedIds.value.includes(targetRow.id)
+            ) {
+                expandedIds.value.push(targetRow.id);
+            }
+        },
+    });
     draggedItem.value = null;
 };
 
