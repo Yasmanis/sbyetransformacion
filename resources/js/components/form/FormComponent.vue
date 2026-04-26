@@ -112,6 +112,7 @@ const props = defineProps({
     axiosRequest: Boolean,
     duplicate: Boolean,
     closeConfirm: Boolean,
+    show: Boolean,
 });
 
 const emits = defineEmits(["created", "updated"]);
@@ -161,6 +162,13 @@ watch(
         }
     },
     { deep: true }
+);
+
+watch(
+    () => props.show,
+    (n) => {
+        showDialog.value = n;
+    }
 );
 
 const onBeforeClose = () => {

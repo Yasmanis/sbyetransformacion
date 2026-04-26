@@ -173,7 +173,14 @@
                         <q-icon
                             :name="
                                 props.row.model.ico_from_path
-                                    ? `img:${$page.props.public_path}${!Dark.isActive ? props.row.model.icon.replace('white', 'black') : props.row.model.icon}`
+                                    ? `img:${$page.props.public_path}${
+                                          !Dark.isActive
+                                              ? props.row.model.icon.replace(
+                                                    'white',
+                                                    'black'
+                                                )
+                                              : props.row.model.icon
+                                      }`
                                     : props.row.model.icon
                             "
                             size="20px"
@@ -229,7 +236,7 @@
                         <q-list>
                             <q-item
                                 v-for="col in props.cols.filter(
-                                    (c) => c.name !== 'icon',
+                                    (c) => c.name !== 'icon'
                                 )"
                                 :key="col.name"
                                 :class="col.type === 'hidden' ? 'hidden' : ''"
@@ -425,7 +432,7 @@ watch(
     {
         immediate: true,
         deep: true,
-    },
+    }
 );
 
 onBeforeMount(() => {
@@ -446,6 +453,7 @@ onMounted(() => {
 const getType = (type) => {
     if (type === "ContactAdmin") return "Ticket";
     if (type === "Mensaje") return "Mensaje push";
+    if (type === "Module") return "Modulo";
     return type;
 };
 
@@ -466,7 +474,7 @@ const onRequest = async (attrs) => {
         { page, rowsPerPage, search, filters, sortBy, sortDirection },
         {
             preserveState: true,
-        },
+        }
     );
 };
 </script>

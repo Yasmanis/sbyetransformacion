@@ -11,19 +11,27 @@
         binary-state-sort
     >
         <template v-slot:top>
-            <q-toolbar class="q-pa-none">
-                <section>
-                    <q-input
-                        v-model="filterText"
-                        dense
-                        placeholder="buscar archivos..."
-                        class="col"
-                    >
-                        <template v-slot:append>
-                            <q-icon name="search" />
-                        </template>
-                    </q-input>
+            <q-toolbar>
+                <section
+                    class="q-my-xs q-mr-sm cursor-pointer text-subtitle1"
+                    v-if="hasTitle"
+                >
+                    <div class="doc-card-title bg-primary text-white">
+                        <q-icon name="mdi-file-account-outline" size="22px" />
+                        mis documentos
+                    </div>
                 </section>
+                <q-input
+                    v-model="filterText"
+                    dense
+                    placeholder="buscar archivos..."
+                    class="col"
+                    style="max-width: 300px"
+                >
+                    <template v-slot:append>
+                        <q-icon name="search" />
+                    </template>
+                </q-input>
                 <q-space />
                 <btn-add-component @click="handleAdd(null)" />
                 <btn-reload-component @click="router.reload()" />
@@ -142,12 +150,25 @@
                 }}</q-td>
                 <q-td key="actions" :props="props">
                     <btn-add-component
-                        :disable="!props.row.is_folder"
+                        :disable="
+                            !props.row.is_folder ||
+                            props.row.permission !== 'owner'
+                        "
                         @click="handleAdd(props.row)"
                     />
                     <btn-edit-component
+                        :disable="props.row.permission !== 'owner'"
                         @click="handleEdit(props.row)"
-                    /><btn-show-hide-component
+                    />
+                    <!-- <select-users
+                        name="shareds"
+                        icon="mdi-share-variant-outline"
+                        :attach-to="props.row"
+                        :disable="props.row.permission !== 'owner'"
+                        :model-value="props.row.users"
+                        @update="onSelectUsers"
+                    /> -->
+                    <btn-show-hide-component
                         :public="false"
                         :disable="props.row.is_folder"
                         @click="openFile(props.row.id)"
@@ -159,6 +180,7 @@
                     />
                     <delete-component
                         :objects="[props.row]"
+                        :disable="props.row.permission !== 'owner'"
                         url="/admin/documents"
                         size="sm"
                     />
@@ -182,22 +204,22 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { format, useQuasar, date, Dialog } from "quasar";
+import { ref, computed } from "vue";
+import { format, useQuasar, date } from "quasar";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import FormComponent from "./FormComponent.vue";
-import FormBody from "./FormBody.vue";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import BtnAddComponent from "../../btn/BtnAddComponent.vue";
 import BtnEditComponent from "../../btn/BtnEditComponent.vue";
 import BtnDownloadComponent from "../../btn/BtnDownloadComponent.vue";
 import BtnShowHideComponent from "../../btn/BtnShowHideComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
-import axios from "axios";
 import { router, useForm } from "@inertiajs/vue3";
+import SelectUsers from "../../form/input/SelectUsers.vue";
 
 const props = defineProps({
     user: Object,
+    hasTitle: Boolean,
     documents: {
         type: Array,
         default: [],
@@ -216,7 +238,11 @@ const currentObject = ref(null);
 const showDialog = ref(false);
 
 const columns = [
-    { name: "name", label: "nombre", align: "left", sort: false },
+    {
+        name: "name",
+        label: "nombre",
+        align: "left",
+    },
     {
         name: "size",
         label: "tamaño",
@@ -248,10 +274,10 @@ const handleSort = (colName) => {
 
 const visibleRows = computed(() => {
     const result = [];
-
+    const presentIds = new Set(props.documents.map((d) => d.id));
     const processItems = (parentId, level) => {
         let children = props.documents.filter(
-            (item) => item.parent_id === parentId,
+            (item) => item.parent_id === parentId
         );
 
         children.sort((a, b) => {
@@ -274,16 +300,25 @@ const visibleRows = computed(() => {
                 .toLowerCase()
                 .includes(filterText.value.toLowerCase());
             const isExpanded = expandedIds.value.includes(child.id);
+
             if (!filterText.value || matchesFilter) {
                 result.push({ ...child, level, expanded: isExpanded });
             }
+
             if (child.is_folder && (isExpanded || filterText.value)) {
                 processItems(child.id, level + 1);
             }
         });
     };
+    const rootElements = props.documents.filter(
+        (item) => item.parent_id === null || !presentIds.has(item.parent_id)
+    );
+    const rootParentIds = [...new Set(rootElements.map((el) => el.parent_id))];
 
-    processItems(null, 0);
+    rootParentIds.forEach((pId) => {
+        processItems(pId, 0);
+    });
+
     return result;
 });
 
@@ -300,6 +335,15 @@ const isDescendant = (targetId, draggedId) => {
     return false;
 };
 
+const hasAccessByShared = (targetId, draggedId) => {
+    let target = props.documents.find((d) => d.id === targetId),
+        dragged = props.documents.find((d) => d.id === draggedId);
+    if (target?.permission !== "owner" || dragged?.permission !== "owner") {
+        return true;
+    }
+    return false;
+};
+
 const onDragStart = (event, row) => {
     draggedItem.value = row;
     event.dataTransfer.setData("itemId", row.id);
@@ -308,14 +352,12 @@ const onDragStart = (event, row) => {
 
 const onDragOver = (event, targetRow) => {
     const draggedId = draggedItem.value?.id;
-    if (!draggedId || targetRow.id === draggedId) {
-        event.dataTransfer.dropEffect = "none";
-        isDraggingOver.value = null;
-        dropPosition.value = null;
-        return;
-    }
-
-    if (isDescendant(targetRow.id, draggedId)) {
+    if (
+        !draggedId ||
+        targetRow.id === draggedId ||
+        isDescendant(targetRow.id, draggedId) ||
+        hasAccessByShared(targetRow.id, draggedId)
+    ) {
         event.dataTransfer.dropEffect = "none";
         isDraggingOver.value = null;
         dropPosition.value = null;
@@ -362,22 +404,21 @@ const onDrop = (event, targetRow) => {
         newParentId = targetRow.parent_id;
     }
 
-    useForm({
-        parent_id: newParentId,
-        target_id: targetRow.id,
-        drop_position: position,
-    }).post(`/admin/documents/move/${dragged.id}`, {
-        preserveScroll: true,
-        onSuccess: () => {
-            if (
-                position === "inside" &&
-                !expandedIds.value.includes(targetRow.id)
-            ) {
-                expandedIds.value.push(targetRow.id);
-            }
-        },
-    });
-
+    // useForm({
+    //     parent_id: newParentId,
+    //     target_id: targetRow.id,
+    //     drop_position: position,
+    // }).post(`/admin/documents/move/${dragged.id}`, {
+    //     preserveScroll: true,
+    //     onSuccess: () => {
+    //         if (
+    //             position === "inside" &&
+    //             !expandedIds.value.includes(targetRow.id)
+    //         ) {
+    //             expandedIds.value.push(targetRow.id);
+    //         }
+    //     },
+    // });
     draggedItem.value = null;
 };
 
@@ -413,8 +454,14 @@ const downloadFile = (id) => {
 const openFile = (id) => {
     window.open(route("documents.open", id), "_blank");
 };
+
+const onSelectUsers = (name, val, attach) => {
+    useForm({
+        users: val,
+    }).post(`/admin/documents/shared/${attach.id}`);
+};
 </script>
-<style scoped>
+<style>
 .target-folder-active {
     background-color: #e3f2fd !important;
     outline: 2px dashed #2196f3;
@@ -434,5 +481,43 @@ const openFile = (id) => {
 }
 [draggable="true"]:active {
     cursor: grabbing;
+}
+
+.q-table__top {
+    padding: 0px !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.q-table__top .q-btn {
+    margin-left: 5px;
+}
+
+th:nth-child(1),
+tbody > tr > td:nth-child(1) {
+    left: 0;
+}
+
+.q-table td.actions-def,
+th:nth-child(1),
+tbody > tr > td:nth-child(1),
+.q-table th.last-column-sticky {
+    position: sticky;
+    z-index: 99;
+    background-color: #fff;
+}
+
+.q-table--dark td.actions-def,
+.q-table--dark th:nth-child(1),
+.q-table--dark th.last-column-sticky,
+.q-table--dark tbody > tr > td:nth-child(1) {
+    background-color: #1d222e;
+}
+
+td.actions-def > .q-btn {
+    margin-right: 3px;
+}
+
+.q-table th.last-column-sticky {
+    right: 0;
 }
 </style>

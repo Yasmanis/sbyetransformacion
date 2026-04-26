@@ -13,10 +13,13 @@ use Illuminate\Support\Str;
 class DocumentController extends Controller
 {
     use FileSave;
-    public function index(Request $request, $id)
+
+    public function index()
     {
-        $documents = Document::accessibleBy($id)->get();
-        return response()->json($documents);
+        $documents = Document::accessibleBy(auth()->id())->get();
+        return inertia('documents/list', [
+            'documents' => $documents
+        ]);
     }
 
     public function store(Request $request)
@@ -55,6 +58,18 @@ class DocumentController extends Controller
         return $this->deny_access($request);
     }
 
+    public function shared(Request $request, $id)
+    {
+        $users = $request->input('users', []);
+        $document = Document::findOrFail($id);
+        if (!empty($users)) {
+            $document->sharedWith()->sync($users);
+            return redirect()->back()->with('success', $document->is_folder ? 'carpeta compartida correctamente' : 'archivo compartido correctamente');
+        }
+        $document->sharedWith()->detach();
+        return redirect()->back()->with('success', $document->is_folder ? 'carpeta dejada de compartir correctamente' : 'archivo dejado de compartir correctamente');
+    }
+
     public function move(Request $request, $id)
     {
         if (auth()->user()->hasUpdate('user')) {
@@ -62,16 +77,11 @@ class DocumentController extends Controller
             $newParentId = $request->parent_id;
             $document = Document::find($id);
             DB::transaction(function () use ($document, $target, $newParentId, $request) {
-                // 1. Si cambia de carpeta, actualizamos el parent_id pero sin disparar 
-                // lógicas pesadas aún, solo guardamos el cambio de relación.
                 if ($document->parent_id !== $newParentId) {
                     $document->parent_id = $newParentId;
                     $document->save();
-                    // Refrescamos para que la librería sepa que ahora pertenece a otro "grupo" (buildSortQuery)
                     $document->refresh();
                 }
-
-                // 2. Aplicar el reordenamiento
                 if ($request->drop_position === 'before') {
                     $document->moveBefore($target);
                 } elseif ($request->drop_position === 'after') {
@@ -100,13 +110,9 @@ class DocumentController extends Controller
         if ($document->is_folder) {
             abort(403, 'No puedes descargar una carpeta directamente.');
         }
-
-        // 2. Verificar existencia física del archivo
         if (!Storage::disk('public')->exists($document->path)) {
             abort(404, 'Archivo no encontrado en el servidor.');
         }
-
-        // OPCIÓN A: Forzar descarga
         return Storage::disk('public')->download($document->path, $document->name);
     }
 
@@ -114,9 +120,7 @@ class DocumentController extends Controller
     {
         $document = Document::findOrFail($id);
         if ($document->is_folder) abort(403);
-
         $path = storage_path('app/public/' . $document->path);
-
         return response()->file($path, [
             'Content-Disposition' => 'inline; filename="' . $document->name . '"'
         ]);

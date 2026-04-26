@@ -53,4 +53,8 @@ return [
         'label' => 'Documentos',
         'value' => 'Document'
     ],
+    [
+        'label' => 'Modulo',
+        'value' => 'Module'
+    ],
 ];

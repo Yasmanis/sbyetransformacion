@@ -53,14 +53,16 @@
                     </section>
                     <q-space />
                     <div class="col-auto">
-                        <form-component
-                            :title="current_module.singular_label"
-                            :fields="createFields"
-                            :module="current_module"
-                            :new-on-create="newOnCreate"
-                            size="sm"
-                            v-if="createFields.length > 0 && has_add"
-                        />
+                        <slot name="add">
+                            <form-component
+                                :title="current_module.singular_label"
+                                :fields="createFields"
+                                :module="current_module"
+                                :new-on-create="newOnCreate"
+                                size="sm"
+                                v-if="createFields.length > 0 && has_add"
+                            />
+                        </slot>
                         <btn-reload-component @click="onRequest" />
                         <visible-columns-component
                             :columns="columns"
@@ -71,12 +73,14 @@
                             @refresh-data="onRefreshData"
                             v-if="filterFields.length > 0"
                         />
-                        <delete-component
-                            :objects="selected"
-                            :url="current_module.base_url"
-                            @deleted="selected = []"
-                            v-if="selected.length > 0 && has_delete"
-                        />
+                        <slot name="delete">
+                            <delete-component
+                                :objects="selected"
+                                :url="current_module.base_url"
+                                @deleted="selected = []"
+                                v-if="selected.length > 0 && has_delete"
+                            />
+                        </slot>
                         <q-btn-component
                             tooltips="limpiar todo"
                             icon="mdi-eraser"
@@ -148,42 +152,45 @@
                     :align="props.col.align"
                     v-if="props.col.type !== 'hidden'"
                 >
-                    <template
-                        v-if="
-                            props.col.type === 'avatar' ||
-                            props.col.type === 'image'
-                        "
-                    >
-                        <q-avatar v-if="props.col.type === 'avatar'">
-                            <q-img :src="props.value" loading="lazy" />
-                        </q-avatar>
-                        <q-img
-                            :src="
-                                props.value ??
-                                props.col.othersProps?.default ??
-                                null
+                    <slot :name="'body-cell-' + props.col.name" :props="props">
+                        <template
+                            v-if="
+                                props.col.type === 'avatar' ||
+                                props.col.type === 'image'
                             "
-                            loading="lazy"
-                            width="70px"
-                            v-else
-                        />
-                    </template>
-                    <template v-else-if="props.col.type === 'boolean'">
-                        <q-chip
-                            dense
-                            size="sm"
-                            style="max-width: min-content"
-                            :color="props.value ? 'black' : 'blue-2'"
-                            :text-color="props.value ? 'white' : 'black'"
-                            :icon="props.value ? 'check' : 'error'"
-                            :label="props.value ? 'Si' : 'No'"
-                        />
-                    </template>
-                    <template v-else>
-                        <q-item-label lines="5">
-                            <span v-html="props.row[props.col.field]"> </span>
-                        </q-item-label>
-                    </template>
+                        >
+                            <q-avatar v-if="props.col.type === 'avatar'">
+                                <q-img :src="props.value" loading="lazy" />
+                            </q-avatar>
+                            <q-img
+                                :src="
+                                    props.value ??
+                                    props.col.othersProps?.default ??
+                                    null
+                                "
+                                loading="lazy"
+                                width="70px"
+                                v-else
+                            />
+                        </template>
+                        <template v-else-if="props.col.type === 'boolean'">
+                            <q-chip
+                                dense
+                                size="sm"
+                                style="max-width: min-content"
+                                :color="props.value ? 'black' : 'blue-2'"
+                                :text-color="props.value ? 'white' : 'black'"
+                                :icon="props.value ? 'check' : 'error'"
+                                :label="props.value ? 'Si' : 'No'"
+                            />
+                        </template>
+                        <template v-else>
+                            <q-item-label lines="5">
+                                <span v-html="props.row[props.col.field]">
+                                </span>
+                            </q-item-label>
+                        </template>
+                    </slot>
                 </q-td>
             </template>
 
@@ -197,21 +204,24 @@
                     }"
                     class="actions-def"
                 >
-                    <form-component
-                        :object="props.row"
-                        :title="current_module.singular_label"
-                        :fields="updateFields"
-                        :module="current_module"
-                        :post-on-update="postOnUpdate"
-                        size="sm"
-                        v-if="updateFields.length > 0 && has_edit"
-                    />
-                    <delete-component
-                        :objects="[props.row]"
-                        :url="current_module.base_url"
-                        size="sm"
-                        v-if="has_delete"
-                    />
+                    <slot name="edit" :props="props">
+                        <form-component
+                            :object="props.row"
+                            :title="current_module.singular_label"
+                            :fields="updateFields"
+                            :module="current_module"
+                            :post-on-update="postOnUpdate"
+                            size="sm"
+                            v-if="updateFields.length > 0 && has_edit"
+                        />
+                    </slot>
+                    <slot name="delete"
+                        ><delete-component
+                            :objects="[props.row]"
+                            :url="current_module.base_url"
+                            size="sm"
+                            v-if="has_delete"
+                    /></slot>
                 </q-td>
             </template>
 
@@ -224,81 +234,106 @@
                                 :key="col.name"
                                 :class="col.type === 'hidden' ? 'hidden' : ''"
                             >
-                                <q-item-section v-if="col.name !== 'actions'">
-                                    <q-item-label v-if="col.type !== 'avatar'">
-                                        {{ col.label }}
-                                    </q-item-label>
-                                    <q-item-label
-                                        v-if="
-                                            col.type === 'avatar' ||
-                                            col.type === 'image'
-                                        "
-                                        class="text-center"
+                                <slot
+                                    :name="`item-section-${col.name}`"
+                                    :props="props"
+                                >
+                                    <q-item-section
+                                        v-if="col.name !== 'actions'"
                                     >
-                                        <q-avatar v-if="col.type === 'avatar'">
+                                        <q-item-label
+                                            v-if="col.type !== 'avatar'"
+                                        >
+                                            {{ col.label }}
+                                        </q-item-label>
+                                        <q-item-label
+                                            v-if="
+                                                col.type === 'avatar' ||
+                                                col.type === 'image'
+                                            "
+                                            class="text-center"
+                                        >
+                                            <q-avatar
+                                                v-if="col.type === 'avatar'"
+                                            >
+                                                <q-img
+                                                    :src="col.value"
+                                                    loading="lazy"
+                                                />
+                                            </q-avatar>
                                             <q-img
                                                 :src="col.value"
                                                 loading="lazy"
+                                                width="100px"
+                                                v-else
                                             />
-                                        </q-avatar>
-                                        <q-img
-                                            :src="col.value"
-                                            loading="lazy"
-                                            width="100px"
-                                            v-else
-                                        />
-                                    </q-item-label>
-                                    <q-item-label
-                                        v-else-if="col.type === 'boolean'"
+                                        </q-item-label>
+                                        <q-item-label
+                                            v-else-if="col.type === 'boolean'"
+                                        >
+                                            <q-chip
+                                                dense
+                                                size="sm"
+                                                style="max-width: min-content"
+                                                :color="
+                                                    col.value
+                                                        ? 'black'
+                                                        : 'blue-2'
+                                                "
+                                                :text-color="
+                                                    col.value
+                                                        ? 'white'
+                                                        : 'black'
+                                                "
+                                                :icon="
+                                                    col.value
+                                                        ? 'check'
+                                                        : 'error'
+                                                "
+                                                :label="col.value ? 'Si' : 'No'"
+                                            />
+                                        </q-item-label>
+                                        <q-item-label caption v-else>
+                                            <span
+                                                v-html="
+                                                    col.value ? col.value : ''
+                                                "
+                                            ></span>
+                                        </q-item-label>
+                                    </q-item-section>
+                                    <q-item-section
+                                        v-else-if="col.name === 'actions'"
                                     >
-                                        <q-chip
-                                            dense
-                                            size="sm"
-                                            style="max-width: min-content"
-                                            :color="
-                                                col.value ? 'black' : 'blue-2'
-                                            "
-                                            :text-color="
-                                                col.value ? 'white' : 'black'
-                                            "
-                                            :icon="
-                                                col.value ? 'check' : 'error'
-                                            "
-                                            :label="col.value ? 'Si' : 'No'"
-                                        />
-                                    </q-item-label>
-                                    <q-item-label caption v-else>
-                                        <span
-                                            v-html="col.value ? col.value : ''"
-                                        ></span>
-                                    </q-item-label>
-                                </q-item-section>
-                                <q-item-section
-                                    v-else-if="col.name === 'actions'"
-                                >
-                                    <q-separator />
-                                    <div class="q-pa-sm q-gutter-sm text-right">
-                                        <form-component
-                                            :object="props.row"
-                                            :title="
-                                                current_module.singular_label
-                                            "
-                                            :fields="updateFields"
-                                            :module="current_module"
-                                            size="sm"
-                                            v-if="
-                                                updateFields.length > 0 &&
-                                                has_edit
-                                            "
-                                        />
-                                        <delete-component
-                                            :objects="[props.row]"
-                                            :url="current_module.base_url"
-                                            size="sm"
-                                            v-if="has_delete"
-                                        />
-                                    </div>
-                                </q-item-section>
+                                        <q-separator />
+                                        <div
+                                            class="q-pa-sm q-gutter-sm text-right"
+                                        >
+                                            <slot name="edit" :props="props"
+                                                ><form-component
+                                                    :object="props.row"
+                                                    :title="
+                                                        current_module.singular_label
+                                                    "
+                                                    :fields="updateFields"
+                                                    :module="current_module"
+                                                    size="sm"
+                                                    v-if="
+                                                        updateFields.length >
+                                                            0 && has_edit
+                                                    "
+                                            /></slot>
+                                            <slot name="delete"
+                                                ><delete-component
+                                                    :objects="[props.row]"
+                                                    :url="
+                                                        current_module.base_url
+                                                    "
+                                                    size="sm"
+                                                    v-if="has_delete"
+                                            /></slot>
+                                        </div>
+                                    </q-item-section>
+                                </slot>
                             </q-item>
                         </q-list>
                     </q-card>
@@ -409,7 +444,7 @@ watch(
     {
         immediate: true,
         deep: true,
-    },
+    }
 );
 
 onBeforeMount(() => {
@@ -444,7 +479,7 @@ const onRequest = async (attrs) => {
         { page, rowsPerPage, search, filters, sortBy, sortDirection },
         {
             preserveState: true,
-        },
+        }
     );
 };
 </script>

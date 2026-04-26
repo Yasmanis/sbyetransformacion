@@ -8,6 +8,7 @@ use App\Http\Controllers\BriefIdeasController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ConferenceController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
@@ -40,6 +41,8 @@ use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\RealityController;
 use App\Http\Controllers\ReasonForReturnController;
 use App\Http\Controllers\RecycleBinController;
+use App\Http\Controllers\ReflectionController;
+use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SchoolTopicsController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\ShoppingController;
@@ -342,10 +345,16 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
     Route::post('/admin/testimony/publicated/{id}', [TestimonyController::class, 'publicated']);
     Route::post('/admin/testimony/store-from-publications', [TestimonyController::class, 'storeFromPublications']);
+
     Route::resource('/admin/school', LifeController::class);
+
+    Route::get('/admin/cursos/{course}', [SchoolController::class, 'index']);
+    Route::post('/admin/cursos/{course}', [SchoolController::class, 'store']);
+
     Route::resource('/admin/conference', ConferenceController::class);
     Route::resource('/admin/learning', LearningController::class);
     Route::resource('/admin/reality', RealityController::class);
+    Route::resource('/admin/reflexiona', ReflectionController::class);
     Route::resource('/admin/schooltopics', SchoolTopicsController::class);
     Route::post('/admin/schooltopics/sort-topics', [SchoolTopicsController::class, 'sortTopics']);
     Route::post('/admin/schooltopics/addResources', [SchoolTopicsController::class, 'addResource']);
@@ -410,13 +419,14 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     });
 
     Route::prefix('admin/documents')->group(function () {
-
         Route::post('/index/{id}', [DocumentController::class, 'index']);
         Route::post('/move/{id}', [DocumentController::class, 'move']);
+        Route::post('/shared/{id}', [DocumentController::class, 'shared']);
         Route::get('/open/{id}', [DocumentController::class, 'open'])->name('documents.open');
         Route::get('/download/{id}', [DocumentController::class, 'download'])->name('documents.download');
     });
-    Route::resource('/admin/documents', DocumentController::class)->only(['store', 'update', 'destroy']);
+    Route::resource('/admin/documents', DocumentController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('/admin/courses', CourseController::class);
 });
 
 Route::get('/categories', [SelectsController::class, 'categories']);

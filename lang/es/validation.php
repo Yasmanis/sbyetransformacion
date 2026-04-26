@@ -186,7 +186,8 @@ return [
         'msg' => 'mensaje',
         'name' => 'nombre',
         'password' => 'contraseña',
-        'password_confirmed' => 'confirmación'
+        'password_confirmed' => 'confirmación',
+        'model' => 'modelo'
     ],
 
 ];

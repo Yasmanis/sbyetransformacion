@@ -22,7 +22,6 @@ trait Recyclable
     protected function moveToRecycleBin()
     {
         $daysToKeep = $this->recycleBinDays ?? 30;
-
         RecycleBin::create([
             'recyclable_type' => get_class($this),
             'recyclable_id' => $this->id,

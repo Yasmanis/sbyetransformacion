@@ -30,7 +30,7 @@ class CleanOrphaned extends Command
     {
         $models = config('recyclables', []);
         foreach ($models as $m) {
-            $fullClassName = "\\App\\Models\\" . $m->model;
+            $fullClassName = "\\App\\Models\\" . $m['value'];
             if (!class_exists($fullClassName)) {
                 $this->error("La clase {$fullClassName} no existe.");
                 continue;
@@ -49,9 +49,9 @@ class CleanOrphaned extends Command
             foreach ($orphans as $orphan) {
                 try {
                     $orphan->forceDelete();
-                    $this->info("Eliminado huérfano de {$m->model} con ID: {$orphan->id}");
+                    $this->info("Eliminado huérfano de {$m['label']} con ID: {$orphan->id}");
                 } catch (\Throwable $th) {
-                    $this->error("No se ha podido elimnar el huérfano de {$m->model} con ID: {$orphan->id}. Error: {$th->getMessage()}");
+                    $this->error("No se ha podido elimnar el huérfano de {$m['label']} con ID: {$orphan->id}. Error: {$th->getMessage()}");
                 }
             }
         }
