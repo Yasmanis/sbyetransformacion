@@ -18,10 +18,6 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('modules', function (Blueprint $table) {
-            $table->softDeletes();
-        });
-
         $app = Module::firstWhere('singular_label', 'configuracion');
 
         $permissions = [
