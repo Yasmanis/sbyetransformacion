@@ -14,8 +14,17 @@ return new class extends Migration
      *
      * @return void
      */
+
+    protected $tables = ['modules'];
     public function up()
     {
+
+        foreach ($this->tables as $t) {
+            \Illuminate\Support\Facades\Schema::table($t, function (\Illuminate\Database\Schema\Blueprint $table) {
+                $table->softDeletes();
+            });
+        }
+
         $app = Module::firstWhere('singular_label', 'Escuela');
 
         CategoryNomenclature::create(
