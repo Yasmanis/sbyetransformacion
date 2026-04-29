@@ -277,7 +277,7 @@ const visibleRows = computed(() => {
     const presentIds = new Set(props.documents.map((d) => d.id));
     const processItems = (parentId, level) => {
         let children = props.documents.filter(
-            (item) => item.parent_id === parentId
+            (item) => item.parent_id === parentId,
         );
 
         children.sort((a, b) => {
@@ -311,7 +311,7 @@ const visibleRows = computed(() => {
         });
     };
     const rootElements = props.documents.filter(
-        (item) => item.parent_id === null || !presentIds.has(item.parent_id)
+        (item) => item.parent_id === null || !presentIds.has(item.parent_id),
     );
     const rootParentIds = [...new Set(rootElements.map((el) => el.parent_id))];
 

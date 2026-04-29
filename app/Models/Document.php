@@ -41,29 +41,34 @@ class Document extends Model implements Sortable
 
     public function scopeAccessibleBy($query, $userId)
     {
-        $permissionSubquery = DB::table('documents as d_sub')
-            ->selectRaw("
-            CASE 
-                WHEN d_sub.user_id = ? THEN 'owner'
-                ELSE (
-                    WITH RECURSIVE path AS (
-                        SELECT id, parent_id FROM documents WHERE id = d_sub.id
-                        UNION ALL
-                        SELECT doc.id, doc.parent_id FROM documents doc 
-                        JOIN path ON doc.id = path.parent_id
-                    )
-                    SELECT du.access 
-                    FROM user_documents du
-                    WHERE du.document_id IN (SELECT id FROM path) 
-                      AND du.user_id = ?
-                    ORDER BY FIELD(du.access, 'edit', 'read') ASC
-                    LIMIT 1
-                )
-            END", [$userId, $userId])
-            ->whereColumn('d_sub.id', 'documents.id');
+        $permissionSubquery = DB::table('user_documents as du')
+            ->select('du.access')
+            ->join(DB::raw("(
+            WITH RECURSIVE path AS (
+                SELECT id, parent_id, id as original_id
+                FROM documents
+                UNION ALL
+                SELECT doc.id, doc.parent_id, path.original_id
+                FROM documents doc
+                JOIN path ON doc.id = path.parent_id
+            )
+            SELECT * FROM path
+        ) as tree"), 'du.document_id', '=', 'tree.id')
+            ->whereColumn('tree.original_id', 'documents.id')
+            ->where('du.user_id', $userId)
+            ->orderByRaw("FIELD(du.access, 'edit', 'read') ASC")
+            ->limit(1);
+
         $query->addSelect([
-            'permission' => $permissionSubquery
+            'permission' => function ($q) use ($userId, $permissionSubquery) {
+                $q->selectRaw("
+                CASE 
+                    WHEN documents.user_id = ? THEN 'owner'
+                    ELSE ({$permissionSubquery->toSql()})
+                END", [$userId, ...$permissionSubquery->getBindings()]);
+            }
         ]);
+
         return $query->havingRaw('permission IS NOT NULL');
     }
 
