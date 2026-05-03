@@ -73,7 +73,7 @@
                             @refresh-data="onRefreshData"
                             v-if="filterFields.length > 0"
                         />
-                        <slot name="delete">
+                        <slot name="delete-on-top">
                             <delete-component
                                 :objects="selected"
                                 :url="current_module.base_url"
@@ -215,7 +215,7 @@
                             v-if="updateFields.length > 0 && has_edit"
                         />
                     </slot>
-                    <slot name="delete"
+                    <slot name="delete-on-row" :props="props"
                         ><delete-component
                             :objects="[props.row]"
                             :url="current_module.base_url"
@@ -416,6 +416,8 @@ const properties = computed(() => {
     return page.props;
 });
 
+const emits = defineEmits(["change-selected"]);
+
 const rows = ref([]);
 
 const has_add = ref(false);
@@ -444,8 +446,12 @@ watch(
     {
         immediate: true,
         deep: true,
-    }
+    },
 );
+
+watch(selected, (n) => {
+    emits("change-selected", n);
+});
 
 onBeforeMount(() => {
     current_module.value = getActiveModule();
@@ -479,7 +485,7 @@ const onRequest = async (attrs) => {
         { page, rowsPerPage, search, filters, sortBy, sortDirection },
         {
             preserveState: true,
-        }
+        },
     );
 };
 </script>

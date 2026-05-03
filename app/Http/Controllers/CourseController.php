@@ -90,6 +90,7 @@ class CourseController extends Controller
             ]);
             $repository = new CourseRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
+            $data['base_url'] = '/admin/cursos/' . $data['model'];
             if ($data['ico_from_path']) {
                 unset($data['ico']);
             }
@@ -104,6 +105,7 @@ class CourseController extends Controller
                     File::delete($path);
                 }
                 $file->move($dest, $name);
+                $data['ico'] = 'images/icon/' . $name;
             }
             if ($request->hasFile('white_image')) {
                 $dest = public_path('images/icon');
@@ -120,9 +122,18 @@ class CourseController extends Controller
             }
             $object = $repository->getById($id);
             $old_categ = $object->plural_label;
+
+            $excludeds = ["Learning", "School", "Reality", "Reflection"];
+            if (in_array($data['model'], $excludeds)) {
+                unset($data['base_url']);
+            }
+
             $object->update($data);
-            $object->permissions()->delete();
-            $object->setPermissions(true);
+
+            if (!in_array($data['model'], $excludeds)) {
+                $object->permissions()->delete();
+                $object->setPermissions(true);
+            }
 
             $categ = CategoryNomenclature::where('key', 'panels')->where('value', $object->plural_label)->first();
             if (!$categ) {

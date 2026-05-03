@@ -12,7 +12,7 @@
                     <q-icon :name="getIcon(props.props.row)" size="sm" />
                 </template>
 
-                <!-- <template #add v-if="has_add">
+                <template #add v-if="has_add">
                     <btn-add-component
                         @click="
                             () => {
@@ -32,10 +32,6 @@
                             }
                         "
                     />
-                </template> -->
-
-                <template #delete="props" v-if="has_delete"
-                    ><span></span>
                 </template>
 
                 <template #item-section-ico="props">
@@ -107,7 +103,7 @@
                             :othersProps="{
                                 required: true,
                                 icon: 'mdi-file-image-outline',
-                                accept: 'image/*',
+                                accept: 'image/png',
                             }"
                             @update="onChangeField"
                         />
@@ -118,7 +114,7 @@
                             :othersProps="{
                                 required: true,
                                 icon: 'mdi-file-image-outline',
-                                accept: 'image/*',
+                                accept: 'image/png',
                             }"
                             @update="onChangeField"
                         />
@@ -129,20 +125,27 @@
                         :model-value="formData.ico_from_path"
                         @update="onChangeField"
                     />
-                    <text-field
-                        name="model"
-                        label="acceder a traves de"
-                        :model-value="formData.model"
-                        :othersProps="{
-                            required: true,
-                        }"
-                        @update="onChangeField"
-                    />
-                    <q-item-label
-                        >se usara la siguiente url para acceder al
-                        modulo</q-item-label
+                    <template
+                        v-if="
+                            !formData.model ||
+                            !excludeds.includes(formData.model)
+                        "
                     >
-                    <q-item-label caption>{{ getUrl }}</q-item-label>
+                        <text-field
+                            name="model"
+                            label="acceder a traves de"
+                            :model-value="formData.model"
+                            :othersProps="{
+                                required: true,
+                            }"
+                            @update="onChangeField"
+                        />
+                        <q-item-label
+                            >se usara la siguiente url para acceder al
+                            modulo</q-item-label
+                        >
+                        <q-item-label caption>{{ getUrl }}</q-item-label>
+                    </template>
                 </q-form>
             </q-card-section>
             <q-separator />
@@ -177,6 +180,7 @@ import FileField from "../../components/form/input/FileField.vue";
 import BtnSaveComponent from "../../components/btn/BtnSaveComponent.vue";
 import BtnSaveAndNewComponent from "../../components/btn/BtnSaveAndNewComponent.vue";
 import BtnCancelComponent from "../../components/btn/BtnCancelComponent.vue";
+import DeleteComponent from "../../components/table/actions/DeleteComponent.vue";
 import { errorValidation } from "../../helpers/notifications";
 
 defineOptions({
@@ -192,6 +196,8 @@ const has_delete = ref(false);
 const form = ref(null);
 
 const formData = ref({ ico_from_path: false });
+
+const excludeds = ["Learning", "School", "Reality", "Reflection"];
 
 const name = {
     field: "plural_label",
@@ -247,7 +253,7 @@ watch(
     () => formData.value.ico_from_path,
     () => {
         formData.value.ico = "help";
-    }
+    },
 );
 
 const setDefaultData = () => {
@@ -327,7 +333,7 @@ const update = async () => {
                 showDialog.value = false;
                 current_object.value = null;
             },
-        }
+        },
     );
 };
 </script>

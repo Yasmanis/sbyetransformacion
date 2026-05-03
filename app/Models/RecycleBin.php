@@ -39,7 +39,12 @@ class RecycleBin extends Model
     public function getModelAttribute()
     {
         $base_model = class_basename($this->recyclable_type);
-        $module = Module::firstWhere('model', $base_model);
+        $module = null;
+        if ($base_model === 'Module') {
+            $module = $this->recyclable()->withTrashed()->first();
+        } else {
+            $module = Module::firstWhere('singular_label', $base_model);
+        }
         if ($module) {
             return [
                 'type' => $module->singular_label,

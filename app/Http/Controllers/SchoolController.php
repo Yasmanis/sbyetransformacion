@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Module;
 use App\Repositories\SchoolSectionsRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -19,6 +20,11 @@ class SchoolController extends Controller
         $user = auth()->user();
         $segment = $this->segment();
         if ($user->hasView($segment) || $user->hasPerm('full_' . $segment)) {
+
+            $module = Module::where('model', $segment)->firstOrFail();
+            $excludeds = ["Learning", "School", "Reality", "Reflection"];
+            abort_if(in_array($module->model, $excludeds), 403, 'no se puede acceder a este modulo por esta via');
+
             $repository = new SchoolSectionsRepository();
             return Inertia::render($repository->component(), [
                 'sections' => $user->getSections($segment),
