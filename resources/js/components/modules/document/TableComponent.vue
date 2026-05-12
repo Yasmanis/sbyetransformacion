@@ -160,14 +160,14 @@
                         :disable="props.row.permission !== 'owner'"
                         @click="handleEdit(props.row)"
                     />
-                    <!-- <select-users
+                    <select-users
                         name="shareds"
                         icon="mdi-share-variant-outline"
                         :attach-to="props.row"
                         :disable="props.row.permission !== 'owner'"
                         :model-value="props.row.users"
                         @update="onSelectUsers"
-                    /> -->
+                    />
                     <btn-show-hide-component
                         :public="false"
                         :disable="props.row.is_folder"

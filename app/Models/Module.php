@@ -6,17 +6,27 @@ use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Override;
+use Spatie\EloquentSortable\Sortable;
+use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Permission\Models\Permission;
 
-class Module extends Model
+class Module extends Model implements Sortable
 {
-    use HasFactory, Recyclable;
+    use HasFactory, Recyclable, SortableTrait;
 
     protected $fillable = ['singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str', 'application_id', 'ico_from_path', 'parent_id', 'exclude_childs', 'order'];
 
     protected $casts = [
         'ico_from_path' => 'boolean',
         'exclude_childs' => 'boolean',
+    ];
+
+    protected $appends = ['has_childs'];
+
+    public $sortable = [
+        'order_column_name' => 'order',
+        'sort_when_creating' => true,
     ];
 
     public function app()
@@ -49,6 +59,11 @@ class Module extends Model
     protected function getRecycleBinTitle()
     {
         return $this->plural_label;
+    }
+
+    protected function getHasChildsAttribute()
+    {
+        return $this->childs()->count() > 0;
     }
 
     public function setPermissions($full = false)

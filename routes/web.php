@@ -24,6 +24,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\ModulesController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentMethodController;
@@ -427,6 +428,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     });
     Route::resource('/admin/documents', DocumentController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('/admin/courses', CourseController::class);
+
+    Route::resource('/admin/modules', ModulesController::class)->only(['index', 'update']);
 });
 
 Route::get('/categories', [SelectsController::class, 'categories']);
