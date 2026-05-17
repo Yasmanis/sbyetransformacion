@@ -112,6 +112,13 @@
                     @click="showDialog = true"
                     v-else
                 />
+                <q-btn-component
+                    icon="clear"
+                    color="red"
+                    tooltips="cancelar"
+                    @click="onCanceled"
+                    v-if="hasCancel"
+                />
             </q-item-section>
         </q-item>
     </q-list>
@@ -189,6 +196,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    hasCancel: {
+        type: Boolean,
+        default: false,
+    },
     showLabelWhenSelected: {
         type: Boolean,
         default: true,
@@ -198,7 +209,7 @@ const props = defineProps({
     selectedRole: String | Number,
 });
 
-const emits = defineEmits(["update"]);
+const emits = defineEmits(["update", "canceled"]);
 const page = usePage();
 const showDialog = ref(false);
 const rules = ref(null);
@@ -269,6 +280,11 @@ const onConfirm = () => {
     defaultSelected.value = [...currentSelected.value];
     onUpdate();
     showDialog.value = false;
+};
+
+const onCanceled = () => {
+    currentSelected.value = [];
+    emits("canceled");
 };
 
 const onUpdate = () => {

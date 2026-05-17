@@ -7,7 +7,30 @@
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
-            ></table-component>
+                :isRowDisabled="isDisabled"
+                @change-selected="onChangeSelected"
+            >
+                <template #edit="props">
+                    <btn-edit-component
+                        disable
+                        v-if="isDisabled(props.props.row)"
+                    />
+                </template>
+                <template #delete-on-row="props">
+                    <btn-delete-component
+                        disable
+                        v-if="isDisabled(props.props.row)"
+                    />
+                </template>
+                <template #body-selection="props">
+                    <q-checkbox
+                        v-model="props.props.selected"
+                        size="sm"
+                        disable
+                        v-if="isDisabled(props.props.row)"
+                    />
+                </template>
+            </table-component>
         </q-page>
     </Layout>
 </template>
@@ -15,6 +38,9 @@
 <script setup>
 import Layout from "../../layouts/AdminLayout.vue";
 import TableComponent from "../../components/table/TableComponent.vue";
+import BtnEditComponent from "../../components/btn/BtnEditComponent.vue";
+import BtnDeleteComponent from "../../components/btn/BtnDeleteComponent.vue";
+import { ref } from "vue";
 
 defineOptions({
     name: "ListPage",
@@ -59,4 +85,16 @@ const columns = [
 ];
 
 const fields = [name, permissions];
+
+const currentSelected = ref([]);
+
+const isDisabled = (row) => {
+    return ["usuario", "gestor", "facilitador"].includes(
+        row.name.toLowerCase(),
+    );
+};
+
+const onChangeSelected = (selected = []) => {
+    currentSelected.value = selected.filter((s) => !isDisabled(s));
+};
 </script>

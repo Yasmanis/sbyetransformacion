@@ -39,6 +39,7 @@
                                 url_to_options: '/roles',
                             }"
                             @update="onUpdateRole"
+                            @loaded-options="onLoadedRols"
                         />
                     </q-item-section>
                 </q-item>
@@ -63,7 +64,7 @@
                     :options="paginatedLists"
                     :type="multiple ? 'checkbox' : 'radio'"
                     left-label
-                    class="custom-option-group"
+                    class="custom-option-group q-py-sm"
                     @update:model-value="onChangeSelected"
                     v-if="lists?.length > 0"
                 >
@@ -107,7 +108,9 @@
                             />
                         </div> </template
                 ></q-option-group>
-                <p v-else>no existen usuarios</p>
+                <p v-else-if="lists.length === 0 && !loading">
+                    no existen usuarios
+                </p>
             </q-list>
         </q-card-section>
         <q-card-section style="padding: 0" v-if="lists?.length > 0">
@@ -131,6 +134,7 @@ import SelectField from "../../form/input/SelectField.vue";
 import UsersSelectedComponent from "./UsersSelectedComponent.vue";
 import axios from "axios";
 import { error500 } from "../../../helpers/notifications";
+import { debounce } from "quasar";
 
 defineOptions({
     name: "UsersSelectComponent",
@@ -161,12 +165,15 @@ onMounted(() => {
     } else {
         model.value = props.multiple ? [] : null;
     }
-    getList();
 });
 
 watch(search, () => {
-    getList();
+    debouncedGetList();
 });
+
+const debouncedGetList = debounce(() => {
+    getList();
+}, 400);
 
 const selected = computed(() => {
     if (props.multiple) {
@@ -208,7 +215,6 @@ const getList = () => {
     let data = {
         regex: search.value,
         role: role.value,
-        roleStr: props.selectedRole,
     };
     loading.value = true;
     axios
@@ -241,6 +247,14 @@ const onRemoveItemSelected = (usr) => {
         model.value = null;
     }
     onChangeSelected(model.value);
+};
+
+const onLoadedRols = (opts) => {
+    if (props.selectedRole) {
+        role.value =
+            opts.find((o) => o.label === props.selectedRole)?.value ?? null;
+    }
+    getList();
 };
 </script>
 <style lang="scss">

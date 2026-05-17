@@ -128,7 +128,9 @@
             </template>
 
             <template v-slot:body-selection="scope">
-                <q-checkbox v-model="scope.selected" size="sm" />
+                <slot name="body-selection" :props="scope"
+                    ><q-checkbox v-model="scope.selected" size="sm"
+                /></slot>
             </template>
             <template #header-cell="props">
                 <q-th
@@ -389,6 +391,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    isRowDisabled: {
+        type: Function,
+        default: () => false,
+    },
 });
 
 const $q = useQuasar();
@@ -450,7 +456,11 @@ watch(
 );
 
 watch(selected, (n) => {
-    emits("change-selected", n);
+    const filters = n.filter((row) => !props.isRowDisabled(row));
+    if (filters.length !== n.length) {
+        selected.value = filters;
+    }
+    emits("change-selected", filters);
 });
 
 onBeforeMount(() => {

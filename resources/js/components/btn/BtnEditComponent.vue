@@ -1,5 +1,6 @@
 <template>
     <q-btn-component
+        :disable="disable"
         :tooltips="tooltips"
         :icon="`img:${$page.props.public_path}images/icon/${
             Dark.isActive || color === 'white' ? 'white' : 'black'
@@ -22,6 +23,7 @@ const props = defineProps({
         default: "editar",
     },
     color: String,
+    disable: Boolean,
 });
 
 const emits = defineEmits(["click"]);

@@ -11,6 +11,9 @@
                             <documents-component />
                         </q-item-section>
                         <q-item-section avatar>
+                            <dialog-tikets-component />
+                        </q-item-section>
+                        <q-item-section avatar>
                             <book-info-component
                                 color="white"
                                 :object="user"
@@ -82,8 +85,10 @@ import ChangePasswordComponent from "../../components/modules/user/ChangePasswor
 import UserCardComponent from "../../components/modules/user/UserCardComponent.vue";
 import BtnReplyComponent from "../../components/btn/BtnReplyComponent.vue";
 import BtnMsgComponent from "../../components/btn/BtnMsgComponent.vue";
+import QBtnComponent from "../../components/base/QBtnComponent.vue";
 import FormAvatar from "../../components/auth/FormAvatar.vue";
 import DocumentsComponent from "../../components/modules/user/DocumentsComponent.vue";
+import DialogTiketsComponent from "../../components/modules/user/DialogTiketsComponent.vue";
 import { computed, onMounted, ref } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { modules } from "../../services/current_module";

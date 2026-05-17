@@ -59,6 +59,7 @@
                             icon-size="sm"
                             selected-role="facilitador"
                             :multiple="false"
+                            :required="false"
                             :show-label-when-selected="false"
                             :model-value="formData.facilitator_id"
                             @update="onUpdateField"
@@ -84,9 +85,6 @@
                                     value: 'F',
                                 },
                             ]"
-                            :others-props="{
-                                required: true,
-                            }"
                             @update="onUpdateField"
                         />
                     </div>
@@ -98,9 +96,6 @@
                             name="birthdate"
                             :model-value="formData.birthdate"
                             end-now
-                            :others-props="{
-                                required: true,
-                            }"
                             @update="onUpdateField"
                         />
                     </div>
@@ -136,7 +131,6 @@
                             name="country_id"
                             :model-value="formData.country_id"
                             :others-props="{
-                                required: true,
                                 url_to_options: '/countries',
                             }"
                             @loaded-options="onLoadedOptions"
@@ -172,9 +166,6 @@
                             label="provincia"
                             name="province"
                             :model-value="formData.province"
-                            :others-props="{
-                                required: true,
-                            }"
                             @update="onUpdateField"
                         />
                     </div>
@@ -244,9 +235,6 @@
                             name="nif_cif"
                             :model-value="formData.nif_cif"
                             label="nif/cif"
-                            :othersProps="{
-                                required: true,
-                            }"
                             @update="onUpdateField"
                         />
                     </div>
@@ -259,8 +247,9 @@
                             :icon="`img:${$page.props.public_path}images/icon/${
                                 Dark.isActive ? 'white' : 'black'
                             }-manager.png`"
-                            selected-role="facilitador"
+                            selected-role="gestor"
                             :multiple="false"
+                            :required="false"
                             :show-label-when-selected="false"
                             :model-value="formData.manager_id"
                             @update="onUpdateField"

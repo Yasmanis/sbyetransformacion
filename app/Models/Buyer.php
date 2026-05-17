@@ -52,7 +52,7 @@ class Buyer extends Model
 
     public function getCountryStrAttribute()
     {
-        return $this->country()->first()->name;
+        return $this->country()->first()?->name ?? null;
     }
 
     public function getBirthdateStrAttribute()
@@ -62,6 +62,6 @@ class Buyer extends Model
 
     public function getAgeAttribute()
     {
-        return Carbon::parse($this->birth_date)->age;
+        return $this->birth_date ? Carbon::parse($this->birth_date)->age : null;
     }
 }

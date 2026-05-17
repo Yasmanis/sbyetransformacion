@@ -8,6 +8,7 @@
         :columns="columns"
         :pagination="{ rowsPerPage: 0 }"
         :loading="loading"
+        wrap-cells
         binary-state-sort
     >
         <template v-slot:top>
@@ -131,12 +132,15 @@
                             "
                             class="q-mr-sm"
                         />
-                        <span
-                            class="cursor-pointer"
-                            v-if="props.row.is_folder"
-                            >{{ props.row.name }}</span
-                        >
-                        <span v-else>{{ props.row.name }}</span>
+                        <div class="ellipsis" style="max-width: 250px">
+                            <span
+                                :class="{
+                                    'cursor-pointer': props.row.is_folder,
+                                }"
+                                >{{ props.row.name }}</span
+                            >
+                            <q-tooltip-component :title="props.row.name" />
+                        </div>
                     </div>
                 </q-td>
 
@@ -214,6 +218,7 @@ import BtnEditComponent from "../../btn/BtnEditComponent.vue";
 import BtnDownloadComponent from "../../btn/BtnDownloadComponent.vue";
 import BtnShowHideComponent from "../../btn/BtnShowHideComponent.vue";
 import DeleteComponent from "../../table/actions/DeleteComponent.vue";
+import QTooltipComponent from "../../base/QTooltipComponent.vue";
 import { router, useForm } from "@inertiajs/vue3";
 import SelectUsers from "../../form/input/SelectUsers.vue";
 
@@ -242,6 +247,7 @@ const columns = [
         name: "name",
         label: "nombre",
         align: "left",
+        width: "250px",
     },
     {
         name: "size",

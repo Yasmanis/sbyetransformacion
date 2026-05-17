@@ -209,7 +209,7 @@ onMounted(() => {
 });
 
 const rows = computed(() => {
-    return page.props.tikets;
+    return page.props.tikets ?? [];
 });
 
 const filteredById = () => {
