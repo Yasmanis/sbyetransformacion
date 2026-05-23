@@ -88,10 +88,7 @@ const props = defineProps({
         default: [],
     },
     object: Object,
-    model: {
-        type: String,
-        required: true,
-    },
+    model: String,
     disable: Boolean,
     color: String,
 });

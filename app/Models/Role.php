@@ -17,7 +17,7 @@ class Role extends SpatieRole
     {
         parent::boot();
         static::creating(function ($obj) {
-            $obj->guard_name = $attributes['guard_name'] ?? config('auth.defaults.guard');
+            $obj->guard_name = $obj->guard_name ?? config('auth.defaults.guard');
         });
     }
 

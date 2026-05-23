@@ -22,11 +22,6 @@
             </q-card-section>
             <q-separator />
             <q-card-actions align="right">
-                <lock-unlock-component
-                    :object="object"
-                    @success="showDialog = false"
-                    v-if="has_edit"
-                ></lock-unlock-component>
                 <btn-cancel-component @click="showDialog = false" />
             </q-card-actions>
         </q-card>
@@ -37,7 +32,6 @@
 import { ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
-import LockUnlockComponent from "./LockUnlockComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import TableComponent from "../document/TableComponent.vue";
 

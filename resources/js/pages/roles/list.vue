@@ -8,14 +8,9 @@
                 :updateFields="fields"
                 :has_delete="false"
                 :isRowDisabled="isDisabled"
+                :is-field-disabled="checkFieldDisabled"
                 @change-selected="onChangeSelected"
             >
-                <template #edit="props">
-                    <btn-edit-component
-                        disable
-                        v-if="isDisabled(props.props.row)"
-                    />
-                </template>
                 <template #delete-on-row="props">
                     <btn-delete-component
                         disable
@@ -89,9 +84,13 @@ const fields = [name, permissions];
 const currentSelected = ref([]);
 
 const isDisabled = (row) => {
-    return ["usuario", "gestor", "facilitador"].includes(
-        row.name.toLowerCase(),
+    return ["usuario", "gestor", "facilitador", "administrador"].includes(
+        row?.name?.toLowerCase(),
     );
+};
+
+const checkFieldDisabled = (item, fieldName) => {
+    return isDisabled(item) && fieldName === "name";
 };
 
 const onChangeSelected = (selected = []) => {

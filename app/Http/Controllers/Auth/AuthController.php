@@ -116,16 +116,13 @@ class AuthController extends Controller
             'email' => ['required', Rule::unique('users', 'email')->ignore($id)],
         ]);
         $repository = new UserRepository();
-        $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+        $user = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+
         $repository = new BuyerRepository();
-        $buyer = $repository->getByColumn($id, 'user_id');
-        if ($buyer) {
-            $repository->updateById($buyer->id, $request->only((new ($repository->model()))->getFillable()));
-        } else {
-            $data = $request->only((new ($repository->model()))->getFillable());
-            $data['user_id'] = $id;
-            $repository->create($data);
-        }
+        $data = $request->only((new ($repository->model()))->getFillable());
+        $data['user_id'] = $id;
+        $repository->updateById($user->buyer->id, $request->only((new ($repository->model()))->getFillable()));
+
         return redirect()->back()->with('success', 'su información ha sido actualizada correctamente');
     }
 
@@ -228,11 +225,12 @@ class AuthController extends Controller
         $data['password'] = $request->password;
         $data['active'] = false;
         $user = $repository->create($data);
+
         $repository = new BuyerRepository();
         $data = $request->only((new ($repository->model()))->getFillable());
         $data['user_id'] = $user->id;
         $data['birthdate'] = Carbon::createFromFormat('d/m/Y', $data['birthdate']);
-        $buyer = $repository->create($data);
+        $buyer = $repository->updateById($user->buyer->id, $data);
 
         $notification = new UserNotifications();
         $notification->title = 'registro de nuevo comprador';

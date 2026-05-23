@@ -10,7 +10,7 @@ class PushMessageRepository extends BaseRepository
     {
         $this->makeModel();
         $segment = last(request()->segments());
-        if (($segment && $segment === 'briefideas') || !auth()->user()->sa) {
+        if (($segment && $segment === 'briefideas') || !auth()->user()->isAnAdmin()) {
             $this->scopes = [array(
                 'method' => 'active',
                 'args' => null

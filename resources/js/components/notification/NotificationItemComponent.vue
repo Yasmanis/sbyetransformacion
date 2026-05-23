@@ -56,6 +56,7 @@
 import BtnShowHideComponent from "../btn/BtnShowHideComponent.vue";
 import FormReplyComponent from "../auth/FormReplyComponent.vue";
 import { router } from "@inertiajs/vue3";
+import { info } from "../../helpers/notifications";
 
 defineOptions({
     name: "NotificationItemComponent",
@@ -72,7 +73,13 @@ const showNotification = (n) => {
     let code = n.data[0].code,
         attributes = getAttributes(n);
     if (code === "chat_writter") {
-        location.href = `/admin/${n.chat}`;
+        if (n.chat) {
+            location.href = `/admin/${n.chat}`;
+        } else {
+            info(
+                "el chat al que hace referencia esta notificacion no puede verse dado que ya fue eliminado",
+            );
+        }
     } else {
         router.visit(`/auth/profile#${attributes}`);
     }

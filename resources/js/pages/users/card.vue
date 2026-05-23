@@ -31,7 +31,8 @@
                         >
                             <lock-unlock-component
                                 color="white"
-                                :object="user"
+                                :objects="[user]"
+                                :status="!user.active"
                             />
                         </q-item-section>
                         <q-item-section avatar v-if="has_edit">

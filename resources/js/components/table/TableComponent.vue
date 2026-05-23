@@ -213,10 +213,12 @@
                             :fields="updateFields"
                             :module="current_module"
                             :post-on-update="postOnUpdate"
+                            :is-field-disabled="isFieldDisabled"
                             size="sm"
                             v-if="updateFields.length > 0 && has_edit"
                         />
                     </slot>
+                    <slot name="new-actions-on-row" :props="props"></slot>
                     <slot name="delete-on-row" :props="props"
                         ><delete-component
                             :objects="[props.row]"
@@ -324,6 +326,10 @@
                                                             0 && has_edit
                                                     "
                                             /></slot>
+                                            <slot
+                                                name="new-actions-on-row"
+                                                :props="props"
+                                            ></slot>
                                             <slot name="delete"
                                                 ><delete-component
                                                     :objects="[props.row]"
@@ -392,6 +398,10 @@ const props = defineProps({
         default: true,
     },
     isRowDisabled: {
+        type: Function,
+        default: () => false,
+    },
+    isFieldDisabled: {
         type: Function,
         default: () => false,
     },

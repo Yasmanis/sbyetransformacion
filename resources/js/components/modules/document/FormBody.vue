@@ -48,6 +48,20 @@
                     @change-files="onChangeFiles"
                     v-else
                 />
+                <br />
+                <editor-field
+                    name="description"
+                    label="descripcion"
+                    :modelValue="formData['description']"
+                    @update="onUpdateField"
+                />
+                <br />
+                <editor-field
+                    name="observation"
+                    label="observaciones"
+                    :modelValue="formData['observation']"
+                    @update="onUpdateField"
+                />
             </div>
         </q-form>
     </q-card-section>
@@ -69,12 +83,14 @@ import SelectField from "../../form/input/SelectField.vue";
 import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import UploaderField from "../../form/input/UploaderField.vue";
+import EditorField from "../../form/input/EditorField.vue";
 import { router, useForm } from "@inertiajs/vue3";
 import {
     error,
     errorValidation,
     success,
 } from "../../../helpers/notifications";
+import { Loading } from "quasar";
 
 const props = defineProps({
     parent: Object,
@@ -96,6 +112,14 @@ const formFields = ref([
     {
         name: "user_id",
         value: props.user.id,
+    },
+    {
+        name: "observation",
+        value: formData.value.observation,
+    },
+    {
+        name: "description",
+        value: formData.value.description,
     },
 ]);
 
@@ -120,6 +144,8 @@ const setDefaultData = () => {
         : null;
     formData.value["user_id"] = props.user.id;
     formData.value["parent_id"] = props.parent?.id ?? null;
+    formData.value["observation"] = object?.observation ?? null;
+    formData.value["description"] = object?.description ?? null;
 };
 
 const onUpdateField = (name, val) => {
@@ -161,13 +187,25 @@ const store = async () => {
             },
         });
     } else {
+        let f = formFields.value.find((f) => f.name === "description");
+        if (f) {
+            f.value = formData.value.description;
+        }
+        f = formFields.value.find((f) => f.name === "observation");
+        if (f) {
+            f.value = formData.value.observation;
+        }
         upload.value = true;
+        Loading.show();
     }
 };
 
 const update = async () => {
+    let { name, description, observation } = formData.value;
     const send = useForm({
-        name: formData.value.name,
+        name,
+        description,
+        observation,
     });
     send.put(`/admin/documents/${props.object.id}`, {
         onSuccess: () => {
@@ -178,7 +216,9 @@ const update = async () => {
 
 const onUploaded = () => {
     router.reload();
+    Loading.hide();
     success("fichero(s) adicionado(s) correctamente");
+    emits("created");
 };
 
 const onChangeFiles = (f) => {

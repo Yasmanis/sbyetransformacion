@@ -8,6 +8,8 @@
         :columns="columns"
         :pagination="{ rowsPerPage: 0 }"
         :loading="loading"
+        selection="multiple"
+        v-model:selected="selected"
         wrap-cells
         binary-state-sort
     >
@@ -23,10 +25,11 @@
                     </div>
                 </section>
                 <q-input
-                    v-model="filterText"
+                    v-model="filters.name"
                     dense
                     placeholder="buscar archivos..."
                     class="col"
+                    clearable
                     style="max-width: 300px"
                 >
                     <template v-slot:append>
@@ -35,6 +38,18 @@
                 </q-input>
                 <q-space />
                 <btn-add-component @click="handleAdd(null)" />
+                <highlighted-component
+                    :column="currentColumn"
+                    :show="showHighlight"
+                    size="11px"
+                    @hide="showHighlight = false"
+                    @active="(a) => (highlightedActive = a)"
+                />
+                <form-note-component
+                    :notables="selected"
+                    model="Document"
+                    @created="selected = []"
+                />
                 <btn-reload-component @click="router.reload()" />
                 <q-btn-component
                     icon="mdi-expand-all-outline"
@@ -45,11 +60,24 @@
                     icon="mdi-collapse-all-outline"
                     tooltips="contraer todo"
                     @click="collapseAll"
+                /><filter-component
+                    :fields="filterFields"
+                    @refresh-data="(name, val) => (filters.others = val)"
+                    v-if="filterFields.length > 0"
                 />
             </q-toolbar>
         </template>
+        <template v-slot:header-selection="scope">
+            <q-checkbox v-model="scope.selected" size="sm" />
+        </template>
+        <template v-slot:body-selection="scope">
+            <q-checkbox v-model="scope.selected" size="sm" />
+        </template>
         <template v-slot:header="props">
             <q-tr :props="props">
+                <q-th auto-width>
+                    <q-checkbox v-model="props.selected" size="sm" />
+                </q-th>
                 <q-th
                     v-for="col in props.cols"
                     :key="col.name"
@@ -94,15 +122,32 @@
                         dropPosition === 'after',
                 }"
             >
+                <q-td auto-width>
+                    <q-checkbox v-model="props.selected" size="sm" />
+                </q-td>
+                <q-td key="row_note" :props="props">
+                    <menu-note-component
+                        :object="props.row.row_note"
+                        v-if="props.row.row_note"
+                    />
+                </q-td>
                 <q-td
                     key="name"
                     :props="props"
-                    @click.stop="toggleExpand(props.row)"
+                    :style="{
+                        'background-color': getCellColor(
+                            props.row,
+                            'name',
+                            'bColor',
+                        ),
+                        color: getCellColor(props.row, 'name', 'tColor'),
+                    }"
+                    @click.stop="onCellClick(props.row, 'name')"
                 >
                     <div
                         class="row items-center no-wrap"
                         :style="{
-                            paddingLeft: !filterText
+                            paddingLeft: !filters.name
                                 ? props.row.level * 20 + 'px'
                                 : null,
                         }"
@@ -144,14 +189,43 @@
                     </div>
                 </q-td>
 
-                <q-td key="size" :props="props">{{
-                    props.row.size
-                        ? format.humanStorageSize(props.row.size, 2)
-                        : "--"
-                }}</q-td>
-                <q-td key="updated_at" :props="props">{{
-                    date.formatDate(props.row.updated_at, "DD/MM/YYYY hh:mm A")
-                }}</q-td>
+                <q-td
+                    key="size"
+                    :props="props"
+                    :style="{
+                        'background-color': getCellColor(
+                            props.row,
+                            'size',
+                            'bColor',
+                        ),
+                        color: getCellColor(props.row, 'size', 'tColor'),
+                    }"
+                    @click.stop="onCellClick(props.row, 'size')"
+                    >{{
+                        props.row.size
+                            ? format.humanStorageSize(props.row.size, 2)
+                            : "--"
+                    }}</q-td
+                >
+                <q-td
+                    key="updated_at"
+                    :props="props"
+                    :style="{
+                        'background-color': getCellColor(
+                            props.row,
+                            'updated_at',
+                            'bColor',
+                        ),
+                        color: getCellColor(props.row, 'updated_at', 'tColor'),
+                    }"
+                    @click.stop="onCellClick(props.row, 'updated_at')"
+                    >{{
+                        date.formatDate(
+                            props.row.updated_at,
+                            "DD/MM/YYYY hh:mm A",
+                        )
+                    }}</q-td
+                >
                 <q-td key="actions" :props="props">
                     <btn-add-component
                         :disable="
@@ -221,6 +295,10 @@ import DeleteComponent from "../../table/actions/DeleteComponent.vue";
 import QTooltipComponent from "../../base/QTooltipComponent.vue";
 import { router, useForm } from "@inertiajs/vue3";
 import SelectUsers from "../../form/input/SelectUsers.vue";
+import FilterComponent from "../../table/actions/FilterComponent.vue";
+import FormNoteComponent from "../notes/FormNoteComponent.vue";
+import HighlightedComponent from "../../table/actions/HighlightedComponent.vue";
+import MenuNoteComponent from "../notes/MenuNoteComponent.vue";
 
 const props = defineProps({
     user: Object,
@@ -231,8 +309,9 @@ const props = defineProps({
     },
 });
 
+const { isBetweenDates, startOfDate, endOfDate, extractDate } = date;
+
 const $q = useQuasar();
-const filterText = ref("");
 const expandedIds = ref([]);
 const isDraggingOver = ref(null);
 const sortBy = ref("name");
@@ -243,6 +322,10 @@ const currentObject = ref(null);
 const showDialog = ref(false);
 
 const columns = [
+    {
+        name: "row_note",
+        label: "",
+    },
     {
         name: "name",
         label: "nombre",
@@ -266,6 +349,65 @@ const columns = [
     },
 ];
 
+const selected = ref([]);
+
+const filterFields = [
+    {
+        field: "created_at",
+        name: "created_at",
+        label: "fecha",
+        type: "date",
+    },
+    {
+        field: "size",
+        name: "size",
+        label: "tamaño",
+        type: "range_size",
+    },
+];
+
+const filters = ref({
+    name: null,
+    others: null,
+});
+
+const currentColumn = ref(null);
+const showHighlight = ref(false);
+const highlightedActive = ref(false);
+
+const onCellClick = (row, col) => {
+    if (highlightedActive.value) {
+        let highlighted = getHighlighted(row, col),
+            val = row[col];
+        currentColumn.value = {
+            modelName: "Document",
+            modelId: row.id,
+            columnValue: val,
+            columnName: col,
+            highlighted,
+        };
+        showHighlight.value = true;
+    } else {
+        toggleExpand(row);
+    }
+};
+
+const getHighlighted = (row, col) => {
+    let highlighteds = row.row_config?.highlighteds_columns ?? null;
+    if (highlighteds && highlighteds[col]) {
+        return highlighteds[col];
+    }
+    return null;
+};
+
+const getCellColor = (row, col, type) => {
+    let highlighted = getHighlighted(row, col);
+    if (highlighted) {
+        return highlighted[type];
+    }
+    return null;
+};
+
 const handleSort = (colName) => {
     if (sortBy.value !== colName) {
         sortBy.value = colName;
@@ -279,50 +421,131 @@ const handleSort = (colName) => {
 };
 
 const visibleRows = computed(() => {
-    const result = [];
-    const presentIds = new Set(props.documents.map((d) => d.id));
-    const processItems = (parentId, level) => {
-        let children = props.documents.filter(
-            (item) => item.parent_id === parentId,
-        );
+    if (!props.documents || props.documents.length === 0) return [];
 
-        children.sort((a, b) => {
-            if (a.is_folder !== b.is_folder) {
-                return b.is_folder - a.is_folder;
+    const result = [];
+    const { name, others } = filters.value;
+    console.log(others);
+
+    const filterActive = !!(name || others);
+    let qStart = null,
+        qEnd = null,
+        queryText = name?.toLowerCase() ?? "",
+        format = "YYYY-MM-DD",
+        sizeStart = null,
+        sizeEnd = null;
+
+    if (others) {
+        const createdAt = others.find((o) => o.name === "created_at");
+        qStart = createdAt
+            ? startOfDate(extractDate(createdAt.value[0], format), "day")
+            : null;
+        qEnd = createdAt
+            ? endOfDate(extractDate(createdAt.value[1], format), "day")
+            : null;
+        const size = others.find((o) => o.name === "size");
+
+        sizeStart = size ? size.value.min * size.value.unitValue : null;
+        sizeEnd = size ? size.value.max * size.value.unitValue : null;
+    }
+
+    console.log(sizeStart, sizeEnd);
+
+    const childrenMap = new Map();
+    const presentIds = new Set();
+
+    props.documents.forEach((doc) => {
+        presentIds.add(doc.id);
+        const pId = doc.parent_id;
+        if (!childrenMap.has(pId)) {
+            childrenMap.set(pId, []);
+        }
+        childrenMap.get(pId).push(doc);
+    });
+
+    const matches = (item) => {
+        if (queryText && !item.name.toLowerCase().includes(queryText)) {
+            return false;
+        }
+
+        if (qStart || qEnd) {
+            if (!item.created_at) return false;
+
+            const itemDate = extractDate(item.created_at, format);
+
+            if (qStart && qEnd) {
+                if (
+                    !isBetweenDates(itemDate, qStart, qEnd, {
+                        inclusiveFrom: true,
+                        inclusiveTo: true,
+                    })
+                ) {
+                    return false;
+                }
+            } else if (qStart && itemDate < qStart) {
+                return false;
+            } else if (qEnd && itemDate > qEnd) {
+                return false;
             }
-            if (!sortBy.value) {
-                return (a.sort_order || 0) - (b.sort_order || 0);
-            } else {
-                const field = sortBy.value;
-                const factor = sortOrder.value === "asc" ? 1 : -1;
-                if (a[field] < b[field]) return -1 * factor;
-                if (a[field] > b[field]) return 1 * factor;
-                return 0;
+        }
+
+        if (sizeStart || sizeEnd) {
+            if (!item.size) return false;
+            if (sizeStart && sizeEnd) {
+                return item.size >= sizeStart && item.size <= sizeEnd;
+            } else if (sizeStart && item.size >= sizeStart) {
+                return false;
+            } else if (sizeEnd && item.size <= sizeEnd) {
+                return false;
             }
+        }
+
+        return true;
+    };
+
+    const sortAndProcess = (parentId, level) => {
+        const children = childrenMap.get(parentId) || [];
+        if (children.length === 0) return;
+
+        const sortedChildren = [...children].sort((a, b) => {
+            if (a.is_folder !== b.is_folder) return b.is_folder - a.is_folder;
+            if (!sortBy.value) return (a.sort_order || 0) - (b.sort_order || 0);
+            const field = sortBy.value;
+            const factor = sortOrder.value === "asc" ? 1 : -1;
+            if (a[field] < b[field]) return -1 * factor;
+            if (a[field] > b[field]) return 1 * factor;
+            return 0;
         });
 
-        children.forEach((child) => {
-            const matchesFilter = child.name
-                .toLowerCase()
-                .includes(filterText.value.toLowerCase());
+        sortedChildren.forEach((child) => {
             const isExpanded = expandedIds.value.includes(child.id);
-
-            if (!filterText.value || matchesFilter) {
+            const filtersMatches = matches(child);
+            if (filterActive) {
+                if (filtersMatches) {
+                    result.push({ ...child, level, expanded: isExpanded });
+                }
+            } else {
                 result.push({ ...child, level, expanded: isExpanded });
             }
-
-            if (child.is_folder && (isExpanded || filterText.value)) {
-                processItems(child.id, level + 1);
+            if (child.is_folder && (filterActive || isExpanded)) {
+                sortAndProcess(child.id, level + 1);
             }
         });
     };
-    const rootElements = props.documents.filter(
-        (item) => item.parent_id === null || !presentIds.has(item.parent_id),
-    );
-    const rootParentIds = [...new Set(rootElements.map((el) => el.parent_id))];
+
+    const rootParentIds = new Set();
+    props.documents.forEach((item) => {
+        if (
+            item.parent_id === null ||
+            item.parent_id === undefined ||
+            !presentIds.has(item.parent_id)
+        ) {
+            rootParentIds.add(item.parent_id);
+        }
+    });
 
     rootParentIds.forEach((pId) => {
-        processItems(pId, 0);
+        sortAndProcess(pId, 0);
     });
 
     return result;
@@ -429,11 +652,15 @@ const onDrop = (event, targetRow) => {
 };
 
 const toggleExpand = (row) => {
-    if (row.is_folder) {
-        const idx = expandedIds.value.indexOf(row.id);
-        idx > -1
-            ? expandedIds.value.splice(idx, 1)
-            : expandedIds.value.push(row.id);
+    if (showHighlight.value) {
+        onCellClick(row);
+    } else {
+        if (row.is_folder) {
+            const idx = expandedIds.value.indexOf(row.id);
+            idx > -1
+                ? expandedIds.value.splice(idx, 1)
+                : expandedIds.value.push(row.id);
+        }
     }
 };
 

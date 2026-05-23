@@ -3,13 +3,16 @@
 namespace App\Models;
 
 use App\Notifications\StandardNotification;
-use App\Services\BrevoService;
+use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Notification;
 
 class SchoolChat extends Model
 {
+    use Recyclable;
+
+    protected $fillable = ['message'];
+
     protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user', 'topic_str', 'section_str', 'created_str', 'section_id', 'segment'];
 
     protected $table = 'schoolchat';
@@ -20,22 +23,22 @@ class SchoolChat extends Model
 
     public function getFromNameAttribute()
     {
-        return $this->from->full_name;
+        return $this->from?->full_name ?? null;
     }
 
     public function getReplyToMsgAttribute()
     {
-        return $this->replyTo ? $this->replyTo->message : null;
+        return $this->replyTo ? $this->replyTo?->message : null;
     }
 
     public function getReplyToUserAttribute()
     {
-        return $this->replyTo ? $this->replyTo->from->full_name : null;
+        return $this->replyTo ? $this->replyTo?->from?->full_name : null;
     }
 
     public function getOwnerAttribute()
     {
-        return auth()->user()->id == $this->from->id;
+        return auth()->user()->id == $this->from?->id;
     }
 
     public function getTopicStrAttribute()
@@ -66,7 +69,7 @@ class SchoolChat extends Model
 
     public function getOwnerReplyAttribute()
     {
-        return $this->replyTo ? auth()->user()->id == $this->replyTo->from->id : false;
+        return $this->replyTo ? auth()->user()->id == $this->replyTo?->from?->id : false;
     }
 
     public function getOwnerVisibleAttribute()
@@ -128,6 +131,7 @@ class SchoolChat extends Model
     {
         return $this->belongsTo(User::class, 'from_id');
     }
+
     public function replyTo()
     {
         return $this->belongsTo(SchoolChat::class, 'reply_to');

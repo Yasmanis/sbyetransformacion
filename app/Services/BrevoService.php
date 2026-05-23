@@ -16,7 +16,7 @@ class BrevoService
 
     public function sendEmail($subject, $view, $params, $to = null)
     {
-
+        // $to = null;
         // if ($to === null) {
         //     $to = [
         //         'email' => 'yfdezmerino91@gmail.com',

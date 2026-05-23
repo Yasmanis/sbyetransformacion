@@ -22,7 +22,7 @@
 
                 <q-btn-component
                     icon="reply_all"
-                    tooltips="volver a"
+                    tooltips="volver a la web"
                     color="white"
                     class="q-mr-sm"
                 >
@@ -46,7 +46,11 @@
 
                 <notifications-list-component />
 
-                <q-btn-component color="white" class="q-mr-sm">
+                <q-btn-component
+                    color="white"
+                    class="q-mr-sm"
+                    tooltips="gestion de tu perfil"
+                >
                     <q-avatar size="md" class="shadow-4"
                         ><img
                             :src="`${$page.props.public_path}${
@@ -275,6 +279,7 @@ import PasswordField from "../components/form/input/PasswordField.vue";
 import BtnSaveComponent from "../components/btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../components/btn/BtnCancelComponent.vue";
 import PrivateAreaMsgComponent from "../components/modules/pushmessage/PrivateAreaMsgComponent.vue";
+import QTooltipComponent from "../components/base/QTooltipComponent.vue";
 import { Dark } from "quasar";
 import { usePage, useForm, router } from "@inertiajs/vue3";
 import { errorValidation } from "../helpers/notifications";

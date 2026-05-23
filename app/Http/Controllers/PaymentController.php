@@ -95,7 +95,7 @@ class PaymentController extends Controller
 
                 $user = auth()->user();
 
-                if (!$user->sa) {
+                if (!$user->isAnAdmin()) {
                     foreach ($permissionsToGrant as $p) {
                         try {
                             $user->permissions()->attach($p);

@@ -27,6 +27,11 @@ class User extends Authenticatable implements CanResetPassword
         static::creating(function ($obj) {
             $obj->password = Hash::make($obj->password);
         });
+        static::created(function ($obj) {
+            Buyer::create([
+                'user_id' => $obj->id
+            ]);
+        });
     }
 
     /**
@@ -69,7 +74,7 @@ class User extends Authenticatable implements CanResetPassword
         'subscripted' => 'boolean',
     ];
 
-    protected $appends = ['permissions', 'roles', 'roles_str', 'full_name', 'notifications', 'has_testimony', 'antique', 'note', 'facilitator', 'row_config'];
+    protected $appends = ['permissions', 'roles', 'roles_str', 'full_name', 'notifications', 'has_testimony', 'antique', 'note', 'facilitator', 'manager', 'row_config'];
 
     protected $with = ['latestCourses', 'paymentMethods', 'billingsInformation'];
 
@@ -205,6 +210,15 @@ class User extends Authenticatable implements CanResetPassword
         return null;
     }
 
+    public function getManagerAttribute()
+    {
+        $buyer = Buyer::firstWhere('user_id', $this->id);
+        if ($buyer) {
+            return $buyer->manager?->full_name ?? null;
+        }
+        return null;
+    }
+
     public function scopeFilterByRegex($query, $regex)
     {
         return $query
@@ -219,9 +233,68 @@ class User extends Authenticatable implements CanResetPassword
         });
     }
 
+    public function scopeWhereRole($query, $value)
+    {
+        return $query->whereHas('roles', function ($query) use ($value) {
+            $query->where('id', $value);
+        });
+    }
+
+    public function scopeWhereGenre($query, $value)
+    {
+        return $query->whereHas('buyer', function ($query) use ($value) {
+            $query->where('genre', $value);
+        });
+    }
+
+    public function scopeWhereCountry($query, $value)
+    {
+        return $query->whereHas('buyer', function ($query) use ($value) {
+            $query->where('country_id', $value);
+        });
+    }
+
+    public function scopeWhereBirthdate($query, $value)
+    {
+        return $query->whereHas('buyer', function ($query) use ($value) {
+            $from = date('Y-m-d 00:00:00', strtotime($value[0]));
+            $to = date('Y-m-d 23:59:59', strtotime($value[1]));
+            $query->whereBetween('users_buyers.birthdate', [$from, $to]);
+        });
+    }
+
+    public function scopeWhereAge($query, $value): Builder
+    {
+        return $query->whereHas('buyer', function ($query) use ($value) {
+            return $query->whereRaw(
+                'TIMESTAMPDIFF(YEAR, users_buyers.birthdate, CURDATE()) BETWEEN ? AND ?',
+                [$value->min, $value->max]
+            );
+        });
+    }
+
+    public function scopeWhereSeniority($query, $value): Builder
+    {
+        return $query->whereRaw(
+            'TIMESTAMPDIFF(YEAR, users.created_at, CURDATE()) BETWEEN ? AND ?',
+            [$value->min, $value->max]
+        );
+    }
+
+    public function scopeWhereVolume($query, $value): Builder
+    {
+        return $query->whereJsonContains('book_volumes', $value);
+    }
+
     public function scopeIsAdmin($query)
     {
-        return $query->where('sa', true)->where('active', true);
+        return $query->where('active', true)
+            ->where(function ($q) {
+                $q->where('sa', true)
+                    ->orWhereHas('roles', function ($roleQuery) {
+                        $roleQuery->where('name', 'administrador');
+                    });
+            });
     }
 
     public function scopePersonalSbyeTransformacion($query)
@@ -234,6 +307,14 @@ class User extends Authenticatable implements CanResetPassword
         return ['dietista'];
     }
 
+    public function isAnAdmin()
+    {
+        if (!$this->active) {
+            return false;
+        }
+        return $this->sa || $this->roles()->where('name', 'administrador')->exists();
+    }
+
     public function isPersonalSbyeDieta()
     {
         return $this->hasAnyRole($this->getRolesSbyeTranformacion());
@@ -241,7 +322,7 @@ class User extends Authenticatable implements CanResetPassword
 
     public function getAllPermissions()
     {
-        if ($this->sa) return  Permission::all();
+        if ($this->isAnAdmin()) return  Permission::all();
         $user_id = $this->id;
         $direct_permissions = Permission::whereIn('id', $this->permissions)->select('id', 'name', 'label', 'module_id');
         $via_roles_permissions = DB::table('permissions')->join('role_has_permissions', function ($join) {
@@ -291,7 +372,7 @@ class User extends Authenticatable implements CanResetPassword
     public function getModules()
     {
         $results = [];
-        if ($this->sa) {
+        if ($this->isAnAdmin()) {
             $results = Module::orderBy('order', 'ASC')->get();
         } else {
             $modules = DB::select(
@@ -391,22 +472,22 @@ class User extends Authenticatable implements CanResetPassword
     public function hasView($model)
     {
         $permissions = ['view_' . $model, 'edit_' . $model, 'delete_' . $model, 'add_' . $model];
-        return ($this->sa || $this->getAllPermissions()->whereIn('name', $permissions)->first() != null) && $this->active;
+        return ($this->isAnAdmin() || $this->getAllPermissions()->whereIn('name', $permissions)->first() != null) && $this->active;
     }
 
     public function hasCreate($model)
     {
-        return ($this->sa || $this->hasPerm('add_' . $model)) && $this->active;
+        return ($this->isAnAdmin() || $this->hasPerm('add_' . $model)) && $this->active;
     }
 
     public function hasUpdate($model)
     {
-        return ($this->sa || $this->hasPerm('edit_' . $model)) && $this->active;
+        return ($this->isAnAdmin() || $this->hasPerm('edit_' . $model)) && $this->active;
     }
 
     public function hasDelete($model)
     {
-        return ($this->sa || $this->hasPerm('delete_' . $model)) && $this->active;
+        return ($this->isAnAdmin() || $this->hasPerm('delete_' . $model)) && $this->active;
     }
 
     public function getCoursePercentage($segment)

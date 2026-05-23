@@ -3,6 +3,7 @@
         icon="mdi-bell-outline"
         color="white"
         class="q-mr-sm"
+        :tooltips="`notificaciones sin leer`"
         v-if="notifications.length > 0"
     >
         <q-badge

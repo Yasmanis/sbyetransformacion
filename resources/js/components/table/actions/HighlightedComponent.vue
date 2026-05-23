@@ -54,7 +54,7 @@ const props = defineProps({
     },
 });
 
-const emits = defineEmits(["created", "hide"]);
+const emits = defineEmits(["created", "hide", "active"]);
 
 const showPicker = ref(false);
 const active = ref(false);
@@ -72,6 +72,10 @@ watch(
         }
     },
 );
+
+watch(active, (n) => {
+    emits("active", n);
+});
 
 const save = async (name, color) => {
     const lum = colors.luminosity(color);

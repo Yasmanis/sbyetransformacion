@@ -61,6 +61,48 @@
                             @created="selected = []"
                             v-if="has_edit"
                         />
+                        <users-select-dialog-component
+                            name="facilitator"
+                            label="facilitador de procesos"
+                            icon="fas fa-user-plus"
+                            icon-size="11px"
+                            :multiple="false"
+                            :required="false"
+                            :show-label-when-selected="false"
+                            :has-input="false"
+                            :disable="selected.length === 0"
+                            tooltips="asignar/cambiar facilitador"
+                            selected-role="facilitador"
+                            @update="onUpdate"
+                            v-if="has_edit"
+                        />
+                        <users-select-dialog-component
+                            name="manager"
+                            label="gestor"
+                            :icon="`img:${$page.props.public_path}images/icon/${
+                                Dark.isActive ? 'white' : 'black'
+                            }-manager.png`"
+                            icon-size="12px"
+                            :multiple="false"
+                            :required="false"
+                            :show-label-when-selected="false"
+                            :has-input="false"
+                            :disable="selected.length === 0"
+                            tooltips="asignar/cambiar gestor"
+                            selected-role="gestor"
+                            @update="onUpdate"
+                            v-if="has_edit"
+                        />
+                        <lock-unlock-component
+                            :status="true"
+                            :objects="selected"
+                            v-if="has_edit"
+                        />
+                        <lock-unlock-component
+                            :status="false"
+                            :objects="selected"
+                            v-if="has_edit"
+                        />
                         <btn-reload-component @click="onRequest" />
                         <visible-columns-component
                             :columns="columns"
@@ -234,7 +276,7 @@
                         <q-list>
                             <q-item
                                 v-for="col in props.cols.filter(
-                                    (c) => c.type !== 'notes'
+                                    (c) => c.type !== 'notes',
                                 )"
                                 :key="col.name"
                                 :class="col.type === 'hidden' ? 'hidden' : ''"
@@ -309,7 +351,7 @@
                                         <btn-user-card-component
                                             @click="
                                                 router.get(
-                                                    `/admin/users/${props.row.id}`
+                                                    `/admin/users/${props.row.id}`,
                                                 )
                                             "
                                         />
@@ -332,7 +374,7 @@
 
 <script setup>
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
-import { useQuasar } from "quasar";
+import { Dark, useQuasar } from "quasar";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import BtnFullScreenComponent from "../../btn/BtnFullScreenComponent.vue";
 import BtnClearComponent from "../../btn/BtnClearComponent.vue";
@@ -350,7 +392,9 @@ import MenuNoteComponent from "../notes/MenuNoteComponent.vue";
 import HighlightedComponent from "../../table/actions/HighlightedComponent.vue";
 import BtnAddComponent from "../../btn/BtnAddComponent.vue";
 import QTooltipComponent from "../../base/QTooltipComponent.vue";
-import { router, usePage } from "@inertiajs/vue3";
+import UsersSelectDialogComponent from "./UsersSelectDialogComponent.vue";
+import UsersSelectComponent from "./UsersSelectComponent.vue";
+import { router, useForm, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
 
 defineOptions({
@@ -436,7 +480,7 @@ watch(
     {
         immediate: true,
         deep: true,
-    }
+    },
 );
 
 onBeforeMount(() => {
@@ -472,7 +516,7 @@ const onRequest = async (attrs) => {
         { page, rowsPerPage, search, filters, sortBy, sortDirection },
         {
             preserveState: true,
-        }
+        },
     );
 };
 
@@ -505,6 +549,14 @@ const getCellColor = (props, type) => {
         return highlighted[type];
     }
     return null;
+};
+
+const onUpdate = (name, val) => {
+    let data = {
+        users: selected.value.map((s) => s.id),
+    };
+    data[name] = val;
+    useForm(data).post(`/admin/users/change-${name}`);
 };
 </script>
 <style>

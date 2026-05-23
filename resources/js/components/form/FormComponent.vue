@@ -25,6 +25,7 @@
                 :post-on-update="postOnUpdate"
                 :new-on-create="newOnCreate"
                 :axios-request="axiosRequest"
+                :is-field-disabled="isFieldDisabled"
                 @created="onCreated"
                 @updated="onUpdated"
                 @cancel="showDialog = false"
@@ -113,6 +114,10 @@ const props = defineProps({
     duplicate: Boolean,
     closeConfirm: Boolean,
     show: Boolean,
+    isFieldDisabled: {
+        type: Function,
+        default: () => false,
+    },
 });
 
 const emits = defineEmits(["created", "updated"]);
@@ -161,14 +166,14 @@ watch(
             }
         }
     },
-    { deep: true }
+    { deep: true },
 );
 
 watch(
     () => props.show,
     (n) => {
         showDialog.value = n;
-    }
+    },
 );
 
 const onBeforeClose = () => {

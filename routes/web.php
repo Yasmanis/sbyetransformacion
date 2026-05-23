@@ -7,6 +7,7 @@ use App\Http\Controllers\BrevoController;
 use App\Http\Controllers\BriefIdeasController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ConferenceController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\FileController;
@@ -278,7 +279,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     });
     Route::resource('/admin/users', UserController::class);
     Route::get('/admin/users/calendar/{id}', [UserController::class, 'calendar']);
-    Route::post('/admin/users/lockUnlock/{id}', [UserController::class, 'lockUnlock']);
+    Route::post('/admin/users/lock-unlock', [UserController::class, 'lockUnlock']);
     Route::post('/admin/users/change-password/{id}', [UserController::class, 'changePassword']);
     Route::post('/admin/users/change-my-password', [UserController::class, 'changeMyPassword']);
     Route::post('/admin/users/update-last-courses', [UserController::class, 'updateLastCourses']);
@@ -287,8 +288,11 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/users/comments/{id}', [UserController::class, 'comments']);
     Route::post('/admin/users/save-colors', [UserController::class, 'saveColors']);
     Route::post('/admin/users/highlighted', [UserController::class, 'highlighted']);
+    Route::post('/admin/users/change-manager', [UserController::class, 'changeManager']);
+    Route::post('/admin/users/change-facilitator', [UserController::class, 'changeFacilitator']);
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
+    Route::resource('/admin/chats', ChatController::class)->only(['index', 'update', 'destroy']);
 
     Route::resource('/admin/testimony', TestimonyController::class);
     Route::post('/admin/testimony/sort', [TestimonyController::class, 'sort']);

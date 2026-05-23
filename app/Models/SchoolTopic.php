@@ -77,7 +77,7 @@ class SchoolTopic extends Model
     {
         $user = $user ?? auth()->user();
         $has_testimony = Testimony::active()->where('user_id', $user->id)->where('book_volume', $this->book_volume)->first();
-        return $user->sa ||
+        return $user->isAnAdmin() ||
             $this->hasFullAccessByUser($user) ||
             $this->hasViewAccessForUser($user) ||
             ($this->hasVolumeAccessForUser($user) && $this->visible_after_testimony && $has_testimony) ||
@@ -93,7 +93,7 @@ class SchoolTopic extends Model
     {
         $user = $user ?? auth()->user();
         $volumes = $user->book_volumes ? $user->book_volumes : [];
-        return $user->sa || $this->hasFullAccessByUser($user) || $this->hasViewAccessForUser($user) || in_array($this->book_volume, $volumes);
+        return $user->isAnAdmin() || $this->hasFullAccessByUser($user) || $this->hasViewAccessForUser($user) || in_array($this->book_volume, $volumes);
     }
 
     public function hasViewAccessForUser($user = null)
@@ -101,7 +101,7 @@ class SchoolTopic extends Model
         $user = $user ?? auth()->user();
         $current_category = $this->section()->first()->category;
         $categories = ['learning', 'reality', 'conference'];
-        return $user->sa || (!$this->visible_after_testimony && in_array($current_category, $categories) && $user->hasPerm('view_' . $current_category));
+        return $user->isAnAdmin() || (!$this->visible_after_testimony && in_array($current_category, $categories) && $user->hasPerm('view_' . $current_category));
     }
 
     public function getHasAccessByFullAttribute()
@@ -114,7 +114,7 @@ class SchoolTopic extends Model
         $user = $user ?? auth()->user();
         $current_category = $this->section()->first()->category;
         $categories = ['school', 'learning', 'reality'];
-        return in_array($current_category, $categories) && ($user->sa || $user->hasPerm('full_' . $current_category));
+        return in_array($current_category, $categories) && ($user->isAnAdmin() || $user->hasPerm('full_' . $current_category));
     }
 
     public function getHasPrincipalVideoAttribute()
@@ -140,7 +140,7 @@ class SchoolTopic extends Model
     public function messages()
     {
         return $this->hasMany(SchoolChat::class, 'topic_id')->send()->orWhere(function (Builder $query) {
-            $query->received();
+            $query->received()->whereHas('from');
         })->orderBy('id', 'ASC');
     }
 

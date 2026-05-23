@@ -67,6 +67,15 @@
                         @update="onUpdate"
                         v-else-if="f.type === 'boolean'"
                     />
+                    <range-field
+                        :name="f.name"
+                        :label="f.label"
+                        :modelValue="f.value"
+                        :min="f.min"
+                        :max="f.max"
+                        @update="onUpdate"
+                        v-else-if="f.type === 'range'"
+                    />
                     <range-size
                         :name="f.name"
                         :label="f.label"
@@ -110,6 +119,7 @@ import HiddenField from "../../form/input/HiddenField.vue";
 import BooleanSelectField from "../../form/input/BooleanSelectField.vue";
 import RangeSize from "../../form/input/RangeSize.vue";
 import DateRangeComponent from "../../form/input/DateRangeComponent.vue";
+import RangeField from "../../form/input/RangeField.vue";
 import { usePage } from "@inertiajs/vue3";
 
 defineOptions({

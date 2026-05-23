@@ -66,10 +66,6 @@ class UserController extends Controller
                 'email' => ['required', 'unique:users'],
                 'password' => ['required', 'min:8'],
                 'password_confirmed' => ['required', 'same:password'],
-                'country_id' => ['required'],
-                'province' => ['required'],
-                'genre' => ['required'],
-                'birthdate' => ['required'],
             ]);
             $repository = new UserRepository();
             $user = $repository->create($request->only((new ($repository->model()))->getFillable()));
@@ -79,11 +75,16 @@ class UserController extends Controller
             if (isset($request->permissions)) {
                 $user->permissions()->sync($request->permissions);
             }
+
             $repository = new BuyerRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $data['birthdate'] = Carbon::createFromFormat('d/m/Y', $data['birthdate']);
+            $birthdate = $request->input('birthdate', null);
+            if ($birthdate) {
+                $data['birthdate'] = Carbon::createFromFormat('d/m/Y', $birthdate);
+            }
             $data['user_id'] = $user->id;
-            $repository->create($data);
+            $repository->updateById($user->buyer->id, $data);
+
             if ($request->toList) {
                 return redirect('/admin/users')->with('success', 'usuario adicionado correctamente');
             }
@@ -104,29 +105,21 @@ class UserController extends Controller
             ]);
             $repository = new UserRepository();
             $user = $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
+
             $repository = new BuyerRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
             $birthdate = $request->input('birthdate', null);
             if (isset($birthdate)) {
                 $data['birthdate'] = Carbon::createFromFormat('d/m/Y', $birthdate);
             }
-            $buyer = $repository->getByColumn($id, 'user_id');
-            if ($buyer) {
-                $repository->updateById($buyer->id, $data);
-            } else {
-                $data['user_id'] = $id;
-                $repository->create($data);
-            }
+            $data['user_id'] = $id;
+            $repository->updateById($user->buyer->id, $data);
+
             if (isset($request->roles)) {
                 $user->roles()->sync($request->roles);
             } else {
                 $user->roles()->detach();
             }
-            // if (isset($request->permissions)) {
-            //     $user->permissions()->sync($request->permissions);
-            // } else {
-            //     $user->permissions()->detach();
-            // }
             if ($request->toList) {
                 return redirect('/admin/users')->with('success', 'usuario modificado correctamente');
             }
@@ -150,16 +143,15 @@ class UserController extends Controller
         return $this->deny_access($request);
     }
 
-    public function lockUnlock(Request $request, $id)
+    public function lockUnlock(Request $request)
     {
         if (auth()->user()->hasUpdate('user')) {
-            $user = User::find($id);
-            if ($user->username === 'sa' && $user->active) {
-                return redirect()->back()->with('error', 'este usuario no puede ser dado de baja');
-            }
-            $user->active = !$user->active;
-            $user->save();
-            return redirect()->back()->with('success', $user->active ? 'usuario dado de alta correctamente' : 'usuario dado de baja correctamente');
+            $ids = $request->users;
+            $status = $request->status;
+            User::whereIn('id', $ids)->update([
+                'active' => $status
+            ]);
+            return redirect()->back()->with('success', sprintf('%s de %s correctamente', count($ids) === 1 ? 'usuario dado' : 'usuarios dados', $status ? 'alta' : 'baja'));
         }
         return $this->deny_access($request);
     }
@@ -172,6 +164,38 @@ class UserController extends Controller
             $user->save();
             $request->session()->regenerate();
             return redirect()->back()->with('success', 'contraseña cambiada correctamente');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function changeManager(Request $request)
+    {
+        if (auth()->user()->hasUpdate('user')) {
+            $users = $request->input('users', []);
+            $manager = $request->input('manager', null);
+            if (!empty($users)) {
+                Buyer::whereIn('user_id', $users)->update([
+                    'manager_id' => $manager
+                ]);
+                return redirect()->back()->with('success', $manager ? 'gestor establecido correctamente' : 'gestor anulado correctamente');
+            }
+            return redirect()->back()->with('error', 'operacion anulada, no existen usuarios seleccionados');
+        }
+        return $this->deny_access($request);
+    }
+
+    public function changeFacilitator(Request $request)
+    {
+        if (auth()->user()->hasUpdate('user')) {
+            $users = $request->input('users', []);
+            $facilitator = $request->input('facilitator', null);
+            if (!empty($users)) {
+                Buyer::whereIn('user_id', $users)->update([
+                    'facilitator_id' => $facilitator
+                ]);
+                return redirect()->back()->with('success', $facilitator ? 'facilitador establecido correctamente' : 'facilitador anulado correctamente');
+            }
+            return redirect()->back()->with('error', 'operacion anulada, no existen usuarios seleccionados');
         }
         return $this->deny_access($request);
     }

@@ -10,190 +10,180 @@
                     v-model="formData[f.name]"
                     :label="f.label"
                     :name="f.name"
-                    :autogrow="f.autogrow ?? false"
-                    :othersProps="f.othersProps"
+                    :othersProps="{
+                        readonly: true,
+                    }"
                     :modelValue="formData[f.name]"
-                    @update="onUpdateField"
-                    v-if="f.type === 'text'"
+                    v-if="isFieldDisabled(object, f.name)"
                 />
-                <number-field
-                    v-model="formData[f.name]"
-                    :label="f.label"
-                    :name="f.name"
-                    :othersProps="f.othersProps"
-                    :modelValue="formData[f.name]"
-                    @update="onUpdateField"
-                    v-if="f.type === 'number'"
-                />
-                <rating-field
-                    v-model="formData[f.name]"
-                    :label="f.label"
-                    :name="f.name"
-                    :modelValue="formData[f.name] ?? 0"
-                    :othersProps="f.othersProps"
-                    @update="onUpdateField"
-                    v-if="f.type === 'rating'"
-                />
-                <image-field
-                    v-model="formData[f.name]"
-                    :label="f.label"
-                    :name="f.name"
-                    :othersProps="f.othersProps"
-                    :modelValue="formData[f.name]"
-                    @change="onUpdateField"
-                    v-if="f.type === 'image'"
-                />
-                <editor-field
-                    v-model="formData[f.name]"
-                    :label="f.label"
-                    :name="f.name"
-                    :othersProps="f.othersProps"
-                    :modelValue="formData[f.name]"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'editor'"
-                />
-                <file-field
-                    v-model="formData[f.name]"
-                    :label="f.label"
-                    :name="f.name"
-                    :othersProps="f.othersProps"
-                    :modelValue="formData[f.name]"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'file'"
-                />
-                <hidden-field
-                    :name="f.name"
-                    :modelValue="formData[f.name]"
-                    v-else-if="f.type === 'hidden'"
-                />
-                <users-select-dialog-component
-                    :name="f.name"
-                    :label="f.label"
-                    :multiple="f.multiple"
-                    :required="f.required"
-                    :model-value="formData[f.name]"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'users'"
-                />
-                <campaign-field
-                    :label="f.label"
-                    :name="f.name"
-                    :campaign="formData['campaign_id']"
-                    :sections="formData['sections_id']"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'campaign'"
-                />
-                <subtitle-field
-                    :label="f.label"
-                    :name="f.name"
-                    :objects="formData[f.name]"
-                    :parent="object"
-                    @remove="
-                        (id) =>
-                            (formData[f.name] = formData[f.name].filter(
-                                (s) => s.id !== id,
-                            ))
-                    "
-                    v-else-if="f.type === 'subtitles'"
-                />
-                <plane-field
-                    :label="f.label"
-                    :name="f.name"
-                    :parent="formData"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'planes'"
-                />
-                <periodicity-field
-                    :name="f.name"
-                    :label="f.label"
-                    :modelValue="formData[f.name]"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'periodicity'"
-                />
-                <checkbox-field
-                    :label="f.label"
-                    :name="f.name"
-                    :modelValue="formData[f.name]"
-                    :othersProps="f.othersProps"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'boolean'"
-                />
-                <uploader-field
-                    :label="f.label"
-                    :name="f.name"
-                    :othersProps="f.othersProps"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'uploader'"
-                />
-                <select-field
-                    :label="f.label"
-                    :name="f.name"
-                    :modelValue="formData[f.name]"
-                    :options="f.options"
-                    :othersProps="f.othersProps"
-                    :filterable="f.filterable"
-                    :multiple="f?.othersProps?.multiple ?? false"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'select'"
-                />
-                <date-field
-                    :label="f.label"
-                    :name="f.name"
-                    :modelValue="formData[f.name]"
-                    :othersProps="f.othersProps"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'date'"
-                />
-                <state-field
-                    :country="f.country"
-                    :state="f.state"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'state'"
-                />
-                <date-time-range-field
-                    :start-name="f.startName"
-                    :end-name="f.endName"
-                    :start-label="f.startLabel"
-                    :end-label="f.endLabel"
-                    :start-value="formData[f.startName]"
-                    :end-value="formData[f.endName]"
-                    :others-start-props="f.othersStartProps"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'datetimerangefield'"
-                />
-                <date-range-field
-                    :start-name="f.startName"
-                    :end-name="f.endName"
-                    :start-label="f.startLabel"
-                    :end-label="f.endLabel"
-                    :start-value="formData[f.startName]"
-                    :end-value="formData[f.endName]"
-                    :others-props="f.othersProps"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'daterange'"
-                />
-                <password-field
-                    :label="f.label"
-                    :name="f.name"
-                    :othersProps="f.othersProps"
-                    @update="onUpdateField"
-                    @confirm="onUpdateField"
-                    v-else-if="f.type === 'password'"
-                />
-                <discount-field
-                    :percent-value="formData[f.percentName]"
-                    :income-value="formData[f.incomeName]"
-                    :total-price="f.totalPrice ?? 0"
-                    :only-percent="f.onlyPercent ?? false"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'discount'"
-                />
-                <depends-select-field
-                    :parent="f.parent"
-                    :child="f.child"
-                    @update="onUpdateField"
-                    v-else-if="f.type === 'depends-select'"
-                />
+                <template v-else
+                    ><text-field
+                        v-model="formData[f.name]"
+                        :label="f.label"
+                        :name="f.name"
+                        :autogrow="f.autogrow ?? false"
+                        :othersProps="f.othersProps"
+                        :modelValue="formData[f.name]"
+                        @update="onUpdateField"
+                        v-if="f.type === 'text'" />
+                    <number-field
+                        v-model="formData[f.name]"
+                        :label="f.label"
+                        :name="f.name"
+                        :othersProps="f.othersProps"
+                        :modelValue="formData[f.name]"
+                        @update="onUpdateField"
+                        v-if="f.type === 'number'" />
+                    <rating-field
+                        v-model="formData[f.name]"
+                        :label="f.label"
+                        :name="f.name"
+                        :modelValue="formData[f.name] ?? 0"
+                        :othersProps="f.othersProps"
+                        @update="onUpdateField"
+                        v-if="f.type === 'rating'" />
+                    <image-field
+                        v-model="formData[f.name]"
+                        :label="f.label"
+                        :name="f.name"
+                        :othersProps="f.othersProps"
+                        :modelValue="formData[f.name]"
+                        @change="onUpdateField"
+                        v-if="f.type === 'image'" />
+                    <editor-field
+                        v-model="formData[f.name]"
+                        :label="f.label"
+                        :name="f.name"
+                        :othersProps="f.othersProps"
+                        :modelValue="formData[f.name]"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'editor'" />
+                    <file-field
+                        v-model="formData[f.name]"
+                        :label="f.label"
+                        :name="f.name"
+                        :othersProps="f.othersProps"
+                        :modelValue="formData[f.name]"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'file'" />
+                    <hidden-field
+                        :name="f.name"
+                        :modelValue="formData[f.name]"
+                        v-else-if="f.type === 'hidden'" />
+                    <users-select-dialog-component
+                        :name="f.name"
+                        :label="f.label"
+                        :multiple="f.multiple"
+                        :required="f.required"
+                        :model-value="formData[f.name]"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'users'" />
+                    <campaign-field
+                        :label="f.label"
+                        :name="f.name"
+                        :campaign="formData['campaign_id']"
+                        :sections="formData['sections_id']"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'campaign'" />
+                    <subtitle-field
+                        :label="f.label"
+                        :name="f.name"
+                        :objects="formData[f.name]"
+                        :parent="object"
+                        @remove="
+                            (id) =>
+                                (formData[f.name] = formData[f.name].filter(
+                                    (s) => s.id !== id,
+                                ))
+                        "
+                        v-else-if="f.type === 'subtitles'" />
+                    <plane-field
+                        :label="f.label"
+                        :name="f.name"
+                        :parent="formData"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'planes'" />
+                    <periodicity-field
+                        :name="f.name"
+                        :label="f.label"
+                        :modelValue="formData[f.name]"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'periodicity'" />
+                    <checkbox-field
+                        :label="f.label"
+                        :name="f.name"
+                        :modelValue="formData[f.name]"
+                        :othersProps="f.othersProps"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'boolean'" />
+                    <uploader-field
+                        :label="f.label"
+                        :name="f.name"
+                        :othersProps="f.othersProps"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'uploader'" />
+                    <select-field
+                        :label="f.label"
+                        :name="f.name"
+                        :modelValue="formData[f.name]"
+                        :options="f.options"
+                        :othersProps="f.othersProps"
+                        :filterable="f.filterable"
+                        :multiple="f?.othersProps?.multiple ?? false"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'select'" />
+                    <date-field
+                        :label="f.label"
+                        :name="f.name"
+                        :modelValue="formData[f.name]"
+                        :othersProps="f.othersProps"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'date'" />
+                    <state-field
+                        :country="f.country"
+                        :state="f.state"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'state'" />
+                    <date-time-range-field
+                        :start-name="f.startName"
+                        :end-name="f.endName"
+                        :start-label="f.startLabel"
+                        :end-label="f.endLabel"
+                        :start-value="formData[f.startName]"
+                        :end-value="formData[f.endName]"
+                        :others-start-props="f.othersStartProps"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'datetimerangefield'" />
+                    <date-range-field
+                        :start-name="f.startName"
+                        :end-name="f.endName"
+                        :start-label="f.startLabel"
+                        :end-label="f.endLabel"
+                        :start-value="formData[f.startName]"
+                        :end-value="formData[f.endName]"
+                        :others-props="f.othersProps"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'daterange'" />
+                    <password-field
+                        :label="f.label"
+                        :name="f.name"
+                        :othersProps="f.othersProps"
+                        @update="onUpdateField"
+                        @confirm="onUpdateField"
+                        v-else-if="f.type === 'password'" />
+                    <discount-field
+                        :percent-value="formData[f.percentName]"
+                        :income-value="formData[f.incomeName]"
+                        :total-price="f.totalPrice ?? 0"
+                        :only-percent="f.onlyPercent ?? false"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'discount'" />
+                    <depends-select-field
+                        :parent="f.parent"
+                        :child="f.child"
+                        @update="onUpdateField"
+                        v-else-if="f.type === 'depends-select'"
+                /></template>
             </div>
         </q-form>
     </q-card-section>
@@ -268,6 +258,10 @@ const props = defineProps({
         default: true,
     },
     axiosRequest: Boolean,
+    isFieldDisabled: {
+        type: Function,
+        default: () => false,
+    },
 });
 
 const emits = defineEmits(["created", "updated", "cancel", "update-field"]);

@@ -1,5 +1,5 @@
 <template>
-    <q-list dense class="q-pa-none q-ma-none full-width">
+    <q-list dense class="q-pa-none q-ma-none full-width" v-if="hasInput">
         <q-item
             style="padding: 0px"
             v-if="defaultSelected.length > 0 && showLabelWhenSelected"
@@ -123,6 +123,64 @@
         </q-item>
     </q-list>
 
+    <template v-else>
+        <q-btn-component
+            :tooltips="`seleccionar ${multiple ? 'usuarios' : 'usuario'}`"
+            :icon="icon"
+            :disable="disable"
+            v-if="multiple"
+        >
+            <q-menu ref="menuRef">
+                <q-list dense>
+                    <q-item
+                        clickable
+                        v-close-popup
+                        @click="showDialog = true"
+                        style="padding-left: 0"
+                    >
+                        <q-item-section
+                            avatar
+                            style="padding-right: 0; min-width: 40px"
+                        >
+                            <q-avatar icon="mdi-account-check-outline" />
+                        </q-item-section>
+                        <q-item-section>
+                            <q-item-label>seleccionar usuarios</q-item-label>
+                        </q-item-section>
+                    </q-item>
+
+                    <q-item
+                        clickable
+                        v-close-popup
+                        @click="onSelectAllUsers"
+                        style="padding-left: 0"
+                        v-if="allUsers.length > 0"
+                    >
+                        <q-item-section
+                            avatar
+                            style="padding-right: 0; min-width: 40px"
+                        >
+                            <q-avatar
+                                icon="mdi-account-multiple-check-outline"
+                            />
+                        </q-item-section>
+                        <q-item-section>
+                            <q-item-label>todos los usuarios</q-item-label>
+                        </q-item-section>
+                    </q-item>
+                </q-list>
+            </q-menu>
+        </q-btn-component>
+        <q-btn-component
+            :tooltips="tooltips"
+            :icon="icon"
+            :size="iconSize"
+            :disable="disable"
+            @click="showDialog = true"
+            v-else
+        />
+    </template>
+
     <q-dialog v-model="showDialog" persistent position="right">
         <q-card>
             <dialog-header-component
@@ -176,6 +234,10 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    tooltips: {
+        type: String,
+        default: "seleccionar",
+    },
     icon: {
         type: String,
         default: "mdi-account-circle",
@@ -203,6 +265,14 @@ const props = defineProps({
     showLabelWhenSelected: {
         type: Boolean,
         default: true,
+    },
+    hasInput: {
+        type: Boolean,
+        default: true,
+    },
+    disable: {
+        type: Boolean,
+        default: false,
     },
     url: String,
     modelValue: Array | Number,
@@ -249,7 +319,7 @@ const loadUsers = async () => {
                     defaultSelected.value = found ? [found] : [];
                 }
             }
-            onUpdate();
+            //onUpdate();
         })
         .catch((error) => {
             error500();

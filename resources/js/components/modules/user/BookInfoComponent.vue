@@ -140,11 +140,6 @@
                 </q-table>
             </q-card-section>
             <q-card-actions align="right">
-                <lock-unlock-component
-                    :object="object"
-                    @success="showDialog = false"
-                    v-if="has_edit"
-                ></lock-unlock-component>
                 <btn-cancel-component @click="showDialog = false" />
             </q-card-actions>
         </q-card>
@@ -156,7 +151,6 @@ import { computed, ref, onMounted } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import BtnBookComponent from "../../btn/BtnBookComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
-import LockUnlockComponent from "./LockUnlockComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import BookVolumesComponent from "./BookVolumesComponent.vue";
 import { openURL, Dark } from "quasar";

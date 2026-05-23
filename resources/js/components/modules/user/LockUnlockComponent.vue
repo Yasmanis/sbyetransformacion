@@ -1,12 +1,15 @@
 <template>
     <q-btn-component
-        :tooltips="object.active ? 'dar baja' : 'dar alta'"
-        :icon="object.active ? 'mdi-cancel' : 'mdi-check-circle-outline'"
-        :disable="disable"
+        :tooltips="status ? 'dar alta' : 'dar baja'"
+        :icon="status ? 'mdi-check-circle-outline' : 'mdi-cancel'"
+        :disable="objects.length === 0"
         @click="
             router.post(
-                `/admin/users/lockUnlock/${object.id}`,
-                {},
+                '/admin/users/lock-unlock',
+                {
+                    users: objects.map((o) => o.id),
+                    status,
+                },
                 {
                     onSuccess: () => emits('success'),
                 },
@@ -23,11 +26,12 @@ defineOptions({
 });
 
 const props = defineProps({
-    object: {
-        type: Object,
-        required: true,
+    objects: {
+        type: Array,
+        default: [],
     },
     disable: Boolean,
+    status: Boolean,
 });
 
 const emits = defineEmits(["success"]);

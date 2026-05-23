@@ -369,7 +369,7 @@
                     <div
                         class="col-xs-12 col-xl-3 col-lg-3 col-md-3 q-col-gutter-sm col-sm-12 q-pt-lg"
                     >
-                        <q-item-label caption>consolidacion</q-item-label>
+                        <q-item-label caption>taller</q-item-label>
                         <div class="row q-col-gutter-md">
                             <div
                                 :class="
@@ -531,7 +531,8 @@
                     @click="save(true)"
                 />
                 <lock-unlock-component
-                    :object="user"
+                    :objects="[user]"
+                    :status="!user.active"
                     v-if="user && hasEdit && user.name !== 'sa'"
                 />
             </q-toolbar>

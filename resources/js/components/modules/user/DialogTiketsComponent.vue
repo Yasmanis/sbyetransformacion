@@ -5,12 +5,7 @@
         @click="showDialog = true"
     />
 
-    <q-dialog
-        v-model="showDialog"
-        persistent
-        @before-show="onShow"
-        @hide="tab = 'progress'"
-    >
+    <q-dialog v-model="showDialog" persistent @hide="tab = 'progress'">
         <q-card style="width: 800px; max-width: 90vw">
             <dialog-header-component
                 :icon="`img:${$page.props.public_path}images/icon/${Dark.isActive ? 'white' : 'black'}-comunication.png`"
@@ -40,14 +35,7 @@ import TiketsComponent from "../../auth/TiketsComponent.vue";
 import axios from "axios";
 
 defineOptions({
-    name: "resources/js/components/modules/user/ProgressComponent.vue",
-});
-
-const props = defineProps({
-    object: {
-        type: Object,
-        required: true,
-    },
+    name: "DialogTiketsComponent",
 });
 
 const showDialog = ref(false);

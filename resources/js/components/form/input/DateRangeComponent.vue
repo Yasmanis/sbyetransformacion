@@ -1,6 +1,5 @@
 <template>
     <q-input
-        outlined
         dense
         v-model="date"
         readonly
@@ -84,7 +83,7 @@ onMounted(() => {
         date.value = `${normalizeDate(
             props.modelValue[0],
             "YYYY-MM-DD",
-            "DD/MM/YYYY"
+            "DD/MM/YYYY",
         )} - ${normalizeDate(props.modelValue[1], "YYYY-MM-DD", "DD/MM/YYYY")}`;
     }
 });

@@ -33,6 +33,8 @@
                         border-left: 4px solid rgb(64, 116, 146);
                         background-color: lightgray;
                     "
+                    class="cursor-pointer"
+                    @click="scrollToElement(m.reply_to.id)"
                     v-if="m.reply_to_user"
                 >
                     <p
@@ -53,9 +55,15 @@
                     >
                         {{ m.reply_to_user }}
                     </p>
-                    <span v-html="m.reply_to_msg"></span>
+                    <div
+                        v-html="m.reply_to_msg"
+                        class="chat-html-truncate"
+                    ></div>
                 </q-item-label>
-                <q-item-label v-html="m.message" />
+
+                <q-item-label :id="`chat-message-${m.id}`">
+                    <text-truncate :text="m.message" />
+                </q-item-label>
                 <template v-if="m.attachments.length > 0 && m.showAttach">
                     <q-item-label
                         caption
@@ -197,6 +205,8 @@
 <script setup>
 import BtnDownUpComponent from "../../../btn/BtnDownUpComponent.vue";
 import ChatActionsComponent from "./ChatActionsComponent.vue";
+import TextTruncate from "../../../others/TextTruncate.vue";
+import { scroll } from "quasar";
 
 defineOptions({
     name: "ChatMessageComponent",
@@ -213,4 +223,27 @@ const props = defineProps({
     },
     showChat: String,
 });
+
+const { getScrollTarget, setVerticalScrollPosition } = scroll;
+
+const scrollToElement = (id) => {
+    const el = document.getElementById(`chat-message-${id}`);
+    const target = getScrollTarget(el);
+    const offset = el.offsetTop;
+    const duration = 500;
+    setVerticalScrollPosition(target, offset, duration);
+};
 </script>
+<style scoped>
+.chat-html-truncate :deep(*) {
+    display: inline;
+}
+
+.chat-html-truncate {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+</style>

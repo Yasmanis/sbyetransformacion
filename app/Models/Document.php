@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Traits\Recyclable;
+use App\Traits\RowConfiguration;
+use App\Traits\RowNote;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Spatie\EloquentSortable\Sortable;
@@ -10,13 +12,24 @@ use Spatie\EloquentSortable\SortableTrait;
 
 class Document extends Model implements Sortable
 {
-    use SortableTrait, Recyclable;
+    use SortableTrait, Recyclable, RowConfiguration, RowNote;
 
     public $sortable = [
         'order_column_name' => 'sort_order',
         'sort_when_creating' => true,
     ];
-    protected $fillable = ['name', 'is_folder', 'parent_id', 'user_id', 'type', 'size', 'path', 'sort_order'];
+    protected $fillable = [
+        'name',
+        'is_folder',
+        'parent_id',
+        'user_id',
+        'type',
+        'size',
+        'path',
+        'sort_order',
+        'description',
+        'observation'
+    ];
 
     protected $appends = ['has_childs', 'users'];
 

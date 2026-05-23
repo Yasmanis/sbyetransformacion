@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Notifications\StandardNotification;
 use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Notification;
 
 class Testimony extends Model
 {
@@ -23,6 +25,38 @@ class Testimony extends Model
         'volumes'
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+        static::created(function ($obj) {
+
+            $notification = new UserNotifications();
+            $notification->title = 'nuevo testimonio';
+            $notification->priority = 'Alta';
+            $notification->user_id = auth()->user()->id;
+            $notification->description = $obj->title;
+            $notification->code = 'testimony';
+            $notification->model = Testimony::class;
+            $notification->model_id = $obj->id;
+            $notification->save();
+
+            $user = $obj->user()->first();
+            $params = [
+                'email' => $user->email,
+                'name' => $user->full_name,
+                'url' => sprintf('%s/auth/profile#%s', env('APP_URL'), base64_encode(json_encode(
+                    [
+                        'tab' => 'notifications',
+                        'model' => Testimony::class,
+                        'id' => $obj->id
+                    ]
+                )))
+            ];
+            $users = User::isAdmin()->get();
+            Notification::send($users, new StandardNotification($notification, 'AVISO – NUEVO TESTIMONIO', 'admin.testimony', ['database', 'brevo'], $params));
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -31,7 +65,7 @@ class Testimony extends Model
     public function scopeOwner($query)
     {
         $user = auth()->user();
-        return $user->sa ? $query : $query->where('user_id', $user->id);
+        return $user->isAnAdmin() ? $query : $query->where('user_id', $user->id);
     }
 
     public function scopeActive($query)
