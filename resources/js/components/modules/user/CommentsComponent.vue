@@ -144,8 +144,8 @@ const columns = ref([
         },
     },
     {
-        name: "created_str",
-        field: "created_str",
+        name: "created_at",
+        field: "created_at",
         label: "fecha",
         align: "left",
     },

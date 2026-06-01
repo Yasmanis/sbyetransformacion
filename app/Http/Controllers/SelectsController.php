@@ -12,6 +12,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductSubcategory;
 use App\Models\ReasonForReturn;
 use App\Models\Role;
+use App\Models\SchoolSection;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -49,7 +50,7 @@ class SelectsController extends Controller
 
     public function permissions()
     {
-        $permissions = DB::table('permissions')->join('modules', 'modules.id', '=', 'permissions.module_id')->select('permissions.id as value', 'permissions.label', 'modules.singular_label as module')->get();
+        $permissions = DB::table('permissions')->join('modules', 'modules.id', '=', 'permissions.module_id')->select('permissions.id as value', 'permissions.label', 'modules.plural_label as module')->get();
         foreach ($permissions as $p) {
             $p->label = $p->module . ' | ' . $p->label;
         }
@@ -80,6 +81,23 @@ class SelectsController extends Controller
                 return [
                     'value' => $item->id,
                     'label' => $item->singular_label
+                ];
+            })
+        ]);
+    }
+
+    public function chatsModules()
+    {
+        $categories = SchoolSection::select('category')->distinct()->get()->pluck('category');
+        $modules = Module::whereIn('model', $categories)->get();
+        return response()->json([
+            'options' => $categories->map(function ($item) use ($modules) {
+                $m = $modules->first(function ($m) use ($item) {
+                    return strtolower($m->model) == strtolower($item);
+                });
+                return [
+                    'value' => $item,
+                    'label' => $m?->plural_label ?? $item
                 ];
             })
         ]);

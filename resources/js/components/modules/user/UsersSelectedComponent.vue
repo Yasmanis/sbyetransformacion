@@ -1,5 +1,5 @@
 <template>
-    <q-item-section>
+    <q-item-section v-if="list[0]">
         <q-chip
             v-model="chip_0"
             :removable="chip"
@@ -66,8 +66,8 @@
             "
         >
             <div class="ellipsis">
-                {{ list[2].label
-                }}<q-tooltip
+                {{ list[2].label }}
+                <q-tooltip
                     class="text-body2"
                     anchor="top middle"
                     self="bottom middle"
@@ -94,28 +94,69 @@
             >
                 {{ list.length }}
             </q-badge>
-            <q-menu transition-show="jump-down" transition-hide="jump-up">
-                <q-list dense padding style="width: 300px">
-                    <q-item
-                        v-for="(u, userIndex) in list"
-                        :key="`user_list_${userIndex}`"
-                    >
-                        <q-item-section avatar>
-                            <q-avatar
-                                font-size="32px"
-                                icon="mdi-account-circle"
-                            ></q-avatar>
-                        </q-item-section>
-                        <q-item-section> {{ u.label }}</q-item-section>
-                        <q-item-section side v-if="chip">
-                            <btn-delete-component
-                                tooltips="quitar de la lista"
-                                @click="removeItem(list[userIndex])"
-                            />
-                        </q-item-section>
-                    </q-item>
-                </q-list> </q-menu
-        ></q-btn-component>
+            <q-menu
+                class="q-pa-sm"
+                transition-show="jump-down"
+                transition-hide="jump-up"
+                style="width: 400px"
+            >
+                <text-field
+                    name="query"
+                    placeholder="filtrar"
+                    :model-value="query"
+                    @update="
+                        (name, val) => {
+                            query = val;
+                        }
+                    "
+                >
+                    <template #append>
+                        <q-icon name="search" />
+                    </template>
+                </text-field>
+                <div class="row no-wrap">
+                    <div style="max-height: 300px; overflow: auto" class="col">
+                        <q-infinite-scroll
+                            @load="onLoad"
+                            :offset="250"
+                            ref="infiniteScrollRef"
+                        >
+                            <q-list dense>
+                                <q-item
+                                    v-for="(u, userIndex) in displayedItems"
+                                    :key="`user_list_${userIndex}`"
+                                >
+                                    <q-item-section avatar>
+                                        <q-avatar
+                                            font-size="32px"
+                                            icon="mdi-account-circle"
+                                        ></q-avatar>
+                                    </q-item-section>
+                                    <q-item-section>
+                                        {{ u.label }}</q-item-section
+                                    >
+                                    <q-item-section side v-if="chip">
+                                        <btn-delete-component
+                                            tooltips="quitar de la lista"
+                                            @click="removeItem(u)"
+                                        />
+                                    </q-item-section>
+                                </q-item>
+                            </q-list>
+
+                            <template v-slot:loading>
+                                <div class="row justify-center q-my-sm">
+                                    <q-spinner-dots
+                                        color="primary"
+                                        size="30px"
+                                    />
+                                </div>
+                            </template>
+                        </q-infinite-scroll>
+                    </div>
+                </div>
+            </q-menu>
+        </q-btn-component>
     </q-item-section>
     <q-item-section
         avatar
@@ -131,9 +172,10 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, computed, nextTick } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
+import TextField from "../../form/input/TextField.vue";
 
 defineOptions({
     name: "UsersSelectedComponent",
@@ -146,28 +188,82 @@ const props = defineProps({
     },
     list: {
         type: Array,
-        default: [],
+        default: () => [],
     },
 });
 
-const emits = defineEmits(["remove-item", "clear"]);
+const query = ref(null);
+const infiniteScrollRef = ref(null);
+
+const emits = defineEmits(["remove-item", "clear", "filter"]);
+
 const chip_0 = ref(null);
 const chip_1 = ref(null);
 const chip_2 = ref(null);
+
+const itemsPerPage = 20;
+const loadedCount = ref(itemsPerPage);
+
 onMounted(() => {
     setDefault();
 });
+
 watch(
     () => props.list,
-    (n, o) => {
+    () => {
         setDefault();
+        resetScroll();
     },
+    { deep: true },
 );
+
+watch(query, () => {
+    resetScroll();
+});
+
+const filteredItems = computed(() => {
+    return query.value
+        ? props.list.filter(
+              (s) =>
+                  s.label.toLowerCase().indexOf(query.value.toLowerCase()) !==
+                  -1,
+          )
+        : props.list;
+});
+
+const displayedItems = computed(() => {
+    return filteredItems.value.slice(0, loadedCount.value);
+});
+
 const setDefault = () => {
     chip_0.value = null;
     chip_1.value = null;
     chip_2.value = null;
 };
+
+const onLoad = (index, done) => {
+    if (loadedCount.value >= filteredItems.value.length) {
+        infiniteScrollRef.value?.stop();
+        return;
+    }
+    setTimeout(() => {
+        if (loadedCount.value >= filteredItems.value.length) {
+            infiniteScrollRef.value?.stop();
+        } else {
+            loadedCount.value += itemsPerPage;
+            done();
+        }
+    }, 400);
+};
+
+const resetScroll = () => {
+    loadedCount.value = itemsPerPage;
+    nextTick(() => {
+        infiniteScrollRef.value?.resume();
+        infiniteScrollRef.value?.poll();
+    });
+};
+
 const removeItem = (item) => {
     emits("remove-item", item);
 };

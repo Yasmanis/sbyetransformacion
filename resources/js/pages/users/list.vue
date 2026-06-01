@@ -149,90 +149,90 @@ const filterFields = [
         type: "boolean",
         value: null,
     },
-    // {
-    //     name: "role",
-    //     label: "rol",
-    //     type: "select",
-    //     scope: "whereRole",
-    //     value: null,
-    //     othersProps: {
-    //         url_to_options: "/roles",
-    //     },
-    // },
-    // {
-    //     name: "country",
-    //     label: "pais",
-    //     type: "select",
-    //     scope: "whereCountry",
-    //     value: null,
-    //     othersProps: {
-    //         multiple: true,
-    //         url_to_options: "/countries",
-    //     },
-    // },
-    // {
-    //     name: "birthdate",
-    //     label: "fecha nacimiento",
-    //     type: "date",
-    //     scope: "whereBirthdate",
-    //     value: null,
-    // },
-    // {
-    //     name: "age",
-    //     label: "edad",
-    //     type: "range",
-    //     scope: "whereAge",
-    //     value: null,
-    //     min: 15,
-    //     max: 120,
-    // },
-    // {
-    //     name: "seniority",
-    //     label: "antigüedad",
-    //     type: "range",
-    //     scope: "whereSeniority",
-    //     value: null,
-    //     min: 0,
-    //     max: 60,
-    // },
-    // {
-    //     name: "genre",
-    //     label: "genero",
-    //     type: "select",
-    //     scope: "whereGenre",
-    //     value: null,
-    //     options: [
-    //         {
-    //             label: "masculino",
-    //             value: "m",
-    //         },
-    //         {
-    //             label: "femenino",
-    //             value: "f",
-    //         },
-    //     ],
-    // },
-    // {
-    //     name: "books",
-    //     label: "libros",
-    //     type: "select",
-    //     scope: "whereVolume",
-    //     value: null,
-    //     options: [
-    //         {
-    //             label: "tomo I",
-    //             value: "tomo_1",
-    //         },
-    //         {
-    //             label: "tomo II",
-    //             value: "tomo_2",
-    //         },
-    //         {
-    //             label: "tomo III",
-    //             value: "tomo_3",
-    //         },
-    //     ],
-    // },
+    {
+        name: "role",
+        label: "rol",
+        type: "select",
+        scope: "whereRole",
+        value: null,
+        othersProps: {
+            url_to_options: "/roles",
+        },
+    },
+    {
+        name: "country",
+        label: "pais",
+        type: "select",
+        scope: "whereCountry",
+        value: null,
+        othersProps: {
+            multiple: true,
+            url_to_options: "/countries",
+        },
+    },
+    {
+        name: "birthdate",
+        label: "fecha nacimiento",
+        type: "date",
+        scope: "whereBirthdate",
+        value: null,
+    },
+    {
+        name: "age",
+        label: "edad",
+        type: "range",
+        scope: "whereAge",
+        value: null,
+        min: 15,
+        max: 120,
+    },
+    {
+        name: "seniority",
+        label: "antigüedad",
+        type: "range",
+        scope: "whereSeniority",
+        value: null,
+        min: 0,
+        max: 60,
+    },
+    {
+        name: "genre",
+        label: "genero",
+        type: "select",
+        scope: "whereGenre",
+        value: null,
+        options: [
+            {
+                label: "masculino",
+                value: "m",
+            },
+            {
+                label: "femenino",
+                value: "f",
+            },
+        ],
+    },
+    {
+        name: "books",
+        label: "libros",
+        type: "select",
+        scope: "whereVolume",
+        value: null,
+        options: [
+            {
+                label: "tomo I",
+                value: "tomo_1",
+            },
+            {
+                label: "tomo II",
+                value: "tomo_2",
+            },
+            {
+                label: "tomo III",
+                value: "tomo_3",
+            },
+        ],
+    },
 ];
 
 const columns = [

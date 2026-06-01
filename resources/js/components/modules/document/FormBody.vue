@@ -48,15 +48,17 @@
                     @change-files="onChangeFiles"
                     v-else
                 />
-                <br />
-                <editor-field
+                <text-field
+                    autogrow
+                    class="q-mt-sm"
                     name="description"
                     label="descripcion"
                     :modelValue="formData['description']"
                     @update="onUpdateField"
                 />
-                <br />
-                <editor-field
+                <text-field
+                    autogrow
+                    class="q-mt-sm"
                     name="observation"
                     label="observaciones"
                     :modelValue="formData['observation']"

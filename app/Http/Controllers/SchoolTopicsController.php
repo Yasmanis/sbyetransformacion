@@ -193,7 +193,11 @@ class SchoolTopicsController extends Controller
         $user = auth()->user();
         $users = [];
         if (isset($request->replyTo)) {
-            $users[] = SchoolChat::find($request->replyTo)->from->id;
+            $reply = SchoolChat::find($request->replyTo);
+            $replyUser = $reply?->from ?? null;
+            if ($replyUser) {
+                $users[] = $replyUser->id;
+            }
         } else if ($request->to === 'todos') {
             $users = User::where('id', '!=', $user->id)->pluck('id');
         } else {

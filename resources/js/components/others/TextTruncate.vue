@@ -62,11 +62,11 @@ onBeforeUnmount(() => {
     word-break: break-word;
     line-height: 1.5em;
 
-    :deep(p),
-    :deep(div) {
-        margin: 0;
-        display: inline;
-    }
+    // :deep(p),
+    // :deep(div) {
+    //     margin: 0;
+    //     display: inline;
+    // }
 }
 .message-text > p {
     margin: 0px !important;

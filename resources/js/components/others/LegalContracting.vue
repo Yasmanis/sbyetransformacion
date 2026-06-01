@@ -5,7 +5,7 @@
         v-if="showTitle"
     >
         <span v-html="text"></span>
-        <q-tooltip-component :title="`click para ver ${title}`"
+        <q-tooltip-component :title="`click para ver ${title}`" v-if="showTip"
     /></span>
     <q-dialog v-model="showDialog" persistent @hide="emits('hide')">
         <q-card style="width: 900px; max-width: 1000vw">
@@ -55,6 +55,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    showTip: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emits = defineEmits(["hide"]);
@@ -74,6 +78,6 @@ watch(
     () => props.show,
     (n) => {
         showDialog.value = n;
-    }
+    },
 );
 </script>

@@ -42,7 +42,7 @@
                             index === section?.topics.length - 1 ||
                             (!$page.props.auth.user.sa &&
                                 !$page.props.auth.permissions.includes(
-                                    `full_${segment}`
+                                    `full_${segment}`,
                                 ) &&
                                 topic?.percent < 95 &&
                                 segment === 'learning' &&
@@ -110,7 +110,7 @@
             router.post(
                 `/admin/schooltopics/clear-chat/${topic?.id}`,
                 {},
-                { onSuccess: () => (confirm = false) }
+                { onSuccess: () => (confirm = false) },
             )
         "
         @hide="confirm = false"
@@ -155,7 +155,7 @@ const props = defineProps({
     segment: String,
 });
 
-const showPanel = ref(false);
+const showPanel = ref(true);
 const messages = [];
 const emits = defineEmits(["change-topic"]);
 const confirm = ref(false);
@@ -164,7 +164,7 @@ watch(
     () => props.showChat,
     (n) => {
         showPanel.value = n !== null;
-    }
+    },
 );
 
 const clearChat = async () => {

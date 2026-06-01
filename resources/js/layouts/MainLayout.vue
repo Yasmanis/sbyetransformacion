@@ -125,16 +125,20 @@
                     :flat="false"
                 />
             </div>
-            <div class="text-center q-py-lg">
-                <Link href="/legal" class="text-white q-mr-md">
-                    avisos legales
-                </Link>
-                <Link href="/private" class="text-white q-ml-md">
-                    privacidad
-                </Link>
-                <Link href="/contracting" class="text-white q-ml-md">
-                    condiciones de contratacion
-                </Link>
+            <div class="text-center q-my-lg q-col-gutter-lg">
+                <legal-contracting
+                    title="avisos legales"
+                    text="avisos legales"
+                    key-name="legal"
+                    :show-tip="false"
+                />
+                <legal-contracting
+                    title="privacidad"
+                    text="privacidad"
+                    key-name="private"
+                    :show-tip="false"
+                />
+                <legal-contracting :show-tip="false" />
             </div>
             <div class="row justify-around q-gutter-md">
                 <div class="col-xs-12 col-sm-5 col-md-3 col-lg-3 col-xl-3">
@@ -225,6 +229,7 @@
 </template>
 <script setup>
 import QBtnComponent from "../components/base/QBtnComponent.vue";
+import LegalContracting from "../components/others/LegalContracting.vue";
 import { router } from "@inertiajs/vue3";
 import { ref, computed, onBeforeMount, onMounted } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";

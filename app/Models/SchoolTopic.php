@@ -140,7 +140,7 @@ class SchoolTopic extends Model
     public function messages()
     {
         return $this->hasMany(SchoolChat::class, 'topic_id')->send()->orWhere(function (Builder $query) {
-            $query->received()->whereHas('from');
+            $query->received();
         })->orderBy('id', 'ASC');
     }
 

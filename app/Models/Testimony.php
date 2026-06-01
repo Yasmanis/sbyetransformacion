@@ -80,7 +80,7 @@ class Testimony extends Model
 
     public function getUserNameAttribute()
     {
-        return $this->user?->full_name ?? null;
+        return $this->user?->full_name ?? 'anonimo';
     }
 
     public function getVolumesAttribute()

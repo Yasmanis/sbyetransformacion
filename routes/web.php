@@ -446,3 +446,4 @@ Route::get('/product-categories', [SelectsController::class, 'productCategories'
 Route::get('/product-subcategories/{id}', [SelectsController::class, 'productSubcategories']);
 Route::get('/product-courses', [SelectsController::class, 'productCourses']);
 Route::get('/products', [SelectsController::class, 'products']);
+Route::get('/chats-modules', [SelectsController::class, 'chatsModules']);

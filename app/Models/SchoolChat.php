@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Notifications\StandardNotification;
 use App\Traits\Recyclable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
 
@@ -13,17 +14,18 @@ class SchoolChat extends Model
 
     protected $fillable = ['message'];
 
-    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user', 'topic_str', 'section_str', 'created_str', 'section_id', 'segment'];
+    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user', 'topic_str', 'section_str', 'section_id', 'segment', 'segment_description'];
 
     protected $table = 'schoolchat';
 
     protected $casts = [
-        'from_visible' => 'boolean'
+        'from_visible' => 'boolean',
+        'created_at' => 'datetime'
     ];
 
     public function getFromNameAttribute()
     {
-        return $this->from?->full_name ?? null;
+        return $this->from?->full_name ?? 'anonimo';
     }
 
     public function getReplyToMsgAttribute()
@@ -33,7 +35,7 @@ class SchoolChat extends Model
 
     public function getReplyToUserAttribute()
     {
-        return $this->replyTo ? $this->replyTo?->from?->full_name : null;
+        return $this->replyTo ? $this->replyTo?->from?->full_name : 'anonimo';
     }
 
     public function getOwnerAttribute()
@@ -59,12 +61,22 @@ class SchoolChat extends Model
 
     public function getSegmentAttribute()
     {
-        return $this->topic->section()->first()->category;
+        return $this->topic->section()->first()?->category ?? null;
     }
 
-    public function getCreatedStrAttribute()
+    public function getSegmentDescriptionAttribute()
     {
-        return $this->created_at->format('d/m/Y h:i A');
+        $categ = $this->segment;
+        if ($categ) {
+            $mod = Module::firstWhere('model', $categ);
+            return $mod?->plural_label ?? $categ;
+        }
+        return $categ;
+    }
+
+    public function getCreatedAtAttribute($val)
+    {
+        return Carbon::parse($val)->format('d/m/Y h:i A');
     }
 
     public function getOwnerReplyAttribute()
@@ -179,8 +191,16 @@ class SchoolChat extends Model
             $q->where('user_id', $userId);
         });
     }
+
     public function scopeFromTopic($query, $topic)
     {
         return $query->where('topic_id', $topic);
+    }
+
+    public function scopeWhereCategory($query, $val)
+    {
+        return $query->whereHas('topic.section', function ($query) use ($val) {
+            $query->where('category', $val);
+        });
     }
 }
