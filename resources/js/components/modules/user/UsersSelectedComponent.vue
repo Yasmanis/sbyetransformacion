@@ -95,7 +95,7 @@
                 {{ list.length }}
             </q-badge>
             <q-menu
-                class="q-pa-sm"
+                class="q-pa-sm q-gutter-xs"
                 transition-show="jump-down"
                 transition-hide="jump-up"
                 style="width: 400px"
@@ -114,6 +114,17 @@
                         <q-icon name="search" />
                     </template>
                 </text-field>
+                <select-field
+                    label="rol"
+                    :othersProps="{
+                        url_to_options: '/roles',
+                    }"
+                    @update="
+                        (name, val) => {
+                            role = val;
+                        }
+                    "
+                />
                 <div class="row no-wrap">
                     <div style="max-height: 300px; overflow: auto" class="col">
                         <q-infinite-scroll
@@ -176,6 +187,7 @@ import { ref, watch, onMounted, computed, nextTick } from "vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
 import TextField from "../../form/input/TextField.vue";
+import SelectField from "../../form/input/SelectField.vue";
 
 defineOptions({
     name: "UsersSelectedComponent",
@@ -193,6 +205,7 @@ const props = defineProps({
 });
 
 const query = ref(null);
+const role = ref(null);
 const infiniteScrollRef = ref(null);
 
 const emits = defineEmits(["remove-item", "clear", "filter"]);
@@ -221,14 +234,19 @@ watch(query, () => {
     resetScroll();
 });
 
+watch(role, () => {
+    resetScroll();
+});
+
 const filteredItems = computed(() => {
-    return query.value
-        ? props.list.filter(
-              (s) =>
-                  s.label.toLowerCase().indexOf(query.value.toLowerCase()) !==
-                  -1,
-          )
-        : props.list;
+    if (!props.list) return [];
+    return props.list.filter((item) => {
+        const matchesQuery = query.value
+            ? item.label.toLowerCase().includes(query.value.toLowerCase())
+            : true;
+        const matchesRole = role.value ? item.roles.includes(role.value) : true;
+        return matchesQuery && matchesRole;
+    });
 });
 
 const displayedItems = computed(() => {

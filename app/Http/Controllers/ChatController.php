@@ -9,10 +9,27 @@ class ChatController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->user()->hasView('chat')) {
+        $user = auth()->user();
+        if ($user->hasView('schoolchat')) {
             $repository = new ChatRepository();
             $repository->search($request->search);
-            $repository->filters($request->filters);
+            $filters = $request->filters;
+            if (!$user->isAnAdmin()) {
+                if (isset($filters)) {
+                    $filters = json_decode($filters);
+                } else {
+                    $filters = [];
+                }
+                $filters[] =
+                    [
+                        'name' => 'from_id',
+                        'type' => 'select',
+                        'value' => [$user->id]
+
+                    ];
+                $filters = json_encode($filters);
+            }
+            $repository->filters($filters);
             $repository->orderBy($request->sortBy, $request->sortDirection);
             return $this->data_index($repository, $request);
         }
@@ -21,7 +38,7 @@ class ChatController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('chat')) {
+        if (auth()->user()->hasUpdate('schoolchat')) {
             $repository = new ChatRepository();
             $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
             return redirect()->back()->with('success', 'mensaje modificado correctamente');
@@ -31,7 +48,7 @@ class ChatController extends Controller
 
     public function destroy(Request $request, $ids)
     {
-        if (auth()->user()->hasDelete('chat')) {
+        if (auth()->user()->hasDelete('schoolchat')) {
             $repository = new ChatRepository();
             $ids = explode(',', $ids);
             if (count($ids) == 1) {

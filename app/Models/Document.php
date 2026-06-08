@@ -57,21 +57,18 @@ class Document extends Model implements Sortable
         $permissionSubquery = DB::table('user_documents as du')
             ->select('du.access')
             ->join(DB::raw("(
-            WITH RECURSIVE path AS (
-                SELECT id, parent_id, id as original_id
-                FROM documents
+            WITH RECURSIVE path_perm AS (
+                SELECT id, parent_id, id as original_id FROM documents
                 UNION ALL
-                SELECT doc.id, doc.parent_id, path.original_id
-                FROM documents doc
-                JOIN path ON doc.id = path.parent_id
+                SELECT doc.id, doc.parent_id, path_perm.original_id FROM documents doc
+                JOIN path_perm ON doc.id = path_perm.parent_id
             )
-            SELECT * FROM path
-        ) as tree"), 'du.document_id', '=', 'tree.id')
-            ->whereColumn('tree.original_id', 'documents.id')
+            SELECT id, original_id FROM path_perm
+        ) as tree_p"), 'du.document_id', '=', 'tree_p.id')
+            ->whereColumn('tree_p.original_id', 'documents.id')
             ->where('du.user_id', $userId)
             ->orderByRaw("FIELD(du.access, 'edit', 'read') ASC")
             ->limit(1);
-
         $query->addSelect([
             'permission' => function ($q) use ($userId, $permissionSubquery) {
                 $q->selectRaw("
@@ -82,7 +79,23 @@ class Document extends Model implements Sortable
             }
         ]);
 
-        return $query->havingRaw('permission IS NOT NULL');
+        return $query->whereNull('documents.deleted_at')
+            ->whereNotIn('documents.id', function ($q) {
+                $q->select('id')
+                    ->from(DB::raw("(
+                  WITH RECURSIVE deshuesado AS (
+                      SELECT id, parent_id 
+                      FROM documents 
+                      WHERE deleted_at IS NOT NULL
+                      UNION ALL
+                      SELECT doc.id, doc.parent_id 
+                      FROM documents doc
+                      JOIN deshuesado d ON doc.parent_id = d.id
+                  )
+                  SELECT id FROM deshuesado
+              ) as lista_negra"));
+            })
+            ->havingRaw('permission IS NOT NULL');
     }
 
     public function getHasChildsAttribute()

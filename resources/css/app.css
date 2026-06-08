@@ -294,3 +294,7 @@ h6 {
 .highlighted {
     font-weight: bold;
 }
+
+.ck-dropdown {
+    z-index: 999 !important;
+}

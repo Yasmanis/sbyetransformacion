@@ -314,6 +314,14 @@
                             </q-input>
                         </div>
                     </div>
+                    <p class="text-white q-mt-md">
+                        al enviar este testimonio aceptas que pueda ser
+                        publicado dentro de la escuela o utilizado por sbye
+                        transformacion con fines divulgativos o promocionales.
+                        si en algun momento eliminas tu cuenta, el contenido
+                        podra mantenerse desvinculado de tu identidad o asociado
+                        a un perfil anonimo
+                    </p>
                     <q-btn
                         rounded
                         color="black"
@@ -480,11 +488,11 @@ const onSubmit = () => {
                     form.testimonyText.trim() === "")
             ) {
                 error(
-                    "debe al menos especificar un tipo de testimonio; escrito o video"
+                    "debe al menos especificar un tipo de testimonio; escrito o video",
                 );
             } else if (!form.book_volume) {
                 error(
-                    "debe seleccionar el tomo al cual va dirigido el testimonio"
+                    "debe seleccionar el tomo al cual va dirigido el testimonio",
                 );
             } else if (form.anonimous) {
                 confirm.value = true;

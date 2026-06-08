@@ -128,6 +128,21 @@
                                             </q-item-label>
                                         </q-item-section>
                                     </q-item>
+                                    <q-item
+                                        clickable
+                                        @click="showAccountLock = true"
+                                    >
+                                        <q-item-section avatar>
+                                            <q-icon
+                                                name="mdi-account-cancel-outline"
+                                            />
+                                        </q-item-section>
+                                        <q-item-section>
+                                            <q-item-label>
+                                                darme baja
+                                            </q-item-label>
+                                        </q-item-section>
+                                    </q-item>
                                     <q-separator />
                                     <session-close-component />
                                 </q-list>
@@ -264,6 +279,16 @@
     </q-dialog>
 
     <private-area-msg-component />
+
+    <confirm-component
+        title="confirmar baja del sistema"
+        :message="messageLock"
+        :show="showAccountLock"
+        question="seguro que deseas darte de baja?"
+        width="600px"
+        @hide="showAccountLock = false"
+        @ok="closeAccount"
+    />
 </template>
 
 <script setup>
@@ -280,6 +305,7 @@ import BtnSaveComponent from "../components/btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../components/btn/BtnCancelComponent.vue";
 import PrivateAreaMsgComponent from "../components/modules/pushmessage/PrivateAreaMsgComponent.vue";
 import QTooltipComponent from "../components/base/QTooltipComponent.vue";
+import ConfirmComponent from "../components/base/ConfirmComponent.vue";
 import { Dark } from "quasar";
 import { usePage, useForm, router } from "@inertiajs/vue3";
 import { errorValidation } from "../helpers/notifications";
@@ -288,6 +314,7 @@ defineOptions({
     name: "AdminLayout",
 });
 
+const showAccountLock = ref(false);
 const currentNav = ref(null);
 const mini = ref(false);
 const leftDrawerOpen = ref(false);
@@ -297,6 +324,9 @@ const formDataPassword = useForm({
     old_password: null,
 });
 const formPassword = ref(null);
+
+const messageLock =
+    '<p class="text-center;">al confirmar la baja, eliminaremos tu perfil y todos los datos personales asociados a tu cuenta</p><p class="text-center;">los comentarios, mensajes y testimonios que hayas compartido dentro de la comunidad podran mantenerse para preservar el sentido y la continuidad de las conversaciones, pero quedaran desvinculados de tu identidad y apareceran como "anonimo"</p><p class="text-center;">si consideras que alguna publicacion, comentario o testimonio podria permitir identificarte, puedes solicitar su eliminacion definitiva a traves del formulario de contacto o escribiendo a <a href="mailto:info@sbyetransformacion.com">info@sbyetransformacion.com</a></p><p class="text-center;">gracias por haber compartido este tiempo con nosotros ♥️</p>';
 
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -367,6 +397,10 @@ const changePassword = () => {
             errorValidation();
         }
     });
+};
+
+const closeAccount = () => {
+    useForm({}).post("/auth/close-account");
 };
 </script>
 <style>

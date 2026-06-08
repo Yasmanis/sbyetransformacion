@@ -72,7 +72,10 @@
                                 ></div>
                             </q-item-label>
 
-                            <q-item-label :id="`chat-message-${m.id}`">
+                            <q-item-label
+                                :id="`chat-message-${m.id}`"
+                                style="font-size: 14px"
+                            >
                                 <text-truncate :text="m.message" />
                             </q-item-label>
 

@@ -259,14 +259,20 @@
                     <btn-user-card-component
                         @click="router.get(`/admin/users/${props.row.id}`)"
                     />
+                    <btn-calendar-plus-component />
+                    <lock-unlock-component
+                        :status="!props.row.active"
+                        :objects="
+                            props.row.username === 'sa' ? [] : [props.row]
+                        "
+                        v-if="has_edit"
+                    />
                     <delete-component
                         :objects="[props.row]"
                         url="/admin/users"
                         :disable="props.row.name === 'sa'"
                         v-if="has_delete"
                     />
-                    <btn-calendar-plus-component />
-                    <btn-list-component list tooltips="historico" />
                 </q-td>
             </template>
 
@@ -354,6 +360,16 @@
                                                     `/admin/users/${props.row.id}`,
                                                 )
                                             "
+                                        />
+                                        <btn-calendar-plus-component />
+                                        <lock-unlock-component
+                                            :status="!props.row.active"
+                                            :objects="
+                                                props.row.username === 'sa'
+                                                    ? []
+                                                    : [props.row]
+                                            "
+                                            v-if="has_edit"
                                         />
                                         <delete-component
                                             :objects="[props.row]"

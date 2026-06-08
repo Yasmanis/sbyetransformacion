@@ -24,7 +24,8 @@ class DocumentController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->hasUpdate('user')) {
+        $user = auth()->user();
+        if ($user->hasUpdate('user') || $user->id === (int) $request->get('user_id')) {
             $repository = new DocumentRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
             if ($request->hasFile('file')) {
@@ -45,9 +46,10 @@ class DocumentController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('user')) {
-            $repository = new DocumentRepository();
-            $object = $repository->getById($id);
+        $user = auth()->user();
+        $repository = new DocumentRepository();
+        $object = $repository->getById($id);
+        if ($user->hasUpdate('user') || $user->id === $object->user_id) {
             $data = $request->only((new ($repository->model()))->getFillable());
             if (!$object->is_folder) {
                 $data['name'] = sprintf('%s.%s', $data['name'], Str::afterLast($object->name, '.'));
@@ -72,10 +74,11 @@ class DocumentController extends Controller
 
     public function move(Request $request, $id)
     {
-        if (auth()->user()->hasUpdate('user')) {
-            $target = Document::findOrFail($request->target_id);
+        $user = auth()->user();
+        $target = Document::findOrFail($request->target_id);
+        $document = Document::find($id);
+        if ($user->hasUpdate('user') || $user->id === $document->user_id) {
             $newParentId = $request->parent_id;
-            $document = Document::find($id);
             DB::transaction(function () use ($document, $target, $newParentId, $request) {
                 if ($document->parent_id !== $newParentId) {
                     $document->parent_id = $newParentId;

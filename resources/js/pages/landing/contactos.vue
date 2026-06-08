@@ -346,19 +346,24 @@
                                     dense
                                 >
                                     he leido y acepto las
-                                    <Link
-                                        href="/legal"
-                                        class="text-white"
-                                        style="text-decoration: underline"
-                                        >condiciones generales</Link
-                                    >
+                                    <span style="text-decoration: underline">
+                                        <legal-contracting
+                                            title="condiciones generales"
+                                            text="condiciones generales"
+                                            key-name="legal"
+                                            :show-tip="false"
+                                        />
+                                    </span>
+
                                     y la
-                                    <Link
-                                        href="/private"
-                                        class="text-white"
-                                        style="text-decoration: underline"
-                                        >politica de privacidad</Link
-                                    >
+                                    <span style="text-decoration: underline">
+                                        <legal-contracting
+                                            title="politica de privacidad"
+                                            text="politica de privacidad"
+                                            key-name="private"
+                                            :show-tip="false"
+                                        />
+                                    </span>
                                 </q-checkbox>
                             </div>
                         </div>
@@ -463,6 +468,7 @@ import { ref, watch, computed, onMounted } from "vue";
 import { useForm, usePage, Link, Head } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import { error, errorValidation } from "../../helpers/notifications.js";
+import LegalContracting from "../../components/others/LegalContracting.vue";
 defineOptions({
     name: "Contactos",
 });
@@ -538,7 +544,7 @@ const onSubmit = () => {
         if (success) {
             if (!form.privated) {
                 error(
-                    "debe aceptar las condiciones generales y la politica de privacidad"
+                    "debe aceptar las condiciones generales y la politica de privacidad",
                 );
             } else {
                 sending.value = true;

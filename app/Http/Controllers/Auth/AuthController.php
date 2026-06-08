@@ -307,4 +307,16 @@ class AuthController extends Controller
             ? redirect()->route('login')->with('success', __($status))
             : back()->withErrors([$field => [__($status)]]);
     }
+
+    public function closeAccount(Request $request)
+    {
+        $user = auth()->user();
+        if ($user->username === 'sa') {
+            return back()->with(['error' => 'esta cuenta no puede ser cerrada']);
+        }
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        $user->forceDelete();
+        return redirect()->route('home')->with(['success' =>  'su cuenta ha sido cerrada correctamente']);
+    }
 }

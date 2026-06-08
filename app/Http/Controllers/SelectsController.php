@@ -142,7 +142,8 @@ class SelectsController extends Controller
             $options[] = [
                 'value' => $u->id,
                 'label' => $u->full_name,
-                'volumes' => $u->book_volumes
+                'volumes' => $u->book_volumes,
+                'roles' => $u->roles
             ];
         }
         return response()->json([

@@ -13,7 +13,7 @@
         wrap-cells
         binary-state-sort
     >
-        <template v-slot:top>
+        <template v-slot:top="props">
             <q-toolbar>
                 <section
                     class="q-my-xs q-mr-sm cursor-pointer text-subtitle1"
@@ -51,6 +51,11 @@
                     @created="selected = []"
                 />
                 <btn-reload-component @click="router.reload()" />
+                <delete-component
+                    :objects="selected"
+                    url="/admin/documents"
+                    @deleted="selected = []"
+                />
                 <q-btn-component
                     icon="mdi-expand-all-outline"
                     tooltips="expandir todo"
@@ -65,13 +70,14 @@
                     @refresh-data="(name, val) => (filters.others = val)"
                     v-if="filterFields.length > 0"
                 />
+                <q-btn-component
+                    :tooltips="props.inFullscreen ? 'restaurar' : 'maximizar'"
+                    :icon="
+                        props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'
+                    "
+                    @click="props.toggleFullscreen"
+                />
             </q-toolbar>
-        </template>
-        <template v-slot:header-selection="scope">
-            <q-checkbox v-model="scope.selected" size="sm" />
-        </template>
-        <template v-slot:body-selection="scope">
-            <q-checkbox v-model="scope.selected" size="sm" />
         </template>
         <template v-slot:header="props">
             <q-tr :props="props">
@@ -123,7 +129,11 @@
                 }"
             >
                 <q-td auto-width>
-                    <q-checkbox v-model="props.selected" size="sm" />
+                    <q-checkbox
+                        v-model="props.selected"
+                        size="sm"
+                        :disable="props.row.permission !== 'owner'"
+                    />
                 </q-td>
                 <q-td key="row_note" :props="props">
                     <menu-note-component
@@ -282,7 +292,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { format, useQuasar, date } from "quasar";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import FormComponent from "./FormComponent.vue";
@@ -299,6 +309,7 @@ import FilterComponent from "../../table/actions/FilterComponent.vue";
 import FormNoteComponent from "../notes/FormNoteComponent.vue";
 import HighlightedComponent from "../../table/actions/HighlightedComponent.vue";
 import MenuNoteComponent from "../notes/MenuNoteComponent.vue";
+import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
 
 const props = defineProps({
     user: Object,
@@ -375,6 +386,13 @@ const currentColumn = ref(null);
 const showHighlight = ref(false);
 const highlightedActive = ref(false);
 
+watch(selected, (n) => {
+    const filters = n.filter((r) => r.permission === "owner");
+    if (filters.length !== n.length) {
+        selected.value = filters;
+    }
+});
+
 const onCellClick = (row, col) => {
     if (highlightedActive.value) {
         let highlighted = getHighlighted(row, col),
@@ -448,8 +466,6 @@ const visibleRows = computed(() => {
         sizeStart = size ? size.value.min * size.value.unitValue : null;
         sizeEnd = size ? size.value.max * size.value.unitValue : null;
     }
-
-    console.log(sizeStart, sizeEnd);
 
     const childrenMap = new Map();
     const presentIds = new Set();

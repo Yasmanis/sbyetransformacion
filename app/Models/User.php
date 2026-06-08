@@ -415,10 +415,9 @@ class User extends Authenticatable implements CanResetPassword
             if ($shopping) {
                 $ids[] = $shopping->id;
             }
-            $results = Module::whereIn(
-                'id',
-                $ids
-            )->get();
+            $results = Module::whereIn('id', $ids)
+                ->orderBy('order', 'ASC')
+                ->get();
         }
         foreach ($results as $m) {
             $m->permissions = $this->getPermissionsFromModule($m);

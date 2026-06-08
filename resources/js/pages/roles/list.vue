@@ -9,7 +9,6 @@
                 :has_delete="false"
                 :isRowDisabled="isDisabled"
                 :is-field-disabled="checkFieldDisabled"
-                @change-selected="onChangeSelected"
             >
                 <template #delete-on-row="props">
                     <btn-delete-component
@@ -81,8 +80,6 @@ const columns = [
 
 const fields = [name, permissions];
 
-const currentSelected = ref([]);
-
 const isDisabled = (row) => {
     return ["usuario", "gestor", "facilitador", "administrador"].includes(
         row?.name?.toLowerCase(),
@@ -91,9 +88,5 @@ const isDisabled = (row) => {
 
 const checkFieldDisabled = (item, fieldName) => {
     return isDisabled(item) && fieldName === "name";
-};
-
-const onChangeSelected = (selected = []) => {
-    currentSelected.value = selected.filter((s) => !isDisabled(s));
 };
 </script>

@@ -104,7 +104,7 @@ Route::get('/listen', function () {
 
 Route::get('/', function () {
     return Inertia('landing/vivir_en_plenitud');
-});
+})->name('home');
 
 Route::get('/liberacion_emocional', function () {
     $testimonies = Testimony::active()->type('text')->get();
@@ -274,6 +274,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::delete('/auth/delete-notification/{ids}', [AuthController::class, 'deleteNotification']);
     Route::post('/auth/read-unread-notification/{id}', [AuthController::class, 'readUnreadNotification']);
     Route::post('/auth/mark-notifications-as', [AuthController::class, 'markNotificationsAs']);
+    Route::post('/auth/close-account', [AuthController::class, 'closeAccount']);
     Route::get('/admin', function () {
         return Inertia('home');
     });

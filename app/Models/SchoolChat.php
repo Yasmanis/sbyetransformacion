@@ -14,7 +14,7 @@ class SchoolChat extends Model
 
     protected $fillable = ['message'];
 
-    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user', 'topic_str', 'section_str', 'section_id', 'segment', 'segment_description'];
+    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user', 'topic_str', 'section_str', 'section_id', 'segment', 'segment_description', 'responses'];
 
     protected $table = 'schoolchat';
 
@@ -202,5 +202,10 @@ class SchoolChat extends Model
         return $query->whereHas('topic.section', function ($query) use ($val) {
             $query->where('category', $val);
         });
+    }
+
+    public function getResponsesAttribute()
+    {
+        return 0;
     }
 }

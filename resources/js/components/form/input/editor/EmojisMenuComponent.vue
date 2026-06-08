@@ -2,6 +2,7 @@
     <q-menu
         v-model="model"
         :target="target"
+        persistent
         transition-show="scale"
         transition-hide="scale"
         @show="emits('show')"
@@ -182,7 +183,7 @@ watch(
     () => props.target,
     (n, o) => {
         model.value = n !== null;
-    }
+    },
 );
 
 watch(filter, () => {

@@ -11,10 +11,27 @@ class RecycleBinController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->user()->hasView('recyclebin')) {
+        $user = auth()->user();
+        if ($user->hasView('recyclebin')) {
             $repository = new RecycleBinRepository();
             $repository->search($request->search);
-            $repository->filters($request->filters);
+            $filters = $request->filters;
+            if (!$user->isAnAdmin()) {
+                if (isset($filters)) {
+                    $filters = json_decode($filters);
+                } else {
+                    $filters = [];
+                }
+                $filters[] =
+                    [
+                        'name' => 'deleted_by',
+                        'type' => 'select',
+                        'value' => [$user->id]
+
+                    ];
+                $filters = json_encode($filters);
+            }
+            $repository->filters($filters);
             $repository->orderBy($request->sortBy, $request->sortDirection);
             return $this->data_index($repository, $request);
         }

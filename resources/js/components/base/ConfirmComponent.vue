@@ -2,7 +2,8 @@
     <q-dialog v-model="showDialog" persistent @hide="emits('hide')">
         <q-card
             :style="{
-                width: width,
+                width: `${width} !important`,
+                'max-width': `${width / 10 + 1}vw`,
             }"
         >
             <dialog-header-component
@@ -13,19 +14,24 @@
                 @close="showDialog = false"
                 v-if="header"
             />
-            <q-card-section class="column items-center">
-                <q-icon
-                    :name="`img:${$page.props.public_path}images/icon/blue-ligth-alert.png`"
-                    class="text-custom-blue"
-                    size="160px"
-                    style=""
-                />
-                <p
-                    style="font-size: 20px"
-                    class="text-center"
-                    v-html="question"
-                ></p>
-                <span v-html="message" class="text-center"></span>
+            <q-card-section
+                class="column items-center scroll"
+                style="max-height: 50vh"
+            >
+                <div class="column items-center">
+                    <q-icon
+                        :name="`img:${$page.props.public_path}images/icon/blue-ligth-alert.png`"
+                        class="text-custom-blue"
+                        size="160px"
+                        style=""
+                    />
+                    <p
+                        style="font-size: 20px"
+                        class="text-center"
+                        v-html="question"
+                    ></p>
+                    <span v-html="message" class="text-center"></span>
+                </div>
             </q-card-section>
             <q-card-actions align="center">
                 <btn-confirm-component
@@ -100,6 +106,6 @@ watch(
     () => props.show,
     (n, o) => {
         showDialog.value = n;
-    }
+    },
 );
 </script>

@@ -2,4 +2,13 @@
 
 namespace App\Http\Controllers;
 
-class ReflectionController extends LifeController {}
+use Override;
+
+class ReflectionController extends LifeController
+{
+    #[Override]
+    public function segment()
+    {
+        return 'reflection';
+    }
+}
