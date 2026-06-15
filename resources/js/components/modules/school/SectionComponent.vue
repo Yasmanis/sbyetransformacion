@@ -49,7 +49,7 @@
                                     totalSections === index + 1 ||
                                     (!$page.props.auth.user.sa &&
                                         !$page.props.auth.permissions.includes(
-                                            `full_${segment}`
+                                            `full_${segment}`,
                                         ) &&
                                         skip.includes(segment) &&
                                         !allTopicsCompleted())
@@ -70,7 +70,7 @@
                                 @click="
                                     emits(
                                         'change-topic',
-                                        getIndexFromCurrentTopic() - 1
+                                        getIndexFromCurrentTopic() - 1,
                                     )
                                 "
                             />
@@ -82,7 +82,7 @@
                                         section?.topics?.length ||
                                     (!$page.props.auth.user.sa &&
                                         !$page.props.auth.permissions.includes(
-                                            `full_${segment}`
+                                            `full_${segment}`,
                                         ) &&
                                         skip.includes(segment) &&
                                         !allTopicsCompleted())
@@ -166,7 +166,7 @@
                 </q-list>
             </div>
         </div>
-        <div class="row q-pa-sm" v-if="topic?.description">
+        <div class="row q-pa-sm custom-font-size" v-if="topic?.description">
             <span
                 v-html="topic?.description"
                 style="margin-bottom: -30px"

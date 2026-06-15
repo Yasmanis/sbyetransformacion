@@ -68,7 +68,6 @@
                                 @change-section="onChangeSection"
                                 @change-topic="
                                     (i) => {
-                                        resetHash();
                                         currentTopic =
                                             sections[sIndex].topics[i];
                                     }
@@ -109,10 +108,18 @@ import SectionItemComponent from "../../components/modules/school/SectionItemCom
 import NotificationComponent from "../../components/modules/school/notification/NotificationComponent.vue";
 import MgrPrivateMsgComponent from "../../components/modules/privatemsg/MgrPrivateMsgComponent.vue";
 import { usePage } from "@inertiajs/vue3";
-import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
+import {
+    computed,
+    onBeforeMount,
+    onMounted,
+    onUnmounted,
+    ref,
+    watch,
+} from "vue";
 import { useQuasar } from "quasar";
 import { getActiveModule } from "../../services/current_module";
 import axios from "axios";
+import { isEmpty } from "lodash";
 
 defineOptions({
     name: "LifePage",
@@ -135,10 +142,11 @@ const tIndex = ref(0);
 const has_add = ref(false);
 const has_edit = ref(false);
 const has_delete = ref(false);
-let chat = null;
 const show_chat = ref(null);
 
 const modules_skip = ref(["learning", "reality"]);
+
+const hash = ref(null);
 
 const sections = computed(() => {
     return page.props.sections ? page.props.sections : [];
@@ -159,8 +167,22 @@ const course_percentage = computed(() => {
     return page.props.course_percentage;
 });
 
-watch(sections, (n, o) => {
+onMounted(() => {
     setDefaults();
+    if (!isEmpty(window.location.hash)) {
+        hash.value = window.location.hash;
+    } else {
+        setDefaultConfig();
+    }
+    window.addEventListener("hashchange", (e) => {
+        hash.value = window.location.hash;
+    });
+});
+
+onUnmounted(() => {});
+
+watch(sections, (n, o) => {
+    setDefaultConfig();
 });
 
 watch(currentTopic, (n, o) => {
@@ -179,37 +201,45 @@ watch(
     },
 );
 
-onBeforeMount(() => {
-    let url = page.url.split("?")[0];
-    if (url.includes("#")) {
-        chat = url.substring(url.indexOf("#") + 6);
-        url = url.substring(0, url.indexOf("#"));
+watch(hash, (n) => {
+    if (!isEmpty(n) && sections.value.length > 0) {
+        show_chat.value = n.substring(1);
+        let ids = n.split("-");
+        let sectionIndex = sections.value.findIndex(
+            (s) => s.id === parseInt(ids[3]),
+        );
+        if (sectionIndex >= 0) {
+            let section = sections.value[sectionIndex];
+            let topic =
+                section.topics.find((t) => t.id === parseInt(ids[2])) ?? null;
+            if (topic) {
+                onChangeTopic({
+                    section,
+                    topic,
+                    sectionIndex,
+                });
+                window.location.hash = "";
+            }
+        }
     }
 });
 
-onMounted(() => {
-    setDefaults();
-});
-
-const setDefaults = () => {
-    const current_module = getActiveModule();
-
-    const permissions = current_module.permissions.map((p) => p.name);
-    const modelName = current_module.model.toLowerCase();
-    has_add.value = permissions.includes(`add_${modelName}`);
-    has_edit.value = permissions.includes(`edit_${modelName}`);
-    has_delete.value = permissions.includes(`delete_${modelName}`);
-
-    let course = page.props.course ?? null;
-    if (!course) {
-        const pathSegments = window.location.pathname.split("/");
-        course = pathSegments.pop() || pathSegments[pathSegments.length - 2];
+const setChatFromHash = (n = []) => {
+    let ids = hash.value.substring(1).split("-");
+    const section = n.find((s) => s.id === parseInt(ids[3]));
+    if (section) {
+        currentSection.value = section;
+        const topic = section.topics.find((t) => t.id === parseInt(ids[2]));
+        if (topic) {
+            currentTopic.value = topic;
+            show_chat.value = hash.value;
+        }
     } else {
-        course = `cursos/${course}`;
+        currentSection.value = n[0];
     }
+};
 
-    segment.value = course;
-
+const setDefaultConfig = () => {
     let n = sections.value;
     if (n.length > 0) {
         if (currentSection.value !== null) {
@@ -227,21 +257,8 @@ const setDefaults = () => {
                 }
             }
         } else {
-            if (chat != null) {
-                let ids = chat.split("-");
-                const section = n.find((s) => s.id === parseInt(ids[2]));
-                if (section) {
-                    currentSection.value = section;
-                    const topic = section.topics.find(
-                        (t) => t.id === parseInt(ids[1]),
-                    );
-                    if (topic) {
-                        currentTopic.value = topic;
-                        show_chat.value = chat;
-                    }
-                } else {
-                    currentSection.value = n[0];
-                }
+            if (hash.value) {
+                setChatFromHash(n);
             } else {
                 const latest = getLatest();
                 if (latest) {
@@ -281,6 +298,25 @@ const setDefaults = () => {
     }
 };
 
+const setDefaults = () => {
+    const current_module = getActiveModule();
+    const permissions = current_module.permissions.map((p) => p.name);
+    const modelName = current_module.model.toLowerCase();
+    has_add.value = permissions.includes(`add_${modelName}`);
+    has_edit.value = permissions.includes(`edit_${modelName}`);
+    has_delete.value = permissions.includes(`delete_${modelName}`);
+
+    let course = page.props.course ?? null;
+    if (!course) {
+        const pathSegments = window.location.pathname.split("/");
+        course = pathSegments.pop() || pathSegments[pathSegments.length - 2];
+    } else {
+        course = `cursos/${course}`;
+    }
+
+    segment.value = course;
+};
+
 const onChangeTopic = (attrs) => {
     const { section, topic, sectionIndex } = attrs;
     currentSection.value = section;
@@ -290,15 +326,7 @@ const onChangeTopic = (attrs) => {
 
 const onChangeSection = (i) => {
     currentSection.value = sections.value[i];
-    resetHash();
-    setDefaults();
-};
-
-const resetHash = () => {
-    if (chat !== null) {
-        location.hash = "";
-        chat = null;
-    }
+    setDefaultConfig();
 };
 
 const getLatest = () => {

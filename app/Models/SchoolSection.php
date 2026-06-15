@@ -9,7 +9,7 @@ class SchoolSection extends Model
 {
     protected $fillable = ['name', 'description', 'category'];
 
-    protected $with = ['topics', 'topics.resources', 'topics.messages', 'topics.messages.attachments', 'topics.messages.reacts', 'topics.messages.highligths'];
+    protected $with = ['topics', 'topics.resources'];
 
     public function topics()
     {

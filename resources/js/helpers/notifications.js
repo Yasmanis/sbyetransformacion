@@ -7,7 +7,7 @@ export const notify = (
     position = "top-right",
     progress = true,
     close = false,
-    icon
+    icon,
 ) => {
     let props = {
         message: msg,
@@ -17,6 +17,7 @@ export const notify = (
         type: type,
         textColor: "black",
         classes: "bg-custom-blue",
+        html: true,
     };
     if (icon) {
         props["icon"] = icon;
@@ -28,7 +29,7 @@ export const success = (
     msg,
     position = "top",
     progress = true,
-    close = false
+    close = false,
 ) => {
     notify("info", msg, position, progress, close);
 };
@@ -41,7 +42,7 @@ export const warning = (
     msg,
     position = "top",
     progress = true,
-    close = false
+    close = false,
 ) => {
     notify("warning", msg, position, progress, close);
 };
@@ -50,7 +51,7 @@ export const error = (
     msg,
     position = "top",
     progress = true,
-    close = false
+    close = false,
 ) => {
     notify("negative", msg, position, progress, close, "mdi-alert-outline");
 };

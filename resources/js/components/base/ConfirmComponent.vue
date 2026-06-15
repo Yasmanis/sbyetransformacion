@@ -20,7 +20,10 @@
             >
                 <div class="column items-center">
                     <q-icon
-                        :name="`img:${$page.props.public_path}images/icon/blue-ligth-alert.png`"
+                        :name="
+                            iconBody ??
+                            `img:${$page.props.public_path}images/icon/blue-ligth-alert.png`
+                        "
                         class="text-custom-blue"
                         size="160px"
                         style=""
@@ -38,7 +41,7 @@
                     :icon="iconConfirm"
                     :size="iconConfirmSize"
                     :tooltips="iconConfirmTooltips"
-                    @click="emits('ok')"
+                    @click="onOk"
                 />
                 <btn-cancel-component
                     :cancel="true"
@@ -73,6 +76,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    closeOnOk: {
+        type: Boolean,
+        default: false,
+    },
     question: {
         type: String,
         default: "estas seguro?",
@@ -85,6 +92,7 @@ const props = defineProps({
         type: String,
         default: "mdi-trash-can-outline",
     },
+    iconBody: String,
     title: {
         type: String,
         default: "confirmar accion",
@@ -108,4 +116,11 @@ watch(
         showDialog.value = n;
     },
 );
+
+const onOk = () => {
+    if (props.closeOnOk) {
+        showDialog.value = false;
+    }
+    emits("ok");
+};
 </script>

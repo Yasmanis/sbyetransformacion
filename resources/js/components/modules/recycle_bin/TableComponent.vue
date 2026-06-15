@@ -170,6 +170,7 @@
                         />
                     </template>
                     <template v-else-if="props.col.name === 'icon'">
+                        {{ props.row.icon }}
                         <q-icon
                             :name="
                                 props.row.model.ico_from_path
@@ -177,7 +178,7 @@
                                           !Dark.isActive
                                               ? props.row.model.icon.replace(
                                                     'white',
-                                                    'black'
+                                                    'black',
                                                 )
                                               : props.row.model.icon
                                       }`
@@ -236,7 +237,7 @@
                         <q-list>
                             <q-item
                                 v-for="col in props.cols.filter(
-                                    (c) => c.name !== 'icon'
+                                    (c) => c.name !== 'icon',
                                 )"
                                 :key="col.name"
                                 :class="col.type === 'hidden' ? 'hidden' : ''"
@@ -432,7 +433,7 @@ watch(
     {
         immediate: true,
         deep: true,
-    }
+    },
 );
 
 onBeforeMount(() => {
@@ -474,7 +475,7 @@ const onRequest = async (attrs) => {
         { page, rowsPerPage, search, filters, sortBy, sortDirection },
         {
             preserveState: true,
-        }
+        },
     );
 };
 </script>

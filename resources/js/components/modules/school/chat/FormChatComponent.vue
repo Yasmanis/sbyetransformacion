@@ -184,7 +184,7 @@ const props = defineProps({
     message: Object,
 });
 
-const emits = defineEmits(["hide-menu"]);
+const emits = defineEmits(["hide-menu", "reload"]);
 
 const showDialog = ref(false);
 const help = ref(null);
@@ -243,7 +243,7 @@ const onFinishUploaded = (info) => {
     success("mensaje enviado correctamente");
     Loading.hide();
     showDialog.value = false;
-    router.reload({}, "preserveState");
+    emits("reload");
 };
 
 const save = async () => {
@@ -261,7 +261,7 @@ const save = async () => {
                         publish,
                         message,
                         replyTo: props.message?.id,
-                    }
+                    },
                 )
                 .then((response) => {
                     currentMessage.value = response.data;

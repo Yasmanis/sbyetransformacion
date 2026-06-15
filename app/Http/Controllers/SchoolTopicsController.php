@@ -214,7 +214,6 @@ class SchoolTopicsController extends Controller
         $msg->save();
         $msg->users()->attach($users);
         $msg->sendNotifications(false);
-
         return $msg;
     }
 
@@ -231,12 +230,22 @@ class SchoolTopicsController extends Controller
         return $msg;
     }
 
+    public function show($id)
+    {
+        $msg = SchoolChat::with(['attachments', 'reacts', 'highligths'])->find($id);
+        return $msg;
+    }
+
     public function reactMsg($chatId)
     {
         $user = auth()->user();
         $chat = SchoolChat::find($chatId);
         $chat->reacts()->sync($user);
-        return redirect()->back()->with('success', 'se ha reaccionado al mensaje correctamente');
+        return response()->json([
+            'property' => 'reacts',
+            'users' => $chat->reacts,
+            'message' => 'se ha reaccionado al mensaje correctamente'
+        ]);
     }
 
     public function highligthMsg($chatId)
@@ -244,14 +253,21 @@ class SchoolTopicsController extends Controller
         $user = auth()->user();
         $chat = SchoolChat::find($chatId);
         $chat->highligths()->sync($user);
-        return redirect()->back()->with('success', 'mensaje destacado correctamente');
+        return response()->json([
+            'property' => 'highligths',
+            'users' => $chat->highligths,
+            'message' => 'se ha destacado el mensaje correctamente'
+        ]);
     }
 
     public function deleteMsg($id)
     {
         $chat = SchoolChat::find($id);
         $chat->deleteFromUser();
-        return redirect()->back()->with('success', 'mensaje eliminado correctamente');
+        return response()->json([
+            'msg' => $chat,
+            'message' => 'mensaje eliminado correctamente'
+        ]);
     }
 
     public function clearChat($id)
@@ -261,5 +277,25 @@ class SchoolTopicsController extends Controller
             $m->deleteFromUser();
         }
         return redirect()->back()->with('success', 'chat limpiado correctamente');
+    }
+
+    public function getMessagesFromTopic($id)
+    {
+        $messages = SchoolChat::with(['attachments', 'reacts', 'highligths'])
+            ->rootMessages()
+            ->fromTopic($id)
+            ->forUser(auth()->user())
+            ->noFromDeleted()
+            ->orderBy('id', 'ASC')
+            ->get();
+        return response()->json($messages);
+    }
+
+    public function getMessagesFromParent(Request $request)
+    {
+        $replyTo = $request->input('reply_to', null);
+        return response()->json([
+            'messages' => SchoolChat::with(['attachments', 'reacts', 'highligths'])->childrenOf(auth()->user(), $replyTo)->get()
+        ]);
     }
 }

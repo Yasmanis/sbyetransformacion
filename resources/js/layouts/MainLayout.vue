@@ -235,6 +235,7 @@ import { ref, computed, onBeforeMount, onMounted } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
 import { Screen, useQuasar } from "quasar";
 import axios from "axios";
+import ConfirmComponent from "../components/base/ConfirmComponent.vue";
 
 defineOptions({
     name: "MainLayout",
@@ -249,6 +250,7 @@ const props = defineProps({
 });
 
 const $q = useQuasar();
+const page = usePage();
 
 const allCategories = ref([]);
 
@@ -288,10 +290,18 @@ onMounted(() => {
         const initialWidth = document.querySelector(".justify-end").offsetWidth;
         calculateVisible({ width: initialWidth });
     }, 100);
+
+    let dialog_info = page.props.dialog_info;
+    if (dialog_info) {
+        $q.dialog({
+            component: ConfirmComponent,
+            componentProps: dialog_info,
+        });
+    }
 });
 
 const authenticated = computed(() => {
-    return usePage().props.auth;
+    return page.props.auth;
 });
 
 const links = [

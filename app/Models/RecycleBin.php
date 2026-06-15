@@ -43,7 +43,7 @@ class RecycleBin extends Model
         if ($base_model === 'Module') {
             $module = $this->recyclable()->withTrashed()->first();
         } else {
-            $module = Module::firstWhere('singular_label', $base_model);
+            $module = Module::firstWhere('model', $base_model);
         }
         if ($module) {
             return [

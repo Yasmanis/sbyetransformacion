@@ -7,6 +7,8 @@ use App\Traits\Recyclable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class SchoolChat extends Model
 {
@@ -113,6 +115,21 @@ class SchoolChat extends Model
         $notification->title = $edit ? 'modificación de mensaje en el chat' : 'tiene un nuevo mensaje en el chat';
         $notification->priority = 'Baja';
         $notification->user_id = auth()->user()->id;
+
+        /*
+            $users = [];
+            if ($edit) {
+                $users = $this->users;
+                $notification->description = $this->from_visible ? sprintf('el usuario %s ha modificado un mensaje en el chat', $this->from->full_name) : 'se ha modificado un mensaje en el chat';
+            } else {
+                $users = $this->replyTo ? [$this->replyTo->from] : $this->users;
+                if ($this->replyTo)
+                    $notification->description = 'se le ha respondido en el chat';
+                else
+                    $notification->description = $this->from_visible ? sprintf('el usuario %s le ha escrito en el chat', $this->from->full_name) : 'se le ha escrito en el chat de forma anonima';
+            }
+        */
+
         if ($edit) {
             $notification->description = $this->from_visible ? sprintf('el usuario %s ha modificado un mensaje en el chat', $this->from->full_name) : 'se ha modificado un mensaje en el chat';
         } else {
@@ -150,7 +167,7 @@ class SchoolChat extends Model
     }
     public function messages()
     {
-        return $this->hasMany(SchoolChat::class);
+        return $this->hasMany(SchoolChat::class, 'reply_to')->orderBy('id', 'ASC');
     }
     public function topic()
     {
@@ -178,23 +195,71 @@ class SchoolChat extends Model
     {
         return $query->where('from_deleted', false);
     }
+
     public function scopeSend($query)
     {
-        $userId = auth()->id() ?? 0;
+        $userId = auth()->user()->id ?? 0;
         return $query->where('from_id', $userId)->where('from_deleted', false);
     }
 
     public function scopeReceived($query)
     {
-        $userId = auth()->id() ?? 0;
+        $userId = auth()->user()->id ?? 0;
         return $query->whereHas('users', function ($q) use ($userId) {
             $q->where('user_id', $userId);
+        });
+    }
+
+    public function scopeWhereNotParent($query)
+    {
+        return $query->whereNull('reply_to');
+    }
+
+    public function scopeWhereReceivedFromReply($query)
+    {
+        $userId = auth()->user()->id ?? 0;
+        $chatId = $this->id;
+        return $query->whereHas('users', function ($q) use ($userId, $chatId) {
+            $q->where('user_id', $userId)->where('chat_id', $chatId);
         });
     }
 
     public function scopeFromTopic($query, $topic)
     {
         return $query->where('topic_id', $topic);
+    }
+
+    public function scopeSentByUser($query, User $user)
+    {
+        return $query->where('from_id', $user->id);
+    }
+
+    public function scopeReceivedByUser($query, User $user)
+    {
+        return $query->whereHas('users', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        });
+    }
+
+    public function scopeForUser($query, User $user)
+    {
+        return $query->where(function ($q) use ($user) {
+            $q->sentByUser($user)
+                ->orWhere(function ($sub) use ($user) {
+                    $sub->receivedByUser($user);
+                });
+        });
+    }
+
+    public function scopeRootMessages($query)
+    {
+        return $query->whereNull('reply_to');
+    }
+
+    public function scopeChildrenOf($query, User $user, $parentId)
+    {
+        return $query->forUser($user)
+            ->where('reply_to', $parentId);
     }
 
     public function scopeWhereCategory($query, $val)
@@ -206,6 +271,6 @@ class SchoolChat extends Model
 
     public function getResponsesAttribute()
     {
-        return 0;
+        return SchoolChat::childrenOf(auth()->user(), $this->id)->count();
     }
 }

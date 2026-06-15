@@ -298,3 +298,7 @@ h6 {
 .ck-dropdown {
     z-index: 999 !important;
 }
+
+.custom-font-size {
+    font-size: 14px !important;
+}

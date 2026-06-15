@@ -139,8 +139,8 @@ class SchoolTopic extends Model
 
     public function messages()
     {
-        return $this->hasMany(SchoolChat::class, 'topic_id')->send()->orWhere(function (Builder $query) {
-            $query->received();
+        return $this->hasMany(SchoolChat::class, 'topic_id')->send()->whereNotParent()->orWhere(function (Builder $query) {
+            $query->received()->whereNotParent();
         })->orderBy('id', 'ASC');
     }
 

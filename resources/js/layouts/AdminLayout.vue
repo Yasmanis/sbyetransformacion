@@ -306,14 +306,14 @@ import BtnCancelComponent from "../components/btn/BtnCancelComponent.vue";
 import PrivateAreaMsgComponent from "../components/modules/pushmessage/PrivateAreaMsgComponent.vue";
 import QTooltipComponent from "../components/base/QTooltipComponent.vue";
 import ConfirmComponent from "../components/base/ConfirmComponent.vue";
-import { Dark } from "quasar";
+import { Dark, useQuasar } from "quasar";
 import { usePage, useForm, router } from "@inertiajs/vue3";
 import { errorValidation } from "../helpers/notifications";
 
 defineOptions({
     name: "AdminLayout",
 });
-
+const $q = useQuasar();
 const showAccountLock = ref(false);
 const currentNav = ref(null);
 const mini = ref(false);
@@ -326,7 +326,7 @@ const formDataPassword = useForm({
 const formPassword = ref(null);
 
 const messageLock =
-    '<p class="text-center;">al confirmar la baja, eliminaremos tu perfil y todos los datos personales asociados a tu cuenta</p><p class="text-center;">los comentarios, mensajes y testimonios que hayas compartido dentro de la comunidad podran mantenerse para preservar el sentido y la continuidad de las conversaciones, pero quedaran desvinculados de tu identidad y apareceran como "anonimo"</p><p class="text-center;">si consideras que alguna publicacion, comentario o testimonio podria permitir identificarte, puedes solicitar su eliminacion definitiva a traves del formulario de contacto o escribiendo a <a href="mailto:info@sbyetransformacion.com">info@sbyetransformacion.com</a></p><p class="text-center;">gracias por haber compartido este tiempo con nosotros ♥️</p>';
+    '<p class="text-center;">al confirmar la baja, tu cuenta quedara desactivada de forma inmediata. tus datos se conservaran durante un plazo maximo de 90 dias para permitir la recuperacion de la cuenta en caso de error. transcurrido dicho plazo seran eliminados definitivamente</p><p class="text-center;">los comentarios, mensajes y testimonios que hayas compartido dentro de la comunidad podran mantenerse para preservar el sentido y la continuidad de las conversaciones, pero quedaran desvinculados de tu identidad y apareceran como "anonimo"</p><p class="text-center;">si consideras que alguna publicacion, comentario o testimonio podria permitir identificarte, puedes solicitar su eliminacion definitiva a traves del formulario de contacto o escribiendo a <a href="mailto:info@sbyetransformacion.com">info@sbyetransformacion.com</a></p><p class="text-center;">gracias por haber compartido este tiempo con nosotros ♥️</p>';
 
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -400,7 +400,32 @@ const changePassword = () => {
 };
 
 const closeAccount = () => {
-    useForm({}).post("/auth/close-account");
+    $q.dialog({
+        message: "escriba la palabra <b>BAJA</b> para continuar",
+        html: true,
+        prompt: {
+            model: "",
+            isValid: (val) => val === "BAJA",
+            type: "text",
+            dense: true,
+            color: "primary",
+        },
+        cancel: {
+            label: "cancelar",
+            noCaps: true,
+            flat: true,
+            color: "primary",
+        },
+        ok: {
+            label: "continuar",
+            noCaps: true,
+            flat: true,
+            color: Dark.isActive ? "white" : "dark",
+        },
+        persistent: true,
+    }).onOk((data) => {
+        useForm({}).post("/auth/close-account");
+    });
 };
 </script>
 <style>

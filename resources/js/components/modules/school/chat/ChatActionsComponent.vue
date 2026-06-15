@@ -4,6 +4,7 @@
             <form-chat-component
                 :message="currentMessage"
                 @hide-menu="menu.hide()"
+                @reload="emits('reload')"
             />
             <q-item
                 clickable
@@ -84,16 +85,7 @@
 
     <confirm-component
         :show="confirm"
-        @ok="
-            router.delete(
-                `/admin/schooltopics/delete-message/${currentMessage?.id}`,
-                {
-                    onSuccess: () => {
-                        confirm = false;
-                    },
-                }
-            )
-        "
+        @ok="deleteMessage"
         @hide="confirm = false"
         title="confirmar eliminacion"
         message="seguro que deseas eliminar este mensaje"
@@ -171,7 +163,7 @@
                                     @click="
                                         currentMessage.attachments.splice(
                                             index,
-                                            1
+                                            1,
                                         )
                                     "
                                 />
@@ -254,7 +246,7 @@ const props = defineProps({
     topic: Object,
 });
 
-const emits = defineEmits(["hide-menu"]);
+const emits = defineEmits(["hide-menu", "remove-message", "reload"]);
 
 const menu = ref(null);
 const maximizedToggle = ref(false);
@@ -269,6 +261,7 @@ const form = ref(null);
 const currentMessage = ref(null);
 const totalFiles = ref(0);
 const addAttachments = ref(false);
+
 onMounted(() => {
     currentMessage.value = props.message;
 });
@@ -278,7 +271,7 @@ watch(
     (n) => {
         currentMessage.value = n;
     },
-    { deep: true }
+    { deep: true },
 );
 
 const onUpdateField = (name, val) => {
@@ -286,18 +279,31 @@ const onUpdateField = (name, val) => {
 };
 
 const reactHighligthDelete = async (action) => {
-    const send = useForm({});
+    Loading.show();
     const url = `/admin/schooltopics/${action}-message/${currentMessage.value.id}`;
-    if (action === "delete") send.delete(url);
-    else send.post(url);
+    await axios[action === "delete" ? "delete" : "post"](url)
+        .then((res) => {
+            let data = res.data;
+            currentMessage.value[data.property] = data.users;
+            success(data.message);
+        })
+        .finally(() => {
+            Loading.hide();
+        });
 };
 
-const onFinishUploaded = (info) => {
+const onFinishUploaded = async (info) => {
+    if (info) {
+        await axios
+            .get(`/admin/schooltopics/${currentMessage.value.id}`)
+            .then((res) => {
+                Object.assign(currentMessage.value, res.data);
+            });
+    }
     success("mensaje editado correctamente");
     Loading.hide();
     showDialog.value = false;
     upload.value = false;
-    router.reload({}, "preserveState");
 };
 
 const save = async () => {
@@ -306,7 +312,7 @@ const save = async () => {
             Loading.show();
             const { message } = formData;
             const currentAttachments = currentMessage.value.attachments.map(
-                (m) => m.id
+                (m) => m.id,
             );
             await axios
                 .post(
@@ -314,10 +320,10 @@ const save = async () => {
                     {
                         message,
                         currentAttachments,
-                    }
+                    },
                 )
                 .then((response) => {
-                    currentMessage.value = response.data;
+                    Object.assign(currentMessage.value, response.data);
                     if (totalFiles.value === 0) {
                         onFinishUploaded();
                     } else {
@@ -347,5 +353,19 @@ const onHide = () => {
     upload.value = false;
     addAttachments.value = false;
     menu.value.hide();
+};
+
+const deleteMessage = async () => {
+    Loading.show();
+    await axios
+        .delete(`/admin/schooltopics/delete-message/${currentMessage.value.id}`)
+        .then(() => {
+            emits("remove-message");
+            confirm.value = false;
+            success("mensaje eliminado correctamente");
+        })
+        .finally(() => {
+            Loading.hide();
+        });
 };
 </script>

@@ -179,7 +179,7 @@ Route::get('/shared_data', function () {
 
 Route::get('/contactame', function () {
     return Inertia('landing/contactos');
-});
+})->name('contactame');
 
 Route::get('/brevo', function () {
     return view('brevo');
@@ -373,6 +373,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/schooltopics/react-message/{id}', [SchoolTopicsController::class, 'reactMsg']);
     Route::post('/admin/schooltopics/highligth-message/{id}', [SchoolTopicsController::class, 'highligthMsg']);
     Route::post('/admin/schooltopics/add-attachment-message', [SchoolTopicsController::class, 'addAttachmentToMsg']);
+    Route::post('/admin/schooltopics/get-messages-from-parent', [SchoolTopicsController::class, 'getMessagesFromParent']);
+    Route::post('/admin/schooltopics/get-messages-from-topic/{id}', [SchoolTopicsController::class, 'getMessagesFromTopic']);
     Route::post('/admin/categories/sort-files', [CategoryController::class, 'sortFiles']);
     Route::post('/admin/categories/sort-categories', [CategoryController::class, 'sortCategories']);
     Route::post('/admin/categories/public-access/{id}', [CategoryController::class, 'publicAccess']);
