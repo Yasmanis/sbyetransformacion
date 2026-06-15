@@ -28,7 +28,10 @@
             />
             <q-card-section style="max-height: 50vh" class="scroll">
                 <div class="row">
-                    <div class="col bg-grey-4 q-pa-md rounded-borders">
+                    <div
+                        class="col q-pa-md rounded-borders"
+                        :class="Dark.isActive ? 'bg-primary' : 'bg-grey-4'"
+                    >
                         <chat-text-truncate :text="message.message" />
                     </div>
                 </div>

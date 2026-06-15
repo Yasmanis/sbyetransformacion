@@ -4,7 +4,7 @@
         class="chat-scroll-container"
         :style="{ height: containerHeight, overflowY: 'auto' }"
     >
-        <q-list padding>
+        <q-list :dark="Dark.isActive" padding>
             <q-item
                 v-for="(m, idx) in messages"
                 :key="m.id"
@@ -17,7 +17,10 @@
                 </q-item-section>
 
                 <q-item-section
-                    class="bg-white q-pa-sm"
+                    class="q-pa-sm"
+                    :class="{
+                        'bg-white': !Dark.isActive,
+                    }"
                     style="
                         border-top-left-radius: 5px;
                         border-bottom-left-radius: 5px;
@@ -169,7 +172,10 @@
                 <q-item-section
                     avatar
                     top
-                    class="bg-white no-padding"
+                    class="no-padding"
+                    :class="{
+                        'bg-white': !Dark.isActive,
+                    }"
                     style="
                         border-top-right-radius: 5px;
                         border-bottom-right-radius: 5px;
@@ -198,6 +204,7 @@ import BtnDownUpComponent from "../../../btn/BtnDownUpComponent.vue";
 import ChatActionsComponent from "./ChatActionsComponent.vue";
 import TextTruncate from "../../../others/TextTruncate.vue";
 import ChatResponseComponent from "./ChatResponseComponent.vue";
+import { Dark } from "quasar";
 
 defineOptions({ name: "ChatMessageComponent" });
 

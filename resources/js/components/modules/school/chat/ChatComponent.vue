@@ -1,5 +1,10 @@
 <template>
-    <q-card class="bg-grey-4 q-px-md q-mt-sm">
+    <q-card
+        class="q-px-md q-mt-sm"
+        :class="{
+            'bg-grey-4': !Dark.isActive,
+        }"
+    >
         <q-card-section class="no-padding">
             <q-list>
                 <q-item style="padding: 0">
@@ -111,12 +116,7 @@
             />
             <help-chat-component :has_edit="has_edit" />
         </q-card-section>
-        <q-inner-loading
-            :showing="loading"
-            label-class="text-primary"
-            color="primary"
-            size="xs"
-        />
+        <q-inner-loading :showing="loading" color="primary" size="xs" />
     </q-card>
 
     <confirm-component
@@ -147,6 +147,7 @@ import BtnReloadComponent from "../../../btn/BtnReloadComponent.vue";
 import ConfirmComponent from "../../../base/ConfirmComponent.vue";
 import { router } from "@inertiajs/vue3";
 import axios from "axios";
+import { Dark } from "quasar";
 
 defineOptions({
     name: "ChatComponent",
