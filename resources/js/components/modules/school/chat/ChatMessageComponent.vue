@@ -57,7 +57,7 @@
                         </q-item-label>
                     </template>
 
-                    <q-item-label class="q-pt-sm">
+                    <q-item-label class="q-gutter-sm">
                         <q-btn
                             dense
                             flat

@@ -1,13 +1,16 @@
 <template>
     <q-btn-component
-        icon="help"
+        :icon="`img:${$page.props.public_path}images/icon/${Dark.isActive ? 'white' : 'black'}-chat-responses.png`"
         @click="showDialog = true"
         :disable="message.responses === 0"
         :tooltips="`cantidad de respuestas: ${message.responses}`"
     >
-        <q-badge floating color="primary" style="margin-right: -3px">{{
-            message.responses
-        }}</q-badge>
+        <q-badge
+            floating
+            color="primary"
+            style="margin-right: -3px; margin-top: -2px"
+            >{{ message.responses }}</q-badge
+        >
     </q-btn-component>
     <q-dialog
         v-model="showDialog"
@@ -60,6 +63,7 @@ import ChatTextTruncate from "./ChatTextTruncate.vue";
 import BtnCancelComponent from "../../../btn/BtnCancelComponent.vue";
 import { ref, watch } from "vue";
 import axios from "axios";
+import { Dark } from "quasar";
 
 defineOptions({
     name: "ChatResponseComponent",
