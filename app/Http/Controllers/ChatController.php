@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Repositories\ChatRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class ChatController extends Controller
 {
@@ -31,7 +33,27 @@ class ChatController extends Controller
             }
             $repository->filters($filters);
             $repository->orderBy($request->sortBy, $request->sortDirection);
-            return $this->data_index($repository, $request);
+            return Inertia::render($repository->component(), [
+                'data' => $repository->paginate(isset($request->rowsPerPage) ? $request->rowsPerPage : 20, ['*'], 'page', isset($request->page) ? $request->page : null),
+                'search' => isset($request->search) ? json_decode($request->search) : null,
+                'filters' => isset($request->filters) ? json_decode($request->filters) : null,
+                'sort' => isset($request->sortBy) ? [
+                    'sortBy' => $request->sortBy,
+                    'sortDirection' => $request->sortDirection
+                ] : null,
+                'react_range' => [
+                    'min' => 0,
+                    'max' => DB::selectOne('select max(cant) as `max` FROM (SELECT chat_id, COUNT(*) cant from schoolchat_react GROUP BY chat_id) a')->max
+                ],
+                'highligth_range' => [
+                    'min' => 0,
+                    'max' => DB::selectOne('select max(cant) as `max` FROM (SELECT chat_id, COUNT(*) cant from schoolchat_highligth GROUP BY chat_id) a')->max
+                ],
+                // 'response_range' => [
+                //     'min' => 0,
+                //     'max' => DB::selectOne('select max(cant) as `max` FROM (SELECT reply_to, COUNT(*) cant from schoolchat WHERE reply_to IS NOT null GROUP BY reply_to) a')->max
+                // ]
+            ]);
         }
         return $this->deny_access($request);
     }

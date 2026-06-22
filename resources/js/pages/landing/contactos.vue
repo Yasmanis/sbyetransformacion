@@ -469,6 +469,7 @@ import { useForm, usePage, Link, Head } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import { error, errorValidation } from "../../helpers/notifications.js";
 import LegalContracting from "../../components/others/LegalContracting.vue";
+import ConfirmComponent from "../../components/base/ConfirmComponent.vue";
 defineOptions({
     name: "Contactos",
 });
@@ -483,7 +484,7 @@ const fileRef = ref(null);
 const fileTicket = ref(null);
 
 const formRef = ref(null);
-
+const page = usePage();
 const contactPrivateArea = ref(false);
 const iAmNot = ref(false);
 const sending = ref(false);
@@ -511,6 +512,14 @@ onMounted(() => {
         form.name = user.value.name;
         form.surname = user.value.surname;
         form.email = user.value.email;
+    }
+
+    let di = page.props.dialog_info;
+    if (di) {
+        $q.dialog({
+            component: ConfirmComponent,
+            componentProps: di,
+        });
     }
 });
 

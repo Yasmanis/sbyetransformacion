@@ -1,26 +1,29 @@
 <template>
-    <q-item clickable @click="showDialog = true" v-if="message">
-        <q-item-section
-            avatar
-            style="padding-right: 5px !important; min-width: 0px !important"
-        >
-            <q-icon
-                name="mdi-arrow-up-right fa-rotate-270"
-                size="22px"
-            ></q-icon>
-        </q-item-section>
+    <template v-if="!fromMenu">
+        <q-item clickable @click="showDialog = true" v-if="message">
+            <q-item-section
+                avatar
+                style="padding-right: 5px !important; min-width: 0px !important"
+            >
+                <q-icon
+                    name="mdi-arrow-up-right fa-rotate-270"
+                    size="22px"
+                ></q-icon>
+            </q-item-section>
 
-        <q-item-section>responder</q-item-section>
-    </q-item>
-    <q-btn-component
-        icon="mdi-chat-processing-outline"
-        tooltips="usar chat"
-        flat
-        size="md"
-        padding="5px"
-        @click="showDialog = true"
-        v-else
-    />
+            <q-item-section>responder</q-item-section>
+        </q-item>
+        <q-btn-component
+            icon="mdi-chat-processing-outline"
+            tooltips="usar chat"
+            flat
+            size="md"
+            padding="5px"
+            @click="showDialog = true"
+            v-else
+        />
+    </template>
+
     <q-dialog
         v-model="showDialog"
         persistent
@@ -182,6 +185,8 @@ defineOptions({
 const props = defineProps({
     topic: Object,
     message: Object,
+    show: Boolean,
+    fromMenu: Boolean,
 });
 
 const emits = defineEmits(["hide-menu", "reload"]);
@@ -204,6 +209,13 @@ const maximizedToggle = ref(false);
 onBeforeMount(() => {
     getHelp("help_chat_everybody");
 });
+
+watch(
+    () => props.show,
+    (n) => {
+        showDialog.value = n;
+    },
+);
 
 const getHelp = async (h) => {
     showInnerLoading.value = true;

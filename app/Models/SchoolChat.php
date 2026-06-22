@@ -116,31 +116,24 @@ class SchoolChat extends Model
         $notification->priority = 'Baja';
         $notification->user_id = auth()->user()->id;
 
-        /*
-            $users = [];
-            if ($edit) {
-                $users = $this->users;
-                $notification->description = $this->from_visible ? sprintf('el usuario %s ha modificado un mensaje en el chat', $this->from->full_name) : 'se ha modificado un mensaje en el chat';
-            } else {
-                $users = $this->replyTo ? [$this->replyTo->from] : $this->users;
-                if ($this->replyTo)
-                    $notification->description = 'se le ha respondido en el chat';
-                else
-                    $notification->description = $this->from_visible ? sprintf('el usuario %s le ha escrito en el chat', $this->from->full_name) : 'se le ha escrito en el chat de forma anonima';
-            }
-        */
-
+        $users = [];
         if ($edit) {
+            $users = $this->users;
             $notification->description = $this->from_visible ? sprintf('el usuario %s ha modificado un mensaje en el chat', $this->from->full_name) : 'se ha modificado un mensaje en el chat';
         } else {
-            $notification->description = $this->from_visible ? sprintf('el usuario %s le ha escrito en el chat', $this->from->full_name) : 'se le ha escrito en el chat de forma anonima';
+            $users = $this->replyTo ? [$this->replyTo->from] : $this->users;
+            if ($this->replyTo)
+                $notification->description = 'se le ha respondido en el chat';
+            else
+                $notification->description = $this->from_visible ? sprintf('el usuario %s le ha escrito en el chat', $this->from->full_name) : 'se le ha escrito en el chat de forma anonima';
         }
+
         $notification->code = 'chat_writter';
         $notification->model = 'SchoolChat';
         $notification->model_id = $this->id;
         $notification->save();
         $user = auth()->user();
-        Notification::send(User::where('id', 1)->get(), new StandardNotification(
+        Notification::send($users, new StandardNotification(
             $notification,
             'AVISO – contestar NUEVO MENSAJE DE CHAT',
             'admin.chat',
@@ -272,5 +265,25 @@ class SchoolChat extends Model
     public function getResponsesAttribute()
     {
         return SchoolChat::childrenOf(auth()->user(), $this->id)->count();
+    }
+
+    public function scopeWhereHighligth($query, $val)
+    {
+        return $query->withCount('highligths')->havingBetween('highligths_count', [$val->min, $val->max]);
+    }
+
+    public function scopeWhereReact($query, $val)
+    {
+        return $query->withCount('reacts')->havingBetween('reacts_count', [$val->min, $val->max]);
+    }
+
+    public function scopeWhereResponses($query, $val)
+    {
+        if ($val) {
+            return $query->whereNotNull('reply_to')->whereHas('from', function ($q) {
+                $q->personalSbyeTransformacion();
+            });
+        }
+        return $query;
     }
 }

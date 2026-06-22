@@ -299,12 +299,17 @@ class User extends Authenticatable implements CanResetPassword
 
     public function scopePersonalSbyeTransformacion($query)
     {
-        return $query->where('sa', true)->where('active', true);
+        $roles = $this->getRolesSbyeTranformacion();
+        return $query->where('active', true)->where(function ($q) use ($roles) {
+            $q->where('sa', true)->orWhereHas('roles', function ($q1) use ($roles) {
+                $q1->whereIn('name', $roles);
+            });
+        });
     }
 
     public function getRolesSbyeTranformacion()
     {
-        return ['dietista'];
+        return ['administrador', 'gestor', 'facilitador'];
     }
 
     public function isAnAdmin()

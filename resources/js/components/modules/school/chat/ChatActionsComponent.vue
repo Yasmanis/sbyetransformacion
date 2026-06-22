@@ -1,11 +1,22 @@
 <template>
     <q-menu touch-position context-menu ref="menu">
         <q-list bordered dense>
-            <form-chat-component
-                :message="currentMessage"
-                @hide-menu="menu.hide()"
-                @reload="emits('reload')"
-            />
+            <q-item clickable @click="showResponse = true">
+                <q-item-section
+                    avatar
+                    style="
+                        padding-right: 5px !important;
+                        min-width: 0px !important;
+                    "
+                >
+                    <q-icon
+                        name="mdi-arrow-up-right fa-rotate-270"
+                        size="22px"
+                    ></q-icon>
+                </q-item-section>
+
+                <q-item-section>responder</q-item-section>
+            </q-item>
             <q-item
                 clickable
                 v-close-popup
@@ -82,6 +93,19 @@
             </q-item>
         </q-list>
     </q-menu>
+
+    <form-chat-component
+        :show="showResponse"
+        :message="currentMessage"
+        from-menu
+        @hide-menu="
+            () => {
+                menu.hide();
+                showResponse = false;
+            }
+        "
+        @reload="emits('reload')"
+    />
 
     <confirm-component
         :show="confirm"
@@ -261,6 +285,7 @@ const form = ref(null);
 const currentMessage = ref(null);
 const totalFiles = ref(0);
 const addAttachments = ref(false);
+const showResponse = ref(false);
 
 onMounted(() => {
     currentMessage.value = props.message;

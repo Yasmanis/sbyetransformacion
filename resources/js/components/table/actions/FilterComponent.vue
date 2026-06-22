@@ -93,6 +93,13 @@
                         @update="onUpdate"
                         v-else-if="f.type === 'date'"
                     />
+                    <checkbox-field
+                        :name="f.name"
+                        :label="f.label"
+                        :modelValue="f.value"
+                        @update="onUpdate"
+                        v-else-if="f.type === 'checkbox'"
+                    />
                 </div>
             </q-card-section>
             <q-card-actions align="right">
@@ -120,6 +127,7 @@ import BooleanSelectField from "../../form/input/BooleanSelectField.vue";
 import RangeSize from "../../form/input/RangeSize.vue";
 import DateRangeComponent from "../../form/input/DateRangeComponent.vue";
 import RangeField from "../../form/input/RangeField.vue";
+import CheckboxField from "../../form/input/CheckboxField.vue";
 import { usePage } from "@inertiajs/vue3";
 
 defineOptions({

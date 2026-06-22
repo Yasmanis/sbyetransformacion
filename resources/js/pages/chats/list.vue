@@ -31,9 +31,40 @@ import Layout from "../../layouts/AdminLayout.vue";
 import TableComponent from "../../components/table/TableComponent.vue";
 import TextTruncate from "../../components/others/TextTruncate.vue";
 import BtnGoComponent from "../../components/btn/BtnGoComponent.vue";
+import { usePage } from "@inertiajs/vue3";
+import { computed, onMounted, ref } from "vue";
 
 defineOptions({
     name: "ListPage",
+});
+
+const page = usePage();
+
+const react_range = computed(() => {
+    return (
+        page.props.react_range ?? {
+            min: 0,
+            max: 0,
+        }
+    );
+});
+
+const highligth_range = computed(() => {
+    return (
+        page.props.highligth_range ?? {
+            min: 0,
+            max: 0,
+        }
+    );
+});
+
+const response_range = computed(() => {
+    return (
+        page.props.response_range ?? {
+            min: 0,
+            max: 0,
+        }
+    );
 });
 
 const message = {
@@ -114,7 +145,7 @@ const columns = [
 
 const fields = [message];
 
-const filterFields = [
+const filterFields = ref([
     created_at,
     {
         field: "from_id",
@@ -135,5 +166,35 @@ const filterFields = [
             url_to_options: "/chats-modules",
         },
     },
-];
+    {
+        name: "response",
+        label: "respuestas",
+        type: "checkbox",
+        modelValue: false,
+        scope: "whereResponses",
+    },
+]);
+
+onMounted(() => {
+    if (react_range.value.min !== 0 || react_range.value.max !== 0) {
+        filterFields.value.push({
+            name: "react",
+            label: "valoracion",
+            type: "range",
+            scope: "whereReact",
+            value: null,
+            ...react_range.value,
+        });
+    }
+    if (highligth_range.value.min !== 0 || highligth_range.value.max !== 0) {
+        filterFields.value.push({
+            name: "highligth",
+            label: "relevancia",
+            type: "range",
+            scope: "whereHighligth",
+            value: null,
+            ...highligth_range.value,
+        });
+    }
+});
 </script>

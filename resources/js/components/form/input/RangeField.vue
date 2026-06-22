@@ -69,7 +69,7 @@ const emits = defineEmits(["update"]);
 const model = ref(null);
 
 onBeforeMount(() => {
-    model.value = {
+    model.value = props.modelValue ?? {
         min: props.min,
         max: props.max,
     };

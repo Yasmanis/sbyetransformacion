@@ -12,7 +12,7 @@ class ContactAdmin extends Model
 {
     use HasFactory, Recyclable;
 
-    protected $fillable = ['subject', 'description'];
+    protected $fillable = ['subject', 'description', 'created_by'];
 
     protected $with = ['responses', 'attachments'];
 
@@ -22,7 +22,7 @@ class ContactAdmin extends Model
     {
         parent::boot();
         static::creating(function ($obj) {
-            $obj->created_by = auth()->user()->id;
+            $obj->created_by = $obj->created_by ?? auth()->user()->id;
         });
     }
 
@@ -44,9 +44,9 @@ class ContactAdmin extends Model
     public function setMessage()
     {
         $notification = new UserNotifications();
-        $notification->title = 'ayuda desde contacto';
+        $notification->title = $this->subject;
         $notification->priority = 'Alta';
-        $notification->user_id = auth()->user()->id;
+        $notification->user_id = $this->created_by;
         $notification->description = $this->description;
         $notification->code = 'help_from_contact';
         $notification->model = ContactAdmin::class;

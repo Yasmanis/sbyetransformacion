@@ -37,6 +37,7 @@
 <script setup>
 import { ref, onMounted, onBeforeMount, watch } from "vue";
 import { validations } from "../../../helpers/validations";
+import { isNull } from "lodash";
 
 defineOptions({
     name: "CheckboxField",
@@ -88,14 +89,14 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-    model.value = props.modelValue;
+    model.value = isNull(props.modelValue) ? false : props.modelValue;
 });
 
 watch(
     () => props.modelValue,
-    (n, o) => {
-        model.value = props.modelValue;
-    }
+    (n) => {
+        model.value = isNull(n) ? false : n;
+    },
 );
 
 const onUpdate = (val) => {

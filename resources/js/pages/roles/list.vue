@@ -81,9 +81,13 @@ const columns = [
 const fields = [name, permissions];
 
 const isDisabled = (row) => {
-    return ["usuario", "gestor", "facilitador", "administrador"].includes(
-        row?.name?.toLowerCase(),
-    );
+    return [
+        "usuario",
+        "gestor",
+        "facilitador",
+        "administrador",
+        "contacto",
+    ].includes(row?.name?.toLowerCase());
 };
 
 const checkFieldDisabled = (item, fieldName) => {

@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Attachment;
 use App\Models\Contact;
+use App\Models\ContactAdmin;
 use App\Models\Role;
+use App\Models\User;
+use App\Models\UserNotifications;
+use App\Notifications\StandardNotification;
 use App\Repositories\ContactRepository;
 use App\Repositories\UserRepository;
 use App\Services\BrevoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Nette\Utils\Arrays;
 use Spatie\Permission\Models\Permission;
 
@@ -35,7 +40,9 @@ class ContactsController extends Controller
         $repository = new ContactRepository();
         $userRepository = new UserRepository();
         $user = $userRepository->getByColumn($request->email, 'email');
+        $existUser = true;
         if (!isset($user)) {
+            $existUser = false;
             $data = $request->only('name', 'surname', 'email');
             $data['username'] = $request->email;
             $data['password'] = $request->email;
@@ -49,11 +56,21 @@ class ContactsController extends Controller
         }
         $data = $request->only((new ($repository->model()))->getFillable());
         $data['user_id'] = $user->id;
+        $hasTicket = false;
         if ($request->hasFile('ticket')) {
             $path = $request->file('ticket')->store('tickets', 'public');
             $data['ticket'] = $path;
+            $hasTicket = true;
         }
         $contact = $repository->create($data);
+
+        $c = ContactAdmin::create([
+            'subject' => $contact->msg_title,
+            'description' => $contact->message,
+            'created_by' => $user->id
+        ]);
+        $c->setMessage();
+
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
                 $properties = $this->getPropertiesFromFile($file);
@@ -64,20 +81,38 @@ class ContactsController extends Controller
                 ]);
             }
         }
-        $r = Role::firstWhere('name', 'like', 'Usuario');
+        $r = Role::firstWhere('name', 'like', $hasTicket ? 'Usuario' : 'contacto');
         if ($r != null) {
             $user->roles()->syncWithoutDetaching([$r->id]);
         }
+
         try {
-            $brevo = new BrevoService();
-            $params = [
-                'email' => $user->email,
-                'name' => $user->full_name
-            ];
-            $brevo->sendEmail('AVISO - nuevo usuario', 'admin.contacts', $params);
+            $notification = new UserNotifications();
+            $notification->title = $existUser ? 'interaccion desde contactame' : 'nuevo usuario desde contactame';
+            $notification->priority = 'Media';
+            $notification->user_id = auth()?->user()?->id ?? null;
+            $notification->description = $existUser ? sprintf('el usuario %s con correo %s ha interactuado desde contactame en la web', $user->full_name, $user->email) : sprintf('se ha creado desde contactame el usuario %s con correo %s como %s', $user->full_name, $user->email, $hasTicket ? 'usuario' : 'contacto');
+
+            $users = User::where('id', 1)->get();
+
+            $notification->code = 'contact_web_writter';
+            $notification->model = 'SchoolChat';
+            $notification->model_id = $contact->id;
+            $notification->save();
+            Notification::send($users, new StandardNotification(
+                $notification,
+                'AVISO - nuevo usuario',
+                'admin.contacts',
+                ['database', 'brevo'],
+                [
+                    'email' => $user->email,
+                    'name' => $user->full_name,
+                ]
+            ));
         } catch (\Throwable $th) {
-            //throw $th;
+            dd($th->getMessage());
         }
+
         return redirect()->back()->with('success', 'su informacion ha sido registrada correctamente');
     }
 

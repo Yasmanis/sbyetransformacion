@@ -235,7 +235,6 @@ import { ref, computed, onBeforeMount, onMounted } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
 import { Screen, useQuasar } from "quasar";
 import axios from "axios";
-import ConfirmComponent from "../components/base/ConfirmComponent.vue";
 
 defineOptions({
     name: "MainLayout",
@@ -260,6 +259,8 @@ const allCourses = ref([
 ]);
 
 const activeCourses = ref([]);
+
+const showDialogDisableAccount = ref(false);
 
 onBeforeMount(async () => {
     await axios.get("/shared_data").then((response) => {
@@ -289,15 +290,7 @@ onMounted(() => {
     setTimeout(() => {
         const initialWidth = document.querySelector(".justify-end").offsetWidth;
         calculateVisible({ width: initialWidth });
-    }, 100);
-
-    let dialog_info = page.props.dialog_info;
-    if (dialog_info) {
-        $q.dialog({
-            component: ConfirmComponent,
-            componentProps: dialog_info,
-        });
-    }
+    }, 100);    
 });
 
 const authenticated = computed(() => {
