@@ -164,20 +164,4 @@ class ProductController extends Controller
         }
         return $this->deny_access($request);
     }
-
-    public function sort(Request $request)
-    {
-        if (auth()->user()->hasUpdate('product')) {
-            $objects = json_decode($request->ids);
-            foreach ($objects as $c) {
-                $obj = Product::find($c->id);
-                if ($obj != null) {
-                    $obj->order = $c->order;
-                    $obj->save();
-                }
-            }
-            return redirect()->back()->with('success', 'productos ordenados correctamente');
-        }
-        return $this->deny_access($request);
-    }
 }

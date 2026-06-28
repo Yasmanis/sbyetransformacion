@@ -134,20 +134,4 @@ class ProductSubcategoryController extends Controller
         }
         return $this->deny_access($request);
     }
-
-    public function sort(Request $request)
-    {
-        if (auth()->user()->hasUpdate('productsubcategory')) {
-            $objects = json_decode($request->ids);
-            foreach ($objects as $c) {
-                $obj = ProductSubcategory::find($c->id);
-                if ($obj != null) {
-                    $obj->order = $c->order;
-                    $obj->save();
-                }
-            }
-            return redirect()->back()->with('success', 'subcategorias ordenadas correctamente');
-        }
-        return $this->deny_access($request);
-    }
 }

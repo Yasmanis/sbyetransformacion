@@ -52,8 +52,7 @@
                             v-if="has_add"
                         />
                         <sort-elements-component
-                            :items="rows"
-                            :url="`${current_module.base_url}/sort`"
+                            model="Testimony"
                             tooltips="ordenar testimonios"
                             v-if="has_edit"
                         />

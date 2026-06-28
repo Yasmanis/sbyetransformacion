@@ -148,17 +148,4 @@ class TestimonyController extends Controller
         }
         return $this->deny_access($request);
     }
-
-    public function sort(Request $request)
-    {
-        if (auth()->user()->hasUpdate('testimony')) {
-            $testimonies = json_decode($request->ids);
-            $repository = new TestimonyRepository();
-            foreach ($testimonies as $c) {
-                $repository->updateById($c->id, ['order' => $c->order]);
-            }
-            return redirect()->back()->with('success', 'testimonios ordenados correctamente');
-        }
-        return $this->deny_access($request);
-    }
 }

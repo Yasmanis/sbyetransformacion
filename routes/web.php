@@ -159,7 +159,11 @@ Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
         }
     }
     if (isset($category)) {
-        $files = File::where('category_id', $category->id)->publicAccess()->orderBy('order', 'ASC')->get();
+        if ($category->sort_files) {
+            $files = File::where('category_id', $category->id)->publicAccess()->orderBy('id', $category->sort_files)->get();
+        } else {
+            $files = File::where('category_id', $category->id)->publicAccess()->orderBy('fixed', 'DESC')->orderBy('order', 'ASC')->get();
+        }
         $category->files = $files;
     }
     if ($category->name == 'testimonios') {
@@ -263,6 +267,10 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::group(['prefix' => 'utils'], function () {
         Route::post('/highlight', [UtilsController::class, 'highlight']);
         Route::post('/remove-highlighted', [UtilsController::class, 'removeHighlighted']);
+        Route::post('/fixed', [UtilsController::class, 'fixed']);
+        Route::post('/sorted-elements', [UtilsController::class, 'sortedElements']);
+        Route::post('/sort-elements', [UtilsController::class, 'sortElements']);
+        Route::post('/change-default-order-elements', [UtilsController::class, 'changeDefaultOrderElements']);
     });
 
 
@@ -296,7 +304,6 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/chats', ChatController::class)->only(['index', 'update', 'destroy']);
 
     Route::resource('/admin/testimony', TestimonyController::class);
-    Route::post('/admin/testimony/sort', [TestimonyController::class, 'sort']);
 
     Route::resource('/admin/push-messages', PushMessageController::class);
     Route::get('/admin/push-messages/change-status/{id}', [PushMessageController::class, 'changeStatus']);
@@ -334,11 +341,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/subtitles', SubtitleController::class)->only(['store', 'update', 'destroy']);
 
     Route::post('/admin/products/public/{id}', [ProductController::class, 'public']);
-    Route::post('/admin/products/sort', [ProductController::class, 'sort']);
     Route::resource('/admin/product-categories', ProductCategoryController::class);
-    Route::post('/admin/product-categories/sort', [ProductCategoryController::class, 'sort']);
     Route::resource('/admin/product-subcategories', ProductSubcategoryController::class);
-    Route::post('/admin/product-subcategories/sort', [ProductSubcategoryController::class, 'sort']);
     Route::resource('/admin/users/payment-methods', PaymentMethodController::class)->except('index');
     Route::post('/admin/users/payment-methods/predetermined/{id}', [PaymentMethodController::class, 'predetermined']);
     Route::resource('/admin/users/billing-information', BillingInformationController::class)->except('index');
@@ -362,7 +366,6 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/reality', RealityController::class);
     Route::resource('/admin/reflexiona', ReflectionController::class);
     Route::resource('/admin/schooltopics', SchoolTopicsController::class);
-    Route::post('/admin/schooltopics/sort-topics', [SchoolTopicsController::class, 'sortTopics']);
     Route::post('/admin/schooltopics/addResources', [SchoolTopicsController::class, 'addResource']);
     Route::delete('/admin/schooltopics/deleteResource/{id}', [SchoolTopicsController::class, 'deleteResource']);
     Route::post('/admin/schooltopics/update-video-percentaje-to-user', [SchoolTopicsController::class, 'updateVideoPercentage']);
@@ -375,8 +378,6 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/schooltopics/add-attachment-message', [SchoolTopicsController::class, 'addAttachmentToMsg']);
     Route::post('/admin/schooltopics/get-messages-from-parent', [SchoolTopicsController::class, 'getMessagesFromParent']);
     Route::post('/admin/schooltopics/get-messages-from-topic/{id}', [SchoolTopicsController::class, 'getMessagesFromTopic']);
-    Route::post('/admin/categories/sort-files', [CategoryController::class, 'sortFiles']);
-    Route::post('/admin/categories/sort-categories', [CategoryController::class, 'sortCategories']);
     Route::post('/admin/categories/public-access/{id}', [CategoryController::class, 'publicAccess']);
     Route::post('/admin/categories/private-area/{id}', [CategoryController::class, 'privateArea']);
     Route::resource('/admin/files', FileController::class);
@@ -441,6 +442,10 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
 Route::get('/categories', [SelectsController::class, 'categories']);
 Route::get('/countries', [SelectsController::class, 'countries']);
+Route::post('/provinces', [SelectsController::class, 'provinces']);
+Route::post('/cities', [SelectsController::class, 'cities']);
+Route::post('/roads', [SelectsController::class, 'roads']);
+Route::post('/postal-codes', [SelectsController::class, 'postalCodes']);
 Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
 Route::get('/download/{id}', [FileController::class, 'download']);
 Route::post('/subscribe', [BrevoController::class, 'subscribe']);

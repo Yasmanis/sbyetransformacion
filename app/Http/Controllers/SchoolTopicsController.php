@@ -135,19 +135,6 @@ class SchoolTopicsController extends Controller
         return redirect()->back()->with('success', 'tema eliminado correctamente');
     }
 
-    public function sortTopics(Request $request)
-    {
-        $list = json_decode($request->ids);
-        foreach ($list as $l) {
-            $topic = SchoolTopic::find($l->id);
-            if ($topic != null) {
-                $topic->order = $l->order;
-                $topic->save();
-            }
-        }
-        return redirect()->back()->with('success', 'temas ordenados correctamente');
-    }
-
     public function updateVideoPercentage(Request $request)
     {
         $user = auth()->user();

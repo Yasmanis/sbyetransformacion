@@ -17,7 +17,6 @@
             {{ currentFilters.length }}
         </q-badge>
     </q-btn-component>
-
     <q-dialog
         v-model="showDialog"
         position="right"
@@ -34,7 +33,7 @@
             <q-card-section>
                 <div
                     class="row"
-                    v-for="(f, index) in filters"
+                    v-for="(f, index) in fields"
                     :key="`filter-${index}`"
                     style="padding-bottom: 10px"
                 >
@@ -100,6 +99,13 @@
                         @update="onUpdate"
                         v-else-if="f.type === 'checkbox'"
                     />
+                    <dynamic-cascading-selects
+                        ref="cascadingSelectsRef"
+                        :fields="f.fields"
+                        :model-value="getValuesFromCascadingSelects(f)"
+                        @update="onUpdateCascadingSelect"
+                        v-else-if="f.type === 'dynamicselects'"
+                    />
                 </div>
             </q-card-section>
             <q-card-actions align="right">
@@ -117,7 +123,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import SelectField from "../../form/input/SelectField.vue";
@@ -128,6 +134,7 @@ import RangeSize from "../../form/input/RangeSize.vue";
 import DateRangeComponent from "../../form/input/DateRangeComponent.vue";
 import RangeField from "../../form/input/RangeField.vue";
 import CheckboxField from "../../form/input/CheckboxField.vue";
+import DynamicCascadingSelects from "../../form/input/DynamicCascadingSelects.vue";
 import { usePage } from "@inertiajs/vue3";
 
 defineOptions({
@@ -155,14 +162,39 @@ const showDialog = ref(false);
 
 const filters = ref([]);
 
+const cascadingSelectsRef = ref(null);
+
 const currentFilters = computed(() => {
     return page.props.filters
         ? page.props.filters.filter((f) => f.name !== "id")
         : [];
 });
 
+const getValuesFromCascadingSelects = (cascade) => {
+    let selects = new Set(cascade.fields.map((f) => f.name));
+    let values = null;
+    let exists = currentFilters.value.filter((f) => selects.has(f.name));
+    if (exists.length > 0) {
+        values = {};
+        exists.forEach((e) => {
+            values[e.name] = e.value;
+        });
+    }
+    return values;
+};
+
 const onBeforeShow = () => {
-    filters.value = props.fields;
+    filters.value = [];
+    props.fields.forEach((f) => {
+        if (f.type !== "dynamicselects") {
+            filters.value.push(f);
+        } else {
+            f.fields.forEach((d) => {
+                filters.value.push(d);
+            });
+        }
+    });
+
     if (currentFilters.value.length > 0) {
         filters.value.forEach((f) => {
             if (f.type === "hidden") {
@@ -196,6 +228,7 @@ function clear() {
     filters.value.forEach((f) => {
         f.value = null;
     });
+    cascadingSelectsRef.value[0].resetAll();
     emit("refresh-data", "filters");
 }
 
@@ -209,7 +242,14 @@ const onUpdateState = (name, val, full) => {
     setFilters();
 };
 
-const onUpdate = (name, val, full) => {
+const onUpdate = (name, val) => {
+    let current = valueToFilters(name, val);
+    if (current.type !== "hidden") {
+        setFilters();
+    }
+};
+
+const valueToFilters = (name, val) => {
     let current = filters.value.find((f) => f.name === name);
     current["value"] = val
         ? current.type === "select"
@@ -218,9 +258,7 @@ const onUpdate = (name, val, full) => {
                 : [val]
             : val
         : null;
-    if (current.type !== "hidden") {
-        setFilters();
-    }
+    return current;
 };
 
 const setFilters = () => {
@@ -242,5 +280,12 @@ const setFilters = () => {
         "filters",
         currentFilters.length > 0 ? currentFilters : null,
     );
+};
+
+const onUpdateCascadingSelect = (values) => {
+    Object.keys(values).forEach((key) => {
+        valueToFilters(key, values[key].value);
+    });
+    setFilters();
 };
 </script>

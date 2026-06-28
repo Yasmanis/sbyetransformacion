@@ -254,6 +254,34 @@ class User extends Authenticatable implements CanResetPassword
         });
     }
 
+    public function scopeWhereProvince($query, $value)
+    {
+        return $query->whereHas('buyer', function ($query) use ($value) {
+            $query->where('province', $value);
+        });
+    }
+
+    public function scopeWhereCity($query, $value)
+    {
+        return $query->whereHas('buyer', function ($query) use ($value) {
+            $query->where('city', $value);
+        });
+    }
+
+    public function scopeWhereRoad($query, $value)
+    {
+        return $query->whereHas('buyer', function ($query) use ($value) {
+            $query->where('road', $value);
+        });
+    }
+
+    public function scopeWherePostalCode($query, $value)
+    {
+        return $query->whereHas('buyer', function ($query) use ($value) {
+            $query->where('postal_code', $value);
+        });
+    }
+
     public function scopeWhereBirthdate($query, $value)
     {
         return $query->whereHas('buyer', function ($query) use ($value) {

@@ -17,7 +17,8 @@ class Category extends Model
         'subtitle',
         'description',
         'public_access',
-        'private_area'
+        'private_area',
+        'sort_files'
     ];
 
     protected $casts = [

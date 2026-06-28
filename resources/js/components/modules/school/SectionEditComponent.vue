@@ -53,8 +53,9 @@
                         <q-item-section avatar v-if="has_edit">
                             <sort-elements-component
                                 tooltips="ordenar temas"
-                                :items="s.topics"
-                                url="/admin/schooltopics/sort-topics"
+                                parent-column="section_id"
+                                :parent-id="s.id"
+                                model="SchoolTopic"
                             />
                         </q-item-section>
                         <q-item-section avatar v-if="has_delete">
@@ -377,7 +378,7 @@ const saveTopic = async () => {
     formTopic.value.validate().then(async (success) => {
         if (success) {
             let show_confirm = itemsTopics.value.find(
-                (t) => !t.isOk && t.visible
+                (t) => !t.isOk && t.visible,
             );
             if (show_confirm) {
                 $q.dialog({
@@ -430,7 +431,7 @@ const onSaveTopic = (info, store) => {
                     totalSave.value > 1
                         ? "temas adicionados"
                         : "tema adicionado"
-                } correctamente`
+                } correctamente`,
             );
         } else {
             success("tema modificado correctamente");

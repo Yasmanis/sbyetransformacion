@@ -15,12 +15,13 @@ class File extends Model
 
     protected $table = 'file';
 
-    protected $fillable = ['name', 'size', 'path', 'type', 'category_id', 'public_access', 'public_date', 'poster', 'link'];
+    protected $fillable = ['name', 'size', 'path', 'type', 'category_id', 'public_access', 'public_date', 'poster', 'link', 'fixed'];
 
     protected $appends = ['category', 'size_str', 'file'];
 
     protected $casts = [
         'public_access' => 'boolean',
+        'fixed' => 'boolean'
     ];
 
     protected static function booted()

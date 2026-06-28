@@ -61,6 +61,24 @@ const publicAccess = {
     type: "boolean",
 };
 
+const sortFiles = {
+    field: "sort_files",
+    name: "sort_files",
+    label: "orden de archivos",
+    align: "center",
+    type: "select",
+    options: [
+        {
+            label: "ascendente",
+            value: "asc",
+        },
+        {
+            label: "descendente",
+            value: "desc",
+        },
+    ],
+};
+
 const privateArea = {
     field: "private_area",
     name: "private_area",
@@ -71,7 +89,7 @@ const privateArea = {
 
 const searchFields = [name, subtitle];
 
-const filterFields = [publicAccess, privateArea];
+const filterFields = [publicAccess, privateArea, sortFiles];
 
 const columns = [
     name,
@@ -88,5 +106,12 @@ const columns = [
     },
 ];
 
-const fields = [name, subtitle, description, publicAccess, privateArea];
+const fields = [
+    name,
+    subtitle,
+    description,
+    publicAccess,
+    privateArea,
+    sortFiles,
+];
 </script>

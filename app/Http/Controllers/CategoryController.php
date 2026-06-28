@@ -69,38 +69,6 @@ class CategoryController extends Controller
         return $this->deny_access($request);
     }
 
-    public function sortFiles(Request $request)
-    {
-        if (auth()->user()->hasUpdate('category')) {
-            $files = json_decode($request->ids);
-            foreach ($files as $f) {
-                $file = File::find($f->id);
-                if ($file != null) {
-                    $file->order = $f->order;
-                    $file->save();
-                }
-            }
-            return redirect()->back()->with('success', 'ficheros ordenados correctamente');
-        }
-        return $this->deny_access($request);
-    }
-
-    public function sortCategories(Request $request)
-    {
-        if (auth()->user()->hasUpdate('category')) {
-            $categories = json_decode($request->ids);
-            foreach ($categories as $c) {
-                $category = Category::find($c->id);
-                if ($category != null) {
-                    $category->order = $c->order;
-                    $category->save();
-                }
-            }
-            return redirect()->back()->with('success', 'categorias ordenadas correctamente');
-        }
-        return $this->deny_access($request);
-    }
-
     public function publicAccess(Request $request, $id)
     {
         if (auth()->user()->hasUpdate('category')) {

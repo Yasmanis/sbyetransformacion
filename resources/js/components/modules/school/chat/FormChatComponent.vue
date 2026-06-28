@@ -30,6 +30,7 @@
         allow-focus-outside
         draggable
         :maximized="maximizedToggle"
+        @before-show="getHelp('help_chat_everybody')"
         @hide="onHide"
     >
         <q-card>
@@ -206,10 +207,6 @@ const currentMessage = ref(null);
 const showInnerLoading = ref(false);
 const maximizedToggle = ref(false);
 
-onBeforeMount(() => {
-    getHelp("help_chat_everybody");
-});
-
 watch(
     () => props.show,
     (n) => {
@@ -301,7 +298,6 @@ const onHide = () => {
     helpEdit.value = false;
     maximizedToggle.value = false;
     totalFiles.value = 0;
-    getHelp("help_chat_everybody");
     if (props.message) {
         emits("hide-menu");
     }

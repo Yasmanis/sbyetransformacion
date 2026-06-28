@@ -259,7 +259,11 @@
                     <btn-user-card-component
                         @click="router.get(`/admin/users/${props.row.id}`)"
                     />
-                    <btn-calendar-plus-component />
+                    <btn-calendar-plus-component
+                        @click="
+                            router.get(`/admin/users/calendar/${props.row.id}`)
+                        "
+                    />
                     <lock-unlock-component
                         :status="!props.row.active"
                         :objects="

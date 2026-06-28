@@ -302,3 +302,13 @@ h6 {
 .custom-font-size {
     font-size: 14px !important;
 }
+
+.vuecal {
+    --vuecal-primary-color: #407492 !important;
+    --vuecal-secondary-color: #2E7D32;
+    --vuecal-background-color: white !important;
+    --vuecal-cell-border-color: #e0e0e0;
+    --vuecal-event-color: #ffffff;
+    --vuecal-today-color: #FFF3E0;
+    --vuecal-selected-color: #C8E6C9;
+}

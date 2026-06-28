@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BillingInformation;
 use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\CategoryNomenclature;
@@ -45,6 +46,58 @@ class SelectsController extends Controller
     {
         return response()->json([
             'options' => Country::select('id as value', 'name as label', 'phonecode')->get()
+        ]);
+    }
+
+    public function provinces(Request $request)
+    {
+        $country = $request->get('country');
+        return response()->json([
+            'options' => DB::table('users_buyers')->select('province as value', 'province as label')
+                ->whereNotNull('province')
+                ->where('country_id', $country)->distinct()->get()
+        ]);
+    }
+
+    public function cities(Request $request)
+    {
+        $country = $request->get('country');
+        $province = $request->get('province');
+        return response()->json([
+            'options' => DB::table('users_buyers')->select('city as value', 'city as label')
+                ->whereNotNull('city')
+                ->where('country_id', $country)
+                ->where('province', $province)->distinct()->get()
+        ]);
+    }
+
+    public function roads(Request $request)
+    {
+        $country = $request->get('country');
+        $province = $request->get('province');
+        $city = $request->get('city');
+        return response()->json([
+            'options' => DB::table('users_buyers')->select('road as value', 'road as label')
+                ->whereNotNull('road')
+                ->where('country_id', $country)
+                ->where('province', $province)
+                ->where('city', $city)
+                ->distinct()->get()
+        ]);
+    }
+
+    public function postalCodes(Request $request)
+    {
+        $country = $request->get('country');
+        $province = $request->get('province');
+        $city = $request->get('city');
+        return response()->json([
+            'options' => DB::table('users_buyers')->select('postal_code as value', 'postal_code as label')
+                ->whereNotNull('postal_code')
+                ->where('country_id', $country)
+                ->where('province', $province)
+                ->where('city', $city)
+                ->distinct()->get()
         ]);
     }
 

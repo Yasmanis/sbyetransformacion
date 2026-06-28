@@ -63,9 +63,8 @@
                             v-if="createFields.length > 0 && has_add"
                         />
                         <sort-elements-component
-                            :items="rows"
-                            :url="`${current_module.base_url}/sort`"
                             tooltips="ordenar productos"
+                            model="Product"
                             v-if="has_edit"
                         />
                         <btn-reload-component @click="onRequest" />

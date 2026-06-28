@@ -62,8 +62,7 @@
                             v-if="createFields.length > 0 && has_add"
                         />
                         <sort-elements-component
-                            :items="rows"
-                            :url="`${current_module.base_url}/sort`"
+                            model="ProductSubcategory"
                             tooltips="ordenar categorias"
                             v-if="has_edit"
                         />

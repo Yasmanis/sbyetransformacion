@@ -53,8 +53,7 @@
                             v-if="createFields.length > 0 && has_add"
                         />
                         <sort-elements-component
-                            :items="rows"
-                            :url="`${current_module.base_url}/sort-categories`"
+                            model="Category"
                             tooltips="ordenar categorias"
                             v-if="has_edit"
                         />
@@ -193,10 +192,27 @@
                         size="sm"
                         v-if="updateFields.length > 0 && has_edit"
                     />
+                    <sort-elements-time-component
+                        :object="props.row"
+                        :tooltips="
+                            props.row.sort_files
+                                ? 'cambiar orden de ficheros'
+                                : 'establecer orden de ficheros'
+                        "
+                        model="Category"
+                        sort-column="sort_files"
+                        v-if="has_edit"
+                    />
                     <sort-elements-component
                         tooltips="ordenar ficheros"
-                        :items="props.row.files"
-                        :url="`${current_module.base_url}/sort-files`"
+                        :parent-id="props.row.id"
+                        has-fixed
+                        :sorted-columns="{
+                            fixed: 'desc',
+                            order: 'asc',
+                        }"
+                        model="File"
+                        parent-column="category_id"
                         v-if="has_edit"
                     />
                     <btn-public-component
@@ -277,9 +293,13 @@
                                             :label="col.value ? 'Si' : 'No'"
                                         />
                                     </q-item-label>
-                                    <q-item-label caption v-else>{{
-                                        col.value ? col.value : "..."
-                                    }}</q-item-label>
+                                    <q-item-label caption v-else>
+                                        <span
+                                            v-html="
+                                                col.value ? col.value : '...'
+                                            "
+                                        ></span>
+                                    </q-item-label>
                                 </q-item-section>
                                 <q-item-section
                                     v-else-if="col.name === 'actions'"
@@ -299,10 +319,27 @@
                                                 has_edit
                                             "
                                         />
+                                        <sort-elements-time-component
+                                            :object="props.row"
+                                            :tooltips="
+                                                props.row.sort_files
+                                                    ? 'cambiar orden de ficheros'
+                                                    : 'establecer orden de ficheros'
+                                            "
+                                            model="Category"
+                                            sort-column="sort_files"
+                                            v-if="has_edit"
+                                        />
                                         <sort-elements-component
                                             tooltips="ordenar ficheros"
-                                            :items="props.row.files"
-                                            :url="`${current_module.base_url}/sort-files`"
+                                            :parent-id="props.row.id"
+                                            :sorted-columns="{
+                                                fixed: 'desc',
+                                                order: 'asc',
+                                            }"
+                                            model="File"
+                                            has-fixed
+                                            parent-column="category_id"
                                             v-if="has_edit"
                                         />
                                         <btn-public-component
@@ -355,6 +392,7 @@ import FilterComponent from "../../table/actions/FilterComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
+import SortElementsTimeComponent from "../../others/SortElementsTimeComponent.vue";
 import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import BtnLockUnlockComponent from "../../btn/BtnLockUnlockComponent.vue";
 
@@ -519,19 +557,5 @@ td.actions-def > .q-btn {
 
 .q-table th.last-column-sticky {
     right: 0;
-}
-
-#items {
-    padding: 0;
-}
-
-#items > li {
-    padding: 10px;
-    list-style: none;
-    cursor: pointer;
-}
-
-#items > li:hover {
-    background-color: #cdcdcd;
 }
 </style>

@@ -110,20 +110,4 @@ class ProductCategoryController extends Controller
         }
         return $this->deny_access($request);
     }
-
-    public function sort(Request $request)
-    {
-        if (auth()->user()->hasUpdate('productcategory')) {
-            $objects = json_decode($request->ids);
-            foreach ($objects as $c) {
-                $obj = ProductCategory::find($c->id);
-                if ($obj != null) {
-                    $obj->order = $c->order;
-                    $obj->save();
-                }
-            }
-            return redirect()->back()->with('success', 'categorias ordenadas correctamente');
-        }
-        return $this->deny_access($request);
-    }
 }
