@@ -361,7 +361,12 @@ abstract class BaseRepository implements BaseInterface
     public function filters($filters)
     {
         if (isset($filters)) {
-            $filters = json_decode($filters);
+            if (is_string($filters)) {
+                $filters = json_decode($filters);
+            }
+            $filters = array_map(function ($item) {
+                return (object) $item;
+            }, $filters);
             foreach ($filters as $f) {
                 if (isset($f->scope)) {
                     $this->scopes[] = ['method' => $f->scope, 'args' => $f->value];
@@ -395,7 +400,10 @@ abstract class BaseRepository implements BaseInterface
     public function search($attr)
     {
         if (isset($attr)) {
-            $attr = json_decode($attr);
+            if (is_string($attr)) {
+                $attr = json_decode($attr);
+            }
+            $attr = (object) $attr;
             $this->where($attr->column, $attr->condition, $attr->query);
         }
     }

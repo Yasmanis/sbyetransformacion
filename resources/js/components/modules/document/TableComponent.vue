@@ -443,7 +443,6 @@ const visibleRows = computed(() => {
 
     const result = [];
     const { name, others } = filters.value;
-    console.log(others);
 
     const filterActive = !!(name || others);
     let qStart = null,

@@ -7,12 +7,22 @@
     >
         <q-card-section class="no-padding">
             <q-list>
-                <q-item style="padding: 0">
+                <q-item class="q-px-xs">
                     <q-item-section
                         @click="showPanel = !showPanel"
                         class="cursor-pointer"
                     >
-                        <q-item-label lines="1" class="text-bold">
+                        <template v-if="segment === 'school'">
+                            <q-item-label lines="1" class="text-bold">
+                                ✨️ participa en la evolucion del libro
+                            </q-item-label>
+                            <q-item-label class="text-body2">
+                                este espacio forma parte del libro. algunas de
+                                las aclaraciones y notas que encontraras
+                                nacieron de preguntas como la tuya
+                            </q-item-label></template
+                        >
+                        <q-item-label lines="1" class="text-bold" v-else>
                             preguntanos o comenta lo que quieras
                         </q-item-label>
                     </q-item-section>

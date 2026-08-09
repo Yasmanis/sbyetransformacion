@@ -270,7 +270,7 @@ class SchoolTopicsController extends Controller
     {
         $messages = SchoolChat::with(['attachments', 'reacts', 'highligths'])
             ->rootMessages()
-            ->fromTopic($id)
+            ->whereTopic($id)
             ->forUser(auth()->user())
             ->noFromDeleted()
             ->orderBy('id', 'ASC')

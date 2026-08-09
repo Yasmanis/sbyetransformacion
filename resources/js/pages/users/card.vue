@@ -42,6 +42,9 @@
                             />
                         </q-item-section>
                         <q-item-section avatar>
+                            <testimonies-component :user="user" />
+                        </q-item-section>
+                        <q-item-section avatar>
                             <btn-reply-component
                                 color="white"
                                 tooltips="volver a usuarios"
@@ -90,6 +93,7 @@ import QBtnComponent from "../../components/base/QBtnComponent.vue";
 import FormAvatar from "../../components/auth/FormAvatar.vue";
 import DocumentsComponent from "../../components/modules/user/DocumentsComponent.vue";
 import DialogTiketsComponent from "../../components/modules/user/DialogTiketsComponent.vue";
+import TestimoniesComponent from "../../components/modules/user/TestimoniesComponent.vue";
 import { computed, onMounted, ref } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { modules } from "../../services/current_module";

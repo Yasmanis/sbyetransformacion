@@ -6,8 +6,8 @@ export const modules = () => {
     return page.props.auth.menu.modules;
 };
 
-export const getActiveModule = () => {
-    let url = page.url.split("?")[0];
+export const getActiveModule = (segment = null) => {
+    let url = segment ?? page.url.split("?")[0];
     if (url.includes("?")) {
         url = url.split("?")[0];
     } else if (url.includes("#")) {

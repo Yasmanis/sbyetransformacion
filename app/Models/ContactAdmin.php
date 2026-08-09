@@ -76,7 +76,7 @@ class ContactAdmin extends Model
 
     public function getUserStrAttribute()
     {
-        return $this->user()->first()->full_name;
+        return $this->user()->first()?->full_name ?? null;
     }
 
     public function getSendAttribute()

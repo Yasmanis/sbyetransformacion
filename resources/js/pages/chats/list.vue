@@ -98,10 +98,28 @@ const from_str = {
     type: "text",
 };
 
+const module_str = {
+    field: "module_str",
+    name: "module_str",
+    label: "modulo",
+    align: "left",
+    sortable: false,
+    type: "text",
+};
+
+const submodule_str = {
+    field: "submodule_str",
+    name: "submodule_str",
+    label: "seccion",
+    align: "left",
+    sortable: false,
+    type: "text",
+};
+
 const section_str = {
     field: "section_str",
     name: "section_str",
-    label: "seccion",
+    label: "categoria",
     align: "left",
     sortable: false,
     type: "text",
@@ -116,22 +134,14 @@ const topic_str = {
     type: "text",
 };
 
-const segment = {
-    field: "segment_description",
-    name: "segment_description",
-    label: "modulo",
-    align: "left",
-    sortable: false,
-    type: "text",
-};
-
 const searchFields = [message];
 
 const columns = [
     message,
     created_at,
     from_str,
-    segment,
+    module_str,
+    submodule_str,
     section_str,
     topic_str,
     {
@@ -157,14 +167,65 @@ const filterFields = ref([
         },
     },
     {
-        field: "module",
-        name: "module",
-        label: "modulo",
-        type: "select",
-        scope: "whereCategory",
-        othersProps: {
-            url_to_options: "/chats-modules",
-        },
+        type: "dynamicselects",
+        fields: [
+            {
+                name: "module",
+                label: "modulo",
+                dependsOn: [],
+                url: "/chat-modules",
+                method: "get",
+                options: [],
+                value: null,
+                loading: false,
+                disabled: false,
+                resets: ["submodule"],
+                type: "select",
+                scope: "whereModule",
+            },
+            {
+                name: "submodule",
+                label: "seccion",
+                dependsOn: ["module"],
+                url: "/submodules",
+                method: "post",
+                options: [],
+                value: null,
+                loading: false,
+                disabled: true,
+                resets: [],
+                type: "select",
+                scope: "whereSubmodule",
+            },
+            {
+                name: "section",
+                label: "categoria",
+                dependsOn: ["submodule"],
+                url: "/chat-module-sections",
+                method: "post",
+                options: [],
+                value: null,
+                loading: false,
+                disabled: true,
+                resets: [],
+                type: "select",
+                scope: "whereSection",
+            },
+            {
+                name: "topic",
+                label: "tema",
+                dependsOn: ["section"],
+                url: "/chat-section-topics",
+                method: "post",
+                options: [],
+                value: null,
+                loading: false,
+                disabled: true,
+                resets: [],
+                type: "select",
+                scope: "whereTopic",
+            },
+        ],
     },
     {
         name: "response",

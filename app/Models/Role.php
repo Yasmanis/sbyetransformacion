@@ -9,9 +9,13 @@ class Role extends SpatieRole
 {
     use Recyclable;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'description', 'is_sbye'];
 
     protected $appends = ['permissions'];
+
+    protected $casts = [
+        'is_sbye' => 'boolean'
+    ];
 
     public static function boot()
     {

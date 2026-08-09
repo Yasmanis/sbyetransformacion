@@ -4,6 +4,7 @@
             <table-component
                 :columns="columns"
                 :searchFields="searchFields"
+                :filterFields="filterFields"
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
@@ -54,6 +55,16 @@ const name = {
     },
 };
 
+const description = {
+    field: "description",
+    name: "description",
+    label: "descripcion",
+    align: "left",
+    sortable: true,
+    type: "text",
+    autogrow: true,
+};
+
 const permissions = {
     field: "permissions",
     name: "permissions",
@@ -65,10 +76,22 @@ const permissions = {
     },
 };
 
+const is_sbye = {
+    field: "is_sbye",
+    name: "is_sbye",
+    label: "personal sbye-transformacion",
+    align: "center",
+    type: "boolean",
+};
+
 const searchFields = [name];
+
+const filterFields = [is_sbye];
 
 const columns = [
     name,
+    description,
+    is_sbye,
     {
         field: "actions",
         name: "actions",
@@ -78,7 +101,7 @@ const columns = [
     },
 ];
 
-const fields = [name, permissions];
+const fields = [name, description, is_sbye, permissions];
 
 const isDisabled = (row) => {
     return [

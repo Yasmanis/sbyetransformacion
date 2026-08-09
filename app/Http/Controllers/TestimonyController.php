@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\File;
 use App\Models\Testimony;
 use App\Repositories\TestimonyRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 
 class TestimonyController extends Controller
 {
@@ -95,6 +92,7 @@ class TestimonyController extends Controller
             $object = $repository->getById($id);
             $type = $object->type;
             $data = $request->only((new ($repository->model()))->getFillable());
+            $data['anonimous'] = filter_var($data['anonimous'], FILTER_VALIDATE_BOOLEAN);
             $old_file = null;
             if ($request->hasFile('message') || $type == 'video') {
                 $old_file = $object->message;
@@ -118,7 +116,13 @@ class TestimonyController extends Controller
             if ($old_image) {
                 Storage::delete('public/' . $old_image);
             }
-            return redirect()->back()->with('success', 'testimonio modificado correctamente');
+            if ($request->inertia()) {
+                return redirect()->back()->with('success', 'testimonio modificado correctamente');
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'testimonio modificado correctamente'
+            ]);
         }
         return $this->deny_access($request);
     }
@@ -133,7 +137,13 @@ class TestimonyController extends Controller
             } else {
                 $repository->deleteMultipleById($ids);
             }
-            return redirect()->back()->with('success', count($ids) == 1 ? 'testimonio eliminado correctamente' : 'testimonios eliminados correctamente');
+            if ($request->inertia()) {
+                return redirect()->back()->with('success', count($ids) == 1 ? 'testimonio eliminado correctamente' : 'testimonios eliminados correctamente');
+            }
+            return response()->json([
+                'success' => true,
+                'result' => count($ids) == 1 ? 'testimonio eliminado correctamente' : 'testimonios eliminados correctamente'
+            ]);
         }
         return $this->deny_access($request);
     }
@@ -144,7 +154,10 @@ class TestimonyController extends Controller
             $testimony = Testimony::find($id);
             $testimony->publicated = !$testimony->publicated;
             $testimony->save();
-            return redirect()->back()->with('success', $testimony->publicated ? 'testimonio pasado a acceso publico correctamente' : 'testimonio quitado del acceso publico correctamente');
+            if ($request->inertia()) {
+                return redirect()->back()->with('success', $testimony->publicated ? 'testimonio pasado a acceso publico correctamente' : 'testimonio quitado del acceso publico correctamente');
+            }
+            return response()->json(['success' => true, 'message' => $testimony->publicated ? 'testimonio pasado a acceso publico correctamente' : 'testimonio quitado del acceso publico correctamente']);
         }
         return $this->deny_access($request);
     }

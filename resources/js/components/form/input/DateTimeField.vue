@@ -159,14 +159,13 @@ onBeforeMount(() => {
 onMounted(() => {
     //model.value = props.modelValue ? props.modelValue.toLowerCase() : null;
     //proxy.value = props.modelValue;
-    //console.log(model.value);
 });
 
 watch(
     () => props.modelValue,
     (n, o) => {
         model.value = n ? n.toLowerCase() : null;
-    }
+    },
 );
 
 const options = (date) => {

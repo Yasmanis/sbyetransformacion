@@ -1,9 +1,10 @@
 <template>
+    <!-- :icon="`img:${$page.props.public_path}images/icon/${Dark.isActive ? 'white' : 'black'}-chat-responses.png`" -->
     <q-btn-component
-        :icon="`img:${$page.props.public_path}images/icon/${Dark.isActive ? 'white' : 'black'}-chat-responses.png`"
-        @click="showDialog = true"
+        icon="mdi-reply-outline"
         :disable="message.responses === 0"
         :tooltips="`cantidad de respuestas: ${message.responses}`"
+        @click="showDialog = true"
     >
         <q-badge
             floating

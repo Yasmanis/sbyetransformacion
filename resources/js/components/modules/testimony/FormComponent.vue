@@ -26,6 +26,9 @@
                 :object="object"
                 :fields="fields"
                 :module="module"
+                :exclude-user="excludeUser"
+                :post-on-update="postOnUpdate"
+                :axios-request="axiosRequest"
                 @created="onCreated"
                 @updated="onUpdated"
                 @cancel="showDialog = false"
@@ -80,7 +83,12 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    excludeUser: Boolean,
+    postOnUpdate: Boolean,
+    axiosRequest: Boolean,
 });
+
+const emits = defineEmits(["created", "updated"]);
 
 const fullTitle = ref(null);
 const showDialog = ref(false);
@@ -110,14 +118,14 @@ const onHide = () => {
 };
 
 const onCreated = (object, close) => {
+    emits("created", object);
     if (close) {
         showDialog.value = false;
     }
 };
 
-const onUpdated = (object, close) => {
-    if (close) {
-        showDialog.value = false;
-    }
+const onUpdated = (object) => {
+    emits("updated", object);
+    showDialog.value = false;
 };
 </script>

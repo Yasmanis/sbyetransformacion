@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BillingInformation;
 use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\CategoryNomenclature;
@@ -14,6 +13,7 @@ use App\Models\ProductSubcategory;
 use App\Models\ReasonForReturn;
 use App\Models\Role;
 use App\Models\SchoolSection;
+use App\Models\SchoolTopic;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -139,18 +139,57 @@ class SelectsController extends Controller
         ]);
     }
 
-    public function chatsModules()
+    public function chatModules()
     {
         $categories = SchoolSection::select('category')->distinct()->get()->pluck('category');
-        $modules = Module::whereIn('model', $categories)->get();
+        $modules = Module::whereHas('childs', function ($query) use ($categories) {
+            $query->whereIn('model', $categories);
+        })->get();
         return response()->json([
-            'options' => $categories->map(function ($item) use ($modules) {
-                $m = $modules->first(function ($m) use ($item) {
-                    return strtolower($m->model) == strtolower($item);
-                });
+            'options' => $modules->map(function ($item) {
                 return [
-                    'value' => $item,
-                    'label' => $m?->plural_label ?? $item
+                    'value' => $item->id,
+                    'label' => $item->singular_label
+                ];
+            })
+        ]);
+    }
+
+    public function submodules(Request $request)
+    {
+        $modules = Module::where('parent_id', $request->module)->get();
+        return response()->json([
+            'options' => $modules->map(function ($item) {
+                return [
+                    'value' => $item->id,
+                    'label' => $item->singular_label
+                ];
+            })
+        ]);
+    }
+
+    public function chatModuleSections(Request $request)
+    {
+        $m = Module::find($request->submodule);
+        $sections = SchoolSection::where('category', $m->model)->get();
+        return response()->json([
+            'options' => $sections->map(function ($item) {
+                return [
+                    'value' => $item->id,
+                    'label' => $item->name
+                ];
+            })
+        ]);
+    }
+
+    public function chatSectionTopics(Request $request)
+    {
+        $topics = SchoolTopic::where('section_id', $request->section)->get();
+        return response()->json([
+            'options' => $topics->map(function ($item) {
+                return [
+                    'value' => $item->id,
+                    'label' => $item->name
                 ];
             })
         ]);

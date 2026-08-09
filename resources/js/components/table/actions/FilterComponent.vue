@@ -228,7 +228,9 @@ function clear() {
     filters.value.forEach((f) => {
         f.value = null;
     });
-    cascadingSelectsRef.value[0].resetAll();
+    if (cascadingSelectsRef.value && cascadingSelectsRef.value[0]) {
+        cascadingSelectsRef.value[0].resetAll();
+    }
     emit("refresh-data", "filters");
 }
 

@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted, ref, watch, computed } from "vue";
+import { onBeforeMount, onMounted, ref, watch, computed, nextTick } from "vue";
 import { validations } from "../../../helpers/validations";
 import { usePage } from "@inertiajs/vue3";
 

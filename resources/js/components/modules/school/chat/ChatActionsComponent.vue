@@ -9,10 +9,7 @@
                         min-width: 0px !important;
                     "
                 >
-                    <q-icon
-                        name="mdi-arrow-up-right fa-rotate-270"
-                        size="22px"
-                    ></q-icon>
+                    <q-icon name="mdi-reply-outline" size="22px"></q-icon>
                 </q-item-section>
 
                 <q-item-section>responder</q-item-section>

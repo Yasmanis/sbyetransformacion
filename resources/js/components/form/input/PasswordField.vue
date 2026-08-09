@@ -13,6 +13,7 @@
                     :error-message="oldPwd"
                     :dense="dense"
                     :clearable="clearable"
+                    autocomplete="new-password"
                     hide-bottom-space
                     bottom-slots
                     v-model="oldPass"
@@ -260,7 +261,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted, ref, computed } from "vue";
+import { onBeforeMount, onMounted, ref, computed, watch } from "vue";
 import { validations } from "../../../helpers/validations";
 import { usePage } from "@inertiajs/vue3";
 
@@ -269,6 +270,8 @@ defineOptions({
 });
 
 const props = defineProps({
+    passwordValue: String,
+    confirmValue: String,
     name: {
         type: String,
         required: true,
@@ -313,6 +316,25 @@ onBeforeMount(() => {
     fieldRules.value = rules;
     fieldHelp.value = help;
 });
+
+onMounted(() => {
+    model.value = props.passwordValue ?? null;
+    modelConfirm.value = props.confirmValue ?? null;
+});
+
+watch(
+    () => props.passwordValue,
+    (n) => {
+        model.value = n;
+    },
+);
+
+watch(
+    () => props.confirmValue,
+    (n) => {
+        modelConfirm.value = n;
+    },
+);
 
 const errorPwd = computed(() => {
     return page.props.errors

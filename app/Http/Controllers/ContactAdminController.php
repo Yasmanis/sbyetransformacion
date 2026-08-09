@@ -115,8 +115,23 @@ class ContactAdminController extends Controller
             $n->target = $target;
             $n->row_id = $row_id;
             $n->save();
-            $users = User::find($exist->created_by);
-            Notification::send($users, new StandardNotification($n));
+
+
+            $user = auth()->user();
+            $params = [
+                'email' => $user->email,
+                'name' => $user->full_name,
+                'url' => sprintf('%s/auth/profile#%s', env('APP_URL'), base64_encode(json_encode(
+                    [
+                        'tab' => 'notifications',
+                        'model' => ContactAdmin::class,
+                        'id' => $object->id
+                    ]
+                )))
+            ];
+
+            $user = User::find($exist->created_by);
+            Notification::send([$user], new StandardNotification($n, sprintf('AVISO - interaccion con el tiket "%s"', $exist->subject, 'admin.contact', ['database', 'brevo'], $params)));
             return redirect()->back()->with('success', 'respuesta enviada correctamente');
         }
         return redirect()->back()->with('error', 'no se ha podido responder; el tiket ya fue eliminado por el usuario');

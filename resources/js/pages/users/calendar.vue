@@ -16,21 +16,7 @@
             </div>
             <vue-cal
                 v-bind="config"
-                watch-real-time
                 :events="events"
-                events-on-month-view
-                :views="{
-                    day: {},
-                    days: { cols: 5, rows: 1 },
-                    week: {},
-                    month: {},
-                }"
-                :disable-views="['years', 'year']"
-                :min-event-width="0"
-                all-day-events
-                :time-from="7 * 60"
-                :time-to="23 * 60"
-                :week-numbers="true"
                 @event-create="createEvent"
                 @event-drop="onEventDrop"
                 @event-resize="onEventResize"
@@ -50,6 +36,7 @@
                 @cell-drag="logEvents('cell-drag', $event)"
                 @cell-drag-end="logEvents('cell-drag-end', $event)"
                 @cell-hold="logEvents('cell-hold', $event)"
+                style="height: 100%"
             >
                 <!-- <template #event="{ event }">
                     <div class="custom-event">
@@ -57,8 +44,7 @@
                     </div>
                 </template> 
                 :editable-events="{ resizeX: true }"
-                view="month"
-                style="height: 100%"
+                
                 -->
             </vue-cal>
         </q-page>
@@ -80,6 +66,21 @@ defineOptions({
 });
 
 const config = {
+    view: "month",
+    views: {
+        day: {},
+        days: { cols: 5, rows: 1 },
+        week: {},
+        month: {},
+    },
+    disableViews: "['years', 'year']",
+    minEventWidth: 0,
+    timeFrom: 7 * 60,
+    timeTo: 23 * 60,
+    watchRealTime: true,
+    eventsOnMonthView: true,
+    allDayEvents: true,
+    weekNumbers: true,
     time: true,
     locale: "es",
 };

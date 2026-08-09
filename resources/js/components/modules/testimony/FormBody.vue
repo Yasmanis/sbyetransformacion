@@ -60,7 +60,7 @@
                     }"
                     :filterable="true"
                     @update="onUpdateField"
-                    v-if="page.props.auth.user.sa"
+                    v-if="page.props.auth.user.sa && !excludeUser"
                 />
                 <select-field
                     label="tomo"
@@ -132,7 +132,13 @@ import EditorField from "../../form/input/EditorField.vue";
 import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
-import { error, errorValidation } from "../../../helpers/notifications";
+import {
+    error,
+    errorValidation,
+    success,
+} from "../../../helpers/notifications";
+import { Loading } from "quasar";
+import axios from "axios";
 
 const props = defineProps({
     module: {
@@ -147,6 +153,9 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    excludeUser: Boolean,
+    postOnUpdate: Boolean,
+    axiosRequest: Boolean,
 });
 
 const emits = defineEmits(["created", "updated", "cancel"]);
@@ -229,23 +238,63 @@ const save = async (hide) => {
 };
 
 const store = async (hide) => {
-    const send = useForm(formData.value);
-    send.post(props.module.base_url, {
-        onSuccess: () => {
-            setDefaultData();
-            emits("created", null, hide);
-        },
-    });
+    if (props.axiosRequest) {
+        saveAxiosRequest(props.module.base_url, "post", hide);
+    } else {
+        const send = useForm(formData.value);
+        send.post(props.module.base_url, {
+            onSuccess: (data) => {
+                setDefaultData();
+                emits("created", data.props.object, hide);
+            },
+        });
+    }
 };
 
-const update = async (hide) => {
-    formData.value["_method"] = "put";
-    const send = useForm(formData.value);
-    send.post(`${props.module.base_url}/${props.object.id}`, {
-        onSuccess: () => {
-            setDefaultData();
-            emits("updated", null, hide);
-        },
+const update = async () => {
+    if (props.axiosRequest) {
+        saveAxiosRequest(
+            `${props.module.base_url}/${props.object.id}`,
+            "patch",
+            true,
+        );
+    } else {
+        const send = useForm(formData.value);
+        send.post(`${props.module.base_url}/${props.object.id}`, {
+            onSuccess: (data) => {
+                setDefaultData();
+                emits("updated", data.props.object);
+            },
+        });
+    }
+};
+
+const saveAxiosRequest = async (url, method, hide) => {
+    Loading.show();
+    const fr = new FormData();
+    Object.keys(formData.value).forEach((k) => {
+        fr.append(k, formData.value[k] ?? "");
     });
+    await axios
+        .post(url, fr, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
+        .then((res) => {
+            const data = res.data;
+            if (data.success) {
+                success(data.message);
+                setDefaultData();
+                emits(
+                    method === "post" ? "created" : "updated",
+                    data.object,
+                    hide,
+                );
+            }
+        })
+        .finally(() => {
+            Loading.hide();
+        });
 };
 </script>

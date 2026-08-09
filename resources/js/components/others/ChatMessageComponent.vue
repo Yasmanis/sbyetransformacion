@@ -54,13 +54,9 @@ const props = defineProps({
 });
 
 const handleVisibility = (entry, msg) => {
-    console.log(entry);
-
     if (entry.isIntersecting && msg.send) {
         setTimeout(async () => {
             if (entry.isIntersecting) {
-                console.log("leido");
-
                 // Notificamos al servidor
                 // try {
                 //     await api.post(`/respuestas/${respuesta.id}/marcar-leida`);

@@ -295,6 +295,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/users/change-theme', [UserController::class, 'changeTheme']);
     Route::post('/admin/users/progress/{id}', [UserController::class, 'progress']);
     Route::post('/admin/users/comments/{id}', [UserController::class, 'comments']);
+    Route::post('/admin/users/testimonies/{id}', [UserController::class, 'testimonies']);
     Route::post('/admin/users/save-colors', [UserController::class, 'saveColors']);
     Route::post('/admin/users/highlighted', [UserController::class, 'highlighted']);
     Route::post('/admin/users/change-manager', [UserController::class, 'changeManager']);
@@ -303,7 +304,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/chats', ChatController::class)->only(['index', 'update', 'destroy']);
 
-    Route::resource('/admin/testimony', TestimonyController::class);
+    Route::resource('/admin/testimony', TestimonyController::class)->except(['update']);
+    Route::post('/admin/testimony/{id}', [TestimonyController::class, 'update']);
 
     Route::resource('/admin/push-messages', PushMessageController::class);
     Route::get('/admin/push-messages/change-status/{id}', [PushMessageController::class, 'changeStatus']);
@@ -391,14 +393,6 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/sections', SectionsController::class);
     Route::resource('/admin/landings', LandingController::class);
 
-    Route::get('/roles', [SelectsController::class, 'roles']);
-    Route::get('/permissions', [SelectsController::class, 'permissions']);
-    Route::get('/users', [SelectsController::class, 'users']);
-    Route::get('/select/models', [SelectsController::class, 'models']);
-    Route::get('/reasons-for-return', [SelectsController::class, 'reasonsForReturn']);
-    Route::post('/users', [SelectsController::class, 'users']);
-    Route::get('/category-nomenclatures/{key}', [SelectsController::class, 'sections']);
-    Route::get('/selects/campaigns', [SelectsController::class, 'campaigns']);
     Route::get('/admin/posts', [PostController::class, 'index']);
     Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
 
@@ -440,6 +434,11 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/modules', ModulesController::class)->only(['index', 'update']);
 });
 
+
+Route::get('/download/{id}', [FileController::class, 'download']);
+Route::post('/subscribe', [BrevoController::class, 'subscribe']);
+Route::post('/send-question', [StoreController::class, 'sendQuestion']);
+
 Route::get('/categories', [SelectsController::class, 'categories']);
 Route::get('/countries', [SelectsController::class, 'countries']);
 Route::post('/provinces', [SelectsController::class, 'provinces']);
@@ -447,11 +446,19 @@ Route::post('/cities', [SelectsController::class, 'cities']);
 Route::post('/roads', [SelectsController::class, 'roads']);
 Route::post('/postal-codes', [SelectsController::class, 'postalCodes']);
 Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
-Route::get('/download/{id}', [FileController::class, 'download']);
-Route::post('/subscribe', [BrevoController::class, 'subscribe']);
-Route::post('/send-question', [StoreController::class, 'sendQuestion']);
 Route::get('/product-categories', [SelectsController::class, 'productCategories']);
 Route::get('/product-subcategories/{id}', [SelectsController::class, 'productSubcategories']);
 Route::get('/product-courses', [SelectsController::class, 'productCourses']);
 Route::get('/products', [SelectsController::class, 'products']);
-Route::get('/chats-modules', [SelectsController::class, 'chatsModules']);
+Route::get('/chat-modules', [SelectsController::class, 'chatModules']);
+Route::post('/submodules', [SelectsController::class, 'submodules']);
+Route::post('/chat-module-sections', [SelectsController::class, 'chatModuleSections']);
+Route::post('/chat-section-topics', [SelectsController::class, 'chatSectionTopics']);
+Route::get('/roles', [SelectsController::class, 'roles']);
+Route::get('/permissions', [SelectsController::class, 'permissions']);
+Route::get('/users', [SelectsController::class, 'users']);
+Route::get('/select/models', [SelectsController::class, 'models']);
+Route::get('/reasons-for-return', [SelectsController::class, 'reasonsForReturn']);
+Route::post('/users', [SelectsController::class, 'users']);
+Route::get('/category-nomenclatures/{key}', [SelectsController::class, 'sections']);
+Route::get('/selects/campaigns', [SelectsController::class, 'campaigns']);

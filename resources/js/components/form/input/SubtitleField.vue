@@ -164,7 +164,7 @@ watch(
     },
     {
         deep: true,
-    }
+    },
 );
 
 const onShow = () => {
@@ -200,7 +200,6 @@ const save = () => {
                     subtitlable_id,
                     subtitlable_type,
                 } = formData;
-                console.log(formData.data());
 
                 if (id) {
                     const s = subtitles.value.find((ss) => ss.id === id);

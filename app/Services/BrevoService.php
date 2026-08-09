@@ -17,13 +17,10 @@ class BrevoService
     public function sendEmail($subject, $view, $params, $to = null)
     {
         if (env('LOCAL_APP', false)) {
-            $to = null;
-            if ($to === null) {
-                $to = [
-                    'email' => 'yfdezmerino91@gmail.com',
-                    'name' => 'Yosvani'
-                ];
-            }
+            $to = [
+                'email' => 'yfdezmerino91@gmail.com',
+                'name' => 'Yosvani'
+            ];
         }
 
         $url = 'https://api.brevo.com/v3/smtp/email';

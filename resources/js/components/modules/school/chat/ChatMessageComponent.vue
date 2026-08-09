@@ -280,8 +280,6 @@ watch(
     async () => {
         await updateHeight();
         nextTick(() => {
-            console.log(containerRef.value);
-
             if (props.showChat) {
                 let el = document.getElementById(props.showChat);
                 if (el) {

@@ -8,6 +8,7 @@ use App\Models\Document;
 use App\Models\User;
 use App\Models\UserLastCourse;
 use App\Repositories\BuyerRepository;
+use App\Repositories\TestimonyRepository;
 use App\Repositories\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -290,5 +291,26 @@ class UserController extends Controller
             $obj->save();
         }
         return redirect()->back()->with('success', 'operacion realizada correctamente');
+    }
+
+    public function testimonies(Request $request, $id)
+    {
+        $repository = new TestimonyRepository();
+        $repository->search($request->search);
+        $repository->filters($request->filters);
+        $repository->where('user_id', '=', $id);
+        $sortBy = $request->sortBy;
+        $sortDirection = $request->sortDirection;
+        if (!isset($sortBy)) {
+            $sortBy = 'order';
+            $sortDirection = 'ASC';
+        }
+        $repository->orderBy($sortBy, $sortDirection);
+        $data = $repository->paginate(isset($request->rowsPerPage) ? $request->rowsPerPage : 20, ['*'], 'page', isset($request->page) ? $request->page : null);
+        return response()->json([
+            'rows' => $data->items(),
+            'total' => $data->total(),
+            'page' => $data->currentPage()
+        ]);
     }
 }

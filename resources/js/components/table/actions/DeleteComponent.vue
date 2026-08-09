@@ -67,8 +67,13 @@ const handleDelete = async () => {
             .then((res) => {
                 emit("deleted");
                 confirm.value = false;
-                if (res.success) {
-                    success(res.message);
+                let data = res.data ?? res;
+                if (data.success) {
+                    success(
+                        data.message ??
+                            data.result ??
+                            "objeto(s) eliminado(s) correctamente",
+                    );
                 }
             })
             .finally(() => {

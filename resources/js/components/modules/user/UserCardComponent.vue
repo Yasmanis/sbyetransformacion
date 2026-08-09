@@ -480,6 +480,7 @@
                         <text-field
                             name="username"
                             label="usuario"
+                            :model-value="formData.username"
                             :othersProps="{
                                 required: true,
                             }"
@@ -494,6 +495,8 @@
                             label="contraseña"
                             inline
                             name="password"
+                            :password-value="formData.password ?? null"
+                            :confirm-value="formData.password_confirm ?? null"
                             :othersProps="{ required: true }"
                             @update="onUpdateField"
                             @confirm="onUpdateField"
@@ -654,6 +657,10 @@ const onUpdateField = (name, value, full) => {
     if (name === "country_id" && value !== null) {
         phoneCodes.value = getPhoneCodesFromCountry(full);
         formData.value.phone_code = null;
+    } else if (name === "email" && !props.user) {
+        formData.value.username = value;
+        formData.value["password"] = value;
+        formData.value["password_confirm"] = value;
     }
     formData.value[name] = value;
 };

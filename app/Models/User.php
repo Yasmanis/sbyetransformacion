@@ -108,6 +108,11 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasMany(Payment::class, 'user_id');
     }
 
+    public function testimonies()
+    {
+        return $this->hasMany(Testimony::class, 'user_id');
+    }
+
     public function notes()
     {
         return $this->morphMany(Note::class, 'notable');
@@ -337,7 +342,7 @@ class User extends Authenticatable implements CanResetPassword
 
     public function getRolesSbyeTranformacion()
     {
-        return ['administrador', 'gestor', 'facilitador'];
+        return Role::where('is_sbye', true)->get()->pluck('name');
     }
 
     public function isAnAdmin()

@@ -16,7 +16,7 @@ class SchoolChat extends Model
 
     protected $fillable = ['message'];
 
-    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user', 'topic_str', 'section_str', 'section_id', 'segment', 'segment_description', 'responses'];
+    protected $appends = ['from_name', 'reply_to_msg', 'reply_to_user', 'owner', 'owner_reply', 'owner_visible', 'delete_by_user', 'topic_str', 'section_str', 'section_id', 'segment', 'responses', 'module_str', 'submodule_str'];
 
     protected $table = 'schoolchat';
 
@@ -66,12 +66,24 @@ class SchoolChat extends Model
         return $this->topic->section()->first()?->category ?? null;
     }
 
-    public function getSegmentDescriptionAttribute()
+    public function getModuleStrAttribute()
     {
         $categ = $this->segment;
         if ($categ) {
             $mod = Module::firstWhere('model', $categ);
-            return $mod?->plural_label ?? $categ;
+            if ($mod?->parent) {
+                return $mod->parent->plural_label ?? $categ;
+            }
+        }
+        return $categ;
+    }
+
+    public function getSubmoduleStrAttribute()
+    {
+        $categ = $this->segment;
+        if ($categ) {
+            $mod = Module::firstWhere('model', $categ);
+            return $mod->plural_label ?? $categ;
         }
         return $categ;
     }
@@ -217,7 +229,7 @@ class SchoolChat extends Model
         });
     }
 
-    public function scopeFromTopic($query, $topic)
+    public function scopeWhereTopic($query, $topic)
     {
         return $query->where('topic_id', $topic);
     }
@@ -255,10 +267,32 @@ class SchoolChat extends Model
             ->where('reply_to', $parentId);
     }
 
-    public function scopeWhereCategory($query, $val)
+    public function scopeWhereModule($query, $val)
+    {
+        $models = Module::where('parent_id', $val)->get()->pluck('model');
+        if (!empty($models)) {
+            return $query->whereHas('topic.section', function ($query) use ($models) {
+                $query->whereIn('category', $models);
+            });
+        }
+        return $query;
+    }
+
+    public function scopeWhereSubmodule($query, $val)
+    {
+        $m = Module::find($val[0]);
+        if ($m) {
+            return $query->whereHas('topic.section', function ($query) use ($m) {
+                $query->where('category', $m->model);
+            });
+        }
+        return $query;
+    }
+
+    public function scopeWhereSection($query, $val)
     {
         return $query->whereHas('topic.section', function ($query) use ($val) {
-            $query->where('category', $val);
+            $query->where('id', $val[0]);
         });
     }
 

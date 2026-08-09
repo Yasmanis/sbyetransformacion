@@ -310,8 +310,6 @@ const onChangeFile = (f) => {
 };
 
 const getUrlFromFile = (f) => {
-    console.log(f);
-
     return URL.createObjectURL(f);
 };
 
@@ -319,9 +317,7 @@ const onRejected = (e) => {
     error("el fichero seleccionado no es una imagen");
 };
 
-const save = () => {
-    console.log(formData.sections);
-};
+const save = () => {};
 </script>
 
 <style>

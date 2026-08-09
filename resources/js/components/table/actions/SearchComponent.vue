@@ -248,7 +248,7 @@ const setValuesOnLoad = () => {
                 c.value ===
                 (fullCondition["value"]
                     ? fullCondition["value"]
-                    : fullCondition)
+                    : fullCondition),
         );
     } else {
         initDefaultValue();

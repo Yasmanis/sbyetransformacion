@@ -11,7 +11,6 @@ use App\Models\UserNotifications;
 use App\Notifications\StandardNotification;
 use App\Repositories\ContactRepository;
 use App\Repositories\UserRepository;
-use App\Services\BrevoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
