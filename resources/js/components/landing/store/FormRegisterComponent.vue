@@ -74,12 +74,11 @@
                             <date-field
                                 label="fecha de nacimiento"
                                 name="birthdate"
-                                :model-value="formData.birthdate"
+                                v-model="formData.birthdate"
                                 end-now
                                 :others-props="{
                                     required: true,
                                 }"
-                                @update="onUpdateField"
                             />
                         </div>
                     </div>
@@ -300,7 +299,7 @@ watch(
     () => formData.country_id,
     (n) => {
         formData.phone_code = null;
-    }
+    },
 );
 
 const onHide = () => {

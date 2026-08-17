@@ -79,10 +79,7 @@ class UserController extends Controller
 
             $repository = new BuyerRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $birthdate = $request->input('birthdate', null);
-            if ($birthdate) {
-                $data['birthdate'] = Carbon::createFromFormat('d/m/Y', $birthdate);
-            }
+
             $data['user_id'] = $user->id;
             $repository->updateById($user->buyer->id, $data);
 
@@ -109,10 +106,6 @@ class UserController extends Controller
 
             $repository = new BuyerRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $birthdate = $request->input('birthdate', null);
-            if (isset($birthdate)) {
-                $data['birthdate'] = Carbon::createFromFormat('d/m/Y', $birthdate);
-            }
             $data['user_id'] = $id;
             $repository->updateById($user->buyer->id, $data);
 

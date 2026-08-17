@@ -45,30 +45,9 @@ class Campaign extends Model
         return $this->belongsToMany(CategoryNomenclature::class, 'campaigns_sections', 'campaign_id', 'section_id');
     }
 
-    // mutator
-    public function getAssignedToAttribute()
-    {
-        return null;
-        $dieticians = User::roleDietician()->orderBy('id', 'asc')->get()->pluck('id');
-        $clients = User::roleUser()->orderBy('id', 'asc')->get()->pluck('id');
-        $admins = User::roleAdmin()->orderBy('id', 'asc')->get()->pluck('id');
-        $assigned = $this->assignedTo()->orderBy('id', 'asc')->get()->pluck('id');
-        if (count($assigned) === User::count()) {
-            return 'todos los usuarios';
-        } elseif (count($assigned) === count($dieticians) && collect($assigned)->diff(collect($dieticians))->isEmpty()) {
-            return 'dietista';
-        } elseif (count($assigned) === count($clients) && collect($assigned)->diff(collect($clients))->isEmpty()) {
-            return 'usuario';
-        } elseif (count($assigned) === count($admins) && collect($assigned)->diff(collect($admins))->isEmpty()) {
-            return 'admin';
-        } else {
-            return User::whereIn('id', $assigned)->pluck('name')->implode(', ');
-        }
-    }
-
     public function getAssignedToIdAttribute()
     {
-        return $this->assignedTo()->get();
+        return $this->assignedTo()->get()->pluck('id');
     }
 
     // accessors

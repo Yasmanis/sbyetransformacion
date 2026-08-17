@@ -47,12 +47,10 @@ class FileController extends Controller
         if (auth()->user()->hasCreate('file')) {
             $repository = new FileRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            try {
-                $data['public_date'] = Carbon::createFromFormat('d/m/Y', $request->public_date);
-            } catch (\Throwable $th) {
-                $data['public_date'] = null;
-            }
             $data['public_access'] = $request->public_access == 'true' ? true : false;
+            $pd = $request->input('public_date');
+            $data['public_date'] = $pd === 'null' ? null : $pd;
+
             if ($request->hasFile('file')) {
                 $properties = $this->getPropertiesFromFile($request->file('file'));
                 $data['name'] = $properties['originalName'];
@@ -78,9 +76,6 @@ class FileController extends Controller
             $repository = new FileRepository();
             $public_access = $repository->getById($id)->public_access;
             $data = $request->only((new ($repository->model()))->getFillable());
-            if (isset($request->public_date)) {
-                $data['public_date'] = Carbon::createFromFormat('d/m/Y', $request->public_date);
-            }
             $old_file = null;
             if ($request->hasFile('file')) {
                 $properties = $this->getPropertiesFromFile($request->file('file'));

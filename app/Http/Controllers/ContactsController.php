@@ -38,7 +38,7 @@ class ContactsController extends Controller
         ]);
         $repository = new ContactRepository();
         $userRepository = new UserRepository();
-        $user = $userRepository->getByColumn($request->email, 'email');
+        $user = User::withTrashed()->firstWhere('email', $request->email);
         $existUser = true;
         if (!isset($user)) {
             $existUser = false;

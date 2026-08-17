@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BillingInformationController;
 use App\Http\Controllers\BrevoController;
 use App\Http\Controllers\BriefIdeasController;
@@ -22,6 +21,7 @@ use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\ContactAdminController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\IntheMediaController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\MessagesController;
@@ -57,12 +57,9 @@ use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\File;
 use App\Models\Landing;
-use App\Models\Product;
-use App\Models\ProductCategory;
 use App\Models\ProductSubcategory;
 use App\Models\Testimony;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Pusher\Pusher;
@@ -394,7 +391,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/landings', LandingController::class);
 
     Route::get('/admin/posts', [PostController::class, 'index']);
-    Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
+    Route::resource('/admin/newsletter', NewsletterController::class);
+    Route::resource('/admin/en-los-medios', IntheMediaController::class);
 
     Route::get('/admin/configuration/shopping', [ConfigurationController::class, 'shopping']);
     Route::get('/admin/configuration/legal', [ConfigurationController::class, 'legal']);

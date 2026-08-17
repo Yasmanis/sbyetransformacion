@@ -176,6 +176,10 @@
                             </b>
                         </span>
                     </template>
+
+                    <template v-else-if="props.col.type === 'date'">
+                        {{ toFormatDate(props.row[props.col.field]) }}
+                    </template>
                     <template v-else>
                         {{ props.row[props.col.field] }}
                     </template>
@@ -219,7 +223,7 @@
                         :public="props.row.public_access"
                         @click="
                             router.post(
-                                `${current_module.base_url}/public-access/${props.row.id}`
+                                `${current_module.base_url}/public-access/${props.row.id}`,
                             )
                         "
                         v-if="has_edit"
@@ -318,7 +322,7 @@
                                             :public="props.row.public_access"
                                             @click="
                                                 router.post(
-                                                    `${current_module.base_url}/public-access/${props.row.id}`
+                                                    `${current_module.base_url}/public-access/${props.row.id}`,
                                                 )
                                             "
                                             v-if="has_edit"
@@ -342,7 +346,7 @@
 
 <script setup>
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue";
-import { useQuasar } from "quasar";
+import { useQuasar, date as useDate } from "quasar";
 import FormFile from "./FormComponent.vue";
 import FormPoster from "./FormPoster.vue";
 import FormComponent from "../../form/FormComponent.vue";
@@ -357,6 +361,8 @@ import FilterComponent from "../../table/actions/FilterComponent.vue";
 import QTooltipComponent from "../../base/QTooltipComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
+
+import { useUtils } from "../../../composables/useUtils.js";
 
 defineOptions({
     name: "TableComponent",
@@ -386,6 +392,9 @@ const props = defineProps({
 });
 
 const $q = useQuasar();
+const { extractDate, formatDate } = useDate;
+
+const { toFormatDate } = useUtils();
 
 const page = usePage();
 
@@ -438,7 +447,7 @@ watch(
     {
         immediate: true,
         deep: true,
-    }
+    },
 );
 
 onBeforeMount(() => {
@@ -473,7 +482,7 @@ const onRequest = async (attrs) => {
         { page, rowsPerPage, search, filters, sortBy, sortDirection },
         {
             preserveState: true,
-        }
+        },
     );
 };
 </script>

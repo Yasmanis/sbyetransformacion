@@ -136,6 +136,9 @@
                         :label="props.value ? 'Si' : 'No'"
                     />
                 </template>
+                <template v-else-if="props.col.type === 'date'">
+                    {{ toFormatDate(props.value) }}
+                </template>
                 <template v-else>
                     <q-item-label lines="5">
                         <span v-html="props.row[props.col.field]"> </span>
@@ -240,6 +243,9 @@
                                         :label="col.value ? 'Si' : 'No'"
                                     />
                                 </q-item-label>
+                                <q-item-label v-else-if="col.type === 'date'">{{
+                                    toFormatDate(col.value)
+                                }}</q-item-label>
                                 <q-item-label caption v-else>
                                     <span
                                         v-html="col.value ? col.value : ''"
@@ -304,6 +310,7 @@ import FormComponent from "../../form/FormComponent.vue";
 import BtnReloadComponent from "../../btn/BtnReloadComponent.vue";
 import ActiveComponent from "./ActiveComponent.vue";
 import { useQuasar } from "quasar";
+import { useUtils } from "../../../composables/useUtils.js";
 import axios from "axios";
 
 defineOptions({
@@ -326,6 +333,7 @@ const props = defineProps({
     onlyPercent: Boolean,
 });
 const $q = useQuasar();
+const { toFormatDate } = useUtils();
 
 const active = {
     field: "active",
@@ -374,6 +382,7 @@ const columns = ref([
         label: "desde",
         sortable: true,
         align: "left",
+        type: "date",
     },
     {
         name: "end_at",
@@ -381,6 +390,7 @@ const columns = ref([
         label: "hasta",
         sortable: true,
         align: "left",
+        type: "date",
     },
     {
         name: "description",

@@ -3,21 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\File;
+use App\Repositories\SchoolSectionsRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Override;
 
-class NewsletterController extends LifeController
+class IntheMediaController extends LifeController
 {
+    #[Override]
+    public function segment()
+    {
+        return 'inthemedia';
+    }
 
     public function index(Request $request)
     {
         $user = auth()->user();
         $segment = $this->segment();
-        if ($user->hasView('view_newsletter') || $user->hasPerm('full_newsletter')) {
-            $category = Category::firstWhere('name', 'newsletters');
-            return Inertia::render('newsletter/index', [
+        if ($user->hasView('view_inthemedia') || $user->hasPerm('full_inthemedia')) {
+            $category = Category::firstWhere('name', 'en los medios');
+            return Inertia::render('in_the_media/index', [
                 'sections' => $user->getSections($segment),
-                'course_percentage' => $user->getCoursePercentage($segment),
                 'private_messages' => $user->getPrivateMessages($request, 'received'),
                 'files' => $category?->files ?? []
             ]);

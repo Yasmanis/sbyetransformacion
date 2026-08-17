@@ -135,9 +135,8 @@
                     <date-field
                         :label="f.label"
                         :name="f.name"
-                        :modelValue="formData[f.name]"
+                        v-model="formData[f.name]"
                         :othersProps="f.othersProps"
-                        @update="onUpdateField"
                         v-else-if="f.type === 'date'" />
                     <state-field
                         :country="f.country"
@@ -159,10 +158,9 @@
                         :end-name="f.endName"
                         :start-label="f.startLabel"
                         :end-label="f.endLabel"
-                        :start-value="formData[f.startName]"
-                        :end-value="formData[f.endName]"
                         :others-props="f.othersProps"
-                        @update="onUpdateField"
+                        v-model:start="formData[f.startName]"
+                        v-model:end="formData[f.endName]"
                         v-else-if="f.type === 'daterange'" />
                     <password-field
                         :label="f.label"

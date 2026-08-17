@@ -1,45 +1,43 @@
 <template>
     <Layout title="en los medios">
         <q-page padding>
-            <div class="text-h4 text-uppercase text-white q-mb-md">posts</div>
+            <div class="text-h4 text-uppercase text-white q-mb-md">
+                en los medios
+            </div>
             <course-template>
                 <template #panel-left>
                     <articles-list-view
-                        title="lo mas importante"
+                        title="articulos destacados"
                         :articles="fixeds"
                         v-if="fixeds.length > 0"
                     />
 
                     <div class="q-py-sm"></div>
 
-                    <q-card>
-                        <q-card-section class="no-padding">
-                            <q-list>
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label>
-                                            categorias
-                                        </q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                                <q-item
-                                    v-for="c in categories"
-                                    :key="`category-${c.id}`"
-                                    clickable
-                                    dense
-                                >
-                                    <q-item-section>
-                                        <q-item-label>
-                                            {{ c.name }}
-                                        </q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                            </q-list>
-                        </q-card-section>
-                    </q-card>
+                    <articles-list-view
+                        title="proximos articulos"
+                        :articles="afters"
+                        v-if="afters.length > 0"
+                    />
                 </template>
                 <template #panel-center> panel centro </template>
                 <template #panel-bottom>
+                    <q-card>
+                        <q-card-section>
+                            <div class="q-mb-sm">categorias</div>
+                            <div class="row items-center">
+                                <div
+                                    class="col-xs-12 col-sm-4 col-md-3 col-lg-3 col-xl-3"
+                                    v-for="c in categories"
+                                    :key="`category-${c.id}`"
+                                >
+                                    <span class="cursor-pointer">{{
+                                        c.name
+                                    }}</span>
+                                </div>
+                            </div>
+                        </q-card-section>
+                    </q-card>
                     <q-table
                         grid
                         :rows="articles"

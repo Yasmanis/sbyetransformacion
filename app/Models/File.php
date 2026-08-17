@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class File extends Model
 {
@@ -17,11 +18,12 @@ class File extends Model
 
     protected $fillable = ['name', 'size', 'path', 'type', 'category_id', 'public_access', 'public_date', 'poster', 'link', 'fixed'];
 
-    protected $appends = ['category', 'size_str', 'file'];
+    protected $appends = ['category', 'size_str', 'file', 'is_after', 'file_type'];
 
     protected $casts = [
         'public_access' => 'boolean',
-        'fixed' => 'boolean'
+        'fixed' => 'boolean',
+        'public_date' => 'date'
     ];
 
     protected static function booted()
@@ -64,9 +66,18 @@ class File extends Model
         return $this->path;
     }
 
-    public function getPublicDateAttribute($v)
+    public function getFileTypeAttribute()
     {
-        return isset($v) ? Carbon::parse($v)->format('d/m/Y') : null;
+        return Str::before($this->type, '/');
+    }
+
+    public function getIsAfterAttribute()
+    {
+        $date = $this->public_date;
+        if (!isset($date)) {
+            return false;
+        }
+        return Carbon::parse($date)->gt(now());
     }
 
     public function scopeTypeOfFile($query, $args)

@@ -1,6 +1,6 @@
 <template>
     <q-input
-        v-model="model"
+        v-model="displayValue"
         :name="props.name"
         :label="props.label"
         :rules="fieldRules"
@@ -14,7 +14,6 @@
         reactive-rules
         hide-bottom-space
         bottom-slots
-        @update:model-value="onUpdate"
     >
         <template #label v-if="label">
             {{ label }}
@@ -41,7 +40,6 @@
                 >
                     <q-date
                         v-model="proxy"
-                        mask="DD/MM/YYYY"
                         :today-btn="todayBtn"
                         :today-btn-label="todayBtn ? 'hoy' : null"
                         :options="options"
@@ -130,10 +128,15 @@ const props = defineProps({
 
 const emits = defineEmits(["update"]);
 const page = usePage();
-const model = ref(null);
+const model = defineModel({
+    type: String,
+    default: null,
+});
 const proxy = ref(null);
 const fieldRules = ref([]);
 const fieldHelp = ref([]);
+
+const { formatDate, extractDate } = useDate;
 
 onBeforeMount(() => {
     const { rules, help } = validations.getRules(props.othersProps);
@@ -141,48 +144,176 @@ onBeforeMount(() => {
     fieldHelp.value = help;
 });
 
-onMounted(() => {
-    model.value = props.modelValue;
-    proxy.value = props.modelValue;
+const displayValue = computed({
+    get: () => toDisplay(model.value),
+    set: (val) => {
+        // Convierte a ISO (YYYY-MM-DD) para el modelo
+        const iso = toISO(val);
+        model.value = iso;
+        // Actualiza el proxy con el formato que espera q-date
+        proxy.value = toProxyFormat(iso);
+    },
 });
 
-watch(
-    () => props.modelValue,
-    (n, o) => {
-        model.value = n;
+const toISO = (dateStr) => {
+    if (!dateStr) return null;
+
+    // 1. Si es YYYY/MM/DD (formato que devuelve q-date)
+    if (/^\d{4}\/\d{2}\/\d{2}$/.test(dateStr)) {
+        const [year, month, day] = dateStr.split("/").map(Number);
+        const d = new Date(year, month - 1, day);
+        if (!isNaN(d)) {
+            return formatDate(d, "YYYY-MM-DD");
+        }
     }
-);
+
+    // 2. Si ya es YYYY-MM-DD, validar y devolver
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        const parts = dateStr.split("-").map(Number);
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+        if (!isNaN(d)) return dateStr;
+    }
+
+    // 3. Si es DD/MM/YYYY (entrada manual)
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+        const [day, month, year] = dateStr.split("/").map(Number);
+        const d = new Date(year, month - 1, day);
+        if (!isNaN(d)) {
+            return formatDate(d, "YYYY-MM-DD");
+        }
+    }
+
+    // 4. Fallback: intentar con extractDate para otros formatos
+    const fallback = extractDate(dateStr);
+    if (fallback && !isNaN(fallback)) {
+        return formatDate(fallback, "YYYY-MM-DD");
+    }
+
+    return null;
+};
+
+const toDisplay = (iso) => {
+    if (!iso) return null;
+
+    // 1. MANEJO ESPECÍFICO PARA EL FORMATO DE LARAVEL: 2026-07-17T00:00:00.000000Z
+    if (typeof iso === "string" && iso.includes("T") && iso.includes("Z")) {
+        // Extraer solo la parte de la fecha (YYYY-MM-DD)
+        const datePart = iso.split("T")[0];
+        if (/^\d{4}-\d{2}-\d{2}$/.test(datePart)) {
+            const parts = datePart.split("-").map(Number);
+            const d = new Date(parts[0], parts[1] - 1, parts[2]);
+            if (!isNaN(d)) {
+                return formatDate(d, "DD/MM/YYYY");
+            }
+        }
+    }
+
+    // 2. Si es YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+        const parts = iso.split("-").map(Number);
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+        if (!isNaN(d)) {
+            return formatDate(d, "DD/MM/YYYY");
+        }
+    }
+
+    // 3. Si es YYYY/MM/DD
+    if (/^\d{4}\/\d{2}\/\d{2}$/.test(iso)) {
+        const parts = iso.split("/").map(Number);
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+        if (!isNaN(d)) {
+            return formatDate(d, "DD/MM/YYYY");
+        }
+    }
+
+    // 4. Si es DD/MM/YYYY
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(iso)) {
+        const [day, month, year] = iso.split("/").map(Number);
+        const d = new Date(year, month - 1, day);
+        if (!isNaN(d)) {
+            return formatDate(d, "DD/MM/YYYY");
+        }
+    }
+
+    // 5. Fallback con extractDate
+    const fallback = extractDate(iso);
+    if (fallback && !isNaN(fallback)) {
+        return formatDate(fallback, "DD/MM/YYYY");
+    }
+
+    // 6. Último intento: crear Date directamente
+    try {
+        const d = new Date(iso);
+        if (!isNaN(d)) {
+            return formatDate(d, "DD/MM/YYYY");
+        }
+    } catch (e) {
+        // Ignorar error
+    }
+
+    return null;
+};
+
+// Conversión para q-date (YYYY/MM/DD)
+const toProxyFormat = (iso) => {
+    if (!iso) return null;
+
+    // Si ya está en formato YYYY/MM/DD, devolverlo
+    if (/^\d{4}\/\d{2}\/\d{2}$/.test(iso)) {
+        return iso;
+    }
+
+    // Si está en YYYY-MM-DD, convertirlo a YYYY/MM/DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+        return iso.replace(/-/g, "/");
+    }
+
+    // Si es formato Laravel (2026-07-17T00:00:00.000000Z), extraer la fecha
+    if (typeof iso === "string" && iso.includes("T") && iso.includes("Z")) {
+        const datePart = iso.split("T")[0];
+        if (/^\d{4}-\d{2}-\d{2}$/.test(datePart)) {
+            return datePart.replace(/-/g, "/");
+        }
+    }
+
+    // Intentar extraer la fecha de cualquier otro formato
+    const date = extractDate(iso);
+    if (date && !isNaN(date)) {
+        return formatDate(date, "YYYY/MM/DD");
+    }
+
+    return null;
+};
 
 const options = (date) => {
-    if (props.startNow && props.endNow)
-        return date === useDate.formatDate(Date.now(), "YYYY/MM/DD");
-    else if (props.startNow)
-        return date >= useDate.formatDate(Date.now(), "YYYY/MM/DD");
-    else if (props.endNow)
-        return date <= useDate.formatDate(Date.now(), "YYYY/MM/DD");
-    else if (props.startDate && props.endDate)
+    const today = formatDate(Date.now(), "YYYY/MM/DD");
+    if (props?.startNow && props?.endNow) return date === today;
+    if (props?.startNow) return date >= today;
+    if (props?.endNow) return date <= today;
+    if (props?.startDate && props?.endDate) {
         return date >= props.startDate && date <= props.endDate;
-    else if (props.startDate) return date >= props.startDate;
-    else if (props.endDate) return date <= props.endDate;
+    }
+    if (props?.startDate) return date >= props.startDate;
+    if (props?.endDate) return date <= props.endDate;
     return true;
 };
 
-const onUpdate = (val) => {
-    emits("update", props.name, val);
-};
-
 const onBeforeShowProxy = () => {
-    proxy.value = model.value;
+    proxy.value = toProxyFormat(model.value);
 };
 
 const setNow = () => {
-    proxy.value = useDate.formatDate(Date.now(), "DD/MM/YYYY");
-    ok(proxy.value);
+    const now = formatDate(Date.now(), "YYYY/MM/DD");
+    proxy.value = now;
+    ok(now);
 };
 
 const ok = (val) => {
-    model.value = val;
-    emits("update", props.name, val);
+    // val viene en formato YYYY/MM/DD desde q-date
+    const iso = toISO(val); // Esto convierte a YYYY-MM-DD
+    model.value = iso; // El modelo siempre guarda YYYY-MM-DD
+    // Guardamos en proxy el formato que espera q-date
+    proxy.value = toProxyFormat(iso);
 };
 
 const clear = () => {

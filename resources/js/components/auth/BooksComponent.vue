@@ -102,7 +102,6 @@
                         :others-props="{
                             required: true,
                         }"
-                        @update="onUpdateField"
                     />
                     <checkbox-field
                         v-model="iAmNot"
@@ -217,7 +216,7 @@ watch(
     () => props.newBook,
     (n, o) => {
         if (n) showDialog.value = true;
-    }
+    },
 );
 
 const onUpdateField = (name, val) => {

@@ -91,9 +91,8 @@
                 <date-field
                     :label="f.label"
                     :name="f.name"
-                    :modelValue="formData[f.name]"
+                    v-model="formData[f.name]"
                     :othersProps="f.othersProps"
-                    @update="onUpdateField"
                     v-else-if="f.type === 'date'"
                 />
                 <date-time-range-field
@@ -249,8 +248,8 @@ const setDefaultData = () => {
             formData.value[f.name] = props.object
                 ? props.object[f.name]
                 : f.othersProps && f.othersProps.defaultValue
-                ? f.othersProps.defaultValue
-                : null;
+                  ? f.othersProps.defaultValue
+                  : null;
         }
     });
 };

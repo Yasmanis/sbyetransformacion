@@ -7,18 +7,10 @@
             <date-field
                 :name="startName"
                 :label="startLabel"
-                :modelValue="startDate"
+                v-model="startDate"
                 start-now
-                :end-date="
-                    endDate
-                        ? date.formatDate(
-                              date.extractDate(endDate, 'DD/MM/YYYY'),
-                              'YYYY/MM/DD'
-                          )
-                        : null
-                "
+                :end-date="maxStartDate"
                 :others-props="othersProps?.start ?? { required: true }"
-                @update="onStartUpdate"
             />
         </div>
         <div
@@ -28,17 +20,9 @@
             <date-field
                 :name="endName"
                 :label="endLabel"
-                :modelValue="endDate"
-                :start-date="
-                    startDate
-                        ? date.formatDate(
-                              date.extractDate(startDate, 'DD/MM/YYYY'),
-                              'YYYY/MM/DD'
-                          )
-                        : null
-                "
+                v-model="endDate"
+                :start-date="minEndDate"
                 :others-props="othersProps?.end ?? { required: false }"
-                @update="onEndUpdate"
             />
         </div>
     </div>
@@ -50,6 +34,7 @@ import { date } from "quasar";
 import DateField from "./DateField.vue";
 import { useQuasar } from "quasar";
 import { error } from "../../../helpers/notifications";
+import { start } from "nprogress";
 
 defineOptions({
     name: "DateRangeField",
@@ -72,8 +57,6 @@ const props = defineProps({
         type: String,
         default: "fin",
     },
-    startValue: String,
-    endValue: String,
     othersProps: Object,
 });
 
@@ -81,41 +64,17 @@ const emits = defineEmits(["update"]);
 
 const $q = useQuasar();
 
-const startDate = ref(null);
-const endDate = ref(null);
-
-onMounted(() => {
-    startDate.value = props.startValue ?? null;
-    endDate.value = props.endValue ?? null;
-});
-
-watch(
-    () => props.startValue,
-    (n) => {
-        startDate.value = n;
-    }
-);
-
-watch(
-    () => props.endValue,
-    (n) => {
-        endDate.value = n;
-    }
-);
+const startDate = defineModel("start");
+const endDate = defineModel("end");
 
 const screen = computed(() => {
     return $q.screen;
 });
 
-const onStartUpdate = (name, val) => {
-    startDate.value = val;
-    onUpdateDates();
-};
+const minEndDate = computed(() => startDate.value || null);
 
-const onEndUpdate = (name, val) => {
-    endDate.value = val;
-    onUpdateDates();
-};
+// Limita el selector de la fecha inicial para que no sea mayor a endDate
+const maxStartDate = computed(() => endDate.value || null);
 
 const onUpdateDates = () => {
     if (startDate.value !== null && endDate.value !== null) {
@@ -126,7 +85,7 @@ const onUpdateDates = () => {
         if (s > e) {
             endDate.value = null;
             error(
-                `la ${props.startLabel} debe ser mayor o igual a la ${props.endLabel}`
+                `la ${props.startLabel} debe ser mayor o igual a la ${props.endLabel}`,
             );
         }
     }

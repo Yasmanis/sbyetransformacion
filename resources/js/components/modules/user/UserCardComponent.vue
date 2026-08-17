@@ -94,9 +94,8 @@
                         <date-field
                             label="fecha de nacimiento"
                             name="birthdate"
-                            :model-value="formData.birthdate"
+                            v-model="formData.birthdate"
                             end-now
-                            @update="onUpdateField"
                         />
                     </div>
                     <div

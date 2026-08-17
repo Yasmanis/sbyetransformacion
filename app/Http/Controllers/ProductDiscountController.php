@@ -43,13 +43,6 @@ class ProductDiscountController extends Controller
             ]);
             $repository = new DiscountRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $start_at = Carbon::createFromFormat('d/m/Y', $data['start_at'])->format('Y-m-d');
-            try {
-                $data['end_at'] = Carbon::createFromFormat('d/m/Y', $data['end_at'])->format('Y-m-d');
-            } catch (\Throwable $th) {
-                $data['end_at'] = null;
-            }
-            $data['start_at'] = $start_at;
             $object = $repository->create($data);
             return response()->json([
                 'success' => true,
@@ -73,13 +66,6 @@ class ProductDiscountController extends Controller
             ]);
             $repository = new DiscountRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $start_at = Carbon::createFromFormat('d/m/Y', $data['start_at'])->format('Y-m-d');
-            try {
-                $data['end_at'] = Carbon::createFromFormat('d/m/Y', $data['end_at'])->format('Y-m-d');
-            } catch (\Throwable $th) {
-                $data['end_at'] = null;
-            }
-            $data['start_at'] = $start_at;
             $object = $repository->updateById($id, $data);
             return response()->json([
                 'success' => true,

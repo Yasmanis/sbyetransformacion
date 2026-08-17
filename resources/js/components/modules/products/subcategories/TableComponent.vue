@@ -184,6 +184,9 @@
                             :label="props.value ? 'Si' : 'No'"
                         />
                     </template>
+                    <template v-else-if="props.col.type === 'date'">
+                        {{ toFormatDate(props.row[props.col.field]) }}
+                    </template>
                     <template v-else>
                         <q-item-label lines="5">
                             <span v-html="props.row[props.col.field]"> </span>

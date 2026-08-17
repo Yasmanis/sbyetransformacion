@@ -79,8 +79,8 @@
                         <users-select-dialog-component
                             label="usuarios"
                             name="assigned_to_id"
-                            :model-value="users"
-                            @update="onUpdateUsers"
+                            :model-value="formData.assigned_to_id"
+                            @update="onUpdateField"
                         />
                     </div>
                     <date-time-range-field
@@ -180,7 +180,6 @@ const formData = useForm({
     assigned_to_id: null,
     _method: null,
 });
-const users = ref([]);
 const page = usePage();
 
 onMounted(() => {
@@ -203,10 +202,6 @@ const onUpdateField = (name, val) => {
     formData[name] = val;
 };
 
-const onUpdateUsers = (name, val) => {
-    formData[name] = val ? val.map((v) => v.value) : val;
-};
-
 const setDefaultData = () => {
     formData["title"] = props.object ? props.object.title : null;
     formData["url"] = props.object ? props.object.url : null;
@@ -221,15 +216,10 @@ const setDefaultData = () => {
             ? `${page.props.public_path}storage/${props.object.logo}`
             : null
         : null;
-    formData["_method"] = props.object ? "put" : "post";
-    users.value = props.object
-        ? props.object.assigned_to_id.map((u) => {
-              return {
-                  value: u.id,
-                  label: u.full_name,
-              };
-          })
+    formData["assigned_to_id"] = props.object
+        ? props.object.assigned_to_id
         : [];
+    formData["_method"] = props.object ? "put" : "post";
 };
 
 const save = async (hide) => {

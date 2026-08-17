@@ -53,7 +53,7 @@ class ContactAdmin extends Model
         $notification->model_id = $this->id;
         $notification->save();
 
-        $user = $this->user()->first();
+        $user = $this->user()->withTrashed()->first();
         $params = [
             'email' => $user->email,
             'name' => $user->full_name,
