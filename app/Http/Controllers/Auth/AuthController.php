@@ -314,9 +314,16 @@ class AuthController extends Controller
         if ($user->username === 'sa') {
             return back()->with(['error' => 'esta cuenta no puede ser cerrada']);
         }
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $params = [
+            'name' => $user->name,
+            'email' => $user->email
+        ];
         $user->delete();
+        Auth::logout();
+
+        $service = new BrevoService();
+        $service->sendEmail('AVISO - cierre de cuenta', 'admin.account_close', $params, $params);
+
         return redirect()->route('contactame')->with([
             'dialog_info' => [
                 'title' => "informacion!!!",

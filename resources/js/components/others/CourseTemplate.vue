@@ -1,16 +1,17 @@
 <template>
     <div class="row">
         <div
-            class="col-md-4 col-lg-4 col-sm-4 col-xs-12 q-sm-pr-md"
+            class="col-md-4 col-lg-4 col-sm-4 col-xs-12 q-sm-pr-md q-gutter-y-md"
             :class="screen.xs ? 'q-mb-md' : 'q-pr-md'"
         >
             <slot name="panel-left">
-                <q-card class="q-mb-md">
+                <q-card>
                     <q-card-section class="text-center">
                         <mgr-private-msg-component />
                     </q-card-section>
                 </q-card>
-                <q-card class="q-mb-md">
+
+                <q-card>
                     <q-card-section class="text-center">
                         <p class="q-mb-none">
                             {{ Math.round(course_percentage * 100) / 100 }}%
@@ -24,10 +25,12 @@
                 </q-card>
 
                 <q-card>
-                    <q-card-section class="text-bold">
+                    <q-card-section>
                         <p class="text-bold">avisos</p>
                     </q-card-section>
                 </q-card>
+
+                <calculator-component v-if="segment === 'school'" />
             </slot>
         </div>
         <div class="col-md-8 col-lg-8 col-sm-8 col-xs-12">
@@ -105,6 +108,7 @@ import SectionComponent from "../../components/modules/school/SectionComponent.v
 import SectionItemComponent from "../../components/modules/school/SectionItemComponent.vue";
 import NotificationComponent from "../../components/modules/school/notification/NotificationComponent.vue";
 import MgrPrivateMsgComponent from "../../components/modules/privatemsg/MgrPrivateMsgComponent.vue";
+import CalculatorComponent from "../life/CalculatorComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 import {
     computed,

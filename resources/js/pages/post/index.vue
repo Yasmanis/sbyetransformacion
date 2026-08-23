@@ -10,9 +10,7 @@
                         v-if="fixeds.length > 0"
                     />
 
-                    <div class="q-py-sm"></div>
-
-                    <q-card>
+                    <q-card class="q-mt-lg">
                         <q-card-section class="no-padding">
                             <q-list>
                                 <q-item>
@@ -38,7 +36,6 @@
                         </q-card-section>
                     </q-card>
                 </template>
-                <template #panel-center> panel centro </template>
                 <template #panel-bottom>
                     <q-table
                         grid

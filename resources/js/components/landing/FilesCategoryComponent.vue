@@ -133,12 +133,14 @@
                         <q-card-section class="text-center">
                             <q-item-label lines="3">
                                 {{
-                                    file.name.indexOf(".") >= 0
-                                        ? file.name.substring(
-                                              0,
-                                              file.name.lastIndexOf("."),
-                                          )
-                                        : file.name
+                                    file.type === "link"
+                                        ? file.name
+                                        : file.name.indexOf(".") >= 0
+                                          ? file.name.substring(
+                                                0,
+                                                file.name.lastIndexOf("."),
+                                            )
+                                          : file.name
                                 }}
                             </q-item-label>
                             <q-item-label

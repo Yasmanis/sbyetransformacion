@@ -12,7 +12,7 @@
                         v-if="fixeds.length > 0"
                     />
 
-                    <div class="q-py-sm"></div>
+                    <div class="q-pt-lg"></div>
 
                     <articles-list-view
                         title="proximos articulos"
@@ -20,7 +20,6 @@
                         v-if="afters.length > 0"
                     />
                 </template>
-                <template #panel-center> panel centro </template>
                 <template #panel-bottom>
                     <q-card>
                         <q-card-section>
