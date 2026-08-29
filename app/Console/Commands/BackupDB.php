@@ -33,9 +33,9 @@ class BackupDB extends Command
         set_time_limit(0);
         ini_set('memory_limit', '8912M');
         $now = Carbon::now()->toDateString() . '-' . Carbon::now()->timestamp;
-        $db = env('DB_DATABASE', 'forge');
-        $user = env('DB_USERNAME', 'forge');
-        $pass = env('DB_PASSWORD', '');
+        $db = config('database.connections.mysql.database');
+        $user = config('database.connections.mysql.username');
+        $pass = config('database.connections.mysql.password', '');
         $backupPath = storage_path('backup');
         $sqlFile = $backupPath . '/dump-' . $now . '.sql';
         $zipFile = $backupPath . '/dump-' . $now . '.zip';

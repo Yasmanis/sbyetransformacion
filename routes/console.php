@@ -28,6 +28,6 @@ Artisan::command('event', function () {
         'text' => 'ejemplo de texto a mostrar',
         'icon' => 'mdi-account',
         'sent_at' => now(),
-        'user' => auth()->user()->id
+        'user' => optional(auth()->user())->id
     ]);
 })->purpose('Ejemplo de envio de notificaciones push');
