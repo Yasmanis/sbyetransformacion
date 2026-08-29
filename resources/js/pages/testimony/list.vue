@@ -4,8 +4,6 @@
             <table-component
                 :searchFields="searchFields"
                 :filterFields="filterFields"
-                :createFields="fields"
-                :updateFields="fields"
                 :has_delete="false"
             ></table-component>
         </q-page>
@@ -21,14 +19,6 @@ defineOptions({
     name: "ListPage",
 });
 
-const amzonImage = {
-    field: "amazon_image",
-    name: "amazon_image",
-    label: "",
-    align: "center",
-    type: "file",
-};
-
 const title = {
     field: "title",
     name: "title",
@@ -36,39 +26,6 @@ const title = {
     align: "left",
     sortable: true,
     type: "text",
-};
-
-const message = {
-    field: "message",
-    name: "message",
-    label: "mensaje",
-    align: "left",
-    sortable: true,
-    type: "text",
-};
-
-const message_to_admin = {
-    field: "msg_to_admin",
-    name: "msg_to_admin",
-    label: "mensaje admin",
-    align: "left",
-    type: "text",
-};
-
-const name_to_show = {
-    field: "name_to_show",
-    name: "name_to_show",
-    label: "nombre a mostrar",
-    align: "left",
-    type: "text",
-};
-
-const anonimous = {
-    field: "anonimous",
-    name: "anonimous",
-    label: "marca esta casilla si quieres hacer un testimonio anonimo, aunque es preferible que utilices un pseudonimo o solo tu nombre o diminutivo",
-    align: "center",
-    type: "boolean",
 };
 
 const volumes = {
@@ -102,16 +59,6 @@ const searchFields = [
         label: "nombre a mostrar",
         type: "text",
     },
-];
-
-const fields = [
-    name_to_show,
-    anonimous,
-    title,
-    message,
-    message_to_admin,
-    amzonImage,
-    volumes,
 ];
 
 const filterFields = [

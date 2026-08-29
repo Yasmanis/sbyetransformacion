@@ -36,7 +36,7 @@ class TestimonyController extends Controller
         $user = auth()->user();
         if ($user->hasCreate('testimony')) {
             $request->validate([
-                'title' => ['required'],
+                'name' => ['required'],
             ]);
             $repository = new TestimonyRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
@@ -46,7 +46,9 @@ class TestimonyController extends Controller
             }
             if ($request->hasFile('message')) {
                 $path = $request->file('message')->store('testimonies', 'public');
-                $data['message'] = $path;
+                $data['path'] = $path;
+                $data['type'] = Storage::mimeType('public/' . $path);
+                unset($data['message']);
             }
             $repository->create($data);
             return redirect()->back()->with('success', 'testimonio adicionado correctamente');
@@ -86,19 +88,21 @@ class TestimonyController extends Controller
     {
         if (auth()->user()->hasUpdate('testimony')) {
             $request->validate([
-                'title' => ['required'],
+                'name' => ['required'],
             ]);
             $repository = new TestimonyRepository();
             $object = $repository->getById($id);
-            $type = $object->type;
+            $type = $object->file_type;
             $data = $request->only((new ($repository->model()))->getFillable());
             $data['anonimous'] = filter_var($data['anonimous'], FILTER_VALIDATE_BOOLEAN);
             $old_file = null;
             if ($request->hasFile('message') || $type == 'video') {
-                $old_file = $object->message;
+                $old_file = $object->path;
                 if ($request->hasFile('message')) {
                     $path = $request->file('message')->store('testimonies', 'public');
-                    $data['message'] = $path;
+                    $data['path'] = $path;
+                    $data['type'] = Storage::mimeType('public/' . $path);
+                    $data['message'] = null;
                 }
             }
             $old_image = null;

@@ -3,13 +3,13 @@
         <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
             <div class="form-field">
                 <text-field
-                    v-model="formData['title']"
+                    v-model="formData['name']"
                     label="titulo"
-                    name="title"
+                    name="name"
                     :othersProps="{
                         required: true,
                     }"
-                    :modelValue="formData['title']"
+                    :modelValue="formData['name']"
                     @update="onUpdateField"
                 />
                 <select-field
@@ -179,10 +179,10 @@ onBeforeMount(() => {
 
 const setDefaultData = () => {
     const object = props.object;
-    formData.value["type"] = object?.type ?? null;
+    formData.value["type"] = object?.file_type ?? null;
     formData.value.name_to_show = object?.name_to_show ?? null;
     formData.value.anonimous = object?.anonimous ?? false;
-    formData.value.title = object?.title ?? null;
+    formData.value.name = object?.name ?? null;
     formData.value.message = object?.message ?? null;
     formData.value.msg_to_admin = object?.msg_to_admin ?? null;
     formData.value.amazon_image = object?.amazon_image ?? null;

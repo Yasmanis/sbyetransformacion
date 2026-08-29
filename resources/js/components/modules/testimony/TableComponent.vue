@@ -169,7 +169,7 @@
                             :label="props.value ? 'Si' : 'No'"
                         />
                     </template>
-                    <template v-else>
+                    <template v-else-if="props.col.name === 'message'">
                         <q-btn-component
                             icon="mdi-message-video"
                             color="primary"
@@ -179,13 +179,13 @@
                             square
                             size="md"
                             target="_blank"
-                            :href="`${$page.props.public_path}storage/${props.value}`"
-                            v-if="
-                                props.row['type'] === 'video' &&
-                                props.col.name === 'message'
-                            "
+                            :href="`${$page.props.public_path}storage/${props.row.path}`"
+                            v-if="props.row.file_type === 'video'"
                         />
-                        <span v-html="props.value" v-else></span>
+                        <text-truncate :text="props.row.message" v-else />
+                    </template>
+                    <template v-else>
+                        <span v-html="props.value"></span>
                     </template>
                 </q-td>
             </template>
@@ -203,7 +203,6 @@
                     <form-component
                         :object="props.row"
                         :title="current_module.singular_label"
-                        :fields="updateFields"
                         :module="current_module"
                         size="sm"
                         v-if="has_edit"
@@ -299,10 +298,15 @@
                                             square
                                             size="md"
                                             target="_blank"
-                                            :href="`${$page.props.public_path}storage/${col.value}`"
-                                            v-if="props.row['type'] === 'video'"
+                                            :href="`${$page.props.public_path}storage/${props.row.path}`"
+                                            v-if="
+                                                props.row.file_type === 'video'
+                                            "
                                         />
-                                        <span v-html="col.value" v-else></span>
+                                        <text-truncate
+                                            :text="props.row.message"
+                                            v-else
+                                        />
                                     </q-item-label>
                                     <q-item-label caption v-else>{{
                                         col.value ? col.value : "..."
@@ -318,7 +322,6 @@
                                             :title="
                                                 current_module.singular_label
                                             "
-                                            :fields="updateFields"
                                             :module="current_module"
                                             size="sm"
                                             v-if="has_edit"
@@ -364,6 +367,7 @@ import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import QTooltipComponent from "../../base/QTooltipComponent.vue";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
+import TextTruncate from "../../others/TextTruncate.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
 
@@ -377,10 +381,6 @@ const props = defineProps({
         default: () => [],
     },
     filterFields: {
-        type: Array,
-        default: () => [],
-    },
-    updateFields: {
         type: Array,
         default: () => [],
     },
@@ -411,8 +411,8 @@ const columns = ref([
         type: "avatar",
     },
     {
-        field: "title",
-        name: "title",
+        field: "name",
+        name: "name",
         label: "titulo",
         align: "left",
         required: true,
@@ -424,7 +424,7 @@ const columns = ref([
         name: "message",
         label: "mensaje",
         align: "left",
-        type: "text",
+        type: "longtext",
     },
     {
         field: "book_volume",

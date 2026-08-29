@@ -30,10 +30,7 @@
                         controls
                         :volume="0.6"
                         aspectRatio="1:1"
-                        v-if="
-                            file.type.startsWith('video/') ||
-                            file.type.startsWith('audio/')
-                        "
+                        v-if="['video', 'audio'].includes(file.file_type)"
                     />
                     <q-item
                         tag="a"
@@ -46,7 +43,7 @@
                             padding: 0px;
                             border-style: dotted;
                         "
-                        v-else-if="file.type.startsWith('image/')"
+                        v-else-if="file.file_type === 'image'"
                     >
                         <q-img
                             fit="fill"
@@ -74,10 +71,11 @@
                             }`"
                     /></q-item>
                 </template>
-                <template
-                    v-else-if="category.name.toLowerCase() !== 'testimonios'"
-                >
-                    <q-card class="my-card q-ma-sm rounded">
+                <template v-else>
+                    <q-card
+                        class="my-card q-ma-sm rounded"
+                        v-if="file.file_type !== 'text'"
+                    >
                         <q-card-section
                             class="q-pa-none"
                             style="
@@ -99,8 +97,7 @@
                                 :class="file.poster ? 'bg-white' : ''"
                                 @play="onPlayVideo"
                                 v-if="
-                                    file.type.startsWith('video/') ||
-                                    file.type.startsWith('audio/')
+                                    ['video', 'audio'].includes(file.file_type)
                                 "
                             />
                             <q-img
@@ -109,7 +106,7 @@
                                 class="rounded-top cursor-pointer"
                                 img-class="glightbox"
                                 :ratio="16 / 9"
-                                v-else-if="file.type.startsWith('image/')"
+                                v-else-if="file.file_type === 'image'"
                             />
                             <q-img
                                 :src="`${$page.props.public_path}${
@@ -122,7 +119,7 @@
                                 :ratio="16 / 9"
                                 @click="
                                     open(
-                                        file.type === 'link'
+                                        file.file_type === 'link'
                                             ? (file.link ?? file.name)
                                             : `${$page.props.public_path}storage/${file.path}`,
                                     )
@@ -133,7 +130,7 @@
                         <q-card-section class="text-center">
                             <q-item-label lines="3">
                                 {{
-                                    file.type === "link"
+                                    file.file_type === "link"
                                         ? file.name
                                         : file.name.indexOf(".") >= 0
                                           ? file.name.substring(
@@ -149,7 +146,7 @@
                                 <a
                                     class="text-uppercase text-primary"
                                     :href="
-                                        file.type === 'link'
+                                        file.file_type === 'link'
                                             ? (file.link ?? file.name)
                                             : `${$page.props.public_path}storage/${file.path}`
                                     "
@@ -159,145 +156,39 @@
                             </q-item-label>
                         </q-card-section>
                     </q-card>
+                    <q-card
+                        bordered
+                        class="my-card q-ma-sm rounded"
+                        style="border: 1px solid rgb(64, 116, 146)"
+                        v-else
+                    >
+                        <q-card-section class="q-pa-sm q-pa-none text-center">
+                            <q-img
+                                :src="`${$page.props.public_path}images/icon/heart.png`"
+                                fit="fill"
+                                width="50px"
+                            />
+                        </q-card-section>
+                        <q-card-section class="q-pa-sm q-pa-none text-center">
+                            <span v-html="file.message"></span>
+                        </q-card-section>
+                        <q-card-section class="text-center">
+                            <q-item-label v-if="file.anonimous">
+                                <i>publicado como anonimo</i>
+                            </q-item-label>
+                            <q-item-label v-else-if="file.name_to_show">
+                                {{ file.name_to_show }}
+                            </q-item-label>
+                            <q-item-label v-else>
+                                {{ file.user?.full_name }}
+                            </q-item-label>
+                        </q-card-section>
+                    </q-card>
                 </template>
             </div>
         </template>
     </div>
-    <div
-        class="row"
-        v-if="
-            category.name.toLowerCase() === 'testimonios' ||
-            testimonies.length > 0
-        "
-    >
-        <template v-if="category.name.toLowerCase() === 'testimonios'">
-            <template
-                v-for="(file, indexTestimonyFile) in category.files"
-                :key="`file-testimony-${indexTestimonyFile}`"
-            >
-                <div :class="cls" v-if="file.type.startsWith('video/')">
-                    <q-card class="my-card q-ma-sm rounded">
-                        <q-card-section
-                            class="q-pa-none"
-                            style="
-                                border-bottom: 1px solid #70707057;
-                                padding: 2px;
-                            "
-                        >
-                            <video-player
-                                :src="`${$page.props.public_path}storage/${file.path}`"
-                                :poster="
-                                    file.poster
-                                        ? `${$page.props.public_path}storage/${file.poster}`
-                                        : null
-                                "
-                                controls
-                                aspectRatio="16:9"
-                                :volume="0.6"
-                                class="rounded-top"
-                            />
-                        </q-card-section>
-                        <q-card-section class="text-center">
-                            <q-item-label lines="3">
-                                {{
-                                    file.name.indexOf(".") >= 0
-                                        ? file.name.substring(
-                                              0,
-                                              file.name.lastIndexOf("."),
-                                          )
-                                        : file.name
-                                }}
-                            </q-item-label>
-                            <q-item-label
-                                class="q-pt-sm cursor-pointer text-primary"
-                            >
-                                <a
-                                    class="text-uppercase text-primary"
-                                    :href="`${$page.props.public_path}storage/${file.path}`"
-                                    target="_blank"
-                                    ><small>ver</small></a
-                                >
-                            </q-item-label>
-                        </q-card-section>
-                    </q-card>
-                </div>
-            </template>
-        </template>
-        <template v-for="(t, index) in testimonies" :key="`testimony-${index}`">
-            <div :class="cls">
-                <q-card
-                    class="my-card q-ma-sm rounded"
-                    v-if="t.type === 'video'"
-                >
-                    <q-card-section
-                        class="q-pa-none"
-                        style="border-bottom: 1px solid #70707057; padding: 2px"
-                    >
-                        <video-player
-                            :src="`${$page.props.public_path}storage/${t.message}`"
-                            controls
-                            aspectRatio="16:9"
-                            :volume="0.6"
-                            class="rounded-top"
-                        />
-                    </q-card-section>
-                    <q-card-section class="text-center">
-                        <q-item-label v-if="t.anonimous">
-                            <i>publicado como anonimo</i>
-                        </q-item-label>
-                        <q-item-label v-else-if="t.name_to_show">
-                            {{ t.name_to_show }}
-                        </q-item-label>
-                        <q-item-label v-else>
-                            {{ t.user.full_name }}
-                        </q-item-label>
-                        <q-item-label
-                            class="q-pt-sm cursor-pointer text-primary"
-                        >
-                            <a
-                                class="text-uppercase text-primary"
-                                :href="`${$page.props.public_path}storage/${t.message}`"
-                                target="_blank"
-                                ><small>ver</small></a
-                            >
-                        </q-item-label>
-                    </q-card-section>
-                </q-card>
-                <q-card
-                    bordered
-                    class="my-card q-ma-sm rounded"
-                    style="border: 1px solid rgb(64, 116, 146)"
-                    v-else
-                >
-                    <q-card-section class="q-pa-sm q-pa-none text-center">
-                        <q-img
-                            :src="`${$page.props.public_path}images/icon/heart.png`"
-                            fit="fill"
-                            width="50px"
-                        />
-                    </q-card-section>
-                    <q-card-section class="q-pa-sm q-pa-none text-center">
-                        <span v-html="t.message"></span>
-                    </q-card-section>
-                    <q-card-section class="text-center">
-                        <q-item-label v-if="t.anonimous">
-                            <i>publicado como anonimo</i>
-                        </q-item-label>
-                        <q-item-label v-else-if="t.name_to_show">
-                            {{ t.name_to_show }}
-                        </q-item-label>
-                        <q-item-label v-else>
-                            {{ t.user.full_name }}
-                        </q-item-label>
-                    </q-card-section>
-                </q-card>
-            </div>
-        </template>
-    </div>
-    <div
-        class="row text-center q-mb-md"
-        v-if="category.files.length === 0 && testimonies.length === 0"
-    >
+    <div class="row text-center q-mb-md" v-if="category.files.length === 0">
         <h3>
             lo sentimos, aun no se han hecho publicaciones en esta categoria
         </h3>
@@ -306,8 +197,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useQuasar, openURL } from "quasar";
-import { usePage } from "@inertiajs/vue3";
+import { openURL } from "quasar";
 import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
 import GLightbox from "glightbox";
@@ -320,8 +210,6 @@ defineOptions({
 const props = defineProps({
     category: Object,
 });
-
-const $q = useQuasar();
 
 const defaultsCategories = ref(["post", "posts", "newsletter", "newsletters"]);
 
@@ -342,10 +230,6 @@ const cls = computed(() => {
         }
     }
     return null;
-});
-
-const testimonies = computed(() => {
-    return usePage().props.testimonies;
 });
 
 const open = (url) => {

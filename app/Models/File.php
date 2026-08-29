@@ -16,9 +16,26 @@ class File extends Model
 
     protected $table = 'file';
 
-    protected $fillable = ['name', 'size', 'path', 'type', 'category_id', 'public_access', 'public_date', 'poster', 'link', 'fixed'];
+    protected $fillable = [
+        'name',
+        'size',
+        'path',
+        'type',
+        'category_id',
+        'public_access',
+        'public_date',
+        'poster',
+        'link',
+        'fixed'
+    ];
 
-    protected $appends = ['category', 'size_str', 'file', 'is_after', 'file_type'];
+    protected $appends = [
+        'category',
+        'size_str',
+        'file',
+        'is_after',
+        'file_type'
+    ];
 
     protected $casts = [
         'public_access' => 'boolean',

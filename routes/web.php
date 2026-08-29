@@ -163,9 +163,6 @@ Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
         }
         $category->files = $files;
     }
-    if ($category->name == 'testimonios') {
-        $testimonies = Testimony::active()->with('user')->orderBy('type', 'DESC')->orderBy('order', 'ASC')->get();
-    }
     return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'recent_files' => $recent_files, 'testimonies' => $testimonies])->with('error', 'asasdasd');
 })->name('publicaciones');
 

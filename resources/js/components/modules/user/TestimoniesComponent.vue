@@ -185,7 +185,7 @@
                                     :label="props.value ? 'Si' : 'No'"
                                 />
                             </template>
-                            <template v-else>
+                            <template v-else-if="props.col.name === 'message'">
                                 <q-btn-component
                                     icon="mdi-message-video"
                                     color="primary"
@@ -195,13 +195,16 @@
                                     square
                                     size="md"
                                     target="_blank"
-                                    :href="`${$page.props.public_path}storage/${props.value}`"
-                                    v-if="
-                                        props.row['type'] === 'video' &&
-                                        props.col.name === 'message'
-                                    "
+                                    :href="`${$page.props.public_path}storage/${props.row.path}`"
+                                    v-if="props.row.file_type === 'video'"
                                 />
-                                <span v-html="props.value" v-else></span>
+                                <text-truncate
+                                    :text="props.row.message"
+                                    v-else
+                                />
+                            </template>
+                            <template v-else>
+                                <span v-html="props.value"></span>
                             </template>
                         </q-td>
                     </template>
@@ -345,9 +348,9 @@
                                                     square
                                                     size="md"
                                                     target="_blank"
-                                                    :href="`${$page.props.public_path}storage/${col.value}`"
+                                                    :href="`${$page.props.public_path}storage/${props.row.path}`"
                                                     v-if="
-                                                        props.row['type'] ===
+                                                        props.row.file_type ===
                                                         'video'
                                                     "
                                                 />
@@ -428,6 +431,7 @@ import BtnClearComponent from "../../btn/BtnClearComponent.vue";
 import BtnPublicComponent from "../../btn/BtnPublicComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import QTooltipComponent from "../../base/QTooltipComponent.vue";
+import TextTruncate from "../../others/TextTruncate.vue";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../../services/current_module";
@@ -456,8 +460,8 @@ const showDialog = ref(false);
 
 const searchFields = [
     {
-        field: "title",
-        name: "title",
+        field: "name",
+        name: "name",
         label: "titulo",
         align: "left",
         sortable: true,
@@ -534,8 +538,8 @@ const columns = ref([
         type: "avatar",
     },
     {
-        field: "title",
-        name: "title",
+        field: "name",
+        name: "name",
         label: "titulo",
         align: "left",
         required: true,

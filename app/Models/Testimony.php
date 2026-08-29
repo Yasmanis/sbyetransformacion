@@ -5,14 +5,13 @@ namespace App\Models;
 use App\Notifications\StandardNotification;
 use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
 
-class Testimony extends Model
+class Testimony extends File
 {
     use HasFactory, Recyclable;
 
-    protected $fillable = ['title', 'message', 'type', 'user_id', 'publicated', 'name_to_show', 'anonimous', 'msg_to_admin', 'amazon_image', 'order', 'book_volume'];
+    protected $fillable = ['name', 'path', 'message', 'type', 'user_id', 'publicated', 'name_to_show', 'anonimous', 'msg_to_admin', 'amazon_image', 'order', 'book_volume'];
 
     protected $casts = [
         'publicated' => 'boolean',
@@ -21,13 +20,19 @@ class Testimony extends Model
 
     protected $appends = [
         'user_name',
-        'name',
-        'volumes'
+        'volumes',
+        'file_type'
     ];
 
     public static function boot()
     {
         parent::boot();
+
+        static::creating(function ($obj) {
+            $category = Category::firstWhere('name', 'testimonios');
+            $obj->category_id = $category->id;
+        });
+
         static::created(function ($obj) {
 
             $notification = new UserNotifications();
@@ -55,6 +60,12 @@ class Testimony extends Model
             $users = User::isAdmin()->get();
             Notification::send($users, new StandardNotification($notification, 'AVISO – NUEVO TESTIMONIO', 'admin.testimony', ['database', 'brevo'], $params));
         });
+
+        static::addGlobalScope('testimonyCategory', function ($q) {
+            $q->whereHas('category', function ($q1) {
+                $q1->where('name', 'testimonios');
+            });
+        });
     }
 
     public function user()
@@ -70,7 +81,7 @@ class Testimony extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('publicated', true);
+        return $query->where('public_access', true);
     }
 
     public function scopeType($query, $type)
@@ -86,10 +97,5 @@ class Testimony extends Model
     public function getVolumesAttribute()
     {
         return $this->user?->book_volumes ?? null;
-    }
-
-    public function getNameAttribute()
-    {
-        return sprintf('%s (%s)', $this->title, $this->user_name);
     }
 }
