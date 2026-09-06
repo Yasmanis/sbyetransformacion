@@ -11,10 +11,10 @@ class Testimony extends File
 {
     use HasFactory, Recyclable;
 
-    protected $fillable = ['name', 'path', 'message', 'type', 'user_id', 'publicated', 'name_to_show', 'anonimous', 'msg_to_admin', 'amazon_image', 'order', 'book_volume'];
+    protected $fillable = ['name', 'path', 'message', 'type', 'user_id', 'public_access', 'name_to_show', 'anonimous', 'msg_to_admin', 'amazon_image', 'order', 'book_volume'];
 
     protected $casts = [
-        'publicated' => 'boolean',
+        'public_access' => 'boolean',
         'anonimous' => 'boolean'
     ];
 

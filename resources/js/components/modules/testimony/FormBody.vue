@@ -37,7 +37,7 @@
                     label="mensaje"
                     name="message"
                     :othersProps="{
-                        required: true,
+                        required: !user.admin,
                     }"
                     @update="onUpdateField"
                     v-if="formData['type'] === 'text'"
@@ -45,23 +45,23 @@
                 <file-field
                     label="mensaje"
                     name="message"
-                    :othersProps="{ required: true, accept: 'video/*' }"
+                    :othersProps="{ required: !user.admin, accept: 'video/*' }"
                     :modelValue="formData['message']"
                     @update="onUpdateField"
                     v-if="formData['type'] === 'video'"
                 />
-                <select-field
-                    label="usuario"
+                <users-select-dialog-component
                     name="user_id"
-                    :modelValue="formData['user_id']"
-                    :othersProps="{
-                        required: true,
-                        url_to_options: '/users',
-                    }"
-                    :filterable="true"
+                    label="usuario"
+                    icon="mdi-account-outline"
+                    :multiple="false"
+                    :required="true"
+                    :show-label-when-selected="false"
+                    :model-value="formData.user_id"
                     @update="onUpdateField"
-                    v-if="page.props.auth.user.sa && !excludeUser"
+                    v-if="user.admin && !excludeUser"
                 />
+
                 <select-field
                     label="tomo"
                     name="book_volume"
@@ -70,7 +70,7 @@
                     :filterable="false"
                     :disable="currentVolumes.length === 0"
                     :othersProps="{
-                        required: true,
+                        required: !user.admin,
                     }"
                     @update="onUpdateField"
                 />
@@ -129,6 +129,8 @@ import CheckboxField from "../../form/input/CheckboxField.vue";
 import SelectField from "../../form/input/SelectField.vue";
 import FileField from "../../form/input/FileField.vue";
 import EditorField from "../../form/input/EditorField.vue";
+import SelectUsers from "../../form/input/SelectUsers.vue";
+import UsersSelectDialogComponent from "../user/UsersSelectDialogComponent.vue";
 import BtnSaveComponent from "../../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
@@ -137,7 +139,7 @@ import {
     errorValidation,
     success,
 } from "../../../helpers/notifications";
-import { Loading } from "quasar";
+import { Loading, Dark } from "quasar";
 import axios from "axios";
 
 const props = defineProps({
@@ -177,6 +179,8 @@ onBeforeMount(() => {
     setDefaultData();
 });
 
+const user = page.props.auth.user;
+
 const setDefaultData = () => {
     const object = props.object;
     formData.value["type"] = object?.file_type ?? null;
@@ -191,7 +195,6 @@ const setDefaultData = () => {
     if (object) {
         setVolumes(object.volumes);
     } else {
-        let user = page.props.auth.user;
         formData.value.user_id = user.id;
         setVolumes(user.book_volumes);
     }
@@ -201,7 +204,7 @@ const onUpdateField = (name, val, full) => {
     formData.value[name] = val;
     if (name === "user_id") {
         formData.value.book_volume = null;
-        setVolumes(val ? full.volumes : null);
+        setVolumes(val ? full?.volumes : null);
     } else if (name === "type") {
         formData.value.message = null;
     }

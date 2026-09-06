@@ -4,15 +4,13 @@
             <div class="text-h4 text-uppercase text-white q-mb-md">
                 newsletters
             </div>
-            <course-template>
+            <course-template :view-panel-section="false">
                 <template #panel-left>
                     <articles-list-view
                         title="news destacadas"
                         :articles="fixeds"
                         v-if="fixeds.length > 0"
                     />
-
-                    <div class="q-py-sm"></div>
 
                     <articles-list-view
                         title="proximas news"
@@ -26,7 +24,6 @@
                         row-key="name"
                         v-model:pagination="pagination"
                         hide-pagination
-                        class="q-mt-md"
                         v-if="articles.length > 0"
                     >
                         <template #item="props">
@@ -71,6 +68,7 @@
                         </q-item-section>
                     </q-item>
                 </template>
+                <template #add>.</template>
             </course-template>
         </q-page>
     </Layout>

@@ -29,6 +29,7 @@ use App\Http\Controllers\ModulesController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\PlatformController;
 use App\Http\Controllers\PrivateMsgController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductCategoryDiscountController;
@@ -141,7 +142,7 @@ Route::get('/landings/{url}', function ($url) {
 
 Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
     $categories = Category::where('public_access', true)->orderBy('order', 'ASC')->get();
-    $recent_files = File::publicAccess()->orderBy('public_date', 'DESC')->take(6)->get();
+    $recent_files = File::publicAccess()->wherePrincipal()->orderBy('public_date', 'DESC')->take(6)->get();
     $category = null;
     $testimonies = [];
     if (count($categories) > 0) {
@@ -157,9 +158,9 @@ Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
     }
     if (isset($category)) {
         if ($category->sort_files) {
-            $files = File::where('category_id', $category->id)->publicAccess()->orderBy('id', $category->sort_files)->get();
+            $files = File::where('category_id', $category->id)->publicAccess()->wherePrincipal()->orderBy('id', $category->sort_files)->get();
         } else {
-            $files = File::where('category_id', $category->id)->publicAccess()->orderBy('fixed', 'DESC')->orderBy('order', 'ASC')->get();
+            $files = File::where('category_id', $category->id)->publicAccess()->wherePrincipal()->orderBy('fixed', 'DESC')->orderBy('order', 'ASC')->get();
         }
         $category->files = $files;
     }
@@ -380,6 +381,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/shopping', ShoppingController::class);
     Route::post('/admin/files/poster/{id}', [FileController::class, 'poster']);
     Route::post('/admin/files/public-access/{id}', [FileController::class, 'publicAccess']);
+    Route::post('/admin/files/childs/{id}', [FileController::class, 'getChilds']);
     Route::resource('/admin/private-message', PrivateMsgController::class)->except(['index']);
     Route::get('/admin/private-message/download/{id}', [PrivateMsgController::class, 'download']);
     Route::post('/admin/private-message/highlight/{id}', [PrivateMsgController::class, 'highlight']);
@@ -387,9 +389,11 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/sections', SectionsController::class);
     Route::resource('/admin/landings', LandingController::class);
 
-    Route::get('/admin/posts', [PostController::class, 'index']);
+    Route::resource('/admin/post', PostController::class);
     Route::resource('/admin/newsletter', NewsletterController::class);
     Route::resource('/admin/en-los-medios', IntheMediaController::class);
+
+    Route::post('/admin/plattforms/add-file-to-publication', [PlatformController::class, 'addFileToPublication']);
 
     Route::get('/admin/configuration/shopping', [ConfigurationController::class, 'shopping']);
     Route::get('/admin/configuration/legal', [ConfigurationController::class, 'legal']);

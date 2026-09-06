@@ -1,5 +1,12 @@
 <template>
-    <q-img :src="src" :ratio="ratio" :fit="fit">
+    <q-img
+        :src="src"
+        :ratio="ratio"
+        :fit="fit"
+        :width="width"
+        :height="height"
+        @click="emits('play')"
+    >
         <div
             class="absolute-full text-subtitle2 flex flex-center"
             v-if="reproductor"
@@ -9,6 +16,7 @@
                 :icon="iconReproductor"
                 :color="iconReproductorColor"
                 :size="iconReproductorSize"
+                @click="emits('play')"
             />
         </div>
 
@@ -19,6 +27,7 @@
                     :icon="iconReproductor"
                     :color="iconReproductorColor"
                     :size="iconReproductorSize"
+                    @click="emits('play')"
                     v-if="reproductor"
                 />
             </div>
@@ -57,5 +66,9 @@ defineProps({
         type: Boolean,
         default: true,
     },
+    width: String,
+    height: String,
 });
+
+const emits = defineEmits(["play"]);
 </script>

@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Str;
 
 class SchoolTopic extends Model
 {
@@ -99,7 +100,8 @@ class SchoolTopic extends Model
     public function hasViewAccessForUser($user = null)
     {
         $user = $user ?? auth()->user();
-        $current_category = $this->section()->first()->category;
+        $s = $this->section()->first();
+        $current_category = $s ? Str::lower($s->module->model) : null;
         $categories = ['learning', 'reality', 'conference'];
         return $user->isAnAdmin() || (!$this->visible_after_testimony && in_array($current_category, $categories) && $user->hasPerm('view_' . $current_category));
     }
@@ -112,7 +114,7 @@ class SchoolTopic extends Model
     public function hasFullAccessByUser($user = null)
     {
         $user = $user ?? auth()->user();
-        $current_category = $this->section()->first()->category;
+        $current_category = $this->section()->first()?->category;
         $categories = ['school', 'learning', 'reality'];
         return in_array($current_category, $categories) && ($user->isAnAdmin() || $user->hasPerm('full_' . $current_category));
     }
@@ -137,12 +139,17 @@ class SchoolTopic extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function messages()
+    public function chats(): MorphMany
     {
-        return $this->hasMany(SchoolChat::class, 'topic_id')->send()->whereNotParent()->orWhere(function (Builder $query) {
-            $query->received()->whereNotParent();
-        })->orderBy('id', 'ASC');
+        return $this->morphMany(SchoolChat::class, 'topicable');
     }
+
+    // public function messages()
+    // {
+    //     return $this->hasMany(SchoolChat::class, 'topic_id')->send()->whereNotParent()->orWhere(function (Builder $query) {
+    //         $query->received()->whereNotParent();
+    //     })->orderBy('id', 'ASC');
+    // }
 
     public function deleteResourceFromDisk()
     {

@@ -232,7 +232,7 @@
                                 v-if="has_edit"
                             />
                             <btn-public-component
-                                :public="props.row.publicated"
+                                :public="props.row.public_access"
                                 @click="onPublicated(props.row.id)"
                                 v-if="has_edit"
                             />
@@ -386,7 +386,7 @@
                                                 />
                                                 <btn-public-component
                                                     :public="
-                                                        props.row.publicated
+                                                        props.row.public_access
                                                     "
                                                     @click="
                                                         onPublicated(
@@ -486,7 +486,7 @@ const filterFields = [
         ],
     },
     {
-        name: "publicated",
+        name: "public_access",
         label: "publicado",
         type: "boolean",
     },
@@ -564,8 +564,8 @@ const columns = ref([
         },
     },
     {
-        field: "publicated",
-        name: "publicated",
+        field: "public_access",
+        name: "public_access",
         label: "publicado",
         type: "boolean",
         align: "center",

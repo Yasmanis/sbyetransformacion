@@ -122,6 +122,7 @@
             />
             <form-chat-component
                 :topic="props.topic"
+                :topicable-type="topicableType"
                 @reload="loadMessages(topic)"
             />
             <help-chat-component :has_edit="has_edit" />
@@ -166,6 +167,7 @@ defineOptions({
 const props = defineProps({
     topic: Object,
     section: Object,
+    topicableType: String,
     index: {
         type: Number,
         default: 0,
@@ -207,7 +209,9 @@ watch(
 const loadMessages = async (t) => {
     loading.value = true;
     await axios
-        .post(`/admin/schooltopics/get-messages-from-topic/${t.id}`)
+        .post(`/admin/schooltopics/get-messages-from-topic/${t.id}`, {
+            type: props.topicableType,
+        })
         .then((res) => {
             messages.value = res.data;
         })

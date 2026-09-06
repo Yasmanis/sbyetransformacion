@@ -4,16 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class SchoolSection extends Model
 {
-    protected $fillable = ['name', 'description', 'category'];
+    protected $fillable = ['name', 'description', 'module_id'];
 
     protected $with = ['topics', 'topics.resources'];
+
+    public function module()
+    {
+        return $this->belongsTo(Module::class, 'module_id');
+    }
 
     public function topics()
     {
         return $this->hasMany(SchoolTopic::class, 'section_id')->orderBy('order');
+    }
+
+    public function files()
+    {
+        return $this->hasMany(File::class, 'section_id')->orderBy('order');
     }
 
     protected static function booted()
@@ -27,7 +38,9 @@ class SchoolSection extends Model
 
     public function scopeType($query, $type)
     {
-        return $query->where('category', $type);
+        return $query->whereHas('module', function ($q) use ($type) {
+            return $q->where('model', $type);
+        });
     }
 
     public function getTotalTime()
@@ -85,21 +98,6 @@ class SchoolSection extends Model
 
     public function getNameByCategory()
     {
-        $name = $this->category;
-        switch ($name) {
-            case 'conference':
-                $name = 'conferencia';
-                break;
-            case 'learning':
-                $name = 'aprender a liberar';
-                break;
-            case 'reality':
-                $name = 'crear la realidad';
-                break;
-            default:
-                $name = 'vivir en plenitud';
-                break;
-        }
-        return $name;
+        return Str::lower($this->module()->first()->singular_label);
     }
 }

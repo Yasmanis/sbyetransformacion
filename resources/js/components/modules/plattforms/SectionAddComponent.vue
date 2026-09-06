@@ -15,7 +15,7 @@
         <q-card style="width: 800px">
             <dialog-header-component
                 icon="mdi-plus"
-                title="añadir seccion y temas"
+                :title="title"
                 closable
                 @close="showDialog = false"
             />
@@ -29,10 +29,13 @@
                     />
                     <template v-for="(item, index) in itemsTopics" :key="index">
                         <topic-component
+                            :principal-file-title="principalFileTitle"
                             :segment="segment"
                             :skip="skip"
                             :label="
-                                index === 0 ? 'tema' : `tema ${getIndex(item)}`
+                                index === 0
+                                    ? topicTitle
+                                    : `${topicTitle} ${getIndex(item)}`
                             "
                             :name="`topic-${index}`"
                             :btnDelete="index > 0"
@@ -45,11 +48,6 @@
                                 }
                             "
                             @save="onSaveTopic"
-                            @is-ok="
-                                (ok) => {
-                                    item.isOk = ok;
-                                }
-                            "
                             v-if="item.visible"
                         />
                     </template>
@@ -77,12 +75,12 @@
 <script setup>
 import { ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
-import SectionFormComponent from "./section/SectionFormComponent.vue";
-import TopicComponent from "./topic/TopicComponent.vue";
+import SectionFormComponent from "./SectionFormComponent.vue";
 import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
+import TopicComponent from "./topic/TopicComponent.vue";
 import { usePage, router } from "@inertiajs/vue3";
-import { useQuasar, Loading } from "quasar";
+import { Loading } from "quasar";
 import {
     error,
     errorValidation,
@@ -95,13 +93,20 @@ defineOptions({
 
 const props = defineProps({
     segment: String,
+    title: String,
+    principalFileTitle: {
+        type: String,
+        default: "publicacion principal",
+    },
+    topicTitle: {
+        type: String,
+        default: "tema",
+    },
     skip: {
         type: Array,
         default: [],
     },
 });
-
-const $q = useQuasar();
 
 const emits = defineEmits(["reload-sections"]);
 const page = usePage();
@@ -121,17 +126,14 @@ const newTopic = (reset) => {
         name: null,
         description: null,
         descriptionAdd: false,
-        coverImage: null,
+        poster: null,
         resources: [],
         principalVideo: false,
         save: false,
         section_id: null,
-        isOk: false,
         visible: true,
         index: index.value,
-        book_volume: null,
-        visible_after_testimony: false,
-        skip: false,
+        category_id: page.props?.category?.id || null,
     };
     if (reset) {
         itemsTopics.value = [topic];
@@ -164,32 +166,7 @@ const addTopic = () => {
 const save = async () => {
     form.value.validate().then(async (success) => {
         if (success) {
-            let show_confirm = itemsTopics.value.find(
-                (t) => !t.isOk && t.visible,
-            );
-            if (show_confirm) {
-                $q.dialog({
-                    title: "confirmacion",
-                    html: true,
-                    message: `<div class="text-center"><i class="fas fa-exclamation-triangle text-red" style="font-size: 62px;"></i></div><div style="text-align: justify;">existen temas que no estan configurados correctamente; recuerde que el tema no se mostrara de forma adecuada si:</div><div><ol><li style="text-align: justify;">no se establece la imagen de portada</li><li style="text-align: justify;">no tiene video principal ni al menos un adjunto</li></ol></div><div style="text-align: justify;">si desea continuar puede corregir los temas en el apartado <img src="${page.props.public_path}images/icon/black-edit.png" style="font-size: 1rem; width: 20px !important;">&nbsp;modificar seccion</div>`,
-                    cancel: {
-                        label: "cancelar",
-                        icon: "mdi-cancel",
-                        "no-caps": true,
-                    },
-                    ok: {
-                        label: "si",
-                        icon: "mdi-check",
-                        color: "red",
-                        "no-caps": true,
-                    },
-                    persistent: true,
-                }).onOk(() => {
-                    saveSection.value = true;
-                });
-            } else {
-                saveSection.value = true;
-            }
+            saveSection.value = true;
         } else {
             errorValidation();
         }

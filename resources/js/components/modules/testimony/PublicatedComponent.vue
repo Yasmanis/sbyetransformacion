@@ -1,6 +1,6 @@
 <template>
     <btn-public-component
-        :public="object.publicated"
+        :public="object.public_access"
         @click="router.post(`/admin/testimony/publicated/${object.id}`)"
     />
 </template>

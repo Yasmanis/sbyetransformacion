@@ -6,7 +6,6 @@ use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Override;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Permission\Models\Permission;
@@ -42,6 +41,11 @@ class Module extends Model implements Sortable
     public function childs()
     {
         return $this->hasMany(Module::class, 'parent_id');
+    }
+
+    public function sections()
+    {
+        return $this->hasMany(SchoolSection::class, 'module_id');
     }
 
     public function permissions()

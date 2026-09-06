@@ -369,6 +369,7 @@ const onUpdate = () => {
             : props.multiple
               ? []
               : null,
+        n.length > 0 ? (props.multiple ? n : n[0]) : props.multiple ? [] : null,
     );
 };
 

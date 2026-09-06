@@ -7,6 +7,7 @@ use App\Repositories\SchoolSectionsRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class SchoolController extends Controller
 {
@@ -40,15 +41,16 @@ class SchoolController extends Controller
     {
         $segment = $this->segment();
         if (auth()->user()->hasCreate($segment)) {
+            $module = Module::firstWhere('model', $this->segment());
             $request->validate([
                 'name' => [
                     'required',
-                    Rule::unique('school_sections')->where('category', $this->segment())
+                    Rule::unique('school_sections')->where('module_id', $module->id)
                 ],
             ]);
             $repository = new SchoolSectionsRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $data['category'] = $this->segment();
+            $data['module_id'] = $module->id;
             $section = $repository->create($data);
             return $section;
         }
@@ -59,10 +61,10 @@ class SchoolController extends Controller
     {
         $repository = new SchoolSectionsRepository();
         $object = $repository->getById($id);
-        $segment = $object->category;
-        if (auth()->user()->hasUpdate($segment)) {
+        $module = $object->module;
+        if (auth()->user()->hasUpdate(Str::lower($module->model))) {
             $request->validate([
-                'name' => ['required', Rule::unique('school_sections')->where('category', $segment)->ignore($id)],
+                'name' => ['required', Rule::unique('school_sections')->where('module_id', $module->id)->ignore($id)],
             ]);
             $repository->updateById($id, $request->only((new ($repository->model()))->getFillable()));
             return redirect()->back()->with('success', 'seccion modificada correctamente');
@@ -74,8 +76,7 @@ class SchoolController extends Controller
     {
         $repository = new SchoolSectionsRepository();
         $object = $repository->getById($id);
-        $segment = $object->category;
-        if (auth()->user()->hasDelete($segment)) {
+        if (auth()->user()->hasDelete(Str::lower($object->module->model))) {
             $repository->deleteById($id);
             return redirect()->back()->with('success', 'seccion eliminada correctamente');
         }

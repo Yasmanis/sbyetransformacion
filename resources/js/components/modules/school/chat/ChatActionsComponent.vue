@@ -267,7 +267,7 @@ const props = defineProps({
     topic: Object,
 });
 
-const emits = defineEmits(["hide-menu", "remove-message", "reload"]);
+const emits = defineEmits(["hide-menu", "reload"]);
 
 const menu = ref(null);
 const maximizedToggle = ref(false);
@@ -382,7 +382,7 @@ const deleteMessage = async () => {
     await axios
         .delete(`/admin/schooltopics/delete-message/${currentMessage.value.id}`)
         .then(() => {
-            emits("remove-message");
+            emits("reload");
             confirm.value = false;
             success("mensaje eliminado correctamente");
         })

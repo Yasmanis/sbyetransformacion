@@ -224,8 +224,10 @@ const recent_files = computed(() => {
 });
 
 const getDate = (dd) => {
-    let d = date.extractDate(dd, "DD/MM/YYYY");
-    return date.formatDate(d, "MMMM D, YYYY");
+    let d = date.extractDate(dd, "YYYY/MM/DD");
+    console.log(d, dd);
+
+    return date.formatDate(dd, "MMMM D, YYYY");
 };
 </script>
 

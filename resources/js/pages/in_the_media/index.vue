@@ -4,7 +4,7 @@
             <div class="text-h4 text-uppercase text-white q-mb-md">
                 en los medios
             </div>
-            <course-template>
+            <course-template :view-panel-section="false">
                 <template #panel-left>
                     <articles-list-view
                         title="articulos destacados"
@@ -19,6 +19,20 @@
                         :articles="afters"
                         v-if="afters.length > 0"
                     />
+                </template>
+                <template #add>
+                    <!-- <section-add-component
+                        :segment="segment"
+                        title="añadir medio periodístico y articulos"
+                    /> -->
+                    .
+                </template>
+                <template #edit>
+                    <!-- <section-add-component
+                        :segment="segment"
+                        title="añadir medio periodístico y articulos"
+                    /> -->
+                    .
                 </template>
                 <template #panel-bottom>
                     <q-card>
@@ -96,20 +110,17 @@
 <script setup>
 import Layout from "../../layouts/AdminLayout.vue";
 import CourseTemplate from "../../components/others/CourseTemplate.vue";
-import QBtnComponent from "../../components/base/QBtnComponent.vue";
 import ArticlesListView from "../../components/others/ArticlesListView.vue";
 import ImageReproductor from "../../components/others/ImageReproductor.vue";
-import SelectField from "../../components/form/input/SelectField.vue";
+import SectionAddComponent from "../../components/modules/plattforms/SectionAddComponent.vue";
 import { computed, onMounted, ref } from "vue";
 import { usePage } from "@inertiajs/vue3";
-import { useQuasar } from "quasar";
 
 defineOptions({
     name: "NewsletterPage",
 });
 
 const page = usePage();
-const $q = useQuasar();
 
 const pagination = ref({
     sortBy: "desc",
@@ -149,10 +160,6 @@ const options = [
     },
 ];
 
-const screen = computed(() => {
-    return $q.screen;
-});
-
 const pagesNumber = computed(() =>
     Math.ceil(articles.value.length / pagination.value.rowsPerPage),
 );
@@ -172,12 +179,32 @@ const categories = ref([
     },
 ]);
 
+const segment = ref(null);
+
+onMounted(() => {
+    let course = page.props.course ?? null;
+    if (!course) {
+        const pathSegments = window.location.pathname.split("/");
+        course = pathSegments.pop() || pathSegments[pathSegments.length - 2];
+    } else {
+        course = `cursos/${course}`;
+    }
+
+    segment.value = course;
+});
+
+const files = computed(() => {
+    return page.props?.category?.files || [];
+});
+
 const articles = computed(() => {
-    return page.props.files
-        .filter((f) => !f.is_after)
-        .map((f) => {
-            return getFormatArticle(f);
-        });
+    return (
+        files.value
+            .filter((f) => !f.is_after)
+            .map((f) => {
+                return getFormatArticle(f);
+            }) || []
+    );
 });
 
 const fixeds = computed(() => {
@@ -185,7 +212,7 @@ const fixeds = computed(() => {
 });
 
 const afters = computed(() => {
-    return page.props.files
+    return files.value
         .filter((f) => f.is_after)
         .map((f) => {
             return getFormatArticle(f);

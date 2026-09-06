@@ -7,8 +7,7 @@ use App\Traits\Recyclable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class SchoolChat extends Model
 {
@@ -47,23 +46,29 @@ class SchoolChat extends Model
 
     public function getTopicStrAttribute()
     {
-        return $this->topic->name;
+        return $this->topicable->name;
     }
 
     public function getSectionStrAttribute()
     {
-        return $this->topic->section()->first()->name;
+        $catName = null;
+        if ($this->topicable instanceof File) {
+            $catName = $this->topicable->category_str;
+        } else {
+            $catName = $this->topicable->section()->first()->name;
+        }
+        return $catName;
     }
 
     public function getSectionIdAttribute()
     {
-        $topic = $this->topic->section_id;
-        return $topic;
+        return $this->topicable->section_id;
     }
 
     public function getSegmentAttribute()
     {
-        return $this->topic->section()->first()?->category ?? null;
+        $s = $this->topicable->section()->first();
+        return $s ? Str::lower($s->module->model) : null;
     }
 
     public function getModuleStrAttribute()
@@ -145,6 +150,12 @@ class SchoolChat extends Model
         $notification->model_id = $this->id;
         $notification->save();
         $user = auth()->user();
+        $catName = null;
+        if ($this->topicable instanceof File) {
+            $catName = $this->topicable->category_str;
+        } else {
+            $catName = $this->topicable->section->getNameByCategory();
+        }
         Notification::send($users, new StandardNotification(
             $notification,
             'AVISO – contestar NUEVO MENSAJE DE CHAT',
@@ -153,8 +164,8 @@ class SchoolChat extends Model
             [
                 'email' => $user->email,
                 'name' => $user->full_name,
-                'course' => $this->topic->section->getNameByCategory(),
-                'url' => sprintf('%s/admin/school/#chat-%s-%s-%s', env('APP_URL'), $this->id, $this->topic_id, $this->topic->section_id)
+                'course' => $catName,
+                'url' => sprintf('%s/admin/school/#chat-%s-%s-%s', env('APP_URL'), $this->id, $this->topicable->id, $this->topicable->section_id)
             ]
         ));
 
@@ -174,9 +185,9 @@ class SchoolChat extends Model
     {
         return $this->hasMany(SchoolChat::class, 'reply_to')->orderBy('id', 'ASC');
     }
-    public function topic()
+    public function topicable()
     {
-        return $this->belongsTo(SchoolTopic::class, 'topic_id');
+        return $this->morphTo();
     }
     public function attachments()
     {
@@ -229,9 +240,10 @@ class SchoolChat extends Model
         });
     }
 
-    public function scopeWhereTopic($query, $topic)
+    public function scopeWhereTopic($query, $topicable)
     {
-        return $query->where('topic_id', $topic);
+        [$id, $type] = explode(':', $topicable[0], 2);
+        return $query->where('topicable_id', $id)->where('topicable_type', $type);
     }
 
     public function scopeSentByUser($query, User $user)
@@ -269,10 +281,12 @@ class SchoolChat extends Model
 
     public function scopeWhereModule($query, $val)
     {
-        $models = Module::where('parent_id', $val)->get()->pluck('model');
+        $models = Module::where('parent_id', $val)->get()->pluck('id');
         if (!empty($models)) {
-            return $query->whereHas('topic.section', function ($query) use ($models) {
-                $query->whereIn('category', $models);
+            return $query->whereHasMorph('topicable', [SchoolTopic::class, File::class], function ($query) use ($models) {
+                $query->whereHas('section', function ($q) use ($models) {
+                    $q->whereIn('module_id', $models);
+                });
             });
         }
         return $query;
@@ -282,8 +296,10 @@ class SchoolChat extends Model
     {
         $m = Module::find($val[0]);
         if ($m) {
-            return $query->whereHas('topic.section', function ($query) use ($m) {
-                $query->where('category', $m->model);
+            return $query->whereHasMorph('topicable', [SchoolTopic::class, File::class], function ($query) use ($m) {
+                $query->whereHas('section', function ($q) use ($m) {
+                    $q->where('module_id', $m->id);
+                });
             });
         }
         return $query;
@@ -291,8 +307,10 @@ class SchoolChat extends Model
 
     public function scopeWhereSection($query, $val)
     {
-        return $query->whereHas('topic.section', function ($query) use ($val) {
-            $query->where('id', $val[0]);
+        return $query->whereHasMorph('topicable', [SchoolTopic::class, File::class], function ($query) use ($val) {
+            $query->whereHas('section', function ($q) use ($val) {
+                $q->where('id', $val);
+            });
         });
     }
 

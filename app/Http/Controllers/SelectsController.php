@@ -6,18 +6,19 @@ use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\CategoryNomenclature;
 use App\Models\Country;
+use App\Models\File;
 use App\Models\Module;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductSubcategory;
 use App\Models\ReasonForReturn;
 use App\Models\Role;
-use App\Models\SchoolSection;
 use App\Models\SchoolTopic;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class SelectsController extends Controller
 {
@@ -133,7 +134,7 @@ class SelectsController extends Controller
             'options' => $module->childs->map(function ($item) {
                 return [
                     'value' => $item->id,
-                    'label' => $item->singular_label
+                    'label' => Str::lower($item->singular_label)
                 ];
             })
         ]);
@@ -141,15 +142,16 @@ class SelectsController extends Controller
 
     public function chatModules()
     {
-        $categories = SchoolSection::select('category')->distinct()->get()->pluck('category');
-        $modules = Module::whereHas('childs', function ($query) use ($categories) {
-            $query->whereIn('model', $categories);
-        })->get();
+        $modules =  Module::whereNull('parent_id')
+            ->whereHas('childs.sections', function ($q) {
+                $q->whereHas('topics.chats')
+                    ->orWhereHas('files.chats');
+            })->get();
         return response()->json([
             'options' => $modules->map(function ($item) {
                 return [
                     'value' => $item->id,
-                    'label' => $item->singular_label
+                    'label' => Str::lower($item->singular_label),
                 ];
             })
         ]);
@@ -157,12 +159,12 @@ class SelectsController extends Controller
 
     public function submodules(Request $request)
     {
-        $modules = Module::where('parent_id', $request->module)->get();
+        $modules = Module::where('parent_id', $request->input('module'))->get();
         return response()->json([
             'options' => $modules->map(function ($item) {
                 return [
                     'value' => $item->id,
-                    'label' => $item->singular_label
+                    'label' => Str::lower($item->singular_label)
                 ];
             })
         ]);
@@ -170,10 +172,9 @@ class SelectsController extends Controller
 
     public function chatModuleSections(Request $request)
     {
-        $m = Module::find($request->submodule);
-        $sections = SchoolSection::where('category', $m->model)->get();
+        $m = Module::find($request->input('submodule'));
         return response()->json([
-            'options' => $sections->map(function ($item) {
+            'options' => $m->sections->map(function ($item) {
                 return [
                     'value' => $item->id,
                     'label' => $item->name
@@ -184,14 +185,34 @@ class SelectsController extends Controller
 
     public function chatSectionTopics(Request $request)
     {
-        $topics = SchoolTopic::where('section_id', $request->section)->get();
+        $module = Module::where('id', $request->input('module'))
+            ->whereHas('childs')
+            ->withExists([
+                'childs as has_topics' => function ($q) {
+                    $q->whereHas('sections.topics.chats');
+                },
+                'childs as has_files' => function ($q) {
+                    $q->whereHas('sections.files.chats');
+                }
+            ])
+            ->firstOrFail();
+
+        $targetType = match (true) {
+            $module->has_topics && !$module->has_files => SchoolTopic::class,
+            $module->has_files && !$module->has_topics => File::class,
+            default => 'Both',
+        };
+
+        $topics = $targetType::where('section_id', $request->input('section'))
+            ->whereHas('chats')
+            ->select('id', 'name')
+            ->get();
+
         return response()->json([
-            'options' => $topics->map(function ($item) {
-                return [
-                    'value' => $item->id,
-                    'label' => $item->name
-                ];
-            })
+            'options' => $topics->map(fn($item) => [
+                'value' => $item->id . ':' . $targetType,
+                'label' => $item->name,
+            ])
         ]);
     }
 

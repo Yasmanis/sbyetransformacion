@@ -1,37 +1,36 @@
 <template>
-    <div class="row">
-        <div
-            class="col-md-4 col-lg-4 col-sm-4 col-xs-12 q-sm-pr-md q-gutter-y-md"
-            :class="screen.xs ? 'q-mb-md' : 'q-pr-md'"
-        >
-            <slot name="panel-left">
-                <q-card>
-                    <q-card-section class="text-center">
-                        <mgr-private-msg-component />
-                    </q-card-section>
-                </q-card>
+    <div class="row q-col-gutter-md">
+        <div class="col-md-4 col-lg-4 col-sm-4 col-xs-12">
+            <div class="column q-gutter-md">
+                <slot name="panel-left">
+                    <q-card>
+                        <q-card-section class="text-center">
+                            <mgr-private-msg-component />
+                        </q-card-section>
+                    </q-card>
 
-                <q-card>
-                    <q-card-section class="text-center">
-                        <p class="q-mb-none">
-                            {{ Math.round(course_percentage * 100) / 100 }}%
-                            COMPLETO
-                        </p>
-                        <q-linear-progress
-                            :value="course_percentage / 100"
-                            size="10px"
-                        />
-                    </q-card-section>
-                </q-card>
+                    <q-card>
+                        <q-card-section class="text-center">
+                            <p class="q-mb-none">
+                                {{ Math.round(course_percentage * 100) / 100 }}%
+                                COMPLETO
+                            </p>
+                            <q-linear-progress
+                                :value="course_percentage / 100"
+                                size="10px"
+                            />
+                        </q-card-section>
+                    </q-card>
 
-                <q-card>
-                    <q-card-section>
-                        <p class="text-bold">avisos</p>
-                    </q-card-section>
-                </q-card>
+                    <q-card>
+                        <q-card-section>
+                            <p class="text-bold">avisos</p>
+                        </q-card-section>
+                    </q-card>
 
-                <calculator-component v-if="segment === 'school'" />
-            </slot>
+                    <calculator-component v-if="segment === 'school'" />
+                </slot>
+            </div>
         </div>
         <div class="col-md-8 col-lg-8 col-sm-8 col-xs-12">
             <slot name="panel-center">
@@ -41,63 +40,74 @@
                         v-if="has_add || (has_edit && sections.length > 0)"
                     >
                         <q-toolbar class="q-gutter-x-sm">
-                            <section-add-component
-                                v-if="has_add"
-                                :segment="segment"
-                                :skip="modules_skip"
-                            />
-                            <section-edit-component
-                                :segment="segment"
-                                :skip="modules_skip"
-                                :has_add="has_add"
-                                :has_edit="has_edit"
-                                :has_delete="has_delete"
-                                v-if="has_edit && sections.length > 0"
-                            />
+                            <slot name="add"
+                                ><section-add-component
+                                    v-if="has_add"
+                                    :segment="segment"
+                                    :skip="modules_skip"
+                            /></slot>
+                            <slot name="edit"
+                                ><section-edit-component
+                                    :segment="segment"
+                                    :skip="modules_skip"
+                                    :has_add="has_add"
+                                    :has_edit="has_edit"
+                                    :has_delete="has_delete"
+                                    v-if="has_edit && sections.length > 0"
+                            /></slot>
+
                             <!-- <notification-component /> -->
                         </q-toolbar>
                     </q-card-section>
                     <q-separator />
-                    <q-card-section>
-                        <section-component
-                            :section="currentSection"
-                            :topic="currentTopic"
-                            :index="sIndex"
-                            :indexTopic="tIndex"
-                            :totalSections="sections.length"
-                            :has_edit="has_edit"
-                            :show-chat="show_chat"
-                            :segment="segment"
-                            :skip="modules_skip"
-                            @change-section="onChangeSection"
-                            @change-topic="
-                                (i) => {
-                                    currentTopic = sections[sIndex].topics[i];
-                                }
-                            "
-                            v-if="sections.length > 0"
-                        />
-                        <div v-else>aun no existen secciones publicadas</div>
-                    </q-card-section>
+                    <slot name="current-info">
+                        <q-card-section>
+                            <section-component
+                                :section="currentSection"
+                                :topic="currentTopic"
+                                :index="sIndex"
+                                :indexTopic="tIndex"
+                                :totalSections="sections.length"
+                                :has_edit="has_edit"
+                                :show-chat="show_chat"
+                                :segment="segment"
+                                :skip="modules_skip"
+                                @change-section="onChangeSection"
+                                @change-topic="
+                                    (i) => {
+                                        currentTopic =
+                                            sections[sIndex].topics[i];
+                                    }
+                                "
+                                v-if="sections.length > 0"
+                            />
+                            <div v-else>
+                                aun no existen secciones publicadas
+                            </div>
+                        </q-card-section>
+                    </slot>
                 </q-card>
-
-                <section-item-component
-                    v-for="(section, index) in sections"
-                    :key="index"
-                    :sectionIndex="index"
-                    :section="section"
-                    :topics="topics"
-                    :current-topic="currentTopic"
-                    :segment="segment"
-                    :skip="modules_skip"
-                    :expand="index === 0"
-                    class="q-mt-md"
-                    @change-topic="onChangeTopic"
-                />
+                <slot name="panel-sections" v-if="viewPanelSection">
+                    <section-item-component
+                        v-for="(section, index) in sections"
+                        :key="index"
+                        :sectionIndex="index"
+                        :section="section"
+                        :topics="topics"
+                        :current-topic="currentTopic"
+                        :segment="segment"
+                        :skip="modules_skip"
+                        :expand="index === 0"
+                        class="q-mt-md"
+                        @change-topic="onChangeTopic"
+                    />
+                </slot>
             </slot>
         </div>
+        <div class="col-12">
+            <slot name="panel-bottom" class="q-mt-md"> </slot>
+        </div>
     </div>
-    <slot name="panel-bottom"> </slot>
 </template>
 
 <script setup>
@@ -125,6 +135,13 @@ import { isEmpty } from "lodash";
 
 defineOptions({
     name: "LifePage",
+});
+
+defineProps({
+    viewPanelSection: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const $q = useQuasar();

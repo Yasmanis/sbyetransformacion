@@ -2,7 +2,29 @@
     <Layout title="en los medios">
         <q-page padding>
             <div class="text-h4 text-uppercase text-white q-mb-md">posts</div>
-            <course-template>
+            <course-template :view-panel-section="false">
+                <template #add>
+                    <section-add-component
+                        :segment="segment"
+                        title="añadir campañas y posts"
+                        topic-title="publicacion"
+                    />
+                </template>
+                <template #edit>
+                    <!-- <section-edit-component
+                        :segment="segment"
+                        :skip="modules_skip"
+                        :has_add="has_add"
+                        :has_edit="has_edit"
+                        :has_delete="has_delete"
+                        v-if="
+                            has_edit &&
+                            (files.length > 0 ||
+                                $page.props.sections.length > 0)
+                        "
+                    /> -->
+                    .
+                </template>
                 <template #panel-left>
                     <articles-list-view
                         title="lo mas importante"
@@ -10,7 +32,7 @@
                         v-if="fixeds.length > 0"
                     />
 
-                    <q-card class="q-mt-lg">
+                    <q-card>
                         <q-card-section class="no-padding">
                             <q-list>
                                 <q-item>
@@ -43,7 +65,6 @@
                         row-key="name"
                         v-model:pagination="pagination"
                         hide-pagination
-                        class="q-mt-md"
                         v-if="articles.length > 0"
                     >
                         <template #item="props">
@@ -54,6 +75,12 @@
                                     :src="props.row.image"
                                     :reproductor="
                                         props.row.file_type === 'video'
+                                    "
+                                    @click="
+                                        () => {
+                                            currentFile = props.row;
+                                            startVideo(props.row);
+                                        }
                                     "
                                 />
                             </div>
@@ -88,33 +115,56 @@
                         </q-item-section>
                     </q-item>
                 </template>
+                <template #current-info>
+                    <section-component
+                        :topic="currentFile"
+                        :show-chat="showChat"
+                        @play="startVideo"
+                    />
+                </template>
             </course-template>
         </q-page>
     </Layout>
+
+    <video-component
+        :show="showVideo"
+        :video="currentVideo"
+        :topic="currentFile"
+        @close="showVideo = false"
+    />
 </template>
 
 <script setup>
 import Layout from "../../layouts/AdminLayout.vue";
 import CourseTemplate from "../../components/others/CourseTemplate.vue";
-import QBtnComponent from "../../components/base/QBtnComponent.vue";
 import ArticlesListView from "../../components/others/ArticlesListView.vue";
 import ImageReproductor from "../../components/others/ImageReproductor.vue";
-import SelectField from "../../components/form/input/SelectField.vue";
+import SectionAddComponent from "../../components/modules/plattforms/SectionAddComponent.vue";
+import SectionEditComponent from "../../components/modules/plattforms/SectionEditComponent.vue";
+import SectionComponent from "../../components/modules/plattforms/SectionComponent.vue";
+import VideoComponent from "../../components/modules/school/VideoComponent.vue";
 import { computed, onMounted, ref } from "vue";
 import { usePage } from "@inertiajs/vue3";
-import { useQuasar } from "quasar";
+import { getActiveModule } from "../../services/current_module.js";
 
 defineOptions({
     name: "NewsletterPage",
 });
 
 const page = usePage();
-const $q = useQuasar();
+
+const currentFile = ref(null);
+const showVideo = ref(false);
+const currentVideo = ref(null);
+const showChat = ref(null);
+const has_add = ref(false);
+const has_edit = ref(false);
+const has_delete = ref(false);
 
 const pagination = ref({
     sortBy: "desc",
     descending: false,
-    page: 2,
+    page: 1,
     rowsPerPage: 6,
 });
 
@@ -149,10 +199,6 @@ const options = [
     },
 ];
 
-const screen = computed(() => {
-    return $q.screen;
-});
-
 const pagesNumber = computed(() =>
     Math.ceil(articles.value.length / pagination.value.rowsPerPage),
 );
@@ -171,9 +217,49 @@ const categories = ref([
         name: "dependencia emocional",
     },
 ]);
+const segment = ref(null);
+
+onMounted(() => {
+    let course = page.props.course ?? null;
+    if (!course) {
+        const pathSegments = window.location.pathname.split("/");
+        course = pathSegments.pop() || pathSegments[pathSegments.length - 2];
+    } else {
+        course = `cursos/${course}`;
+    }
+
+    segment.value = course;
+
+    const hash = location.hash;
+    if (hash) {
+        showChat.value = hash.substring(1);
+        const segments = hash.split("-"),
+            found = files.value.find(
+                (f) => Number(f.id) === Number(segments[2]),
+            );
+        currentFile.value = found;
+    } else {
+        currentFile.value = files.value.length > 0 ? files.value[0] : null;
+    }
+
+    setDefaults();
+});
+
+const setDefaults = () => {
+    const current_module = getActiveModule();
+    const permissions = current_module.permissions.map((p) => p.name);
+    const modelName = current_module.model.toLowerCase();
+    has_add.value = permissions.includes(`add_${modelName}`);
+    has_edit.value = permissions.includes(`edit_${modelName}`);
+    has_delete.value = permissions.includes(`delete_${modelName}`);
+};
+
+const files = computed(() => {
+    return page.props?.files || [];
+});
 
 const articles = computed(() => {
-    return page.props.files
+    return files.value
         .filter((f) => !f.is_after)
         .map((f) => {
             return getFormatArticle(f);
@@ -182,14 +268,6 @@ const articles = computed(() => {
 
 const fixeds = computed(() => {
     return articles.value.filter((f) => f.fixed);
-});
-
-const afters = computed(() => {
-    return page.props.files
-        .filter((f) => f.is_after)
-        .map((f) => {
-            return getFormatArticle(f);
-        });
 });
 
 const getFormatArticle = (f) => {
@@ -203,5 +281,12 @@ const getFormatArticle = (f) => {
         image: `${page.props.public_path}storage/${image}`,
         ...f,
     };
+};
+
+const startVideo = (file) => {
+    if (file.file_type === "video") {
+        currentVideo.value = file;
+        showVideo.value = true;
+    }
 };
 </script>

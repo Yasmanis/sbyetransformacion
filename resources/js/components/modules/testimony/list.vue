@@ -59,7 +59,7 @@ const filterFields = [
         ],
     },
     {
-        name: "publicated",
+        name: "public_access",
         label: "publicado",
         type: "boolean",
     },

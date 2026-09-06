@@ -42,7 +42,6 @@
                 @fullsize="(s) => (maximizedToggle = s)"
                 @close="showDialog = false"
             />
-
             <q-card-section
                 :style="{
                     'max-height': maximizedToggle ? '' : '50vh',
@@ -185,6 +184,7 @@ defineOptions({
 
 const props = defineProps({
     topic: Object,
+    topicableType: String,
     message: Object,
     show: Boolean,
     fromMenu: Boolean,
@@ -199,6 +199,7 @@ const formData = useForm({
     to: "todos",
     publish: "oculto",
     message: null,
+    topicable_type: props.topicableType,
 });
 const totalFiles = ref(0);
 const upload = ref(false);
@@ -259,16 +260,15 @@ const save = async () => {
     form.value.validate().then(async (success) => {
         if (success) {
             Loading.show();
-            const { to, publish, message } = formData;
             await axios
                 .post(
                     `/admin/schooltopics/add-message/${
-                        props.message ? props.message.topic_id : props.topic.id
+                        props.message
+                            ? props.message.topicable_id
+                            : props.topic.id
                     }`,
                     {
-                        to,
-                        publish,
-                        message,
+                        ...formData.data(),
                         replyTo: props.message?.id,
                     },
                 )

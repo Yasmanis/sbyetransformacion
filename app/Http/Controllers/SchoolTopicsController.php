@@ -193,8 +193,9 @@ class SchoolTopicsController extends Controller
         $msg = new SchoolChat();
         $msg->message = $request->message;
         $msg->from_visible = $request->publish == 'oculto' ? false : true;
+        $msg->topicable_type = $request->input('topicable_type', SchoolTopic::class);
+        $msg->topicable_id = $topic;
         $msg->from()->associate($user);
-        $msg->topic()->associate($topic);
         if (isset($request->replyTo)) {
             $msg->replyTo()->associate($request->replyTo);
         }
@@ -266,11 +267,11 @@ class SchoolTopicsController extends Controller
         return redirect()->back()->with('success', 'chat limpiado correctamente');
     }
 
-    public function getMessagesFromTopic($id)
+    public function getMessagesFromTopic(Request $request, $id)
     {
         $messages = SchoolChat::with(['attachments', 'reacts', 'highligths'])
             ->rootMessages()
-            ->whereTopic($id)
+            ->whereTopic([$id . ':' . $request->input('type', SchoolTopic::class)])
             ->forUser(auth()->user())
             ->noFromDeleted()
             ->orderBy('id', 'ASC')

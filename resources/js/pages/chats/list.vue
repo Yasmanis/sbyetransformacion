@@ -18,7 +18,7 @@
                 <template #new-actions-on-row="props">
                     <btn-go-component
                         tooltips="ir al chat"
-                        :href="`/admin/${props.props.row.segment}#chat-${props.props.row.id}-${props.props.row.topic_id}-${props.props.row.section_id}`"
+                        :href="`/admin/${props.props.row.segment}#chat-${props.props.row.id}-${props.props.row.topicable_id}-${props.props.row.section_id}`"
                     />
                 </template>
             </table-component>
@@ -214,7 +214,7 @@ const filterFields = ref([
             {
                 name: "topic",
                 label: "tema",
-                dependsOn: ["section"],
+                dependsOn: ["section", "module"],
                 url: "/chat-section-topics",
                 method: "post",
                 options: [],

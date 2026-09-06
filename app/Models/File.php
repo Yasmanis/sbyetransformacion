@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -26,11 +27,23 @@ class File extends Model
         'public_date',
         'poster',
         'link',
-        'fixed'
+        'fixed',
+        'principal',
+        'section_id',
+        'user_id',
+        'parent_id',
+
+        'message',
+        'name_to_show',
+        'anonimous',
+        'msg_to_admin',
+        'amazon_image',
+        'order',
+        'book_volume'
     ];
 
     protected $appends = [
-        'category',
+        'category_str',
         'size_str',
         'file',
         'is_after',
@@ -40,6 +53,7 @@ class File extends Model
     protected $casts = [
         'public_access' => 'boolean',
         'fixed' => 'boolean',
+        'principal' => 'boolean',
         'public_date' => 'date'
     ];
 
@@ -64,7 +78,22 @@ class File extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function getCategoryAttribute()
+    public function section()
+    {
+        return $this->belongsTo(SchoolSection::class, 'section_id');
+    }
+
+    public function childs()
+    {
+        return $this->hasMany(File::class, 'parent_id');
+    }
+
+    public function chats(): MorphMany
+    {
+        return $this->morphMany(SchoolChat::class, 'topicable');
+    }
+
+    public function getCategoryStrAttribute()
     {
         return $this->category()->first()->name ?? '';
     }
@@ -107,6 +136,11 @@ class File extends Model
         return $query->where('public_access', true)->whereDate('public_date', '<=', Carbon::today())->whereHas('category', function (Builder $query) {
             $query->where('public_access', true);
         });
+    }
+
+    public function scopeWherePrincipal($query, $val = true)
+    {
+        return $query->where('principal', $val);
     }
 
     public function deleteFileFromDisk()

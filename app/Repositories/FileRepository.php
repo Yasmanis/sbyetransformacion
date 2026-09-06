@@ -17,4 +17,11 @@ class FileRepository extends BaseRepository
     {
         return 'files/list';
     }
+
+    protected $scopes = [
+        array(
+            'method' => 'wherePrincipal',
+            'args' => true
+        )
+    ];
 }

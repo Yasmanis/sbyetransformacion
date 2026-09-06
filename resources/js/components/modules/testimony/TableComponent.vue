@@ -208,7 +208,7 @@
                         v-if="has_edit"
                     />
                     <btn-public-component
-                        :public="props.row.publicated"
+                        :public="props.row.public_access"
                         @click="
                             router.post(
                                 `/admin/testimony/publicated/${props.row.id}`,
@@ -327,7 +327,7 @@
                                             v-if="has_edit"
                                         />
                                         <btn-public-component
-                                            :public="props.row.publicated"
+                                            :public="props.row.public_access"
                                             @click="
                                                 router.post(
                                                     `/admin/testimony/publicated/${props.row.id}`,
@@ -437,8 +437,8 @@ const columns = ref([
         },
     },
     {
-        field: "publicated",
-        name: "publicated",
+        field: "public_access",
+        name: "public_access",
         label: "publicado",
         type: "boolean",
         align: "center",

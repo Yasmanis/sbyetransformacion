@@ -19,16 +19,15 @@
     <div class="row q-mt-md q-ml-none">
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding: 0px">
             <image-field
-                name="coverImage"
+                name="poster"
                 :modelValue="
-                    formData.coverImage
-                        ? `${$page.props.public_path}storage/${formData.coverImage}`
+                    formData.poster
+                        ? `${$page.props.public_path}storage/${formData.poster}`
                         : null
                 "
                 @change="
                     (name, img) => {
-                        formData.coverImage = img;
-                        isOk();
+                        formData.poster = img;
                     }
                 "
             />
@@ -54,13 +53,13 @@
                         </q-item-section>
                         <q-item-section avatar>
                             <btn-edit-component
-                                tooltips="cambiar video principal"
+                                :tooltips="`cambiar ${principalFileTitle}`"
                                 @click="changePrincipalVideo = true"
                             />
                         </q-item-section>
                         <q-item-section avatar>
                             <btn-delete-component
-                                tooltips="eliminar video principal"
+                                :tooltips="`eliminar ${principalFileTitle}`"
                                 @click="
                                     () => {
                                         currentAttachment = ppalVideo;
@@ -76,39 +75,18 @@
                     :class="screen.xs || screen.sm ? '' : 'q-ml-md'"
                     v-if="!ppalVideo || changePrincipalVideo"
                 >
-                    <uploader-field
+                    <file-field
+                        name="file"
                         :label="
                             changePrincipalVideo
-                                ? 'cambiar video principal'
-                                : 'video principal'
+                                ? `cambiar ${principalFileTitle}`
+                                : principalFileTitle
                         "
-                        :multiple="false"
-                        :formFields="[
-                            {
-                                name: 'id',
-                                value: formData.id,
-                            },
-                            {
-                                name: 'principal',
-                                value: 1,
-                            },
-                        ]"
-                        :upload="upload"
-                        :errorWhenEmpty="false"
-                        :changeFromTopic="changePrincipalVideo"
-                        accept="video/*"
-                        url="/admin/schooltopics/addResources"
-                        @uploaded="onUploaded"
-                        @change-files="
-                            (files) => {
-                                formData.principalVideo = files > 0;
-                                isOk();
-                            }
-                        "
-                        @finish="
-                            (info, principal) => onFinishUploaded(info, true)
-                        "
-                        @cancel="changePrincipalVideo = false"
+                        :othersProps="{
+                            required: true,
+                            accept: 'image/*, video/*',
+                        }"
+                        @update="(name, val) => (formData[name] = val)"
                     />
                 </div>
                 <q-list
@@ -164,19 +142,27 @@
                     label="adjuntos"
                     :formFields="[
                         {
-                            name: 'id',
+                            name: 'parent_id',
                             value: formData.id,
                         },
                         {
                             name: 'principal',
                             value: 0,
                         },
+                        {
+                            name: 'category_id',
+                            value: formData.category_id,
+                        },
+                        {
+                            name: 'section_id',
+                            value: formData.section_id,
+                        },
                     ]"
                     :upload="upload"
                     :noThumbnails="true"
                     :errorWhenEmpty="false"
                     :changeFromTopic="addNewAttachments"
-                    url="/admin/schooltopics/addResources"
+                    url="/admin/plattforms/add-file-to-publication"
                     @uploaded="onUploaded"
                     @change-files="
                         (files) => {
@@ -189,73 +175,6 @@
             </div>
         </div>
     </div>
-    <book-volume-component
-        :othersProps="{ required: true }"
-        :modelValue="formData.book_volume"
-        @update="
-            (name, val) => {
-                formData[name] = val;
-            }
-        "
-        v-if="segment === 'school'"
-    />
-    <checkbox-field
-        v-model="formData.visible_after_testimony"
-        label="tema visible tras testimonio"
-        name="visible_after_testimony"
-        class="q-ml-none q-mt-sm"
-        :modelValue="formData.visible_after_testimony"
-        @update="
-            (name, val) => {
-                formData[name] = val;
-            }
-        "
-        v-if="segment === 'school'"
-    />
-    <br />
-    <checkbox-field
-        v-model="addDescription"
-        label="añadir descripcion"
-        name="add_description"
-        class="q-ml-none q-mt-sm"
-        :modelValue="addDescription"
-        @update="
-            (name, val) => {
-                addDescription = val;
-                formData.description = null;
-            }
-        "
-    />
-
-    <editor-field
-        v-model="formData.description"
-        name="description"
-        :rows="3"
-        :modelValue="formData.description"
-        :othersProps="{
-            required: true,
-        }"
-        @update="
-            (name, val) => {
-                formData.description = val;
-            }
-        "
-        v-if="addDescription"
-    />
-    <br />
-    <checkbox-field
-        v-model="formData.skip"
-        label="permitir saltar este tema"
-        name="skip"
-        class="q-ml-none q-mt-sm"
-        :modelValue="formData.skip"
-        @update="
-            (name, val) => {
-                formData[name] = val;
-            }
-        "
-        v-if="skip.includes(segment)"
-    />
 
     <confirm-component
         :show="confirm"
@@ -274,14 +193,12 @@
 import { onBeforeMount, ref, watch, computed } from "vue";
 import NameComponent from "./NameComponent.vue";
 import ImageField from "../../../form/input/ImageField.vue";
-import CheckboxField from "../../../form/input/CheckboxField.vue";
-import EditorField from "../../../form/input/EditorField.vue";
+import FileField from "../../../form/input/FileField.vue";
 import UploaderField from "../../../form/input/UploaderField.vue";
 import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
 import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
 import BtnAddComponent from "../../../btn/BtnAddComponent.vue";
 import ConfirmComponent from "../../../base/ConfirmComponent.vue";
-import BookVolumeComponent from "../../../others/BookVolumeComponent.vue";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import { useForm } from "@inertiajs/vue3";
@@ -316,18 +233,15 @@ const props = defineProps({
         type: Array,
         default: [],
     },
+    principalFileTitle: {
+        type: String,
+        default: "publicacion principal",
+    },
 });
 
 const $q = useQuasar();
 
-const emits = defineEmits([
-    "add",
-    "update",
-    "remove",
-    "change-files",
-    "save",
-    "is-ok",
-]);
+const emits = defineEmits(["add", "update", "remove", "change-files", "save"]);
 
 const upload = ref(false);
 const totalFiles = ref(0);
@@ -343,28 +257,19 @@ const confirm = ref(false);
 const currentAttachment = ref(null);
 
 onBeforeMount(() => {
-    let {
-        id,
-        name,
-        description,
-        coverImage,
-        section_id,
-        book_volume,
-        visible_after_testimony,
-        skip,
-    } = props.topic;
+    let { id, name, description, poster, section_id, category_id } =
+        props.topic;
     let resources = props.topic.resources;
     ppalVideo.value = resources.find((r) => r.principal);
     formData.value = {
         id,
         name,
         description,
-        coverImage,
+        poster,
         section_id,
-        book_volume,
-        visible_after_testimony,
-        skip,
+        category_id,
         principalVideo: false,
+        principal: 1,
     };
     addDescription.value =
         props.topic && props.topic.description !== null ? true : false;
@@ -388,26 +293,24 @@ const screen = computed(() => {
     return $q.screen;
 });
 
-const isOk = () => {
-    emits(
-        "is-ok",
-        (formData.value.principalVideo ||
-            (ppalVideo.value !== null && ppalVideo.value !== undefined)) &&
-            formData.value.coverImage !== null,
-    );
-};
-
 const onRemove = () => {
     emits("remove");
 };
 
 const store = async () => {
     await axios
-        .post("/admin/schooltopics", formData.value, {
-            headers: {
-                "Content-Type": "multipart/form-data",
+        .post(
+            "/admin/plattforms/add-file-to-publication",
+            {
+                ...formData.value,
+                principal: 1,
             },
-        })
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            },
+        )
         .then((response) => {
             formData.value.id = response.data.id;
             setTimeout(() => {
@@ -429,21 +332,11 @@ const store = async () => {
 };
 
 const update = async () => {
-    let {
-        name,
-        description,
-        coverImage,
-        book_volume,
-        visible_after_testimony,
-        skip,
-    } = formData.value;
+    let { name, description, poster } = formData.value;
     const send = useForm({
         name,
         description,
-        coverImage,
-        book_volume,
-        visible_after_testimony,
-        skip,
+        poster,
         _method: "put",
         excludeFlash: totalFiles.value > 0 || formData.value.principalVideo,
     });

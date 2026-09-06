@@ -9,7 +9,7 @@
                 v-for="(m, idx) in messages"
                 :key="m.id"
                 :ref="(el) => setMessageRef(el, idx)"
-                :id="`chat-${m.id}-${m.topic_id}-${m.section_id}`"
+                :id="`chat-${m.id}-${m.topicable_id}-${m.section_id}`"
                 class="chat-message-item"
             >
                 <q-item-section top avatar v-if="m.owner">

@@ -156,12 +156,17 @@ class TestimonyController extends Controller
     {
         if (auth()->user()->hasUpdate('testimony')) {
             $testimony = Testimony::find($id);
-            $testimony->publicated = !$testimony->publicated;
+            $testimony->public_access = !$testimony->public_access;
+            if ($testimony->public_access) {
+                $testimony->public_date = now();;
+            } else {
+                $testimony->public_date = null;
+            }
             $testimony->save();
             if ($request->inertia()) {
-                return redirect()->back()->with('success', $testimony->publicated ? 'testimonio pasado a acceso publico correctamente' : 'testimonio quitado del acceso publico correctamente');
+                return redirect()->back()->with('success', $testimony->public_access ? 'testimonio pasado a acceso publico correctamente' : 'testimonio quitado del acceso publico correctamente');
             }
-            return response()->json(['success' => true, 'message' => $testimony->publicated ? 'testimonio pasado a acceso publico correctamente' : 'testimonio quitado del acceso publico correctamente']);
+            return response()->json(['success' => true, 'message' => $testimony->public_access ? 'testimonio pasado a acceso publico correctamente' : 'testimonio quitado del acceso publico correctamente']);
         }
         return $this->deny_access($request);
     }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use App\Repositories\FileRepository;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -159,5 +158,11 @@ class FileController extends Controller
             return redirect()->back()->with('success', $file->public_access ? 'se ha pasado el archivo al acceso publico correctamente' : 'se ha quitado el archivo del acceso publico correctamente');
         }
         return $this->deny_access($request);
+    }
+
+    public function getChilds($id)
+    {
+        $file = File::find($id);
+        return response()->json($file->childs);
     }
 }
