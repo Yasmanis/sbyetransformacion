@@ -32,32 +32,35 @@
         <q-card-section class="q-pb-none">
             <p class="q-my-sm text-uppercase">categorias</p>
             <div style="border-bottom: 2px solid #407492"></div>
-            <ul class="q-pa-none q-my-none list-unstyled">
-                <li
-                    v-for="(c, index) in categories"
-                    :key="`category-${index}`"
-                    class="q-py-md"
-                    :class="
-                        index === categories.length - 1
-                            ? 'q-pb-none'
-                            : 'border-dashed-bottom-1'
-                    "
-                >
-                    <Link
-                        :href="`/publicaciones/${c.id}`"
-                        class="text-primary"
-                        :style="{
-                            'font-weight': current?.id === c.id ? 'bold' : '',
-                        }"
+            <q-scroll-area style="height: 200px">
+                <ul class="q-pa-none q-my-none list-unstyled">
+                    <li
+                        v-for="(c, index) in categories"
+                        :key="`category-${index}`"
+                        class="q-py-md"
+                        :class="
+                            index === categories.length - 1
+                                ? 'q-pb-none'
+                                : 'border-dashed-bottom-1'
+                        "
                     >
-                        <i
-                            class="fa fa-check font-company q-mr-sm"
-                            aria-hidden="true"
-                        ></i
-                        >{{ c.name }}
-                    </Link>
-                </li>
-            </ul>
+                        <Link
+                            :href="`/publicaciones/${c.id}`"
+                            class="text-primary"
+                            :style="{
+                                'font-weight':
+                                    current?.id === c.id ? 'bold' : '',
+                            }"
+                        >
+                            <i
+                                class="fa fa-check font-company q-mr-sm"
+                                aria-hidden="true"
+                            ></i
+                            >{{ c.name }}
+                        </Link>
+                    </li>
+                </ul>
+            </q-scroll-area>
         </q-card-section>
     </q-card>
 </template>

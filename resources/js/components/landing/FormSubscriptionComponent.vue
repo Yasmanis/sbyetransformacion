@@ -1,5 +1,5 @@
 <template>
-    <div class="col-lg-12 p-4 mt-4" id="form-testimony">
+    <div class="col-lg-12" id="form-testimony">
         <q-card flat class="my-card bg-primary">
             <q-card-section class="q-pa-none">
                 <q-form ref="formRef" greedy>
@@ -181,7 +181,7 @@ const onSubmit = () => {
         if (success) {
             if (!form.privated) {
                 error(
-                    "debe aceptar las condiciones generales y la politica de privacidad"
+                    "debe aceptar las condiciones generales y la politica de privacidad",
                 );
             } else if (!recaptchaResponse.value) {
                 error("debe confirmar que usted no es un robot");

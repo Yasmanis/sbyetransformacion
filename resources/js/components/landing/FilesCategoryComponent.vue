@@ -203,6 +203,8 @@ import "video.js/dist/video-js.css";
 import GLightbox from "glightbox";
 import "glightbox/dist/css/glightbox.min.css";
 
+import FormSubscriptionComponent from "./FormSubscriptionComponent.vue";
+
 defineOptions({
     name: "FilesCategoryComponent",
 });
