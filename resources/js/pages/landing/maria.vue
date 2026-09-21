@@ -140,7 +140,7 @@
                 :class="Screen.xs || Screen.sm ? 'q-pb-xl' : null"
             >
                 <q-img
-                    :src="`${$page.props.public_path}images/team/maria_garriga_sonrisa_amable.png`"
+                    :src="`${$page.props.public_path}images/maria/portada.png`"
                     :style="{
                         width: Screen.xl ? '40%' : '60%',
                     }"
@@ -510,20 +510,20 @@
                     comprender incluso aquello que mas dificil me resultaba
                     aceptar
                 </p>
-                <h6 class="text-white q-pb-md">
+                <p>
                     EMPECE A LLEVAR UNA PREMISA A MIS SESIONES:
                     <b>COMPRENDER A ULTRANZA</b>
-                </h6>
+                </p>
                 <p>
                     tambien cuando la persona que tenia delante pensaba, sentia
                     o actuaba de una manera que chocaba frontalmente con la mia
                 </p>
-                <h6 class="text-white q-pb-md">
+                <p>
                     <b
                         >AHI EMPEZO REALMENTE A NACER MARIA COMO FACILITADORA DE
                         PROCESOS PERSONALES</b
                     >
-                </h6>
+                </p>
                 <p>
                     pero mi manera de trabajar todavia estaba lejos de estar
                     completa
@@ -552,10 +552,10 @@
                     ofrecio una forma extraordinariamente sencilla de cuestionar
                     creencias
                 </p>
-                <h6 class="text-white q-pb-md">
+                <p>
                     PERO FUE MI PROPIA VIDA LA QUE TERMINO MOSTRANDOME LA PIEZA
                     QUE FALTABA
-                </h6>
+                </p>
                 <p>
                     <b
                         >yo habia cambiado completamente mi vida por fuera, pero
@@ -609,10 +609,13 @@
                     buscar ocio, porque practicamente habia desaparecido de mi
                     vida
                 </p>
-                <h6 class="text-bold q-pb-md">
-                    Y EMPECE A UTILIZAR LAS EXPERIENCIAS COTIDIANAS PARA
-                    ENFRENTAR AQUELLO QUE IBA DESCUBRIENDO EN MI
-                </h6>
+
+                <p>
+                    <b
+                        >Y EMPECE A UTILIZAR LAS EXPERIENCIAS COTIDIANAS PARA
+                        ENFRENTAR AQUELLO QUE IBA DESCUBRIENDO EN MI</b
+                    >
+                </p>
                 <p>
                     si aparecia la oportunidad de tirarme por un tobogan y
                     sentia miedo, me tiraba
@@ -631,9 +634,7 @@
                     emocional, la regresion, la introspeccion o el trabajo con
                     creencias para profundizar
                 </p>
-                <h6 class="q-pb-md">
-                    DEJE DE SEPARAR EL TRABAJO PERSONAL DE LA VIDA
-                </h6>
+                <p>DEJE DE SEPARAR EL TRABAJO PERSONAL DE LA VIDA</p>
                 <p>
                     una reaccion, un miedo, una relacion, una incomodidad o
                     cualquier cosa que me removiera podia convertirse en un
@@ -784,9 +785,9 @@
                     importante para mi que cualquiera de las tecnicas que habia
                     aprendido
                 </p>
-                <h6 class="q-mb-md text-white text-bold">
+                <p class="text-bold">
                     EMPECE A CONFIAR PROFUNDAMENTE EN MI Y EN LA VIDA
-                </h6>
+                </p>
                 <p>
                     la niña triste e insegura que habia necesitado destacar,
                     demostrar, ser reconocida y convertirse en alguien empezo a
@@ -847,8 +848,6 @@
 <script setup>
 import { Head } from "@inertiajs/vue3";
 import Layout from "../../layouts/MainLayout.vue";
-import { VideoPlayer } from "@videojs-player/vue";
-import "video.js/dist/video-js.css";
 import { Screen } from "quasar";
 
 defineOptions({

@@ -121,7 +121,7 @@
                 />
             </div>
         </div>
-        <div class="row container items-center">
+        <div class="row container items-center q-py-xl">
             <div
                 class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 text-center"
             >
@@ -131,7 +131,7 @@
                 />
             </div>
             <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
-                <h6 class="text-lowercase q-pt-xl q-pb-md text-bold">
+                <h6 class="text-lowercase q-pb-md text-bold">
                     que es sbye transformacion?
                 </h6>
                 <p>
@@ -195,31 +195,36 @@
                 </h6>
                 <p>
                     observar · comprender · profundizar · liberar · cuestionar ·
-                    elegir · experimentar <br />
-                    no son pasos que seguimos en un orden determinado <br />
-                    cada uno puede abrirnos la puerta a los demás <br />
+                    elegir · experimentar
+                </p>
+                <p>no son pasos que seguimos en un orden determinado</p>
+                <p>cada uno puede abrirnos la puerta a los demas</p>
+                <p>
                     comprender puede ayudarnos a liberar y liberar puede
-                    permitirnos comprender algo <br />
-                    nuevo; experimentar de otra manera puede mostrarnos lo que
-                    todavia nos condiciona, <br />
+                    permitirnos comprender algo nuevo; experimentar de otra
+                    manera puede mostrarnos lo que todavia nos condiciona,
                     ayudarnos a liberar algo de ello, llevarnos a observar de
-                    nuevo, profundizar, cuestionar o <br />
-                    hacer una nueva elección… <br />
-                    el proceso se va construyendo mientras avanzamos <br />
+                    nuevo, profundizar, cuestionar o hacer una nueva eleccion…
+                </p>
+                <p>el proceso se va construyendo mientras avanzamos</p>
+                <p>
                     tampoco buscamos aprender herramientas para depender siempre
-                    de ellas <br />
+                    de ellas
+                </p>
+                <p>
                     aprendemos a utilizarlas hasta que observarnos, comprender
-                    que nos ocurre, <br />
-                    profundizar cuando algo nos gobierna, liberar aquello que
-                    todavia nos condiciona, <br />
-                    cuestionar lo que creemos, elegir y atrevernos a actuar de
-                    otra manera empieza a formar <br />
-                    parte de nuestra manera natural de vivir <br />
+                    que nos ocurre, profundizar cuando algo nos gobierna,
+                    liberar aquello que todavia nos condiciona, cuestionar lo
+                    que creemos, elegir y atrevernos a actuar de otra manera
+                    empieza a formar parte de nuestra manera natural de vivir
+                </p>
+                <p>
                     la vida se convierte asi en nuestro propio lugar de
-                    aprendizaje y transformacion <br />
+                    aprendizaje y transformacion
+                </p>
+                <p>
                     el objetivo es adquirir cada vez mas autonomia para saber
-                    que hacer con nosotros <br />
-                    mismos cuando la vida nos toque
+                    que hacer con nosotros mismos cuando la vida nos toque
                 </p>
             </div>
             <div
@@ -232,7 +237,7 @@
             </div>
         </div>
 
-        <div class="row container items-center">
+        <div class="row container items-center q-py-xl">
             <div
                 class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 text-center"
             >
@@ -242,7 +247,7 @@
                 />
             </div>
             <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
-                <h6 class="text-lowercase q-pt-xl q-pb-md text-bold">
+                <h6 class="text-lowercase q-pb-md text-bold">
                     puedes empezar donde estes
                 </h6>
                 <p>
@@ -286,7 +291,7 @@
                 </p>
             </div>
         </div>
-        <div class="row container bg-primary text-white">
+        <div class="row container bg-primary text-white q-py-xl">
             <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
                 <img
                     :src="`${$page.props.public_path}images/books/sbyetransformacion_5_trilogia 2026.png`"
@@ -296,7 +301,6 @@
             </div>
             <div
                 class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 self-center bg-primary"
-                :class="Screen.xs || Screen.sm ? 'q-py-md' : null"
             >
                 <h6 class="text-lowercase q-py-md q-pb-md text-white">
                     la obra que sostiene el recorrido
@@ -315,7 +319,7 @@
             </div>
         </div>
         <div
-            class="row items-stretch container q-py-md"
+            class="row items-stretch container q-py-xl"
             style="background: #ededed"
         >
             <div class="col-12 col-md-4">
@@ -325,9 +329,9 @@
                     >
                         <div class="text-center">
                             <img
-                                class="blog-img q-py-md"
+                                class="blog-img q-pb-md"
                                 :src="`${$page.props.public_path}images/books/sbyetransformacion_libro_1.png`"
-                                width="85%"
+                                width="41.5%"
                             />
                         </div>
                         <div
@@ -350,7 +354,7 @@
                         </div>
                     </q-card-section>
 
-                    <q-card-actions align="center" class="q-pb-md">
+                    <q-card-actions align="center">
                         <q-btn
                             unelevated
                             rounded
@@ -385,9 +389,9 @@
                     >
                         <div class="text-center">
                             <img
-                                class="blog-img q-py-md"
+                                class="blog-img q-pb-md"
                                 :src="`${$page.props.public_path}images/books/sbyetransformacion_libro_2.png`"
-                                width="67%"
+                                width="33%"
                             />
                         </div>
                         <div
@@ -412,7 +416,7 @@
                         </div>
                     </q-card-section>
 
-                    <q-card-actions align="center" class="q-pb-md">
+                    <q-card-actions align="center">
                         <q-btn
                             unelevated
                             rounded
@@ -447,9 +451,9 @@
                     >
                         <div class="text-center">
                             <img
-                                class="blog-img q-py-md"
+                                class="blog-img q-pb-md"
                                 :src="`${$page.props.public_path}images/books/sbyetransformacion_libro_3.png`"
-                                width="67%"
+                                width="33%"
                             />
                         </div>
                         <div
@@ -473,7 +477,7 @@
                         </div>
                     </q-card-section>
 
-                    <q-card-actions align="center" class="q-pb-md">
+                    <q-card-actions align="center">
                         <q-btn
                             unelevated
                             rounded
@@ -501,12 +505,15 @@
                 </q-card>
             </div>
             <div
-                class="col-12"
+                class="col-12 q-py-md"
+                style="padding-left: 10%; padding-right: 10%"
                 v-html="volumes[visibleVolumeDescription]"
                 v-if="visibleVolumeDescription !== null && $q.screen.gt.sm"
             ></div>
         </div>
-        <div class="row container q-py-xl bg-primary text-white text-center">
+        <div
+            class="row container q-col-gutter-md q-py-xl bg-primary text-white text-center"
+        >
             <div class="col-12 q-pb-lg">
                 <h6 class="text-white text-bold text-lowercase q-pb-md">
                     no sabes por donde empezar?
@@ -538,6 +545,7 @@
                     text-color="white"
                     label="conocer el libro"
                     class="q-px-lg text-lowercase"
+                    href="https://www.amazon.es/dp/B0DJG45MMK?binding=paperback&qid=1789761777&sr=8-1&ref=dbs_dp_rwt_sb_pc_tpbk"
                 >
                 </q-btn>
             </div>
@@ -549,6 +557,7 @@
                     text-color="white"
                     label="ver cursos "
                     class="q-px-lg text-lowercase"
+                    href="/tienda?category=CURSOS"
                 >
                 </q-btn>
             </div>
@@ -569,25 +578,16 @@
         <div class="row container q-mt-xl">
             <div class="row">
                 <div class="col">
-                    <h6 class="q-mb-md text-lowercase">
-                        UNA MUESTRA DE LO QUE QUIERO COMPARTIR CONTIGO
+                    <h6 class="q-mb-md text-lowercase text-bold">
+                        empieza simplemente observando
                     </h6>
                     <p>
-                        durante años vivi creyendo que la suerte y las
-                        circunstancias decidian por mi pero cuando descubri que
-                        mis heridas y creencias eran las que realmente estaban
-                        creando mi realidad, todo cambio
-                    </p>
-                    <p>
-                        aprender a soltar, liberar y confiar me llevo a crear
-                        desde el alma, sin miedo y sin autoengaño
-                    </p>
-                    <p>
-                        hoy acompaño a otros a hacer lo mismo: a crear su vida
-                        conscientemente, con sentido, alegria y verdad
+                        a veces una idea, una situacion cotidiana o una pregunta
+                        es suficiente para empezar a descubrir algo de nosotros
+                        que hasta entonces no habIamos visto
                     </p>
                     <h6 class="q-mb-sm text-lowercase">
-                        videos para recordar quien eres
+                        videos para observarte y comprenderte
                     </h6>
                 </div>
             </div>
@@ -612,7 +612,10 @@
                         <div
                             v-for="(slide, slideIndex) in slideGroup"
                             :key="`slide-${slideIndex}`"
-                            class="col"
+                            :class="{
+                                'col-12': $q.screen.lt.sm,
+                                'col-6': $q.screen.gt.sm,
+                            }"
                         >
                             <q-card
                                 class="my-card rounded-borders bg-primary text-white"
@@ -658,9 +661,10 @@
             </q-carousel>
             <div class="column full-width">
                 <p class="text-center">
-                    cada experiencia, cada vinculo y cada sombra nos invita a
-                    recordar <br />
-                    que el verdadero amor comienza en nosotros
+                    lo que vivimos puede mostrarnos que sigue dirigiendo nuestra
+                    manera de sentir, reaccionar y <br />
+                    elegir... y abrirnos la posibilidad de vivir cada vez mas
+                    desde nosotros mismos
                 </p>
             </div>
         </div>
@@ -759,7 +763,7 @@ const volumes = {
                 </p>
                 <p>
                     <i
-                        >liberación emocional, la puerta para vivir en
+                        >liberacion emocional, la puerta para vivir en
                         plenitud</i
                     >
                     es un curso de aprendizaje sobre nosotros mismos y sobre la
@@ -793,7 +797,7 @@ const volumes = {
                 <p>
                     el tomo I de
                     <i
-                        >liberación emocional, la puerta para vivir en
+                        >liberacion emocional, la puerta para vivir en
                         plenitud</i
                     >
                     construye los cimientos de la obra
@@ -1058,52 +1062,78 @@ const slide = ref("style-0");
 
 const slides = [
     {
-        title: "DEPENDENCIA EMOCIONAL",
+        title: "POR QUE NOS EMOCIONA TANTO QUE ALGUIEN NOS DIGA ESTOY ORGULLOSO DE TI?",
         description:
-            "por que nacemos dependientes como se nos programa y por que cortar ese “cordon invisible” es clave para amarnos",
+            "cuando aprendimos a buscar amor, reconocimiento y aprobacion fuera, podemos seguir necesitandolos mucho despues de haber dejado de ser niños",
         video: "la frase que todos necesitamos oír.mp4",
     },
     {
         title: "NADIE TIENE TIEMPO PARA VERTE… Y TU TAMPOCO",
         description:
-            "a raiz de la comparacion y la busqueda de reconocimiento que nos aleja de nosotros mismos",
+            "cuando aprendemos a medir nuestro valor a traves de la mirada de los demas, podemos pasar la vida comparandonos sin llegar a mirarnos realmente",
         video: "nadie tiene tiempo para verte… y tu tampoco.mp4",
     },
     {
-        title: "REMEMBRAR: DE LA DEPENDENCIA A LA UNION DIVINA",
+        title: "ASI SE PROGRAMA UN SER HUMANO",
         description:
-            "cuando dejamos de buscar<br/> dios habita en nosotros y en los demas",
-        video: "remembrar de la dependencia a la union divina.mp4",
+            "como nuestras primeras experiencias van construyendo respuestas, creencias y patrones que pueden seguir funcionando automaticamente mucho despues de la infancia",
+        video: "3. VIDEO 1 - asi se programa un ser humano.mp4",
+        poster: "3. VIDEO 1 - asi se programa un ser humano.jpg",
     },
     {
-        title: "SENTIRSE MARAVILLOSO: EL DESTINO DEL ALMA",
+        title: "CUANDO AGRADAR A LOS DEMAS HACE QUE DEJEMOS DE ESCUCHARNOS",
         description:
-            "el reencuentro con la propia divinidad y la aceptacion profunda de lo que somos",
-        video: "sentirse maravilloso el destino del alma.mp4",
+            "podemos aprender a adaptarnos para sentirnos queridos hasta convertir esa forma de proteger el vinculo en una manera automatica de relacionarnos y vivir",
+        video: "4. minivídeo 4-    people pleasing y perdida de identidad.mp4",
+        poster: "4. minivídeo 4-    people pleasing y perdida de identidad.jpg",
     },
     {
-        title: "EL ESPEJO DEL MUNDO: LO QUE EL ALMA QUIERE RECORDAR",
+        title: "EL INCONSCIENTE: LO QUE APRENDIMOS ANTES DE PODER ELEGIR",
         description:
-            "la comprension mas alta: lo que vivimos fuera refleja lo que aun no hemos recordado dentro",
-        video: "el espejo del mundo lo que el alma quiere recordar.mp4",
+            "antes de poder cuestionar lo que viviamos, ya estabamos aprendiendo de las miradas, los silencios, la tension, la ternura, el miedo o la exigencia que nos rodeaban",
+        video: "5. VIDEO 2 - el inconsciente el libro en blanco donde se graba todo.mp4",
+        poster: "5. VIDEO 2 - el inconsciente el libro en blanco donde se graba todo.jpg",
     },
     {
-        title: "COMO ACTUA UN NARCISISTA (Y POR QUE CAEMOS EN SU JUEGO)",
+        title: "CUANDO EL PASADO SIGUE REACCIONANDO EN EL PRESENTE",
         description:
-            "como se forma su personalidad y por que atrae a quienes dudan de si mismos",
+            "una herida puede pertenecer al pasado y seguir apareciendo hoy en nuestras reacciones, miedos, necesidades y formas automaticas de protegernos",
+        video: "6. reel 9 - herida y presente.mp4",
+        poster: "6. reel 9 - herida y presente.jpg",
+    },
+    {
+        title: "TU CUERPO RECUERDA LO QUE TU MENTE OLVIDA",
+        description:
+            "podemos haber olvidado o comprendido una experiencia y seguir reaccionando a ella a traves de emociones, tension corporal y respuestas automaticas",
+        video: "7. reel 5 - tu cuerpo recuerda lo que tu mente olvida.mp4",
+        poster: "7. reel 5 - tu cuerpo recuerda lo que tu mente olvida.jpg",
+    },
+    {
+        title: "LO QUE VIVISTE EXPLICA, NO DETERMINA",
+        description:
+            "comprender de donde vienen nuestras reacciones no las transforma automaticamente, pero nos permite empezar a ver aquello que antes actuaba sin que nos dieramos cuenta",
+        video: "8. video 4 - lo que viviste explica, no determina.mp4",
+        poster: "8. video 4 - lo que viviste explica, no determina.jpg",
+    },
+    {
+        title: "POR QUE COMPRENDER LO QUE TE PASA NO SIEMPRE BASTA",
+        description:
+            "podemos saber de donde vienen nuestras reacciones y seguir respondiendo desde ellas: transformar implica comprender, sentir y empezar a vivir fuera del programa",
         video: "Narcisismo y dependencia emocional.mp4",
     },
     {
-        title: "COMO ES UN NARCISISTA",
+        title: "LO QUE VIVES TAMBIEN PUEDE HABLARTE DE TI",
         description:
-            "las señales que lo delatan, la fragilidad que esconde y la herida que lo origina <br> cuando entiendes su vacio, dejas de tomarte su conducta como algo personal",
-        video: "CÓMO ES UN NARCISISTA.mp4",
+            "nuestras reacciones, relaciones y elecciones pueden convertirse en espejos desde los que descubrir lo que todavia nos gobierna y ampliar nuestra forma de mirar la vida",
+        video: "10. el espejo del mundo lo que el alma quiere recordar.mp4",
+        poster: "10. el espejo del mundo.jpg",
     },
     {
-        title: "AMARSE NO ES SER NARCISISTA",
+        title: "TE SIENTES MARAVILLOSO?",
         description:
-            "diferenciar entre el amor propio y el ego inflado <br> amarte es escucharte, respetarte y vivir desde el alma, no desde la herida",
-        video: "AMARSE NO ES SER NARCISISTA.mp4",
+            "puede parecernos arrogante siquiera pensarlo, pero dejar de necesitar que otros confirmen nuestro valor puede llevarnos a recuperar el asombro por quienes somos",
+        video: "sentirse maravilloso el destino del alma.mp4",
+        poster: "11. sentirse maravilloso el destino del alma.jpg",
     },
 ];
 

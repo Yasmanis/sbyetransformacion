@@ -45,7 +45,8 @@ class StoreController extends PushMessageController
 
         return Inertia('landing/store', [
             'categories' => $categories,
-            'subcategories' => $subcategories
+            'subcategories' => $subcategories,
+            'current_category' => $request->input('category')
         ]);
     }
 

@@ -54,53 +54,47 @@
                         <q-card-section class="q-pb-none">
                             <p class="q-my-sm text-uppercase">mas recientes</p>
                             <div style="border-bottom: 2px solid #407492"></div>
-                            <q-scroll-area style="height: 200px">
-                                <q-list>
-                                    <q-item
-                                        v-for="(f, indexRecent) in recent_files"
-                                        :key="`recent-file-${indexRecent}`"
-                                        class="q-py-md q-px-none"
-                                        :class="
-                                            indexRecent ===
-                                            recent_files.length - 1
-                                                ? 'q-pb-none'
-                                                : 'border-dashed-bottom-1'
-                                        "
-                                        :href="
-                                            f.type === 'link'
-                                                ? f.link
-                                                : `${$page.props.public_path}storage/${f.path}`
-                                        "
-                                        target="_blank"
-                                        clickable
+                            <q-list>
+                                <q-item
+                                    v-for="(f, indexRecent) in recent_files"
+                                    :key="`recent-file-${indexRecent}`"
+                                    class="q-py-md q-px-none"
+                                    :class="
+                                        indexRecent === recent_files.length - 1
+                                            ? 'q-pb-none'
+                                            : 'border-dashed-bottom-1'
+                                    "
+                                    :href="
+                                        f.type === 'link'
+                                            ? f.link
+                                            : `${$page.props.public_path}storage/${f.path}`
+                                    "
+                                    target="_blank"
+                                    clickable
+                                >
+                                    <q-item-section
+                                        avatar
+                                        style="width: 70px"
+                                        class="q-pr-none"
                                     >
-                                        <q-item-section
-                                            avatar
-                                            style="width: 70px"
-                                            class="q-pr-none"
+                                        <q-img
+                                            :src="`${$page.props.public_path}images/others/publicaciones-recientes.png`"
+                                        />
+                                    </q-item-section>
+                                    <q-item-section>
+                                        <q-item-label
+                                            lines="3"
+                                            class="text-lowercase text-primary text-weight-bold"
+                                            >{{ f.name }}</q-item-label
                                         >
-                                            <q-img
-                                                :src="`${$page.props.public_path}images/others/publicaciones-recientes.png`"
-                                            />
-                                        </q-item-section>
-                                        <q-item-section>
-                                            <q-item-label
-                                                lines="3"
-                                                class="text-lowercase text-primary text-weight-bold"
-                                                >{{ f.name }}</q-item-label
-                                            >
-                                            <q-item-label
-                                                ><small
-                                                    class="text-lowercase"
-                                                    >{{
-                                                        getDate(f.public_date)
-                                                    }}</small
-                                                >
-                                            </q-item-label>
-                                        </q-item-section>
-                                    </q-item>
-                                </q-list>
-                            </q-scroll-area>
+                                        <q-item-label
+                                            ><small class="text-lowercase">{{
+                                                getDate(f.public_date)
+                                            }}</small>
+                                        </q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-list>
                         </q-card-section>
                     </q-card>
 
@@ -192,7 +186,7 @@
             "
         >
             <div
-                class="row container bg-primary text-white q-col-gutter-md q-ma-sm q-pa-md"
+                class="row container bg-primary text-white q-col-gutter-md q-mt-xl q-py-xl"
                 id="suscribe"
             >
                 <div class="col-md-6">
@@ -232,102 +226,6 @@
                     <form-subscription-component />
                 </div>
             </div>
-
-            <div class="row container q-mt-xl">
-                <div class="row">
-                    <div class="col">
-                        <h6 class="q-mb-md text-lowercase text-bold">
-                            empieza simplemente observando
-                        </h6>
-                        <p>
-                            a veces una idea, una situacion cotidiana o una
-                            pregunta es suficiente para empezar a descubrir algo
-                            de nosotros que hasta entonces no habIamos visto
-                        </p>
-                        <h6 class="q-mb-sm text-lowercase">
-                            videos para observarte y comprenderte
-                        </h6>
-                    </div>
-                </div>
-                <q-carousel
-                    v-model="slide"
-                    animated
-                    padding
-                    :arrows="!Screen.xs"
-                    :navigation="Screen.xs"
-                    :prev-icon="`img:${$page.props.public_path}images/icon/left.png`"
-                    :next-icon="`img:${$page.props.public_path}images/icon/right.png`"
-                    control-color="primary"
-                    style="height: auto"
-                >
-                    <q-carousel-slide
-                        v-for="(slideGroup, indexGroup) in groupedSlides"
-                        :key="`slide-group-${indexGroup}`"
-                        :name="`style-${indexGroup}`"
-                        class="column no-wrap flex-center"
-                    >
-                        <div class="row q-col-gutter-md">
-                            <div
-                                v-for="(slide, slideIndex) in slideGroup"
-                                :key="`slide-${slideIndex}`"
-                                class="col-6"
-                            >
-                                <q-card
-                                    class="my-card rounded-borders bg-primary text-white"
-                                    style="border-radius: 30px !important"
-                                >
-                                    <q-card-section
-                                        :class="Screen.xs ? '' : 'q-pa-xl'"
-                                    >
-                                        <div class="row q-col-gutter-lg">
-                                            <div
-                                                class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6"
-                                            >
-                                                <h6 class="q-mb-sm text-white">
-                                                    {{ slide.title }}
-                                                </h6>
-                                                <div
-                                                    v-html="slide.description"
-                                                ></div>
-                                            </div>
-                                            <div
-                                                class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6"
-                                            >
-                                                <video-player
-                                                    :src="`${$page.props.public_path}media/${slide.video}`"
-                                                    :poster="
-                                                        slide.poster
-                                                            ? `${$page.props.public_path}images/posters/${slide.poster}`
-                                                            : null
-                                                    "
-                                                    aspectRatio="1:1"
-                                                    :volume="0.6"
-                                                    controls
-                                                    class="full-width"
-                                                    :options="{
-                                                        controlBar: {
-                                                            pictureInPictureToggle:
-                                                                !Screen.xs,
-                                                        },
-                                                    }"
-                                                />
-                                            </div>
-                                        </div>
-                                    </q-card-section>
-                                </q-card>
-                            </div>
-                        </div>
-                    </q-carousel-slide>
-                </q-carousel>
-                <div class="column full-width">
-                    <p class="text-center">
-                        lo que vivimos puede mostrarnos que sigue dirigiendo
-                        nuestra manera de sentir, reaccionar y <br />
-                        elegir... y abrirnos la posibilidad de vivir cada vez
-                        mas desde nosotros mismos
-                    </p>
-                </div>
-            </div>
         </template>
     </Layout>
 
@@ -340,7 +238,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import Layout from "../../layouts/MainLayout.vue";
 import { usePage, Head } from "@inertiajs/vue3";
 import ListCategoryComponent from "../../components/landing/ListCategoryComponent.vue";
@@ -348,10 +246,7 @@ import FilesCategoryComponent from "../../components/landing/FilesCategoryCompon
 import FormTestimonyComponent from "../../components/landing/FormTestimonyComponent.vue";
 import PublicationsMsgComponent from "../../components/modules/pushmessage/PublicationsMsgComponent.vue";
 import FormSubscriptionComponent from "../../components/landing/FormSubscriptionComponent.vue";
-import { useQuasar, date, Screen } from "quasar";
-
-import { VideoPlayer } from "@videojs-player/vue";
-import "video.js/dist/video-js.css";
+import { useQuasar, date } from "quasar";
 
 defineOptions({
     name: "Publicaciones",
@@ -383,94 +278,6 @@ const getDate = (dd) => {
 
     return date.formatDate(dd, "MMMM D, YYYY");
 };
-
-const slide = ref("style-0");
-
-const slides = [
-    {
-        title: "POR QUE NOS EMOCIONA TANTO QUE ALGUIEN NOS DIGA ESTOY ORGULLOSO DE TI?",
-        description:
-            "cuando aprendimos a buscar amor, reconocimiento y aprobacion fuera, podemos seguir necesitandolos mucho despues de haber dejado de ser niños",
-        video: "la frase que todos necesitamos oír.mp4",
-    },
-    {
-        title: "NADIE TIENE TIEMPO PARA VERTE… Y TU TAMPOCO",
-        description:
-            "cuando aprendemos a medir nuestro valor a traves de la mirada de los demas, podemos pasar la vida comparandonos sin llegar a mirarnos realmente",
-        video: "nadie tiene tiempo para verte… y tu tampoco.mp4",
-    },
-    {
-        title: "ASI SE PROGRAMA UN SER HUMANO",
-        description:
-            "como nuestras primeras experiencias van construyendo respuestas, creencias y patronesq ue pueden seguir funcionando automaticamente mucho despues de la infancia",
-        video: "3. VIDEO 1 - asi se programa un ser humano.mp4",
-        poster: "3. VIDEO 1 - asi se programa un ser humano.jpg",
-    },
-    {
-        title: "CUANDO AGRADAR A LOS DEMAS HACE QUE DEJEMOS DE ESCUCHARNOS",
-        description:
-            "podemos aprender a adaptarnos para sentirnos queridos hasta convertir esa forma de proteger el vinculo en una manera automatica de relacionarnos y vivir",
-        video: "4. minivídeo 4-    people pleasing y perdida de identidad.mp4",
-        poster: "4. minivídeo 4-    people pleasing y perdida de identidad.jpg",
-    },
-    {
-        title: "EL INCONSCIENTE: LO QUE APRENDIMOS ANTES DE PODER ELEGIR",
-        description:
-            "antes de poder cuestionar lo que viviamos, ya estabamos aprendiendo de las miradas, los silencios, la tension, la ternura, el miedo o la exigencia que nos rodeaban",
-        video: "5. VIDEO 2 - el inconsciente el libro en blanco donde se graba todo.mp4",
-        poster: "5. VIDEO 2 - el inconsciente el libro en blanco donde se graba todo.jpg",
-    },
-    {
-        title: "CUANDO EL PASADO SIGUE REACCIONANDO EN EL PRESENTE",
-        description:
-            "una herida puede pertenecer al pasado y seguir apareciendo hoy en nuestras reacciones, miedos, necesidades y formas automaticas de protegernos",
-        video: "6. reel 9 - herida y presente.mp4",
-        poster: "6. reel 9 - herida y presente.jpg",
-    },
-    {
-        title: "TU CUERPO RECUERDA LO QUE TU MENTE OLVIDA",
-        description:
-            "podemos haber olvidado o comprendido una experiencia y seguir reaccionando a ella a traves de emociones, tension corporal y respuestas automaticas",
-        video: "7. reel 5 - tu cuerpo recuerda lo que tu mente olvida.mp4",
-        poster: "7. reel 5 - tu cuerpo recuerda lo que tu mente olvida.jpg",
-    },
-    {
-        title: "LO QUE VIVISTE EXPLICA, NO DETERMINA",
-        description:
-            "comprender de donde vienen nuestras reacciones no las transforma automaticamente, pero nos permite empezar a ver aquello que antes actuaba sin que nos dieramos cuenta",
-        video: "8. video 4 - lo que viviste explica, no determina.mp4",
-        poster: "8. video 4 - lo que viviste explica, no determina.jpg",
-    },
-    {
-        title: "POR QUE COMPRENDER LO QUE TE PASA NO SIEMPRE BASTA",
-        description:
-            "podemos saber de donde vienen nuestras reacciones y seguir respondiendo desde ellas: transformar implica comprender, sentir y empezar a vivir fuera del programa",
-        video: "Narcisismo y dependencia emocional.mp4",
-    },
-    {
-        title: "LO QUE VIVES TAMBIEN PUEDE HABLARTE DE TI",
-        description:
-            "nuestras reacciones, relaciones y elecciones pueden convertirse en espejos desde los que descubrir lo que todavia nos gobierna y ampliar nuestra forma de mirar la vida",
-        video: "10. el espejo del mundo lo que el alma quiere recordar.mp4",
-        poster: "10. el espejo del mundo.jpg",
-    },
-    {
-        title: "TE SIENTES MARAVILLOSO?",
-        description:
-            "puede parecernos arrogante siquiera pensarlo, pero dejar de necesitar que otros confirmen nuestro valor puede llevarnos a recuperar el asombro por quienes somos",
-        video: "sentirse maravilloso el destino del alma.mp4",
-        poster: "11. sentirse maravilloso el destino del alma.jpg",
-    },
-];
-
-const groupedSlides = computed(() => {
-    const groups = [];
-    let increment = Screen.xs || Screen.sm ? 1 : 2;
-    for (let i = 0; i < slides.length; i += increment) {
-        groups.push(slides.slice(i, i + increment));
-    }
-    return groups;
-});
 </script>
 
 <style scope>

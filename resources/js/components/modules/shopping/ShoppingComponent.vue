@@ -453,7 +453,12 @@ onMounted(() => {
         showPayment.value = true;
         page.props.show_payment = false;
     }
-    if (location.hash) {
+    if (page.props.current_category) {
+        const found = categoriesList.find(
+            (c) => c.name === page.props.current_category,
+        );
+        category.value = found?.id || null;
+    } else if (location.hash) {
         let subCategId = parseInt(location.hash.substring(1));
         for (let i = 0; i < categoriesList.length; i++) {
             let temp = categoriesList[i].subcategories.find(
