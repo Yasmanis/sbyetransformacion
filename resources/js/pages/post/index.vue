@@ -62,9 +62,10 @@
                     <q-table
                         grid
                         :rows="articles"
-                        row-key="name"
+                        row-key="id"
                         v-model:pagination="pagination"
                         hide-pagination
+                        @update:pagination="refreshLightbox"
                         v-if="articles.length > 0"
                     >
                         <template #item="props">
@@ -72,6 +73,7 @@
                                 class="q-pa-xs col-xs-12 col-sm-3 col-md-3 col-lg-2 col-xl-2 grid-style-transition"
                             >
                                 <image-reproductor
+                                    glightbox
                                     :src="props.row.image"
                                     :reproductor="
                                         props.row.file_type === 'video'
@@ -143,9 +145,19 @@ import SectionAddComponent from "../../components/modules/plattforms/SectionAddC
 import SectionEditComponent from "../../components/modules/plattforms/SectionEditComponent.vue";
 import SectionComponent from "../../components/modules/plattforms/SectionComponent.vue";
 import VideoComponent from "../../components/modules/school/VideoComponent.vue";
-import { computed, onMounted, ref } from "vue";
+import {
+    computed,
+    nextTick,
+    onBeforeUnmount,
+    onMounted,
+    ref,
+    watch,
+} from "vue";
 import { usePage } from "@inertiajs/vue3";
 import { getActiveModule } from "../../services/current_module.js";
+
+import GLightbox from "glightbox";
+import "glightbox/dist/css/glightbox.min.css";
 
 defineOptions({
     name: "NewsletterPage",
@@ -217,7 +229,10 @@ const categories = ref([
         name: "dependencia emocional",
     },
 ]);
+
 const segment = ref(null);
+
+let lightbox = null;
 
 onMounted(() => {
     let course = page.props.course ?? null;
@@ -243,7 +258,39 @@ onMounted(() => {
     }
 
     setDefaults();
+
+    nextTick(() => {
+        refreshLightbox();
+    });
 });
+
+onBeforeUnmount(() => {
+    if (lightbox) {
+        lightbox.destroy();
+        lightbox = null;
+    }
+});
+
+watch(
+    () => [pagination.value.page, pagination.value.rowsPerPage],
+    () => {
+        refreshLightbox();
+    },
+);
+
+const refreshLightbox = () => {
+    nextTick(() => {
+        if (lightbox) {
+            lightbox.reload();
+        } else {
+            lightbox = GLightbox({
+                selector: ".glightbox",
+                touchNavigation: true,
+                loop: false,
+            });
+        }
+    });
+};
 
 const setDefaults = () => {
     const current_module = getActiveModule();

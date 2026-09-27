@@ -24,6 +24,15 @@
                             <q-img
                                 :src="`${$page.props.public_path}images/logo/1.png`"
                             />
+                            <p
+                                class="text-white text-center q-mt-lg"
+                                style="font-size: 20px"
+                            >
+                                tu espacio en sbye transformacion
+                            </p>
+                            <p class="text-white text-center">
+                                aqui continua el camino
+                            </p>
                         </q-card-section>
                         <form-forgot-password-component
                             v-if="lostPassword"

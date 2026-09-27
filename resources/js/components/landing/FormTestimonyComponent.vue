@@ -5,21 +5,29 @@
             :class="showForm ? 'bg-company' : 'text-center'"
         >
             <q-card-section>
-                <p class="text-white" style="font-size: 26px">
-                    sube tu testimonio
+                <p class="text-white" style="font-size: 18px">
+                    <b>quieres compartir tu experiencia?</b>
                 </p>
                 <p class="text-white">
-                    si estas leyendo el libro o haces consulta conmigo tendras
-                    mucho que compartir con los demas. inicia sesion y podras
-                    escribir y/o subir un video con tu testimonio. la mejor
-                    opcion es siempre el video ya que llega a mas personas,
-                    ademas te ayuda a desprogramar miedos escenicos ligados a la
-                    aceptacion social. ya sabes que los miedos se deben
-                    enfrentar, pero si todavia no estas preparado para ello, por
-                    favor escribe lo que sientas, pues ayudaras a muchas
-                    personas
-                    <br />
-                    gracias!
+                    si has leido la obra, has participado en alguna de mis
+                    actividades o has realizado un proceso conmigo, compartir tu
+                    experiencia es tambien una manera de devolver algo de lo
+                    recibido y de ayudar a otras personas a acercarse a este
+                    trabajo desde la experiencia de quienes ya lo han vivido
+                </p>
+                <p class="text-white">
+                    puedes hacerlo por escrito o en video, con tu nombre o de
+                    forma anonima si prefieres hacerlo por escrito, observa
+                    simplemente por que. si es una eleccion, perfecto. y si
+                    descubres que hay algo que te frena... quiza tengas delante
+                    una pequeña oportunidad para experimentar de otra manera 😉
+                </p>
+                <p class="text-white">
+                    no necesitas hacer desaparecer el miedo para atreverte a
+                    hacer algo diferente
+                </p>
+                <p class="text-white">
+                    gracias por compartir una parte de tu camino
                 </p>
                 <q-form
                     ref="formRef"

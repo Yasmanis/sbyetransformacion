@@ -291,12 +291,17 @@
                 </p>
             </div>
         </div>
-        <div class="row container bg-primary text-white q-py-xl">
+        <div
+            class="row container bg-primary text-white q-pt-xl"
+            :class="{
+                'q-pb-xl': $q.screen.lt.md,
+            }"
+        >
             <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
                 <img
                     :src="`${$page.props.public_path}images/books/sbyetransformacion_5_trilogia 2026.png`"
                     class="q-pt-xl"
-                    style="margin-bottom: -12px; width: 95%"
+                    style="margin-bottom: -8px; width: 95%"
                 />
             </div>
             <div
@@ -640,6 +645,11 @@
                                         >
                                             <video-player
                                                 :src="`${$page.props.public_path}media/${slide.video}`"
+                                                :poster="
+                                                    slide.poster
+                                                        ? `${$page.props.public_path}images/posters/${slide.poster}`
+                                                        : null
+                                                "
                                                 aspectRatio="1:1"
                                                 :volume="0.6"
                                                 controls
@@ -1119,7 +1129,8 @@ const slides = [
         title: "POR QUE COMPRENDER LO QUE TE PASA NO SIEMPRE BASTA",
         description:
             "podemos saber de donde vienen nuestras reacciones y seguir respondiendo desde ellas: transformar implica comprender, sentir y empezar a vivir fuera del programa",
-        video: "Narcisismo y dependencia emocional.mp4",
+        video: "9. video POR QUE COMPRENDER LO QUE TE PASA NO SIEMPRE BASTA.mp4",
+        poster: "9. porque comprender lo que nos pasa no es suficiente.png",
     },
     {
         title: "LO QUE VIVES TAMBIEN PUEDE HABLARTE DE TI",

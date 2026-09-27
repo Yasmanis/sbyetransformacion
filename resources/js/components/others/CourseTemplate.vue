@@ -187,6 +187,8 @@ const course_percentage = computed(() => {
 });
 
 onMounted(() => {
+    console.log("init-course");
+
     setDefaults();
     if (!isEmpty(window.location.hash)) {
         hash.value = window.location.hash;

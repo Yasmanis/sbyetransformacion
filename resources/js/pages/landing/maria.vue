@@ -111,11 +111,11 @@
                     no buscamos fabricar una version ideal de nosotros mismos ni
                     convertirnos en quienes creemos que deberiamos ser
                 </p>
-                <h6 class="text-white q-pb-md">
+                <p class="text-white">
                     BUSCAMOS CONOCERNOS LO SUFICIENTE PARA PODER ELEGIR QUE
                     QUEREMOS CONSERVAR, QUE QUEREMOS TRANSFORMAR Y DESDE DONDE
                     QUEREMOS VIVIR
-                </h6>
+                </p>
                 <p>
                     <i>sbye transformacion</i> nace con ese proposito: ofrecer
                     comprension, herramientas y experiencias que podamos ir
@@ -401,11 +401,11 @@
                     influiria posteriormente en mi pensamiento:
                     <b><i>conversaciones con dios</i></b>
                 </p>
-                <h6 class="text-white q-pb-md">
+                <p class="text-white">
                     PERO FUE ESPECIALMENTE LA <b>LIBERACION EMOCIONAL</b> LA QUE
                     PRODUJO EN MI ALGO QUE HASTA ENTONCES NO HABIA ENCONTRADO:
                     <b>COMPRENSION</b>
-                </h6>
+                </p>
                 <p>
                     al permitirme sentir y profundizar en lo que estaba
                     viviendo, empezaba a relacionar mis reacciones presentes con
@@ -600,9 +600,7 @@
                 <h6 class="q-mb-md text-lowercase text-bold">
                     cuando la vida se convirtio en el metodo
                 </h6>
-                <h6 class="q-pb-md">
-                    ENTONCES EMPECE DELIBERADAMENTE A VIVIR DE OTRA MANERA
-                </h6>
+                <p>ENTONCES EMPECE DELIBERADAMENTE A VIVIR DE OTRA MANERA</p>
                 <p>
                     dejar de trabajar constantemente y abandonar parte de mi
                     autoexigencia fue dificil. tuve que aprender incluso a
@@ -610,11 +608,9 @@
                     vida
                 </p>
 
-                <p>
-                    <b
-                        >Y EMPECE A UTILIZAR LAS EXPERIENCIAS COTIDIANAS PARA
-                        ENFRENTAR AQUELLO QUE IBA DESCUBRIENDO EN MI</b
-                    >
+                <p class="text-bold">
+                    Y EMPECE A UTILIZAR LAS EXPERIENCIAS COTIDIANAS PARA
+                    ENFRENTAR AQUELLO QUE IBA DESCUBRIENDO EN MI
                 </p>
                 <p>
                     si aparecia la oportunidad de tirarme por un tobogan y

@@ -8,7 +8,7 @@
         <div class="row container bg-primary items-center text-white">
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
                 <img
-                    :src="`${$page.props.public_path}images/others/mi_enfoque.png`"
+                    :src="`${$page.props.public_path}images/enfoque/mi enfoque - maria.png`"
                     alt="group-image"
                     :style="{
                         width: Screen.xs ? '60%' : '50%',
@@ -836,7 +836,7 @@
         </div>
 
         <div
-            class="row container items-center q-py-xl"
+            class="row container items-center q-pt-xl q-pb-md"
             style="background-color: #ededed"
         >
             <div class="col-md-5 col-lg-5 col-xl-5 col-sm-12 col-xs-12">

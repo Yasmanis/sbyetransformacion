@@ -68,7 +68,7 @@
                     :modelValue="formData['book_volume']"
                     :options="currentVolumes"
                     :filterable="false"
-                    :disable="currentVolumes.length === 0"
+                    :disable="currentVolumes.length === 0 && !user.admin"
                     :othersProps="{
                         required: !user.admin,
                     }"
@@ -196,7 +196,9 @@ const setDefaultData = () => {
         setVolumes(object.volumes);
     } else {
         formData.value.user_id = user.id;
-        setVolumes(user.book_volumes);
+        if (user.admin) {
+            setVolumes(Object.keys(volumesStr));
+        } else setVolumes(user.book_volumes);
     }
 };
 

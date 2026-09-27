@@ -1,4 +1,14 @@
 <template>
+    <a :href="src" class="glightbox" v-if="glightbox && !reproductor">
+        <q-img
+            :src="src"
+            :ratio="ratio"
+            :fit="fit"
+            :width="width"
+            :height="height"
+            class="cursor-pointer"
+        />
+    </a>
     <q-img
         :src="src"
         :ratio="ratio"
@@ -6,6 +16,7 @@
         :width="width"
         :height="height"
         @click="emits('play')"
+        v-else
     >
         <div
             class="absolute-full text-subtitle2 flex flex-center"
@@ -68,6 +79,7 @@ defineProps({
     },
     width: String,
     height: String,
+    glightbox: Boolean,
 });
 
 const emits = defineEmits(["play"]);
