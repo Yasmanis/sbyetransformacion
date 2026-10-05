@@ -28,7 +28,7 @@
                             <q-item-section avatar v-if="hasFixed">
                                 <fixed-component
                                     :data="element"
-                                    model="File"
+                                    :model="model"
                                     @reload="onBeforeShow"
                                 />
                             </q-item-section>

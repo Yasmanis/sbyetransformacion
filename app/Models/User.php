@@ -550,7 +550,7 @@ class User extends Authenticatable implements CanResetPassword
 
     public function getSections($type)
     {
-        return SchoolSection::type($type)->get();
+        return SchoolSection::type($type)->orderBy('order', 'asc')->get();
     }
 
     public function getTopicsBySection($type)

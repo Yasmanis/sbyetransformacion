@@ -12,6 +12,10 @@ class SchoolSection extends Model
 
     protected $with = ['topics', 'topics.resources'];
 
+    protected $casts = [
+        'fixed' => 'boolean',
+    ];
+
     public function module()
     {
         return $this->belongsTo(Module::class, 'module_id');

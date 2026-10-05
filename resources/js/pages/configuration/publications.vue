@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import Layout from "../../layouts/ShoppingLayout.vue";
+import Layout from "../../layouts/PublicationsLayout.vue";
 
 defineOptions({
     name: "ShoppingModule",

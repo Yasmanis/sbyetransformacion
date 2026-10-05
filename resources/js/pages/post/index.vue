@@ -23,7 +23,6 @@
                                 $page.props.sections.length > 0)
                         "
                     /> -->
-                    .
                 </template>
                 <template #panel-left>
                     <articles-list-view

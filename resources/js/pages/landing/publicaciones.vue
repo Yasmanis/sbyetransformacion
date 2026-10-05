@@ -30,6 +30,16 @@
                     v-html="currentCategory.description"
                 >
                 </span>
+                <q-btn
+                    rounded
+                    color="black"
+                    label="contactame"
+                    no-caps
+                    href="/contactame"
+                    v-if="currentCategory.name === 'para prensa y medios'"
+                >
+                    <q-icon name="fa fa-long-arrow-right" class="q-ml-md" />
+                </q-btn>
             </div>
             <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                 <files-category-component :category="currentCategory" />

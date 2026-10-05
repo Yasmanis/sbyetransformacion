@@ -26,6 +26,13 @@ class ConfigurationController extends Controller
         ]);
     }
 
+    public function publications(Request $request)
+    {
+        return Inertia::render('configuration/publications', [
+            'config' => Configuration::all()
+        ]);
+    }
+
     public function private(Request $request)
     {
         $user = auth()->user();

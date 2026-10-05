@@ -40,6 +40,8 @@ use App\Http\Controllers\ProductOffersController;
 use App\Http\Controllers\ProductSubcategoryController;
 use App\Http\Controllers\ProductSubcategoryDiscountController;
 use App\Http\Controllers\ProductSubcategoryOffersController;
+use App\Http\Controllers\PublicationCategoryController;
+use App\Http\Controllers\PublicationSubcategoryController;
 use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\RealityController;
 use App\Http\Controllers\ReasonForReturnController;
@@ -396,6 +398,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/plattforms/add-file-to-publication', [PlatformController::class, 'addFileToPublication']);
 
     Route::get('/admin/configuration/shopping', [ConfigurationController::class, 'shopping']);
+    Route::get('/admin/configuration/publications', [ConfigurationController::class, 'publications']);
     Route::get('/admin/configuration/legal', [ConfigurationController::class, 'legal']);
     Route::get('/admin/configuration/private', [ConfigurationController::class, 'private']);
     Route::get('/admin/configuration/index/{keyName}', [ConfigurationController::class, 'index']);
@@ -406,6 +409,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/tikets/add-attachment', [ContactAdminController::class, 'addAttachment']);
     Route::get('/admin/tikets/download-attachment/{id}', [ContactAdminController::class, 'download']);
     Route::resource('/admin/tikets-reply', TiketReplyController::class)->only(['store']);
+
+    Route::resource('/admin/publication-subcategories', PublicationSubcategoryController::class);
 
     Route::resource('/admin/notes', NotesController::class)->only(['store', 'update', 'destroy']);
 

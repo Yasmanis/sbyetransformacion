@@ -88,6 +88,10 @@
                     <q-item-section>
                         <q-item-label lines="1">
                             {{ prop.node.plural_label }}
+                            <q-tooltip-component
+                                title="liberacion emocional la puerta para vivir en plenitud"
+                                v-if="prop.node.plural_label === 'video-libro'"
+                            />
                         </q-item-label>
                     </q-item-section>
                     <q-item-section avatar v-if="prop.node.children.length > 0">
@@ -163,7 +167,7 @@ watch(
     () => page.url,
     () => {
         updateMenu();
-    }
+    },
 );
 
 onBeforeMount(() => {

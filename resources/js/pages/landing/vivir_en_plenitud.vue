@@ -516,6 +516,92 @@
                 v-if="visibleVolumeDescription !== null && $q.screen.gt.sm"
             ></div>
         </div>
+
+        <div
+            class="row items-stretch container q-pb-xl"
+            style="background: #ededed"
+        >
+            <div class="col-12 text-center">
+                <h6 class="text-bold text-lowercase q-pb-md">
+                    una puerta abierta al videolibro
+                </h6>
+                <p>
+                    <b
+                        >antes de decidir si quieres recorrer esta obra, puedes
+                        entrar en ella</b
+                    >
+                </p>
+                <p>
+                    he querido dejar abierto el inicio del videolibro para que
+                    puedas conocerlo desde dentro
+                </p>
+            </div>
+            <div class="col-12">
+                <q-carousel
+                    v-model="slide1"
+                    animated
+                    padding
+                    :arrows="!Screen.xs"
+                    :navigation="Screen.xs"
+                    :prev-icon="`img:${$page.props.public_path}images/icon/left.png`"
+                    :next-icon="`img:${$page.props.public_path}images/icon/right.png`"
+                    control-color="primary"
+                    style="height: auto"
+                >
+                    <q-carousel-slide
+                        v-for="(slideGroup, indexGroup) in groupedSlides1"
+                        :key="`slide-group-${indexGroup}`"
+                        :name="`style1-${indexGroup}`"
+                        class="column no-wrap flex-center"
+                        style="background: #ededed"
+                    >
+                        <div class="row full-width q-col-gutter-md">
+                            <div
+                                v-for="(slide, slideIndex) in slideGroup"
+                                :key="`slide-${slideIndex}`"
+                                :class="{
+                                    'col-12': $q.screen.lt.sm,
+                                    'col-6': $q.screen.gt.sm,
+                                }"
+                            >
+                                <q-card
+                                    class="my-card rounded-borders q-pa-md"
+                                    style="border-radius: 60px !important"
+                                >
+                                    <q-card-section>
+                                        <h6 class="q-mb-sm">
+                                            {{ slide.title }}
+                                        </h6>
+                                        <div v-html="slide.description"></div>
+                                    </q-card-section>
+                                    <q-card-section class="q-px-xl">
+                                        <video-player
+                                            :src="`${$page.props.public_path}media/${slide.video}`"
+                                            :poster="
+                                                slide.poster
+                                                    ? `${$page.props.public_path}images/posters/${slide.poster}`
+                                                    : null
+                                            "
+                                            aspectRatio="16:9"
+                                            :volume="0.6"
+                                            controls
+                                            class="full-width"
+                                            :options="{
+                                                controlBar: {
+                                                    pictureInPictureToggle:
+                                                        !Screen.xs,
+                                                },
+                                            }"
+                                        />
+                                    </q-card-section>
+                                </q-card>
+                            </div>
+                        </div>
+                    </q-carousel-slide>
+                </q-carousel>
+            </div>
+        </div>
+
         <div
             class="row container q-col-gutter-md q-py-xl bg-primary text-white text-center"
         >
@@ -1153,6 +1239,51 @@ const groupedSlides = computed(() => {
     let increment = Screen.xs || Screen.sm ? 1 : 2;
     for (let i = 0; i < slides.length; i += increment) {
         groups.push(slides.slice(i, i + increment));
+    }
+    return groups;
+});
+
+const slide1 = ref("style1-0");
+
+const slides1 = [
+    {
+        title: "SOBRE EL PROLOGO",
+        description:
+            "por que pedi a una IA que escribiera el prologo de esta obra",
+        video: "0. sobre el prologo.mp4",
+        poster: "portada sobre el prologo.webp",
+    },
+    {
+        title: "PROLOGO",
+        description: "la mirada de ChatGPT despues de recorrer los tres tomos",
+        video: "0. PROLOGO_COMPLETO_1080p.mp4",
+        poster: "portada prologo.webp",
+    },
+    {
+        title: "NOTA DE LA AUTORA",
+        description:
+            "que encontraras en el libro y en el espacio que he creado a su alrededor",
+        video: "nota de la autora.mp4",
+        poster: "nota de la autora.webp",
+    },
+    {
+        title: "INTRODUCCION TOMO I",
+        description: "aqui empieza realmente el recorrido",
+        video: "introduccion tomo I.mp4",
+        poster: "introduccion tomo I.webp",
+    },
+    // {
+    //     title: "PARTE I",
+    //     description: "aqui comienza el libro",
+    //     video: "5. VIDEO 2 - el inconsciente el libro en blanco donde se graba todo.mp4",
+    // },
+];
+
+const groupedSlides1 = computed(() => {
+    const groups = [];
+    let increment = Screen.xs || Screen.sm ? 1 : 2;
+    for (let i = 0; i < slides1.length; i += increment) {
+        groups.push(slides1.slice(i, i + increment));
     }
     return groups;
 });

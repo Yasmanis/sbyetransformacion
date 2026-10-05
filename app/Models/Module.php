@@ -14,7 +14,7 @@ class Module extends Model implements Sortable
 {
     use HasFactory, Recyclable, SortableTrait;
 
-    protected $fillable = ['singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str', 'application_id', 'ico_from_path', 'parent_id', 'exclude_childs', 'order'];
+    protected $fillable = ['singular_label', 'plural_label', 'model', 'ico', 'base_url', 'to_str', 'application_id', 'ico_from_path', 'parent_id', 'exclude_childs', 'order', 'code'];
 
     protected $casts = [
         'ico_from_path' => 'boolean',

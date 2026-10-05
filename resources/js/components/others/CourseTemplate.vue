@@ -40,22 +40,40 @@
                         v-if="has_add || (has_edit && sections.length > 0)"
                     >
                         <q-toolbar class="q-gutter-x-sm">
-                            <slot name="add"
-                                ><section-add-component
-                                    v-if="has_add"
+                            <slot name="add" v-if="has_add">
+                                <section-add-component
                                     :segment="segment"
                                     :skip="modules_skip"
-                            /></slot>
-                            <slot name="edit"
-                                ><section-edit-component
+                                />
+                            </slot>
+                            <slot
+                                name="edit"
+                                v-if="has_edit && sections.length > 0"
+                            >
+                                <section-edit-component
                                     :segment="segment"
                                     :skip="modules_skip"
                                     :has_add="has_add"
                                     :has_edit="has_edit"
                                     :has_delete="has_delete"
-                                    v-if="has_edit && sections.length > 0"
-                            /></slot>
-
+                                />
+                            </slot>
+                            <slot
+                                name="sort"
+                                v-if="has_edit && sections.length > 0"
+                            >
+                                <sort-elements-component
+                                    tooltips="ordenar secciones"
+                                    :parent-id="currentSection.module_id"
+                                    :sorted-columns="{
+                                        fixed: 'desc',
+                                        order: 'asc',
+                                    }"
+                                    model="SchoolSection"
+                                    has-fixed
+                                    parent-column="module_id"
+                                />
+                            </slot>
                             <!-- <notification-component /> -->
                         </q-toolbar>
                     </q-card-section>
@@ -119,6 +137,7 @@ import SectionItemComponent from "../../components/modules/school/SectionItemCom
 import NotificationComponent from "../../components/modules/school/notification/NotificationComponent.vue";
 import MgrPrivateMsgComponent from "../../components/modules/privatemsg/MgrPrivateMsgComponent.vue";
 import CalculatorComponent from "../life/CalculatorComponent.vue";
+import SortElementsComponent from "./SortElementsComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 import {
     computed,
