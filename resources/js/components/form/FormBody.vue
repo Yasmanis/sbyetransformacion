@@ -25,7 +25,8 @@
                         :othersProps="f.othersProps"
                         :modelValue="formData[f.name]"
                         @update="onUpdateField"
-                        v-if="f.type === 'text'" />
+                        v-if="f.type === 'text'"
+                    />
                     <number-field
                         v-model="formData[f.name]"
                         :label="f.label"
@@ -33,7 +34,8 @@
                         :othersProps="f.othersProps"
                         :modelValue="formData[f.name]"
                         @update="onUpdateField"
-                        v-if="f.type === 'number'" />
+                        v-if="f.type === 'number'"
+                    />
                     <rating-field
                         v-model="formData[f.name]"
                         :label="f.label"
@@ -41,7 +43,8 @@
                         :modelValue="formData[f.name] ?? 0"
                         :othersProps="f.othersProps"
                         @update="onUpdateField"
-                        v-if="f.type === 'rating'" />
+                        v-if="f.type === 'rating'"
+                    />
                     <image-field
                         v-model="formData[f.name]"
                         :label="f.label"
@@ -49,7 +52,8 @@
                         :othersProps="f.othersProps"
                         :modelValue="formData[f.name]"
                         @change="onUpdateField"
-                        v-if="f.type === 'image'" />
+                        v-if="f.type === 'image'"
+                    />
                     <editor-field
                         v-model="formData[f.name]"
                         :label="f.label"
@@ -57,7 +61,8 @@
                         :othersProps="f.othersProps"
                         :modelValue="formData[f.name]"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'editor'" />
+                        v-else-if="f.type === 'editor'"
+                    />
                     <file-field
                         v-model="formData[f.name]"
                         :label="f.label"
@@ -65,11 +70,13 @@
                         :othersProps="f.othersProps"
                         :modelValue="formData[f.name]"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'file'" />
+                        v-else-if="f.type === 'file'"
+                    />
                     <hidden-field
                         :name="f.name"
                         :modelValue="formData[f.name]"
-                        v-else-if="f.type === 'hidden'" />
+                        v-else-if="f.type === 'hidden'"
+                    />
                     <users-select-dialog-component
                         :name="f.name"
                         :label="f.label"
@@ -77,14 +84,16 @@
                         :required="f.required"
                         :model-value="formData[f.name]"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'users'" />
+                        v-else-if="f.type === 'users'"
+                    />
                     <campaign-field
                         :label="f.label"
                         :name="f.name"
                         :campaign="formData['campaign_id']"
                         :sections="formData['sections_id']"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'campaign'" />
+                        v-else-if="f.type === 'campaign'"
+                    />
                     <subtitle-field
                         :label="f.label"
                         :name="f.name"
@@ -96,32 +105,37 @@
                                     (s) => s.id !== id,
                                 ))
                         "
-                        v-else-if="f.type === 'subtitles'" />
+                        v-else-if="f.type === 'subtitles'"
+                    />
                     <plane-field
                         :label="f.label"
                         :name="f.name"
                         :parent="formData"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'planes'" />
+                        v-else-if="f.type === 'planes'"
+                    />
                     <periodicity-field
                         :name="f.name"
                         :label="f.label"
                         :modelValue="formData[f.name]"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'periodicity'" />
+                        v-else-if="f.type === 'periodicity'"
+                    />
                     <checkbox-field
                         :label="f.label"
                         :name="f.name"
                         :modelValue="formData[f.name]"
                         :othersProps="f.othersProps"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'boolean'" />
+                        v-else-if="f.type === 'boolean'"
+                    />
                     <uploader-field
                         :label="f.label"
                         :name="f.name"
                         :othersProps="f.othersProps"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'uploader'" />
+                        v-else-if="f.type === 'uploader'"
+                    />
                     <select-field
                         :label="f.label"
                         :name="f.name"
@@ -131,18 +145,21 @@
                         :filterable="f.filterable"
                         :multiple="f?.othersProps?.multiple ?? false"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'select'" />
+                        v-else-if="f.type === 'select'"
+                    />
                     <date-field
                         :label="f.label"
                         :name="f.name"
                         v-model="formData[f.name]"
                         :othersProps="f.othersProps"
-                        v-else-if="f.type === 'date'" />
+                        v-else-if="f.type === 'date'"
+                    />
                     <state-field
                         :country="f.country"
                         :state="f.state"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'state'" />
+                        v-else-if="f.type === 'state'"
+                    />
                     <date-time-range-field
                         :start-name="f.startName"
                         :end-name="f.endName"
@@ -152,7 +169,8 @@
                         :end-value="formData[f.endName]"
                         :others-start-props="f.othersStartProps"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'datetimerangefield'" />
+                        v-else-if="f.type === 'datetimerangefield'"
+                    />
                     <date-range-field
                         :start-name="f.startName"
                         :end-name="f.endName"
@@ -161,27 +179,33 @@
                         :others-props="f.othersProps"
                         v-model:start="formData[f.startName]"
                         v-model:end="formData[f.endName]"
-                        v-else-if="f.type === 'daterange'" />
+                        v-else-if="f.type === 'daterange'"
+                    />
                     <password-field
                         :label="f.label"
                         :name="f.name"
                         :othersProps="f.othersProps"
                         @update="onUpdateField"
                         @confirm="onUpdateField"
-                        v-else-if="f.type === 'password'" />
+                        v-else-if="f.type === 'password'"
+                    />
                     <discount-field
                         :percent-value="formData[f.percentName]"
                         :income-value="formData[f.incomeName]"
                         :total-price="f.totalPrice ?? 0"
                         :only-percent="f.onlyPercent ?? false"
                         @update="onUpdateField"
-                        v-else-if="f.type === 'discount'" />
-                    <depends-select-field
-                        :parent="f.parent"
-                        :child="f.child"
-                        @update="onUpdateField"
-                        v-else-if="f.type === 'depends-select'"
-                /></template>
+                        v-else-if="f.type === 'discount'"
+                    />
+
+                    <dynamic-cascading-selects
+                        ref="cascadingSelectsRef"
+                        :fields="f.fields"
+                        :model-value="getValuesFromCascadingSelects(f)"
+                        @update="onUpdateCascade"
+                        v-else-if="f.type === 'dynamicselects'"
+                    />
+                </template>
             </div>
         </q-form>
     </q-card-section>
@@ -223,10 +247,10 @@ import UsersSelectDialogComponent from "../modules/user/UsersSelectDialogCompone
 import SubtitleField from "./input/SubtitleField.vue";
 import PlaneField from "./input/PlaneField.vue";
 import DiscountField from "./input/DiscountField.vue";
-import DependsSelectField from "./input/DependsSelectField.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
 import BtnSaveAndNewComponent from "../btn/BtnSaveAndNewComponent.vue";
+import DynamicCascadingSelects from "./input/DynamicCascadingSelects.vue";
 import { useForm } from "@inertiajs/vue3";
 import { errorValidation, success } from "../../helpers/notifications";
 import axios from "axios";
@@ -352,21 +376,12 @@ const setDefaultData = () => {
             formData.value[f.incomeName] = props.object
                 ? props.object[f.incomeName]
                 : null;
-        } else if (f.type === "depends-select") {
-            formData.value[f.parent.name] = props.object
-                ? props.object[f.parent.name]
-                : null;
-            formData.value[f.child.name] = props.object
-                ? props.object[f.child.name]
-                : null;
-            if (!f.parent.othersProps) {
-                f.parent.othersProps = {};
-            }
-            if (!f.child.othersProps) {
-                f.child.othersProps = {};
-            }
-            f.parent["modelValue"] = formData.value[f.parent.name];
-            f.child["modelValue"] = formData.value[f.child.name];
+        } else if (f.type === "dynamicselects") {
+            f.fields.forEach((child) => {
+                formData.value[child.name] = props.object
+                    ? props.object[child.name]
+                    : null;
+            });
         } else {
             formData.value[f.name] = props.object
                 ? props.object[f.name]
@@ -379,9 +394,26 @@ const setDefaultData = () => {
     originalData.value = cloneDeep(formData.value);
 };
 
+const getValuesFromCascadingSelects = (cascade) => {
+    let values = {};
+    cascade.fields.forEach((c) => {
+        values[c.name] =
+            props.object && props.object.hasOwnProperty(c.name)
+                ? props.object[c.name]
+                : null;
+    });
+    return values;
+};
+
 const onUpdateField = (name, val) => {
     formData.value[name] = val;
     emits("update-field", name, val);
+};
+
+const onUpdateCascade = (attr) => {
+    Object.keys(attr).forEach((key) => {
+        formData.value[key] = attr[key].value;
+    });
 };
 
 const save = async (hide) => {

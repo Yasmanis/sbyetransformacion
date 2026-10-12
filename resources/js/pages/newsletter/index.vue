@@ -68,7 +68,8 @@
                         </q-item-section>
                     </q-item>
                 </template>
-                <template #add>.</template>
+                <template #add>&nbsp;</template>
+                <template #edit>&nbsp;</template>
             </course-template>
         </q-page>
     </Layout>

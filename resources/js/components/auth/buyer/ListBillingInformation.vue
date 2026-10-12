@@ -10,6 +10,7 @@
         selection="multiple"
         hide-pagination
         row-key="id"
+        :grid="$q.screen.lt.sm"
     >
         <template v-slot:top>
             <q-toolbar class="no-padding">
@@ -75,8 +76,100 @@
                     url="/admin/users/billing-information"
                     :objects="[props.row]"
                 />
-            </td> </template
-    ></q-table>
+            </td>
+        </template>
+        <template v-slot:item="props">
+            <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <q-card style="margin-left: 10px; margin-right: 10px">
+                    <q-list>
+                        <q-item
+                            v-for="col in props.cols"
+                            :key="col.name"
+                            :class="col.type === 'hidden' ? 'hidden' : ''"
+                        >
+                            <slot
+                                :name="`item-section-${col.name}`"
+                                :props="props"
+                            >
+                                <q-item-section v-if="col.name !== 'actions'">
+                                    <q-item-label v-if="col.type !== 'avatar'">
+                                        {{ col.label }}
+                                    </q-item-label>
+                                    <q-item-label
+                                        v-if="
+                                            col.type === 'avatar' ||
+                                            col.type === 'image'
+                                        "
+                                        class="text-center"
+                                    >
+                                        <q-avatar v-if="col.type === 'avatar'">
+                                            <q-img
+                                                :src="col.value"
+                                                loading="lazy"
+                                            />
+                                        </q-avatar>
+                                        <q-img
+                                            :src="col.value"
+                                            loading="lazy"
+                                            width="100px"
+                                            v-else
+                                        />
+                                    </q-item-label>
+                                    <q-item-label
+                                        v-else-if="col.type === 'boolean'"
+                                    >
+                                        <q-chip
+                                            dense
+                                            size="sm"
+                                            style="max-width: min-content"
+                                            :color="
+                                                col.value ? 'black' : 'blue-2'
+                                            "
+                                            :text-color="
+                                                col.value ? 'white' : 'black'
+                                            "
+                                            :icon="
+                                                col.value ? 'check' : 'error'
+                                            "
+                                            :label="col.value ? 'Si' : 'No'"
+                                        />
+                                    </q-item-label>
+                                    <q-item-label caption v-else>
+                                        <span
+                                            v-html="col.value ? col.value : ''"
+                                        ></span>
+                                    </q-item-label>
+                                </q-item-section>
+                                <q-item-section
+                                    v-else-if="col.name === 'actions'"
+                                >
+                                    <q-separator />
+                                    <div class="q-pa-sm q-gutter-sm text-right">
+                                        <form-billing-information
+                                            :object="props.row"
+                                        />
+                                        <btn-confirm-component
+                                            :disabled="props.row.predetermined"
+                                            tooltips="establecer como predeterminado"
+                                            @click="
+                                                router.post(
+                                                    `/admin/users/billing-information/predetermined/${props.row.id}`,
+                                                )
+                                            "
+                                        />
+                                        <delete-component
+                                            url="/admin/users/billing-information"
+                                            :objects="[props.row]"
+                                        />
+                                    </div>
+                                </q-item-section>
+                            </slot>
+                        </q-item>
+                    </q-list>
+                </q-card>
+            </div>
+        </template>
+    </q-table>
 </template>
 
 <script setup>
@@ -143,6 +236,7 @@ const columns = [
         field: "predetermined",
         label: "predeterminado",
         align: "center",
+        type: "boolean",
     },
     {
         name: "actions",

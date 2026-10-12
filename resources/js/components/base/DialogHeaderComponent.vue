@@ -4,21 +4,24 @@
         <q-toolbar-title style="padding-left: 7px" class="text-lowercase">
             {{ title }}</q-toolbar-title
         >
-        <q-btn
-            dense
-            flat
-            :icon="maximized ? 'minimize' : 'crop_square'"
-            @click="maximized = !maximized"
-            v-if="maximizeable"
-        />
-        <q-btn
-            flat
-            round
-            dense
-            icon="close"
-            @click="emits('close')"
-            v-if="closable"
-        />
+        <div class="q-gutter-md">
+            <slot name="actions"></slot>
+            <q-btn
+                dense
+                flat
+                :icon="maximized ? 'minimize' : 'crop_square'"
+                @click="maximized = !maximized"
+                v-if="maximizeable"
+            />
+            <q-btn
+                flat
+                round
+                dense
+                icon="close"
+                @click="emits('close')"
+                v-if="closable"
+            />
+        </div>
     </q-toolbar>
     <q-separator v-if="separator" />
 </template>

@@ -6,14 +6,17 @@
         >contactar</q-item-label
     >
     <q-dialog v-model="showDialog" persistent position="right" @hide="onHide">
-        <q-card class="scroll">
+        <q-card style="width: 500px; max-width: 90vw">
             <dialog-header-component
                 icon="mdi-message-question-outline"
                 title="escribir a sbye-transformacion"
                 closable
                 @close="showDialog = false"
             />
-            <q-card-section class="col q-pt-none">
+            <q-card-section
+                class="col q-pt-none scroll"
+                style="max-height: 50vh"
+            >
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
                     <text-field
                         label="nombre"

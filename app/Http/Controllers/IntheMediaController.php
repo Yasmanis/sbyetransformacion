@@ -24,8 +24,10 @@ class IntheMediaController extends LifeController
         $segment = $this->segment();
         if ($user->hasView('view_inthemedia') || $user->hasPerm('full_inthemedia')) {
             $category = Category::firstWhere('name', 'en los medios');
+            $module = $this->getModule();
             return Inertia::render('in_the_media/index', [
-                'sections' => $user->getSections($segment),
+                'sections' => $this->getSections($module),
+                'module' => $module,
                 'private_messages' => $user->getPrivateMessages($request, 'received'),
                 'category' => $category,
                 'files' => $category?->files ?? []

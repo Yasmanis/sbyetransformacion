@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\RowConfig;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UtilsController extends Controller
 {
@@ -154,6 +155,8 @@ class UtilsController extends Controller
         $modelId = $request->modelId ?? null;
         $sorted = $request->sorted ?? null;
         $sortColumn = $request->sortColumn ?? 'order';
+        $modelChild = $request->modelChild;
+        $parentColumnChild = $request->parentColumnChild;
         if ($modelName && $sortColumn && $modelId) {
             $modelClass = "App\\Models\\" . $modelName;
             if (!class_exists($modelClass)) {
@@ -167,6 +170,26 @@ class UtilsController extends Controller
             if ($obj != null) {
                 $obj[$sortColumn] = $sorted;
                 $obj->save();
+
+                if ($sorted) {
+                    $child = app()->make("App\\Models\\" . $modelChild);
+                    $childreen = $child::where($parentColumnChild, $modelId)->orderBy('id', $sorted)->get();
+                    DB::transaction(function () use ($childreen, $child) {
+                        $index = 0;
+                        foreach ($childreen->chunk(100) as $chunk) {
+                            foreach ($chunk as $row) {
+                                DB::table($child->getTable())
+                                    ->where('id', $row['id'])
+                                    ->update([
+                                        'order'       => $index,
+                                        'updated_at' => now(),
+                                    ]);
+                                $index++;
+                            }
+                        }
+                    });
+                }
+
                 return redirect()->back()->with('success', 'orden cambiado correctamente');
             }
             return redirect()->back()->with('error', 'modelo especificado no valido');

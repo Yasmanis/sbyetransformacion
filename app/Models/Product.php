@@ -109,6 +109,20 @@ class Product extends Model
         return $query->where('public', true);
     }
 
+    public function scopeWhereCategory($query, $value)
+    {
+        return $query->whereHas('category', function ($query) use ($value) {
+            $query->where('category_id', $value);
+        });
+    }
+
+    public function scopeWhereSubcategory($query, $value)
+    {
+        return $query->whereHas('subcategory', function ($query) use ($value) {
+            $query->where('subcategory_id', $value);
+        });
+    }
+
     public function getActiveOfferAttribute()
     {
         $offer = $this->category->active_offer ?? null;

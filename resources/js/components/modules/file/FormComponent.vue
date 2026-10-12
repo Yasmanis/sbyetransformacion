@@ -22,17 +22,16 @@
                 @close="showDialog = false"
             />
             <q-card-section class="col q-pt-none">
+                {{ formFields }}
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
                     <div class="form-field">
-                        <select-field
-                            label="categoria"
-                            name="category_id"
-                            :othersProps="{
-                                required: true,
-                                url_to_options: '/categories',
+                        <cascading-selects
+                            :fields="cascading.fields"
+                            :model-value="{
+                                category_id: null,
+                                subcategory_id: null,
                             }"
-                            :filterable="true"
-                            @update="onUpdateField"
+                            @change="onUpdateField"
                         />
                     </div>
                     <div class="form-field">
@@ -152,6 +151,8 @@ import UploaderField from "../../form/input/UploaderField.vue";
 import CheckboxField from "../../form/input/CheckboxField.vue";
 import FileField from "../../form/input/FileField.vue";
 import TextField from "../../form/input/TextField.vue";
+import DependsSelectField from "../../form/input/DependsSelectField.vue";
+import CascadingSelects from "../../form/input/CascadingSelects.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { success, errorValidation } from "../../../helpers/notifications";
 import { Dark } from "quasar";
@@ -200,6 +201,10 @@ const formFields = ref([
         value: null,
     },
     {
+        name: "subcategory_id",
+        value: null,
+    },
+    {
         name: "public_access",
         value: false,
     },
@@ -227,6 +232,43 @@ const page = usePage();
 
 const type = ref("file");
 
+const cascading = ref({
+    name: "location",
+    input_type: "cascadingselects",
+    fields: [
+        {
+            name: "category_id",
+            label: "categoria",
+            dependsOn: [],
+            url: "/categories",
+            method: "get",
+            options: [],
+            value: null,
+            loading: false,
+            disabled: false,
+            resets: ["subcategory_id"],
+            type: "select",
+            scope: "whereCategory",
+            rules: ["required"],
+        },
+        {
+            name: "subcategory_id",
+            label: "subcategoria",
+            dependsOn: ["category_id"],
+            url: "/publications-categories",
+            method: "post",
+            options: [],
+            value: null,
+            loading: false,
+            disabled: true,
+            resets: [],
+            type: "select",
+            scope: "whereSubcategory",
+            rules: ["required"],
+        },
+    ],
+});
+
 onMounted(() => {
     if (props.object != null) {
         fullTitle.value = `Editar ${props.title}`;
@@ -251,6 +293,10 @@ const initForm = () => {
     formFields.value = [
         {
             name: "category_id",
+            value: null,
+        },
+        {
+            name: "subcategory_id",
             value: null,
         },
         {

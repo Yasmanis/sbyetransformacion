@@ -4,12 +4,7 @@
         @click="showDialog = true"
     />
 
-    <q-dialog
-        v-model="showDialog"
-        persistent
-        full-width
-        @before-show="onBeforeShow"
-    >
+    <q-dialog v-model="showDialog" persistent full-width>
         <q-card>
             <dialog-header-component
                 :icon="`img:${page.props.public_path}images/icon/${
@@ -18,7 +13,34 @@
                 title="modificar seccion y temas"
                 closable
                 @close="showDialog = false"
-            />
+            >
+                <template #actions v-if="module">
+                    <sort-elements-component
+                        tooltips="ordenar secciones"
+                        :parent-id="module.id"
+                        :sorted-columns="{
+                            fixed: 'desc',
+                            order: 'asc',
+                        }"
+                        model="SchoolSection"
+                        has-fixed
+                        parent-column="module_id"
+                    />
+
+                    <sort-elements-time-component
+                        :object="module"
+                        :tooltips="
+                            module?.sort_sections
+                                ? 'cambiar orden de secciones por fecha'
+                                : 'establecer orden de secciones por fecha'
+                        "
+                        model="Module"
+                        model-child="SchoolSection"
+                        parent-column-child="module_id"
+                        sort-column="sort_sections"
+                    />
+                </template>
+            </dialog-header-component>
             <q-card-section
                 class="col q-pt-none scroll"
                 style="max-height: 60vh"
@@ -44,7 +66,7 @@
                                 "
                             />
                         </q-item-section>
-                        <q-item-section avatar v-if="has_edit">
+                        <!-- <q-item-section avatar v-if="has_edit">
                             <btn-add-component
                                 tooltips="adicionar tema"
                                 @click="
@@ -73,7 +95,7 @@
                                     }
                                 "
                             />
-                        </q-item-section>
+                        </q-item-section> -->
                     </q-item>
                     <q-item
                         v-for="(topic, indexTopic) in page.props.files.filter(
@@ -100,7 +122,7 @@
                                 <q-icon name="mdi-video"></q-icon>
                             </q-item-label>
                         </q-item-section>
-                        <q-item-section avatar v-if="has_edit">
+                        <!-- <q-item-section avatar v-if="has_edit">
                             <btn-edit-component
                                 tooltips="editar"
                                 @click="
@@ -122,21 +144,23 @@
                                     }
                                 "
                             />
-                        </q-item-section>
+                        </q-item-section> -->
                     </q-item>
+                </q-list>
+                <q-list>
                     <q-item class="q-pb-none">
                         <q-item-section>
                             <q-item-label class="text-bold">
                                 no definida
                             </q-item-label>
                         </q-item-section>
-                        <q-item-section avatar>
+                        <!-- <q-item-section avatar>
                             <btn-edit-component
                                 tooltips="editar seccion"
                                 :disable="true"
                             />
-                        </q-item-section>
-                        <q-item-section avatar v-if="has_edit">
+                        </q-item-section> -->
+                        <!-- <q-item-section avatar v-if="has_edit">
                             <btn-add-component
                                 tooltips="adicionar publicacion"
                                 @click="
@@ -165,11 +189,11 @@
                                     }
                                 "
                             />
-                        </q-item-section>
+                        </q-item-section> -->
                     </q-item>
                     <q-item
                         v-for="(topic, indexTopic) in page.props.files.filter(
-                            (f) => !f.section_id,
+                            (f) => f.section_id === null,
                         )"
                         :key="indexTopic"
                     >
@@ -192,7 +216,7 @@
                                 <q-icon name="mdi-video"></q-icon>
                             </q-item-label>
                         </q-item-section>
-                        <q-item-section avatar v-if="has_edit">
+                        <!-- <q-item-section avatar v-if="has_edit">
                             <btn-edit-component
                                 tooltips="editar"
                                 @click="
@@ -214,7 +238,7 @@
                                     }
                                 "
                             />
-                        </q-item-section>
+                        </q-item-section> -->
                     </q-item>
                 </q-list>
             </q-card-section>
@@ -361,6 +385,7 @@ import TopicComponent from "./topic/TopicComponent.vue";
 import SectionFormComponent from "./SectionFormComponent.vue";
 import BtnEditComponent from "../../btn/BtnEditComponent.vue";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
+import SortElementsTimeComponent from "../../others/SortElementsTimeComponent.vue";
 import ConfirmComponent from "../../base/ConfirmComponent.vue";
 import ImageReproductor from "../../others/ImageReproductor.vue";
 import { usePage, router } from "@inertiajs/vue3";
@@ -415,12 +440,10 @@ const confirmSection = ref(false);
 const confirmTopic = ref(false);
 
 const sections = computed(() => {
-    return page.props.sections ? page.props.sections : [];
+    return page.props.sections || [];
 });
 
-const onBeforeShow = () => {
-    console.log(page.props.files);
-};
+const module = computed(() => page.props.module);
 
 const newTopic = (reset) => {
     index.value++;

@@ -1272,11 +1272,12 @@ const slides1 = [
         video: "introduccion tomo I.mp4",
         poster: "introduccion tomo I.webp",
     },
-    // {
-    //     title: "PARTE I",
-    //     description: "aqui comienza el libro",
-    //     video: "5. VIDEO 2 - el inconsciente el libro en blanco donde se graba todo.mp4",
-    // },
+    {
+        title: "PARTE I",
+        description: "aqui comienza el libro",
+        video: "parte 1. introduccion.mp4",
+        poster: "portada introduccion parte 1.webp",
+    },
 ];
 
 const groupedSlides1 = computed(() => {

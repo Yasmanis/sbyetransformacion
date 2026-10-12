@@ -11,6 +11,7 @@ use App\Models\Module;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductSubcategory;
+use App\Models\PublicationSubcategory;
 use App\Models\ReasonForReturn;
 use App\Models\Role;
 use App\Models\SchoolTopic;
@@ -120,6 +121,13 @@ class SelectsController extends Controller
         ]);
     }
 
+    public function publicationsSubcategories(Request $request)
+    {
+        return response()->json([
+            'options' => PublicationSubcategory::select('id as value', 'name as label')->where('category_id', $request->category_id)->orderBy('name', 'ASC')->withCasts(['value' => 'integer'])->get()
+        ]);
+    }
+
     public function productCategories()
     {
         return response()->json([
@@ -216,10 +224,10 @@ class SelectsController extends Controller
         ]);
     }
 
-    public function productSubcategories($id)
+    public function productSubcategories(Request $request)
     {
         return response()->json([
-            'options' => ProductSubcategory::where('category_id', $id)->select('id as value', 'name as label', 'category_id')->get()
+            'options' => ProductSubcategory::where('category_id', $request->category_id)->select('id as value', 'name as label', 'category_id')->get()
         ]);
     }
 

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Module;
 use App\Repositories\FileRepository;
 use App\Traits\FileSave;
 use Illuminate\Http\Request;
@@ -38,12 +37,6 @@ class PlatformController extends LifeController
         $data['principal'] = $request->input('principal', 1) === 1 || $request->input('principal', '1') === '1';
         $obj = $repository->create($data);
         return $obj;
-    }
-
-    public function getSections()
-    {
-        $m = Module::firstWhere('model', $this->segment());
-        return $m->sections;
     }
 
     public function getCategory()

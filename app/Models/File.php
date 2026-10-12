@@ -23,6 +23,7 @@ class File extends Model
         'path',
         'type',
         'category_id',
+        'subcategory_id',
         'public_access',
         'public_date',
         'poster',
@@ -44,6 +45,7 @@ class File extends Model
 
     protected $appends = [
         'category_str',
+        'subcategory_str',
         'size_str',
         'file',
         'is_after',
@@ -78,6 +80,11 @@ class File extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function subcategory()
+    {
+        return $this->belongsTo(PublicationSubcategory::class, 'subcategory_id');
+    }
+
     public function section()
     {
         return $this->belongsTo(SchoolSection::class, 'section_id');
@@ -96,6 +103,11 @@ class File extends Model
     public function getCategoryStrAttribute()
     {
         return $this->category()->first()->name ?? '';
+    }
+
+    public function getSubcategoryStrAttribute()
+    {
+        return $this->subcategory()->first()->name ?? '';
     }
 
     public function getSizeStrAttribute()
@@ -124,6 +136,20 @@ class File extends Model
             return false;
         }
         return Carbon::parse($date)->gt(now());
+    }
+
+    public function scopeWhereCategory($query, $value)
+    {
+        return $query->whereHas('category', function ($query) use ($value) {
+            $query->where('category_id', $value);
+        });
+    }
+
+    public function scopeWhereSubcategory($query, $value)
+    {
+        return $query->whereHas('subcategory', function ($query) use ($value) {
+            $query->where('subcategory_id', $value);
+        });
     }
 
     public function scopeTypeOfFile($query, $args)

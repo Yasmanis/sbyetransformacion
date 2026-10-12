@@ -1,5 +1,9 @@
 <template>
-    <btn-sort-component :tooltips="tooltips" @click="showDialog = true" />
+    <btn-sort-component
+        :tooltips="tooltips"
+        :disable="disable"
+        @click="showDialog = true"
+    />
 
     <q-dialog v-model="showDialog" persistent @before-show="onBeforeShow">
         <q-card style="width: 800px">
@@ -92,6 +96,7 @@ const props = defineProps({
     hasFixed: Boolean,
     parentColumn: String,
     parentId: String | Number,
+    disable: Boolean,
 });
 
 const emits = defineEmits(["save"]);

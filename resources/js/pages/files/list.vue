@@ -5,7 +5,6 @@
                 :columns="columns"
                 :searchFields="searchFields"
                 :filterFields="filterFields"
-                :createFields="fields"
                 :updateFields="fields"
                 :has_delete="false"
             ></table-component>
@@ -25,11 +24,50 @@ const category = {
     field: "category_str",
     name: "category_str",
     label: "categoria",
-    type: "select",
     align: "left",
-    othersProps: {
-        url_to_options: "/categories",
-    },
+};
+
+const subcategory = {
+    field: "subcategory_str",
+    name: "subcategory_str",
+    label: "subcategoria",
+    align: "left",
+};
+
+const cascading = {
+    type: "dynamicselects",
+    fields: [
+        {
+            name: "category_id",
+            label: "categoria",
+            dependsOn: [],
+            url: "/categories",
+            method: "get",
+            options: [],
+            value: null,
+            loading: false,
+            disabled: false,
+            resets: ["subcategory_id"],
+            type: "select",
+            scope: "whereCategory",
+            rules: ["required"],
+        },
+        {
+            name: "subcategory_id",
+            label: "subcategoria",
+            dependsOn: ["category_id"],
+            url: "/publications-categories",
+            method: "post",
+            options: [],
+            value: null,
+            loading: false,
+            disabled: true,
+            resets: [],
+            type: "select",
+            scope: "whereSubcategory",
+            rules: ["required"],
+        },
+    ],
 };
 
 const name = {
@@ -77,13 +115,6 @@ const size = {
     width: "130px",
 };
 
-const files = {
-    field: "files",
-    name: "files",
-    label: "ficheros",
-    type: "uploader",
-};
-
 const public_access = {
     field: "public_access",
     name: "public_access",
@@ -122,6 +153,7 @@ const columns = [
     type,
     size,
     category,
+    subcategory,
     public_access,
     public_date,
     {
@@ -136,16 +168,8 @@ const columns = [
 const fields = [
     name,
     link,
-    {
-        field: "category_id",
-        name: "category_id",
-        label: "categoria",
-        type: "select",
-        othersProps: {
-            url_to_options: "/categories",
-            required: true,
-        },
-    },
+    cascading,
+
     {
         field: "public_access",
         name: "public_access",
@@ -163,15 +187,7 @@ const fields = [
 ];
 
 const filterFields = [
-    {
-        field: "category_id",
-        name: "category_id",
-        label: "categoria",
-        type: "select",
-        othersProps: {
-            url_to_options: "/categories",
-        },
-    },
+    cascading,
     {
         field: "type_scope",
         name: "type_scope",

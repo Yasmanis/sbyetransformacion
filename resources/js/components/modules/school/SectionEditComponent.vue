@@ -13,7 +13,34 @@
                 title="modificar seccion y temas"
                 closable
                 @close="showDialog = false"
-            />
+            >
+                <template #actions v-if="module">
+                    <sort-elements-component
+                        tooltips="ordenar secciones"
+                        :parent-id="module.id"
+                        :sorted-columns="{
+                            fixed: 'desc',
+                            order: 'asc',
+                        }"
+                        model="SchoolSection"
+                        has-fixed
+                        parent-column="module_id"
+                    />
+
+                    <sort-elements-time-component
+                        :object="module"
+                        :tooltips="
+                            module?.sort_sections
+                                ? 'cambiar orden de secciones por fecha'
+                                : 'establecer orden de secciones por fecha'
+                        "
+                        model="Module"
+                        model-child="SchoolSection"
+                        parent-column-child="module_id"
+                        sort-column="sort_sections"
+                    />
+                </template>
+            </dialog-header-component>
             <q-card-section
                 class="col q-pt-none scroll"
                 style="max-height: 60vh"
@@ -283,6 +310,7 @@ import TopicComponent from "./topic/TopicComponent.vue";
 import SectionFormComponent from "./section/SectionFormComponent.vue";
 import BtnEditComponent from "../../btn/BtnEditComponent.vue";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
+import SortElementsTimeComponent from "../../others/SortElementsTimeComponent.vue";
 import ConfirmComponent from "../../base/ConfirmComponent.vue";
 import { usePage, router } from "@inertiajs/vue3";
 import { useQuasar, Loading, Dark } from "quasar";
@@ -335,8 +363,10 @@ const confirmSection = ref(false);
 const confirmTopic = ref(false);
 
 const sections = computed(() => {
-    return page.props.sections ? page.props.sections : [];
+    return page.props.sections || [];
 });
+
+const module = computed(() => page.props.module);
 
 const newTopic = (reset) => {
     index.value++;

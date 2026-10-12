@@ -25,14 +25,14 @@
                         :segment="segment"
                         title="añadir medio periodístico y articulos"
                     /> -->
-                    .
+                    &nbsp;
                 </template>
                 <template #edit>
                     <!-- <section-add-component
                         :segment="segment"
                         title="añadir medio periodístico y articulos"
                     /> -->
-                    .
+                    &nbsp;
                 </template>
                 <template #panel-bottom>
                     <q-card>

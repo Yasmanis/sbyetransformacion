@@ -44,8 +44,6 @@
 import { computed, ref } from "vue";
 import QBtnComponent from "../base/QBtnComponent.vue";
 import { useForm } from "@inertiajs/vue3";
-import axios from "axios";
-import { error } from "../../helpers/notifications.js";
 
 defineOptions({
     name: "SortElementsTimeComponent",
@@ -61,6 +59,14 @@ const props = defineProps({
         default: "establecer orden",
     },
     model: {
+        type: String,
+        required: true,
+    },
+    modelChild: {
+        type: String,
+        required: true,
+    },
+    parentColumnChild: {
         type: String,
         required: true,
     },
@@ -87,6 +93,8 @@ const save = (sorted = null) => {
         modelName: props.model,
         sortColumn: props.sortColumn,
         modelId: props.object.id,
+        modelChild: props.modelChild,
+        parentColumnChild: props.parentColumnChild,
         sorted,
     });
     send.post("/utils/change-default-order-elements", {

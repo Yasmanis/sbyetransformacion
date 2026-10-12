@@ -200,6 +200,8 @@
                                 : 'establecer orden de ficheros'
                         "
                         model="Category"
+                        model-child="File"
+                        parent-column-child="category_id"
                         sort-column="sort_files"
                         v-if="has_edit"
                     />
@@ -327,6 +329,8 @@
                                                     : 'establecer orden de ficheros'
                                             "
                                             model="Category"
+                                            model-child="File"
+                                            parent-column-child="category_id"
                                             sort-column="sort_files"
                                             v-if="has_edit"
                                         />

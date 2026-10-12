@@ -444,14 +444,19 @@ Route::post('/subscribe', [BrevoController::class, 'subscribe']);
 Route::post('/send-question', [StoreController::class, 'sendQuestion']);
 
 Route::get('/categories', [SelectsController::class, 'categories']);
+
+Route::post('/publications-categories', [SelectsController::class, 'publicationsSubcategories']);
+
 Route::get('/countries', [SelectsController::class, 'countries']);
 Route::post('/provinces', [SelectsController::class, 'provinces']);
 Route::post('/cities', [SelectsController::class, 'cities']);
 Route::post('/roads', [SelectsController::class, 'roads']);
 Route::post('/postal-codes', [SelectsController::class, 'postalCodes']);
 Route::get('/type-of-files', [SelectsController::class, 'typeOfFiles']);
+
 Route::get('/product-categories', [SelectsController::class, 'productCategories']);
-Route::get('/product-subcategories/{id}', [SelectsController::class, 'productSubcategories']);
+Route::post('/product-subcategories', [SelectsController::class, 'productSubcategories']);
+
 Route::get('/product-courses', [SelectsController::class, 'productCourses']);
 Route::get('/products', [SelectsController::class, 'products']);
 Route::get('/chat-modules', [SelectsController::class, 'chatModules']);

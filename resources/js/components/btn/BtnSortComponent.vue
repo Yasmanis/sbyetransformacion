@@ -1,5 +1,10 @@
 <template>
-    <q-btn-component :tooltips="tooltips" icon="mdi-sort" @click="onClick" />
+    <q-btn-component
+        :tooltips="tooltips"
+        icon="mdi-sort"
+        :disable="disable"
+        @click="onClick"
+    />
 </template>
 
 <script setup>
@@ -13,6 +18,7 @@ const props = defineProps({
         type: String,
         default: "ordenar",
     },
+    disable: Boolean,
 });
 
 const emits = defineEmits(["click"]);

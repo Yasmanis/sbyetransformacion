@@ -11,7 +11,7 @@
                     />
                 </template>
                 <template #edit>
-                    <!-- <section-edit-component
+                    <section-edit-component
                         :segment="segment"
                         :skip="modules_skip"
                         :has_add="has_add"
@@ -22,7 +22,7 @@
                             (files.length > 0 ||
                                 $page.props.sections.length > 0)
                         "
-                    /> -->
+                    />
                 </template>
                 <template #panel-left>
                     <articles-list-view
@@ -37,22 +37,31 @@
                                 <q-item>
                                     <q-item-section>
                                         <q-item-label>
-                                            categorias
+                                            subcategorias
                                         </q-item-label>
                                     </q-item-section>
                                 </q-item>
-                                <q-item
-                                    v-for="c in categories"
-                                    :key="`category-${c.id}`"
-                                    clickable
-                                    dense
+                                <template
+                                    v-if="$page.props.subcategories?.length > 0"
                                 >
-                                    <q-item-section>
-                                        <q-item-label>
-                                            {{ c.name }}
-                                        </q-item-label>
-                                    </q-item-section>
-                                </q-item>
+                                    <q-item
+                                        v-for="c in $page.props.subcategories ||
+                                        []"
+                                        :key="`category-${c.id}`"
+                                        clickable
+                                        dense
+                                    >
+                                        <q-item-section>
+                                            <q-item-label>
+                                                {{ c.name }}
+                                            </q-item-label>
+                                        </q-item-section>
+                                    </q-item>
+                                </template>
+
+                                <p class="q-pa-md text-caption" v-else>
+                                    no existen subcategorias disponibles
+                                </p>
                             </q-list>
                         </q-card-section>
                     </q-card>
@@ -213,21 +222,6 @@ const options = [
 const pagesNumber = computed(() =>
     Math.ceil(articles.value.length / pagination.value.rowsPerPage),
 );
-
-const categories = ref([
-    {
-        id: 1,
-        name: "inconsciente",
-    },
-    {
-        id: 2,
-        name: "programacion",
-    },
-    {
-        id: 3,
-        name: "dependencia emocional",
-    },
-]);
 
 const segment = ref(null);
 

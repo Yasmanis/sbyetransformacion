@@ -15,8 +15,10 @@ class NewsletterController extends LifeController
         $segment = $this->segment();
         if ($user->hasView('view_newsletter') || $user->hasPerm('full_newsletter')) {
             $category = Category::firstWhere('name', 'newsletters');
+            $module = $this->getModule();
             return Inertia::render('newsletter/index', [
-                'sections' => $user->getSections($segment),
+                'sections' => $this->getSections($module),
+                'module' => $module,
                 'course_percentage' => $user->getCoursePercentage($segment),
                 'private_messages' => $user->getPrivateMessages($request, 'received'),
                 'files' => $category?->files ?? []

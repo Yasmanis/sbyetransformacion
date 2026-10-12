@@ -6,8 +6,8 @@
             noti_id
                 ? filteredById()
                 : reads.length > 0
-                ? filteredByReads()
-                : notifications
+                  ? filteredByReads()
+                  : notifications
         "
         wrap-cells
         flat
@@ -17,6 +17,7 @@
         v-model:selected="selected"
         v-model:pagination="pagination"
         :rows-per-page-options="[10, 20, 30, 50, 100]"
+        :grid="$q.screen.lt.sm"
     >
         <template v-slot:top>
             <q-toolbar dense>
@@ -96,20 +97,20 @@
                             >{{
                                 props.row.title.substring(
                                     0,
-                                    props.row.title.indexOf('"')
+                                    props.row.title.indexOf('"'),
                                 )
                             }}
                             <span
                                 class="cursor-pointer text-primary"
                                 @click="
                                     router.visit(
-                                        `/auth/profile#${getStr(props.row)}`
+                                        `/auth/profile#${getStr(props.row)}`,
                                     )
                                 "
                             >
                                 {{
                                     props.row.title.substring(
-                                        props.row.title.indexOf('"')
+                                        props.row.title.indexOf('"'),
                                     )
                                 }}
                                 <q-tooltip-component
@@ -160,7 +161,7 @@
                             :public="props.row.read"
                             @click="
                                 router.post(
-                                    `/auth/read-unread-notification/${props.row.id}`
+                                    `/auth/read-unread-notification/${props.row.id}`,
                                 )
                             "
                         />
@@ -310,13 +311,13 @@ onMounted(() => {
         let foundRecord;
         if (uniqueId) {
             foundRecord = notifications.value.find(
-                (record) => record.id.toString() === uniqueId.toString()
+                (record) => record.id.toString() === uniqueId.toString(),
             );
         } else if (model && id) {
             foundRecord = notifications.value.find(
                 (record) =>
                     record.model === model &&
-                    record.model_id.toString() === id.toString()
+                    record.model_id.toString() === id.toString(),
             );
         }
         if (foundRecord) {
@@ -384,7 +385,7 @@ const getStr = (n) => {
             filters: {
                 uniqueId: id,
             },
-        })
+        }),
     );
 };
 </script>

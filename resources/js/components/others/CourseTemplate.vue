@@ -58,23 +58,6 @@
                                     :has_delete="has_delete"
                                 />
                             </slot>
-                            <slot
-                                name="sort"
-                                v-if="has_edit && sections.length > 0"
-                            >
-                                <sort-elements-component
-                                    tooltips="ordenar secciones"
-                                    :parent-id="currentSection.module_id"
-                                    :sorted-columns="{
-                                        fixed: 'desc',
-                                        order: 'asc',
-                                    }"
-                                    model="SchoolSection"
-                                    has-fixed
-                                    parent-column="module_id"
-                                />
-                            </slot>
-                            <!-- <notification-component /> -->
                         </q-toolbar>
                     </q-card-section>
                     <q-separator />
@@ -137,7 +120,6 @@ import SectionItemComponent from "../../components/modules/school/SectionItemCom
 import NotificationComponent from "../../components/modules/school/notification/NotificationComponent.vue";
 import MgrPrivateMsgComponent from "../../components/modules/privatemsg/MgrPrivateMsgComponent.vue";
 import CalculatorComponent from "../life/CalculatorComponent.vue";
-import SortElementsComponent from "./SortElementsComponent.vue";
 import { usePage } from "@inertiajs/vue3";
 import {
     computed,
@@ -206,8 +188,6 @@ const course_percentage = computed(() => {
 });
 
 onMounted(() => {
-    console.log("init-course");
-
     setDefaults();
     if (!isEmpty(window.location.hash)) {
         hash.value = window.location.hash;
@@ -218,8 +198,6 @@ onMounted(() => {
         hash.value = window.location.hash;
     });
 });
-
-onUnmounted(() => {});
 
 watch(sections, (n, o) => {
     setDefaultConfig();

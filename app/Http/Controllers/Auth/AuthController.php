@@ -162,7 +162,7 @@ class AuthController extends Controller
         $repository = new ContactRepository();
         $data = $request->only((new ($repository->model()))->getFillable());
         $data['user_id'] = $user->id;
-        $data['book_date'] = Carbon::createFromFormat('d/m/Y', $request->book_date);
+        //$data['book_date'] = Carbon::createFromFormat('d/m/Y', $request->book_date);
         if ($request->hasFile('ticket')) {
             $path = $request->file('ticket')->store('tickets', 'public');
             $data['ticket'] = $path;

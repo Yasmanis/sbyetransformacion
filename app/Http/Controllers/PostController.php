@@ -23,9 +23,12 @@ class PostController extends PlatformController
         $segment = $this->segment();
         if ($user->hasView('view_' . $segment) || $user->hasPerm('full_' . $segment)) {
             $category = $this->getCategory();
+            $module = $this->getModule();
             return Inertia::render('post/index', [
-                'sections' => $this->getSections(),
+                'sections' => $this->getSections($module),
+                'module' => $module,
                 'category' => $category,
+                'subcategories' => $category->subcategories,
                 'files' => $category->files()->wherePrincipal()->get()
             ]);
         }

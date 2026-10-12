@@ -112,23 +112,39 @@ const subtitles = {
 };
 
 const depends = {
-    type: "depends-select",
-    parent: {
-        name: "category_id",
-        label: "categoria",
-        othersProps: {
-            required: true,
-            url_to_options: "/product-categories",
+    type: "dynamicselects",
+    fields: [
+        {
+            name: "category_id",
+            label: "categoria",
+            dependsOn: [],
+            url: "/product-categories",
+            method: "get",
+            options: [],
+            value: null,
+            loading: false,
+            disabled: false,
+            resets: ["subcategory_id"],
+            type: "select",
+            scope: "whereCategory",
+            rules: ["required"],
         },
-    },
-    child: {
-        name: "subcategory_id",
-        label: "subcategoria",
-        othersProps: {
-            required: true,
-            base_url: "/product-subcategories",
+        {
+            name: "subcategory_id",
+            label: "subcategoria",
+            dependsOn: ["category_id"],
+            url: "/product-subcategories",
+            method: "post",
+            options: [],
+            value: null,
+            loading: false,
+            disabled: true,
+            resets: [],
+            type: "select",
+            scope: "whereSubcategory",
+            rules: ["required"],
         },
-    },
+    ],
 };
 
 const course = {
@@ -144,7 +160,13 @@ const course = {
 
 const searchFields = [name];
 
-const filterFields = [publicF, clientsValoration, informationToLanding, course];
+const filterFields = [
+    depends,
+    publicF,
+    clientsValoration,
+    informationToLanding,
+    course,
+];
 
 const columns = [
     {
