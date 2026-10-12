@@ -22,7 +22,6 @@
                 @close="showDialog = false"
             />
             <q-card-section class="col q-pt-none">
-                {{ formFields }}
                 <q-form class="q-gutter-sm q-mt-sm" ref="form" greedy>
                     <div class="form-field">
                         <cascading-selects

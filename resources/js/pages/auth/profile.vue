@@ -8,7 +8,6 @@
                     { 'q-py-sm column items-stretch': $q.screen.xs },
                 ]"
             >
-                <!-- 📱 VISTA MÓVIL (xs): Menú desplegable con q-btn-dropdown -->
                 <div class="xs full-width">
                     <q-btn-dropdown
                         class="full-width q-mt-sm"
@@ -103,7 +102,6 @@
                     </q-btn-dropdown>
                 </div>
 
-                <!-- 💻 VISTA TABLET Y ESCRITORIO (gt-xs): Tus q-tabs originales -->
                 <q-tabs
                     v-model="tab"
                     dense
@@ -251,7 +249,6 @@ const passwordRef = ref(null);
 const newBook = ref(false);
 const notificationFromEmail = ref(null);
 
-// Mapeos para mostrar la etiqueta e icono actual dinámicamente en el botón de móvil
 const tabLabels = {
     info: "informacion general",
     buyer: "datos de compra",
