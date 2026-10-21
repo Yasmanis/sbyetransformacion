@@ -207,14 +207,15 @@
                     />
                     <sort-elements-component
                         tooltips="ordenar ficheros"
-                        :parent-id="props.row.id"
                         has-fixed
+                        model="File"
+                        :filter-columns="{
+                            category_id: props.row.id,
+                        }"
                         :sorted-columns="{
                             fixed: 'desc',
                             order: 'asc',
                         }"
-                        model="File"
-                        parent-column="category_id"
                         v-if="has_edit"
                     />
                     <btn-public-component
@@ -336,14 +337,15 @@
                                         />
                                         <sort-elements-component
                                             tooltips="ordenar ficheros"
-                                            :parent-id="props.row.id"
+                                            model="File"
+                                            has-fixed
+                                            :filter-columns="{
+                                                category_id: props.row.id,
+                                            }"
                                             :sorted-columns="{
                                                 fixed: 'desc',
                                                 order: 'asc',
                                             }"
-                                            model="File"
-                                            has-fixed
-                                            parent-column="category_id"
                                             v-if="has_edit"
                                         />
                                         <btn-public-component

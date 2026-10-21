@@ -17,14 +17,15 @@
                 <template #actions v-if="module">
                     <sort-elements-component
                         tooltips="ordenar secciones"
-                        :parent-id="module.id"
+                        model="SchoolSection"
+                        has-fixed
+                        :filter-columns="{
+                            module_id: module.id,
+                        }"
                         :sorted-columns="{
                             fixed: 'desc',
                             order: 'asc',
                         }"
-                        model="SchoolSection"
-                        has-fixed
-                        parent-column="module_id"
                     />
 
                     <sort-elements-time-component
@@ -80,9 +81,10 @@
                         <q-item-section avatar v-if="has_edit">
                             <sort-elements-component
                                 tooltips="ordenar temas"
-                                parent-column="section_id"
-                                :parent-id="s.id"
                                 model="SchoolTopic"
+                                :filter-columns="{
+                                    section_id: s.id,
+                                }"
                             />
                         </q-item-section>
                         <q-item-section avatar v-if="has_delete">
