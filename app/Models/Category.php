@@ -37,7 +37,7 @@ class Category extends Model
 
     public function files()
     {
-        return $this->hasMany(File::class)->orderBy('order', 'ASC');
+        return $this->hasMany(File::class)->orderBy('fixed', 'DESC')->orderBy('order', 'ASC');
     }
 
     public function subcategories()

@@ -100,8 +100,7 @@ class UtilsController extends Controller
     {
         $modelName = $request->modelName ?? null;
         $sortedColumns = $request->sortedColumns ?? ['id' => 'asc'];
-        $parentId = $request->parentId ?? null;
-        $parentColumn = $request->parentColumn ?? null;
+        $filterColumns = $request->filterColumns ?? [];
         if ($modelName && $sortedColumns) {
             $modelClass = "App\\Models\\" . $modelName;
             if (!class_exists($modelClass)) {
@@ -112,8 +111,8 @@ class UtilsController extends Controller
                 return response()->json(['rows' => [], 'success' => false, 'message' => 'modelo no encontrado']);
             }
             $objects = $model::query();
-            if ($parentColumn && $parentId) {
-                $objects->where($parentColumn, $parentId);
+            foreach ($filterColumns as $key => $value) {
+                $objects->where($key, $value);
             }
             foreach ($sortedColumns as $key => $value) {
                 $objects->orderBy($key, $value);

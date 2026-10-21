@@ -87,6 +87,10 @@ const props = defineProps({
         type: String,
         default: "order",
     },
+    filterColumns: {
+        type: Array,
+        default: [],
+    },
     sortedColumns: {
         type: Object,
         default: {
@@ -94,8 +98,6 @@ const props = defineProps({
         },
     },
     hasFixed: Boolean,
-    parentColumn: String,
-    parentId: String | Number,
     disable: Boolean,
 });
 
@@ -111,9 +113,8 @@ const onBeforeShow = async () => {
     await axios
         .post("/utils/sorted-elements", {
             modelName: props.model,
+            filterColumns: props.filterColumns,
             sortedColumns: props.sortedColumns,
-            parentId: props.parentId,
-            parentColumn: props.parentColumn,
         })
         .then((d) => {
             let response = d.data;

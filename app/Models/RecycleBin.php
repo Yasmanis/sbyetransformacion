@@ -45,18 +45,38 @@ class RecycleBin extends Model
         } else {
             $module = Module::firstWhere('model', $base_model);
         }
-        if ($module) {
-            return [
-                'type' => $module->singular_label,
-                'ico_from_path' => $module->ico_from_path,
-                'icon' => $module->ico
-            ];
-        }
-        return [
+        $attr = $module ? [
+            'type' => $module->singular_label,
+            'ico_from_path' => $module->ico_from_path,
+            'icon' => $module->ico
+        ] : [
             'type' => $base_model ?? 'desconocido',
             'icon' => 'help',
             'ico_from_path' => false,
         ];
+        $t = $attr['type'];
+        $type = $t;
+        $icon = $attr['icon'];
+        switch ($t) {
+            case 'ContactAdmin':
+                $type = 'Ticket';
+                break;
+            case 'Mensaje':
+                $type = 'Mensaje push';
+                break;
+            case 'Module':
+                $type = 'Modulo';
+                break;
+            case 'SchoolSection':
+                $type = 'Secciones modulos';
+                $icon = 'mdi-sitemap-outline';
+                break;
+            default:
+                break;
+        }
+        $attr['type'] = $type;
+        $attr['icon'] = $icon;
+        return $attr;
     }
 
     public function getUserAttribute()

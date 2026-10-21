@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BillingInformationController;
+use App\Http\Controllers\BookVideoController;
 use App\Http\Controllers\BrevoController;
 use App\Http\Controllers\BriefIdeasController;
 use App\Http\Controllers\CampaignController;
@@ -355,7 +356,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/testimony/publicated/{id}', [TestimonyController::class, 'publicated']);
     Route::post('/admin/testimony/store-from-publications', [TestimonyController::class, 'storeFromPublications']);
 
-    Route::resource('/admin/school', LifeController::class);
+    Route::resource('/admin/school', BookVideoController::class);
 
     Route::get('/admin/cursos/{course}', [SchoolController::class, 'index']);
     Route::post('/admin/cursos/{course}', [SchoolController::class, 'store']);

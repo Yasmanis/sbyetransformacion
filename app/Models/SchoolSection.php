@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\Recyclable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class SchoolSection extends Model
 {
+    use Recyclable;
+
     protected $fillable = ['name', 'description', 'module_id'];
 
     protected $with = ['topics', 'topics.resources'];
@@ -28,7 +31,7 @@ class SchoolSection extends Model
 
     public function files()
     {
-        return $this->hasMany(File::class, 'section_id')->orderBy('order');
+        return $this->hasMany(File::class, 'section_id')->orderBy('fixed', 'DESC')->orderBy('order', 'ASC');
     }
 
     protected static function booted()

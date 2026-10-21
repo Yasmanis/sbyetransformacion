@@ -15,7 +15,7 @@
                         tu espacio a tu propio ritmo
                     </p>
                 </q-card-section>
-                <!-- <q-card-section>
+                <q-card-section>
                     <div class="row q-col-gutter-md">
                         <div
                             v-for="(c, index) in cards"
@@ -29,10 +29,11 @@
                                     <q-img
                                         :ratio="1"
                                         fit="fill"
-                                        :src="`${$page.props.public_path}images/enfoque/${c.image}`"
-                                        width="50%"
+                                        :src="`${$page.props.public_path}images/home/${c.image}`"
+                                        class="cursor-pointer"
+                                        @click="openCard(c)"
                                     />
-                                    <p class="text-h6 text-bold no-margin">
+                                    <!-- <p class="text-h6 text-bold no-margin">
                                         {{ c.title }}
                                     </p>
                                     <div
@@ -44,10 +45,10 @@
                                             class="text-uppercase q-mb-none"
                                             style="font-size: 12px"
                                         ></p>
-                                    </div>
+                                    </div> -->
                                 </q-card-section>
 
-                                <q-card-actions align="center" class="q-pa-md">
+                                <!-- <q-card-actions align="center" class="q-pa-md">
                                     <q-btn
                                         rounded
                                         color="primary"
@@ -60,11 +61,11 @@
                                             class="q-ml-md"
                                         />
                                     </q-btn>
-                                </q-card-actions>
+                                </q-card-actions> -->
                             </q-card>
                         </div>
                     </div>
-                </q-card-section> -->
+                </q-card-section>
                 <q-card-section class="text-center text-primary">
                     <p class="no-padding no-margin">
                         crecimiento • consciencia • transformacion
@@ -75,80 +76,86 @@
     </Layout>
 </template>
 <script setup>
+import { Link, router } from "@inertiajs/vue3";
+import { openURL } from "quasar";
 import Layout from "../layouts/AdminLayout.vue";
 
 const cards = [
     {
         title: "videolibro",
         subtitle: "el libro en video",
-        href: "#",
-        image: "enfoque_14.png",
+        href: "/admin/school",
+        image: "tarjeta app-video libro.png",
     },
     {
         title: "reflexiona!",
         subtitle: "comprender para dejar de sufrir",
         href: "/admin/reflexiona",
-        image: "enfoque_14.png",
+        image: "tarjeta app-curso reflexiona.png",
     },
     {
         title: "aprender a liberar",
         subtitle: "dejar salir lo que todavia duele",
         href: "/admin/learning",
-        image: "enfoque_14.png",
+        image: "tarjeta app-curso aprender a liberar.png",
     },
     {
         title: "crear la realidad",
         subtitle: "dirigir conscientemente tu propia vida",
         href: "/admin/reality",
-        image: "enfoque_14.png",
+        image: "tarjeta app-curso crear la realidad.png",
     },
     {
         title: "taller online",
         subtitle: "un espacio para aprender <br/> compartir y transformar",
         href: "/taller_online",
-        image: "enfoque_14.png",
+        image: "tarjeta app-taller online.png",
     },
     {
         title: "mis citas",
         subtitle: "agenta y gestiona tus citas",
         href: "",
-        image: "enfoque_14.png",
+        image: "tarjeta app-mis citas.png",
     },
     {
         title: "mis documentos",
         subtitle: "tus materiales siempre a mano",
         href: "/admin/documents",
-        image: "enfoque_14.png",
+        image: "tarjeta app-mis documentos personales.png",
     },
     {
         title: "en los medios",
         subtitle: "nuestra labor en prensa",
         href: "/admin/en-los-medios",
-        image: "enfoque_14.png",
+        image: "tarjeta app-en los medios.png",
     },
     {
         title: "conferencias",
         subtitle: "acceso a conferencias pasadas <br/> y materiales",
         href: "/admin/conference",
-        image: "enfoque_14.png",
+        image: "tarjeta app-conferencias.png",
     },
     {
         title: "posts",
         subtitle: "inspiracion, reflexiones y recursos <br/> tu red social",
         href: "/admin/post",
-        image: "enfoque_14.png",
+        image: "tarjeta app-posts.png",
     },
     {
         title: "avisos",
         subtitle: "novedades e informacion <br/> importante para ti",
-        href: "#",
-        image: "enfoque_14.png",
+        href: "/admin/messages",
+        image: "tarjeta app-avisos.png",
     },
     {
         title: "newsletters",
         subtitle: "tus materiales siempre a mano",
         href: "/admin/newsletter",
-        image: "enfoque_14.png",
+        image: "tarjeta app-newsletters.png",
     },
 ];
+
+const openCard = (c) => {
+    router.get(c.href);
+};
 </script>

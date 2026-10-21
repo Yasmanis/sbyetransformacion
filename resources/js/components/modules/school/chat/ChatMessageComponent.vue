@@ -4,7 +4,11 @@
         class="chat-scroll-container"
         :style="{ height: containerHeight, overflowY: 'auto' }"
     >
-        <q-list :dark="Dark.isActive" padding>
+        <q-list
+            :dark="Dark.isActive"
+            :padding="showActions"
+            :dense="!showActions"
+        >
             <q-item
                 v-for="(m, idx) in messages"
                 :key="m.id"
@@ -60,7 +64,7 @@
                         </q-item-label>
                     </template>
 
-                    <q-item-label class="q-gutter-sm">
+                    <q-item-label class="q-gutter-sm" v-if="showActions">
                         <q-btn
                             dense
                             flat

@@ -1,6 +1,6 @@
 <template>
     <btn-edit-component
-        tooltips="modificar seccion y temas"
+        tooltips="modificar seccion y publicaciones"
         @click="showDialog = true"
     />
 
@@ -10,21 +10,22 @@
                 :icon="`img:${page.props.public_path}images/icon/${
                     Dark.isActive ? 'white' : 'black'
                 }-edit.png`"
-                title="modificar seccion y temas"
+                title="modificar seccion y publicaciones"
                 closable
                 @close="showDialog = false"
             >
                 <template #actions v-if="module">
                     <sort-elements-component
                         tooltips="ordenar secciones"
-                        :parent-id="module.id"
+                        model="SchoolSection"
+                        has-fixed
+                        :filter-columns="{
+                            module_id: module.id,
+                        }"
                         :sorted-columns="{
                             fixed: 'desc',
                             order: 'asc',
                         }"
-                        model="SchoolSection"
-                        has-fixed
-                        parent-column="module_id"
                     />
 
                     <sort-elements-time-component
@@ -41,6 +42,7 @@
                     />
                 </template>
             </dialog-header-component>
+
             <q-card-section
                 class="col q-pt-none scroll"
                 style="max-height: 60vh"
@@ -66,101 +68,7 @@
                                 "
                             />
                         </q-item-section>
-                        <!-- <q-item-section avatar v-if="has_edit">
-                            <btn-add-component
-                                tooltips="adicionar tema"
-                                @click="
-                                    () => {
-                                        currentSection = s;
-                                        showDialogTopic = true;
-                                    }
-                                "
-                            />
-                        </q-item-section>
                         <q-item-section avatar v-if="has_edit">
-                            <sort-elements-component
-                                tooltips="ordenar temas"
-                                parent-column="section_id"
-                                :parent-id="s.id"
-                                model="SchoolTopic"
-                            />
-                        </q-item-section>
-                        <q-item-section avatar v-if="has_delete">
-                            <btn-delete-component
-                                tooltips="eliminar seccion"
-                                @click="
-                                    () => {
-                                        currentSection = s;
-                                        confirmSection = true;
-                                    }
-                                "
-                            />
-                        </q-item-section> -->
-                    </q-item>
-                    <q-item
-                        v-for="(topic, indexTopic) in page.props.files.filter(
-                            (f) => f.section_id === s.id,
-                        )"
-                        :key="indexTopic"
-                    >
-                        <q-item-section avatar>
-                            <image-reproductor
-                                :src="`${page.props.public_path}storage/${topic.file_type === 'image' ? topic.path : topic.poster}`"
-                                :reproductor="topic.file_type === 'video'"
-                                :ratio="1"
-                                width="100px"
-                            />
-                        </q-item-section>
-                        <q-item-section>
-                            <q-item-label class="resource-title">{{
-                                topic.name
-                            }}</q-item-label>
-                            <q-item-label
-                                class="resource-title"
-                                v-if="topic.file_type === 'video'"
-                            >
-                                <q-icon name="mdi-video"></q-icon>
-                            </q-item-label>
-                        </q-item-section>
-                        <!-- <q-item-section avatar v-if="has_edit">
-                            <btn-edit-component
-                                tooltips="editar"
-                                @click="
-                                    () => {
-                                        currentSection = s;
-                                        currentTopic = topic;
-                                        showDialogTopic = true;
-                                    }
-                                "
-                            />
-                        </q-item-section>
-                        <q-item-section avatar v-if="has_edit">
-                            <btn-delete-component
-                                tooltips="eliminar tema"
-                                @click="
-                                    () => {
-                                        currentTopic = topic;
-                                        confirmTopic = true;
-                                    }
-                                "
-                            />
-                        </q-item-section> -->
-                    </q-item>
-                </q-list>
-                <q-list>
-                    <q-item class="q-pb-none">
-                        <q-item-section>
-                            <q-item-label class="text-bold">
-                                no definida
-                            </q-item-label>
-                        </q-item-section>
-                        <!-- <q-item-section avatar>
-                            <btn-edit-component
-                                tooltips="editar seccion"
-                                :disable="true"
-                            />
-                        </q-item-section> -->
-                        <!-- <q-item-section avatar v-if="has_edit">
                             <btn-add-component
                                 tooltips="adicionar publicacion"
                                 @click="
@@ -174,14 +82,21 @@
                         <q-item-section avatar v-if="has_edit">
                             <sort-elements-component
                                 tooltips="ordenar publicaciones"
-                                parent-column="section_id"
-                                :parent-id="s.id"
-                                model="SchoolTopic"
+                                :filter-columns="{
+                                    section_id: s.id,
+                                    principal: 1,
+                                }"
+                                :sorted-columns="{
+                                    fixed: 'desc',
+                                    order: 'asc',
+                                }"
+                                has-fixed
+                                model="File"
                             />
                         </q-item-section>
                         <q-item-section avatar v-if="has_delete">
                             <btn-delete-component
-                                tooltips="eliminar publicacion"
+                                tooltips="eliminar seccion"
                                 @click="
                                     () => {
                                         currentSection = s;
@@ -189,36 +104,18 @@
                                     }
                                 "
                             />
-                        </q-item-section> -->
+                        </q-item-section>
                     </q-item>
                     <q-item
-                        v-for="(topic, indexTopic) in page.props.files.filter(
-                            (f) => f.section_id === null,
+                        v-for="(topic, indexTopic) in files.filter(
+                            (f) => f.section_id === s.id,
                         )"
                         :key="indexTopic"
                     >
-                        <q-item-section avatar>
-                            <image-reproductor
-                                :src="`${page.props.public_path}storage/${topic.file_type === 'image' ? topic.path : topic.poster}`"
-                                :reproductor="topic.file_type === 'video'"
-                                :ratio="1"
-                                width="100px"
-                            />
-                        </q-item-section>
-                        <q-item-section>
-                            <q-item-label class="resource-title">{{
-                                topic.name
-                            }}</q-item-label>
-                            <q-item-label
-                                class="resource-title"
-                                v-if="topic.file_type === 'video'"
-                            >
-                                <q-icon name="mdi-video"></q-icon>
-                            </q-item-label>
-                        </q-item-section>
-                        <!-- <q-item-section avatar v-if="has_edit">
+                        <cart-article :article="topic" />
+                        <q-item-section avatar v-if="has_edit">
                             <btn-edit-component
-                                tooltips="editar"
+                                tooltips="editar tema"
                                 @click="
                                     () => {
                                         currentSection = s;
@@ -238,7 +135,63 @@
                                     }
                                 "
                             />
-                        </q-item-section> -->
+                        </q-item-section>
+                    </q-item>
+                </q-list>
+                <q-list>
+                    <q-item class="q-pb-none">
+                        <q-item-section>
+                            <q-item-label class="text-bold">
+                                no definida
+                            </q-item-label>
+                        </q-item-section>
+                        <q-item-section avatar v-if="has_edit">
+                            <sort-elements-component
+                                tooltips="ordenar publicaciones"
+                                :filter-columns="{
+                                    section_id: null,
+                                    category_id: $page.props.category.id,
+                                    principal: 1,
+                                }"
+                                :sorted-columns="{
+                                    fixed: 'desc',
+                                    order: 'asc',
+                                }"
+                                has-fixed
+                                model="File"
+                            />
+                        </q-item-section>
+                    </q-item>
+                    <q-item
+                        v-for="(topic, indexTopic) in files.filter(
+                            (f) => f.section_id === null,
+                        )"
+                        :key="indexTopic"
+                    >
+                        <cart-article :article="topic" />
+                        <q-item-section avatar v-if="has_edit">
+                            <btn-edit-component
+                                tooltips="editar publicacion"
+                                @click="
+                                    () => {
+                                        currentSection = s;
+                                        currentTopic = topic;
+                                        showDialogTopic = true;
+                                    }
+                                "
+                            />
+                        </q-item-section>
+                        <q-item-section avatar v-if="has_edit">
+                            <btn-delete-component
+                                tooltips="eliminar publicacion"
+                                @click="
+                                    () => {
+                                        currentTopic = topic;
+                                        confirmTopic = true;
+                                    }
+                                "
+                            />
+                        </q-item-section>
                     </q-item>
                 </q-list>
             </q-card-section>
@@ -265,7 +218,11 @@
                           }-edit.png`
                         : 'mdi-plus'
                 "
-                :title="currentTopic ? 'editar tema' : 'adicionar tema'"
+                :title="
+                    currentTopic
+                        ? 'editar publicacion'
+                        : 'adicionar publicacion'
+                "
                 closable
                 @close="showDialogTopic = false"
             />
@@ -276,7 +233,9 @@
                             :segment="segment"
                             :skip="skip"
                             :label="
-                                index === 0 ? 'tema' : `tema ${getIndex(item)}`
+                                index === 0
+                                    ? 'publicacion'
+                                    : `publicacion ${getIndex(item)}`
                             "
                             :name="`topic-${index}`"
                             :btnDelete="index > 0"
@@ -308,7 +267,7 @@
             <q-separator />
             <q-card-actions align="right">
                 <btn-add-component
-                    tooltips="adicionar nuevo tema"
+                    tooltips="adicionar nueva publicacion"
                     @click="addTopic"
                     v-if="!currentTopic"
                 />
@@ -363,10 +322,10 @@
     />
     <confirm-component
         :show="confirmTopic"
-        :message="`seguro que deseas eliminar el tema <b>${currentTopic?.name}</b>`"
+        :message="`seguro que deseas eliminar el articulo <b>${currentTopic?.name}</b>`"
         @hide="confirmTopic = false"
         @ok="
-            router.delete(`/admin/schooltopics/${currentTopic.id}`, {
+            router.delete(`/admin/files/${currentTopic.id}`, {
                 onSuccess: () => (confirmTopic = false),
             })
         "
@@ -376,7 +335,6 @@
 <script setup>
 import { computed, ref } from "vue";
 import DialogHeaderComponent from "../../base/DialogHeaderComponent.vue";
-import QBtnComponent from "../../base/QBtnComponent.vue";
 import BtnAddComponent from "../../btn/BtnAddComponent.vue";
 import BtnDeleteComponent from "../../btn/BtnDeleteComponent.vue";
 import BtnCancelComponent from "../../btn/BtnCancelComponent.vue";
@@ -387,9 +345,10 @@ import BtnEditComponent from "../../btn/BtnEditComponent.vue";
 import SortElementsComponent from "../../others/SortElementsComponent.vue";
 import SortElementsTimeComponent from "../../others/SortElementsTimeComponent.vue";
 import ConfirmComponent from "../../base/ConfirmComponent.vue";
-import ImageReproductor from "../../others/ImageReproductor.vue";
+
+import CartArticle from "./CartArticle.vue";
 import { usePage, router } from "@inertiajs/vue3";
-import { useQuasar, Loading, Dark } from "quasar";
+import { useQuasar, Loading, Dark, date } from "quasar";
 import {
     error,
     errorValidation,
@@ -439,9 +398,108 @@ const index = ref(0);
 const confirmSection = ref(false);
 const confirmTopic = ref(false);
 
+const fields = [
+    {
+        field: "name",
+        name: "name",
+        label: "nombre",
+        align: "left",
+        sortable: true,
+        type: "text",
+        required: true,
+        othersProps: {
+            required: true,
+        },
+    },
+    {
+        field: "link",
+        name: "link",
+        label: "link",
+        align: "left",
+        sortable: true,
+        type: "text",
+        required: true,
+        othersProps: {
+            required: true,
+        },
+    },
+    {
+        type: "dynamicselects",
+        fields: [
+            {
+                name: "category_id",
+                label: "categoria",
+                dependsOn: [],
+                url: "/categories",
+                method: "get",
+                options: [],
+                value: null,
+                loading: false,
+                disabled: true,
+                resets: ["subcategory_id"],
+                type: "select",
+                scope: "whereCategory",
+                rules: ["required"],
+            },
+            {
+                name: "subcategory_id",
+                label: "subcategoria",
+                dependsOn: ["category_id"],
+                url: "/publications-categories",
+                method: "post",
+                options: [],
+                value: null,
+                loading: false,
+                disabled: true,
+                resets: [],
+                type: "select",
+                scope: "whereSubcategory",
+                rules: ["required"],
+            },
+        ],
+    },
+
+    {
+        field: "public_access",
+        name: "public_access",
+        label: "acceso publico",
+        align: "center",
+        type: "boolean",
+        othersProps: {
+            help: [
+                "marque esta casilla si desea que el/los fichero(s) tengan acceso publico",
+            ],
+        },
+    },
+    {
+        field: "public_date",
+        name: "public_date",
+        label: "publicacion",
+        type: "date",
+        sortable: true,
+        align: "left",
+    },
+    {
+        field: "file",
+        name: "file",
+        label: "archivo",
+        type: "file",
+        sortable: true,
+        align: "left",
+        othersProps: {
+            icon: "mdi-file-outline",
+            change: true,
+            helpCheck:
+                "marque esta casilla si desea reemplazar el fichero existente",
+        },
+    },
+];
+
 const sections = computed(() => {
     return page.props.sections || [];
 });
+
+const files = computed(() => page.props.files);
 
 const module = computed(() => page.props.module);
 
@@ -452,11 +510,11 @@ const newTopic = (reset) => {
         name: null,
         description: null,
         descriptionAdd: false,
-        coverImage: null,
+        poster: null,
         resources: [],
         principalVideo: false,
         save: false,
-        section_id: currentSection.value.id,
+        section_id: currentSection.value?.id || null,
         isOk: false,
         visible: true,
         index: index.value,
@@ -485,32 +543,7 @@ const addTopic = () => {
 const saveTopic = async () => {
     formTopic.value.validate().then(async (success) => {
         if (success) {
-            let show_confirm = itemsTopics.value.find(
-                (t) => !t.isOk && t.visible,
-            );
-            if (show_confirm) {
-                $q.dialog({
-                    title: "confirmacion",
-                    html: true,
-                    message: `<div class="text-center"><i class="fas fa-exclamation-triangle text-red" style="font-size: 62px;"></i></div><div style="text-align: justify;">existen temas que no estan configurados correctamente; recuerde que el tema no se mostrara de forma adecuada si:</div><div><ol><li style="text-align: justify;">no se establece la imagen de portada</li><li style="text-align: justify;">no tiene video principal ni al menos un adjunto</li></ol></div><div style="text-align: justify;">si desea continuar puede corregir los temas en el apartado <img src="${page.props.public_path}images/icon/black-edit.png" style="font-size: 1rem; width: 20px !important;">&nbsp;modificar seccion</div>`,
-                    cancel: {
-                        label: "cancelar",
-                        icon: "mdi-cancel",
-                        "no-caps": true,
-                    },
-                    ok: {
-                        label: "si",
-                        icon: "mdi-check",
-                        color: "red",
-                        "no-caps": true,
-                    },
-                    persistent: true,
-                }).onOk(() => {
-                    saveNewTopic();
-                });
-            } else {
-                saveNewTopic();
-            }
+            saveNewTopic();
         } else {
             errorValidation();
         }
@@ -519,7 +552,7 @@ const saveTopic = async () => {
 
 const saveNewTopic = () => {
     Loading.show({
-        message: "adicionando temas a la seccion",
+        message: "adicionando articulos a la seccion",
     });
     itemsTopics.value.forEach((topic) => {
         if (topic.visible) {
@@ -537,12 +570,12 @@ const onSaveTopic = (info, store) => {
             success(
                 `${
                     totalSave.value > 1
-                        ? "temas adicionados"
-                        : "tema adicionado"
+                        ? "articulos adicionados"
+                        : "articulo adicionado"
                 } correctamente`,
             );
         } else {
-            success("tema modificado correctamente");
+            success("articulo modificado correctamente");
         }
         showDialogTopic.value = false;
         router.reload();
@@ -555,7 +588,7 @@ const onBeforeShowDialogTopic = () => {
     if (currentTopic.value) {
         itemsTopics.value.forEach((t) => {
             t.isOk =
-                currentTopic.value.coverImage !== null &&
+                currentTopic.value.poster !== null &&
                 currentTopic.value.has_principal_video;
         });
     }

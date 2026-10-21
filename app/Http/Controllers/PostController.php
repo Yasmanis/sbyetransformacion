@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Module;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Override;
@@ -29,7 +27,7 @@ class PostController extends PlatformController
                 'module' => $module,
                 'category' => $category,
                 'subcategories' => $category->subcategories,
-                'files' => $category->files()->wherePrincipal()->get()
+                'files' => $category->files()->with('childs')->wherePrincipal()->orderBy('fixed', 'DESC')->orderBy('order', 'ASC')->get()
             ]);
         }
         return $this->deny_access($request);

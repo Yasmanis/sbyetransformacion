@@ -3,25 +3,21 @@
         <q-page padding>
             <div class="text-h4 text-uppercase text-white q-mb-md">posts</div>
             <course-template :view-panel-section="false">
-                <template #add>
+                <template #add="{ props }">
                     <section-add-component
-                        :segment="segment"
+                        :segment="props.segment"
                         title="añadir campañas y posts"
                         topic-title="publicacion"
+                        v-if="props.has_add"
                     />
                 </template>
-                <template #edit>
+                <template #edit="{ props }">
                     <section-edit-component
-                        :segment="segment"
-                        :skip="modules_skip"
-                        :has_add="has_add"
-                        :has_edit="has_edit"
-                        :has_delete="has_delete"
-                        v-if="
-                            has_edit &&
-                            (files.length > 0 ||
-                                $page.props.sections.length > 0)
-                        "
+                        :segment="props.segment"
+                        :has_add="props.has_add"
+                        :has_edit="props.has_edit"
+                        :has_delete="props.has_delete"
+                        v-if="props.has_edit && files.length > 0"
                     />
                 </template>
                 <template #panel-left>
@@ -162,7 +158,6 @@ import {
     watch,
 } from "vue";
 import { usePage } from "@inertiajs/vue3";
-import { getActiveModule } from "../../services/current_module.js";
 
 import GLightbox from "glightbox";
 import "glightbox/dist/css/glightbox.min.css";
@@ -223,21 +218,9 @@ const pagesNumber = computed(() =>
     Math.ceil(articles.value.length / pagination.value.rowsPerPage),
 );
 
-const segment = ref(null);
-
 let lightbox = null;
 
 onMounted(() => {
-    let course = page.props.course ?? null;
-    if (!course) {
-        const pathSegments = window.location.pathname.split("/");
-        course = pathSegments.pop() || pathSegments[pathSegments.length - 2];
-    } else {
-        course = `cursos/${course}`;
-    }
-
-    segment.value = course;
-
     const hash = location.hash;
     if (hash) {
         showChat.value = hash.substring(1);
@@ -249,8 +232,6 @@ onMounted(() => {
     } else {
         currentFile.value = files.value.length > 0 ? files.value[0] : null;
     }
-
-    setDefaults();
 
     nextTick(() => {
         refreshLightbox();
@@ -283,15 +264,6 @@ const refreshLightbox = () => {
             });
         }
     });
-};
-
-const setDefaults = () => {
-    const current_module = getActiveModule();
-    const permissions = current_module.permissions.map((p) => p.name);
-    const modelName = current_module.model.toLowerCase();
-    has_add.value = permissions.includes(`add_${modelName}`);
-    has_edit.value = permissions.includes(`edit_${modelName}`);
-    has_delete.value = permissions.includes(`delete_${modelName}`);
 };
 
 const files = computed(() => {

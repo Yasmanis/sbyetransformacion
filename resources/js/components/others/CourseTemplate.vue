@@ -1,7 +1,7 @@
 <template>
     <div class="row q-col-gutter-md">
         <div class="col-md-4 col-lg-4 col-sm-4 col-xs-12">
-            <div class="column q-gutter-md">
+            <div class="q-gutter-md">
                 <slot name="panel-left">
                     <q-card>
                         <q-card-section class="text-center">
@@ -27,8 +27,6 @@
                             <p class="text-bold">avisos</p>
                         </q-card-section>
                     </q-card>
-
-                    <calculator-component v-if="segment === 'school'" />
                 </slot>
             </div>
         </div>
@@ -40,7 +38,16 @@
                         v-if="has_add || (has_edit && sections.length > 0)"
                     >
                         <q-toolbar class="q-gutter-x-sm">
-                            <slot name="add" v-if="has_add">
+                            <slot
+                                name="add"
+                                :props="{
+                                    segment,
+                                    has_add,
+                                    has_edit,
+                                    has_delete,
+                                }"
+                                v-if="has_add"
+                            >
                                 <section-add-component
                                     :segment="segment"
                                     :skip="modules_skip"
@@ -48,7 +55,12 @@
                             </slot>
                             <slot
                                 name="edit"
-                                v-if="has_edit && sections.length > 0"
+                                :props="{
+                                    segment,
+                                    has_add,
+                                    has_edit,
+                                    has_delete,
+                                }"
                             >
                                 <section-edit-component
                                     :segment="segment"
@@ -56,6 +68,7 @@
                                     :has_add="has_add"
                                     :has_edit="has_edit"
                                     :has_delete="has_delete"
+                                    v-if="has_edit && sections.length > 0"
                                 />
                             </slot>
                         </q-toolbar>
@@ -112,23 +125,14 @@
 </template>
 
 <script setup>
-import Layout from "../../layouts/AdminLayout.vue";
 import SectionAddComponent from "../../components/modules/school/SectionAddComponent.vue";
 import SectionEditComponent from "../../components/modules/school/SectionEditComponent.vue";
 import SectionComponent from "../../components/modules/school/SectionComponent.vue";
 import SectionItemComponent from "../../components/modules/school/SectionItemComponent.vue";
 import NotificationComponent from "../../components/modules/school/notification/NotificationComponent.vue";
 import MgrPrivateMsgComponent from "../../components/modules/privatemsg/MgrPrivateMsgComponent.vue";
-import CalculatorComponent from "../life/CalculatorComponent.vue";
 import { usePage } from "@inertiajs/vue3";
-import {
-    computed,
-    onBeforeMount,
-    onMounted,
-    onUnmounted,
-    ref,
-    watch,
-} from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useQuasar } from "quasar";
 import { getActiveModule } from "../../services/current_module";
 import axios from "axios";
@@ -143,12 +147,6 @@ defineProps({
         type: Boolean,
         default: true,
     },
-});
-
-const $q = useQuasar();
-
-const screen = computed(() => {
-    return $q.screen;
 });
 
 const segment = ref(null);

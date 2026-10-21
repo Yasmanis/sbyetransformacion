@@ -84,6 +84,19 @@ class FileController extends Controller
                 $object = $repository->getById($id);
                 $old_file = $object->path;
             }
+            if ($request->hasFile('poster')) {
+                $properties = $this->getPropertiesFromFile($request->file('poster'));
+                $data['poster'] = $properties['path'];
+                $topic = $repository->getById($id);
+                if (isset($topic->poster)) {
+                    Storage::delete('public/' . $topic->poster);
+                }
+            } else if (!isset($request->poster)) {
+                $topic = $repository->getById($id);
+                if (isset($topic->poster)) {
+                    Storage::delete('public/' . $topic->poster);
+                }
+            }
             $file = $repository->updateById($id, $data);
             if (isset($request->public_date) && $file->public_date != $request->public_date) {
                 $file->public_access = true;

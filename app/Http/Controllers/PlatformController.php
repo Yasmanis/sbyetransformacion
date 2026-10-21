@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\SchoolSection;
 use App\Repositories\FileRepository;
 use App\Traits\FileSave;
 use Illuminate\Http\Request;
@@ -42,5 +43,10 @@ class PlatformController extends LifeController
     public function getCategory()
     {
         return Category::firstWhere('name', $this->segment());
+    }
+
+    public function getSections($module)
+    {
+        return SchoolSection::where('module_id', $module->id)->orderBy('fixed', 'DESC')->orderBy('order', 'asc')->get();
     }
 }

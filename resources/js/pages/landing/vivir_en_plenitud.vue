@@ -574,7 +574,7 @@
                                         </h6>
                                         <div v-html="slide.description"></div>
                                     </q-card-section>
-                                    <q-card-section class="q-px-xl">
+                                    <q-card-section>
                                         <video-player
                                             :src="`${$page.props.public_path}media/${slide.video}`"
                                             :poster="

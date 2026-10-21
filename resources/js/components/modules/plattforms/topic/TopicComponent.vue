@@ -44,7 +44,15 @@
                 >
                     <q-item style="padding: 2px 0px">
                         <q-item-section avatar>
-                            <q-icon name="mdi-video" />
+                            <q-icon
+                                name="mdi-file-video-outline"
+                                v-if="ppalVideo.file_type === 'video'"
+                            />
+                            <q-icon
+                                name="mdi-file-image-outline"
+                                v-else-if="ppalVideo.file_type === 'image'"
+                            />
+                            <q-icon name="mdi-file-document-outline" v-else />
                         </q-item-section>
                         <q-item-section>
                             <q-item-label lines="1">
@@ -55,17 +63,6 @@
                             <btn-edit-component
                                 :tooltips="`cambiar ${principalFileTitle}`"
                                 @click="changePrincipalVideo = true"
-                            />
-                        </q-item-section>
-                        <q-item-section avatar>
-                            <btn-delete-component
-                                :tooltips="`eliminar ${principalFileTitle}`"
-                                @click="
-                                    () => {
-                                        currentAttachment = ppalVideo;
-                                        confirm = true;
-                                    }
-                                "
                             />
                         </q-item-section>
                     </q-item>
@@ -241,7 +238,14 @@ const props = defineProps({
 
 const $q = useQuasar();
 
-const emits = defineEmits(["add", "update", "remove", "change-files", "save"]);
+const emits = defineEmits([
+    "add",
+    "update",
+    "remove",
+    "change-files",
+    "save",
+    "is-ok",
+]);
 
 const upload = ref(false);
 const totalFiles = ref(0);
@@ -259,8 +263,8 @@ const currentAttachment = ref(null);
 onBeforeMount(() => {
     let { id, name, description, poster, section_id, category_id } =
         props.topic;
-    let resources = props.topic.resources;
-    ppalVideo.value = resources.find((r) => r.principal);
+    let resources = props.topic.childs || [];
+    ppalVideo.value = props.topic?.id ? props.topic : null;
     formData.value = {
         id,
         name,
@@ -273,7 +277,7 @@ onBeforeMount(() => {
     };
     addDescription.value =
         props.topic && props.topic.description !== null ? true : false;
-    attachments.value = resources.filter((r) => !r.principal);
+    attachments.value = resources;
 });
 
 watch(
@@ -295,6 +299,15 @@ const screen = computed(() => {
 
 const onRemove = () => {
     emits("remove");
+};
+
+const isOk = () => {
+    emits(
+        "is-ok",
+        (formData.value.principalVideo ||
+            (ppalVideo.value !== null && ppalVideo.value !== undefined)) &&
+            formData.value.poster !== null,
+    );
 };
 
 const store = async () => {
@@ -332,15 +345,17 @@ const store = async () => {
 };
 
 const update = async () => {
-    let { name, description, poster } = formData.value;
+    let { name, description, poster, file } = formData.value;
     const send = useForm({
         name,
         description,
         poster,
+        file,
         _method: "put",
         excludeFlash: totalFiles.value > 0 || formData.value.principalVideo,
     });
-    send.post(`/admin/schooltopics/${formData.value.id}`, {
+
+    send.post(`/admin/files/${formData.value.id}`, {
         onSuccess: () => {
             if (totalFiles.value === 0 && !formData.value.principalVideo) {
                 emits("update");
@@ -373,20 +388,17 @@ const onFinishUploaded = (info, principal) => {
 
 const removeAttachment = () => {
     const send = useForm({});
-    send.delete(
-        `/admin/schooltopics/deleteResource/${currentAttachment.value.id}`,
-        {
-            onSuccess: () => {
-                if (currentAttachment.value.principal) {
-                    ppalVideo.value = null;
-                } else {
-                    attachments.value = attachments.value.filter(
-                        (r) => r.id !== currentAttachment.value.id,
-                    );
-                }
-                confirm.value = false;
-            },
+    send.delete(`/admin/files/${currentAttachment.value.id}`, {
+        onSuccess: () => {
+            if (currentAttachment.value.principal) {
+                ppalVideo.value = null;
+            } else {
+                attachments.value = attachments.value.filter(
+                    (r) => r.id !== currentAttachment.value.id,
+                );
+            }
+            confirm.value = false;
         },
-    );
+    });
 };
 </script>

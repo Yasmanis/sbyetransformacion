@@ -1,5 +1,4 @@
 <template>
-    <!-- :icon="`img:${$page.props.public_path}images/icon/${Dark.isActive ? 'white' : 'black'}-chat-responses.png`" -->
     <q-btn-component
         icon="mdi-reply-outline"
         :disable="message.responses === 0"
@@ -33,12 +32,13 @@
                         class="col q-pa-md rounded-borders"
                         :class="Dark.isActive ? 'bg-primary' : 'bg-grey-4'"
                     >
-                        <chat-text-truncate :text="message.message" />
+                        <text-truncate :text="message.message" />
                     </div>
                 </div>
                 <div>
                     <chat-message-component
                         :messages="messages"
+                        :show-actions="false"
                         full-height
                         @reload="onShow"
                     />
@@ -60,10 +60,9 @@
 
 <script setup>
 import DialogHeaderComponent from "../../../base/DialogHeaderComponent.vue";
-import QTooltipComponent from "../../../base/QTooltipComponent.vue";
 import ChatMessageComponent from "./ChatMessageComponent.vue";
 import QBtnComponent from "../../../base/QBtnComponent.vue";
-import ChatTextTruncate from "./ChatTextTruncate.vue";
+import TextTruncate from "../../../others/TextTruncate.vue";
 import BtnCancelComponent from "../../../btn/BtnCancelComponent.vue";
 import { ref, watch } from "vue";
 import axios from "axios";

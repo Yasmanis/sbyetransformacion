@@ -188,7 +188,7 @@
                         />
                     </template>
                     <template v-else-if="props.col.name === 'type'">
-                        {{ getType(props.row.model.type) }}
+                        {{ props.row.model.type }}
                     </template>
                     <template v-else-if="props.col.type === 'boolean'">
                         <q-chip
@@ -450,13 +450,6 @@ onMounted(() => {
         .filter((c) => c.type !== "hidden" && !c.required)
         .map((c) => c.field);
 });
-
-const getType = (type) => {
-    if (type === "ContactAdmin") return "Ticket";
-    if (type === "Mensaje") return "Mensaje push";
-    if (type === "Module") return "Modulo";
-    return type;
-};
 
 const onRefreshData = (prop, data) => {
     pagination.value[prop] =
