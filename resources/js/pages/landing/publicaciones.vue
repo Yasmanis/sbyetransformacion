@@ -18,7 +18,14 @@
             :style="{ 'padding-top': screen.xs || screen.sm ? '40px' : '' }"
         >
             <div class="col-12 q-pb-md">
-                <h4 class="q-mb-sm">{{ currentCategory.name }}</h4>
+                <h4 class="q-mb-sm">
+                    {{ currentCategory.name }}
+                    {{
+                        $page.props.current_subcategory
+                            ? ` > ${page.props.current_subcategory.name}`
+                            : null
+                    }}
+                </h4>
                 <h6
                     class="text-lowercase q-mb-md"
                     v-if="currentCategory.subtitle"
@@ -283,9 +290,6 @@ const recent_files = computed(() => {
 });
 
 const getDate = (dd) => {
-    let d = date.extractDate(dd, "YYYY/MM/DD");
-    console.log(d, dd);
-
     return date.formatDate(dd, "MMMM D, YYYY");
 };
 </script>
@@ -293,6 +297,9 @@ const getDate = (dd) => {
 <style scope>
 .border-dashed-bottom-1 {
     border-bottom: 1px dashed #70707057;
+}
+.border-dashed-top-1 {
+    border-top: 1px dashed #70707057;
 }
 
 .list-unstyled {

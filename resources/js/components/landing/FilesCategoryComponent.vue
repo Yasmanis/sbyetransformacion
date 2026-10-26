@@ -196,7 +196,7 @@
 
     <div class="row text-center q-mb-md" v-if="category.files.length === 0">
         <h3>
-            lo sentimos, aun no se han hecho publicaciones en esta categoria
+            lo sentimos, aun no se han hecho publicaciones en esta seleccion
         </h3>
     </div>
 </template>

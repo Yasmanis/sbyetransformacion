@@ -21,6 +21,7 @@
                 @click="emits('close')"
                 v-if="closable"
             />
+            <span v-else>&nbsp;</span>
         </div>
     </q-toolbar>
     <q-separator v-if="separator" />

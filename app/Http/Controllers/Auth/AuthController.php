@@ -308,7 +308,7 @@ class AuthController extends Controller
             : back()->withErrors([$field => [__($status)]]);
     }
 
-    public function closeAccount(Request $request)
+    public function closeAccount()
     {
         $user = auth()->user();
         if ($user->username === 'sa') {
@@ -341,5 +341,14 @@ class AuthController extends Controller
                                 <p class="text-center">gracias por haber compartido este tiempo con nosotros ♥️</p>'
             ]
         ]);
+    }
+
+    public function readEditorialNotification()
+    {
+        $user = auth()->user();
+        $user->editorial_notification = true;
+        $user->save();
+
+        return back()->with(['success' => 'registro de aviso editorial correctamente']);
     }
 }

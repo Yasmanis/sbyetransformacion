@@ -44,32 +44,40 @@ class SchoolChat extends Model
         return auth()->user()->id == $this->from?->id;
     }
 
-    public function getTopicStrAttribute()
-    {
-        return $this->topicable->name;
-    }
-
     public function getSectionStrAttribute()
     {
-        $catName = null;
-        if ($this->topicable instanceof File) {
-            $catName = $this->topicable->category_str;
-        } else {
-            $catName = $this->topicable->section()->first()->name;
+        if (!$this->topicable) {
+            return null;
         }
-        return $catName;
-    }
 
-    public function getSectionIdAttribute()
-    {
-        return $this->topicable->section_id;
+        if ($this->topicable instanceof File) {
+            return $this->topicable->category_str;
+        }
+
+        $section = $this->topicable->section()->first();
+        return $section ? $section->name : null;
     }
 
     public function getSegmentAttribute()
     {
+        if (!$this->topicable) {
+            return null;
+        }
+
         $s = $this->topicable->section()->first();
         return $s ? Str::lower($s->module->model) : null;
     }
+
+    public function getSectionIdAttribute()
+    {
+        return $this->topicable?->section_id;
+    }
+
+    public function getTopicStrAttribute()
+    {
+        return $this->topicable?->name;
+    }
+
 
     public function getModuleStrAttribute()
     {
@@ -165,7 +173,7 @@ class SchoolChat extends Model
                 'email' => $user->email,
                 'name' => $user->full_name,
                 'course' => $catName,
-                'url' => sprintf('%s/admin/school/#chat-%s-%s-%s', env('APP_URL'), $this->id, $this->topicable->id, $this->topicable->section_id)
+                'url' => sprintf('%s/admin/school/#chat-%s-%s-%s', env('APP_URL'), $this->replyTo ? $this->replyTo->id : $this->id, $this->topicable->id, $this->topicable->section_id)
             ]
         ));
 

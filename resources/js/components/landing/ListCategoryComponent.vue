@@ -25,45 +25,94 @@
                     </q-list>
                 </q-menu>
             </q-btn>
-            <q-toolbar-title>categorias > {{ current?.name }}</q-toolbar-title>
+            <q-toolbar-title
+                >categorias > {{ current?.name }}
+                {{
+                    $page.props.current_subcategory
+                        ? ` > ${page.props.current_subcategory.name}`
+                        : null
+                }}</q-toolbar-title
+            >
         </q-toolbar>
     </q-page-sticky>
     <q-card class="my-card rounded shadow-4 full-width" v-else>
         <q-card-section class="q-pb-none">
             <p class="q-my-sm text-uppercase">categorias</p>
             <div style="border-bottom: 2px solid #407492"></div>
-            <ul class="q-pa-none q-my-none list-unstyled">
-                <li
-                    v-for="(c, index) in categories"
-                    :key="`category-${index}`"
-                    class="q-py-md"
-                    :class="
-                        index === categories.length - 1
-                            ? 'q-pb-none'
-                            : 'border-dashed-bottom-1'
-                    "
-                >
-                    <Link
-                        :href="`/publicaciones/${c.id}`"
-                        class="text-primary"
-                        :style="{
-                            'font-weight': current?.id === c.id ? 'bold' : '',
+            <q-tree
+                id="menu-tree"
+                :nodes="nodes"
+                node-key="key"
+                no-connectors
+                accordion
+                dense
+                v-model:expanded="expanded"
+            >
+                <template v-slot:default-header="prop">
+                    <q-item
+                        clickable
+                        class="text-primary text-lowercase border-dashed-bottom-1"
+                        :class="{
+                            'text-bold': selected?.includes(prop.node.key),
                         }"
+                        style="width: 100%"
                     >
-                        <i
-                            class="fa fa-check font-company q-mr-sm"
-                            aria-hidden="true"
-                        ></i
-                        >{{ c.name }}
-                    </Link>
-                </li>
-            </ul>
+                        <q-item-section
+                            avatar
+                            :style="{
+                                'margin-left': `${prop.node.category_id ? 20 : 0}px`,
+                            }"
+                        >
+                            <q-icon
+                                name="check
+                            "
+                            />
+                        </q-item-section>
+                        <q-item-section
+                            class="cursor-pointer"
+                            @click.stop="onClickCategory(prop.node)"
+                        >
+                            <q-item-label>
+                                {{ prop.node.label }}
+                                <q-tooltip-component
+                                    title="click para ver contenido completo"
+                                    v-if="prop.node.children?.length > 0"
+                                />
+                            </q-item-label>
+                        </q-item-section>
+                        <q-item-section
+                            avatar
+                            v-if="prop.node.children?.length > 0"
+                        >
+                            <q-icon
+                                :name="
+                                    expanded.includes(prop.node.key)
+                                        ? 'expand_less'
+                                        : 'expand_more'
+                                "
+                            />
+                            <q-tooltip-component
+                                :title="`click para ${
+                                    expanded.includes(prop.node.key)
+                                        ? 'ocultar'
+                                        : 'ver'
+                                } subcategorias`"
+                                v-if="prop.node.children?.length > 0"
+                            />
+                        </q-item-section>
+                    </q-item>
+                </template>
+            </q-tree>
         </q-card-section>
     </q-card>
 </template>
 
 <script setup>
-import { Link, router } from "@inertiajs/vue3";
+import { router, usePage } from "@inertiajs/vue3";
+import { computed, onBeforeMount, onMounted, ref } from "vue";
+
+import QTooltipComponent from "../base/QTooltipComponent.vue";
+
 defineOptions({
     name: "ListCategoryComponent",
 });
@@ -82,4 +131,58 @@ const props = defineProps({
         required: true,
     },
 });
+
+const expanded = ref([]);
+const selected = ref([]);
+
+const page = usePage();
+
+const nodes = computed(() => {
+    return props.categories.map((c, index) => {
+        let n = {
+            key: `categ-${c.id}`,
+            id: c.id,
+            label: c.name,
+            level: 1,
+            children: c.subcategories.map((s) => {
+                return {
+                    key: `subcateg-${s.id}`,
+                    id: s.id,
+                    label: s.name,
+                    level: 2,
+                    category_id: c.id,
+                };
+            }),
+        };
+        return n;
+    });
+});
+
+onBeforeMount(() => {
+    if (props.current) {
+        selected.value.push(`categ-${props.current.id}`);
+    }
+    if (page.props.current_subcategory) {
+        selected.value.push(`subcateg-${page.props.current_subcategory.id}`);
+        expanded.value.push(`categ-${props.current.id}`);
+    }
+});
+
+const onClickCategory = (categ) => {
+    if (categ["category_id"]) {
+        router.get(`/publicaciones/${categ.category_id}/${categ.id}`);
+    } else {
+        router.get(`/publicaciones/${categ.id}`);
+    }
+};
 </script>
+<style>
+#menu-tree .q-icon.q-tree__arrow {
+    display: none;
+}
+#menu-tree .q-tree__node.relative-position.q-tree__node--child,
+#menu-tree .q-tree__node-header,
+#menu-tree .q-tree__children {
+    padding-left: 0px !important;
+}
+</style>

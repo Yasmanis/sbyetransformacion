@@ -40,9 +40,7 @@
                                 :disable="index === 0"
                                 @click="emits('change-section', index - 1)"
                             />
-                            seccion {{ totalSections > 0 ? index + 1 : 0 }}/{{
-                                totalSections
-                            }}
+                            <span>{{ section?.name }}</span>
                             <btn-left-right-component
                                 :leftDirection="false"
                                 :disable="
@@ -173,6 +171,7 @@
             ></span>
         </div>
     </div>
+
     <chat-component
         :segment="segment"
         :topic="props.topic"

@@ -104,6 +104,14 @@ const active = {
     },
 };
 
+const readEditorialNotification = {
+    field: "editorial_notification",
+    name: "editorial_notification",
+    label: "aviso editorial",
+    align: "center",
+    type: "boolean",
+};
+
 const roles = {
     field: "roles",
     name: "roles",
@@ -149,6 +157,7 @@ const filterFields = [
         type: "boolean",
         value: null,
     },
+    readEditorialNotification,
     {
         name: "role",
         label: "rol",
@@ -320,6 +329,7 @@ const columns = [
     name,
     surname,
     active,
+    readEditorialNotification,
     {
         name: "roles_str",
         label: "roles",

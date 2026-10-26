@@ -15,7 +15,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SelectsController;
 use App\Http\Controllers\ContactsController;
-use App\Http\Controllers\LifeController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ConfigurationController;
@@ -62,6 +61,7 @@ use App\Models\Configuration;
 use App\Models\File;
 use App\Models\Landing;
 use App\Models\ProductSubcategory;
+use App\Models\PublicationSubcategory;
 use App\Models\Testimony;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -143,16 +143,19 @@ Route::get('/landings/{url}', function ($url) {
     ]);
 });
 
-Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
-    $categories = Category::where('public_access', true)->orderBy('order', 'ASC')->get();
+Route::get('/publicaciones/{categ?}/{subcateg?}', function ($categ = null, $subcateg = null) {
+    $categories = Category::with([
+        'subcategories' => fn($query) => $query->orderBy('order', 'asc')
+    ])->where('public_access', true)->orderBy('order', 'ASC')->get();
     $recent_files = File::publicAccess()->wherePrincipal()->orderBy('public_date', 'DESC')->take(6)->get();
     $category = null;
+    $subcategory = null;
     $testimonies = [];
     if (count($categories) > 0) {
         $category = $categories[0];
     }
-    if (isset($id)) {
-        $c = Category::find($id);
+    if (isset($categ)) {
+        $c = Category::find($categ);
         if ($c && $c->public_access) {
             $category = $c;
         } else {
@@ -160,14 +163,20 @@ Route::get('/publicaciones/{id?}', function (Request $request, $id = null) {
         }
     }
     if (isset($category)) {
-        if ($category->sort_files) {
-            $files = File::where('category_id', $category->id)->publicAccess()->wherePrincipal()->orderBy('id', $category->sort_files)->get();
-        } else {
-            $files = File::where('category_id', $category->id)->publicAccess()->wherePrincipal()->orderBy('fixed', 'DESC')->orderBy('order', 'ASC')->get();
+        $queryFiles = File::query();
+        $queryFiles->where('category_id', $categ)->publicAccess()->wherePrincipal();
+        if (isset($subcateg)) {
+            $subcategory = PublicationSubcategory::find($subcateg);
+            $queryFiles->where('subcategory_id', $subcateg);
         }
-        $category->files = $files;
+        if ($category->sort_files) {
+            $queryFiles->orderBy('id', $category->sort_files);
+        } else {
+            $queryFiles->orderBy('fixed', 'DESC')->orderBy('order', 'ASC');
+        }
+        $category->files = $queryFiles->get();
     }
-    return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'recent_files' => $recent_files, 'testimonies' => $testimonies])->with('error', 'asasdasd');
+    return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'current_subcategory' => $subcategory, 'recent_files' => $recent_files, 'testimonies' => $testimonies])->with('error', 'asasdasd');
 })->name('publicaciones');
 
 Route::get('/shared_data', function () {
@@ -281,6 +290,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/auth/read-unread-notification/{id}', [AuthController::class, 'readUnreadNotification']);
     Route::post('/auth/mark-notifications-as', [AuthController::class, 'markNotificationsAs']);
     Route::post('/auth/close-account', [AuthController::class, 'closeAccount']);
+    Route::post('/auth/read-editorial-notification', [AuthController::class, 'readEditorialNotification']);
+
     Route::get('/admin', function () {
         return Inertia('home');
     });
@@ -298,6 +309,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/admin/users/highlighted', [UserController::class, 'highlighted']);
     Route::post('/admin/users/change-manager', [UserController::class, 'changeManager']);
     Route::post('/admin/users/change-facilitator', [UserController::class, 'changeFacilitator']);
+
     Route::resource('/admin/rols', RoleController::class);
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/chats', ChatController::class)->only(['index', 'update', 'destroy']);

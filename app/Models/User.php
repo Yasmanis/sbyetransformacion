@@ -72,6 +72,7 @@ class User extends Authenticatable implements CanResetPassword
         'configuration' => 'json',
         'book_volumes' => 'json',
         'subscripted' => 'boolean',
+        'editorial_notification' => 'boolean'
     ];
 
     protected $appends = ['permissions', 'roles', 'roles_str', 'full_name', 'notifications', 'has_testimony', 'antique', 'note', 'facilitator', 'manager', 'row_config', 'admin'];
@@ -162,8 +163,9 @@ class User extends Authenticatable implements CanResetPassword
                 $responses = ContactAdmin::where('root_parent_id', $data['model_id'])->get();
             } else if ($data['code'] === 'chat_writter') {
                 $msg = SchoolChat::find($data['model_id']);
-                if ($msg) {
-                    $chat = sprintf('%s#chat-%s-%s-%s', $msg->segment, $msg->id, $msg->topic_id, $msg->section_id);
+                if ($msg && $msg->topicable) {
+                    $origin = $msg->replyTo ? $msg->replyTo : $msg;
+                    $chat = sprintf('%s#chat-%s-%s-%s', $msg->segment, $origin->id, $msg->topicable->id, $msg->topicable->section_id);
                 }
             }
             $n['attachments'] = $attachments;

@@ -12,7 +12,7 @@
                 no-caps
                 color="primary"
                 size="sm"
-                :label="isExpanded ? 'ver menos' : 'ver mas'"
+                :label="isExpanded ? textLess : textMore"
                 @click="isExpanded = !isExpanded"
             />
         </div>
@@ -24,6 +24,14 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 
 const props = defineProps({
     text: { type: String, required: true },
+    textMore: {
+        type: String,
+        default: "ver mas",
+    },
+    textLess: {
+        type: String,
+        default: "ver menos",
+    },
 });
 
 const textRef = ref(null);

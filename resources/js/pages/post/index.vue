@@ -32,7 +32,7 @@
                             <q-list>
                                 <q-item>
                                     <q-item-section>
-                                        <q-item-label>
+                                        <q-item-label class="text-bold">
                                             subcategorias
                                         </q-item-label>
                                     </q-item-section>
@@ -46,6 +46,8 @@
                                         :key="`category-${c.id}`"
                                         clickable
                                         dense
+                                        :active="currentSucategory?.id === c.id"
+                                        @click="onClickSubcategory(c)"
                                     >
                                         <q-item-section>
                                             <q-item-label>
@@ -63,63 +65,67 @@
                     </q-card>
                 </template>
                 <template #panel-bottom>
-                    <q-table
-                        grid
-                        :rows="articles"
-                        row-key="id"
-                        v-model:pagination="pagination"
-                        hide-pagination
-                        @update:pagination="refreshLightbox"
-                        v-if="articles.length > 0"
-                    >
-                        <template #item="props">
-                            <div
-                                class="q-pa-xs col-xs-12 col-sm-3 col-md-3 col-lg-2 col-xl-2 grid-style-transition"
-                            >
-                                <image-reproductor
-                                    glightbox
-                                    :src="props.row.image"
-                                    :reproductor="
-                                        props.row.file_type === 'video'
-                                    "
-                                    @click="
-                                        () => {
-                                            currentFile = props.row;
-                                            startVideo(props.row);
-                                        }
-                                    "
+                    <template v-if="articles.length > 0">
+                        <q-table
+                            grid
+                            :rows="articles"
+                            row-key="id"
+                            v-model:pagination="pagination"
+                            hide-pagination
+                            @update:pagination="refreshLightbox"
+                        >
+                            <template #item="props">
+                                <div
+                                    class="q-pa-xs col-xs-12 col-sm-3 col-md-3 col-lg-2 col-xl-2 grid-style-transition"
+                                >
+                                    <image-reproductor
+                                        glightbox
+                                        :src="props.row.image"
+                                        :reproductor="
+                                            props.row.file_type === 'video'
+                                        "
+                                        @click="
+                                            () => {
+                                                currentFile = props.row;
+                                                startVideo(props.row);
+                                            }
+                                        "
+                                    />
+                                </div>
+                            </template>
+                        </q-table>
+                        <q-item>
+                            <q-item-section />
+                            <q-item-section avatar>
+                                <q-select
+                                    v-model="pagination.rowsPerPage"
+                                    dense
+                                    options-dense
+                                    emit-value
+                                    map-options
+                                    filled
+                                    standout
+                                    square
+                                    bg-color="white"
+                                    :options="options"
                                 />
-                            </div>
-                        </template>
-                    </q-table>
-                    <q-item>
-                        <q-item-section />
-                        <q-item-section avatar>
-                            <q-select
-                                v-model="pagination.rowsPerPage"
-                                dense
-                                options-dense
-                                emit-value
-                                map-options
-                                filled
-                                standout
-                                square
-                                bg-color="white"
-                                :options="options"
-                            />
-                        </q-item-section>
-                        <q-item-section avatar>
-                            <q-pagination
-                                v-model="pagination.page"
-                                text-color="white"
-                                active-color="dark"
-                                :max="pagesNumber"
-                                :max-pages="4"
-                                :boundary-numbers="false"
-                                direction-links
-                            />
-                        </q-item-section>
-                    </q-item>
+                            </q-item-section>
+                            <q-item-section avatar>
+                                <q-pagination
+                                    v-model="pagination.page"
+                                    text-color="white"
+                                    active-color="dark"
+                                    :max="pagesNumber"
+                                    :max-pages="4"
+                                    :boundary-numbers="false"
+                                    direction-links
+                                />
+                            </q-item-section>
+                        </q-item>
+                    </template>
+                    <p class="text-white text-center text-h6" v-else>
+                        aun no existen publicaciones de esta subcategoria
+                    </p>
                 </template>
                 <template #current-info>
                     <section-component
@@ -172,9 +178,7 @@ const currentFile = ref(null);
 const showVideo = ref(false);
 const currentVideo = ref(null);
 const showChat = ref(null);
-const has_add = ref(false);
-const has_edit = ref(false);
-const has_delete = ref(false);
+const currentSucategory = ref(null);
 
 const pagination = ref({
     sortBy: "desc",
@@ -266,20 +270,26 @@ const refreshLightbox = () => {
     });
 };
 
-const files = computed(() => {
-    return page.props?.files || [];
-});
+const files = computed(() => page.props?.files || []);
 
-const articles = computed(() => {
-    return files.value
+const allArticles = computed(() =>
+    files.value
         .filter((f) => !f.is_after)
         .map((f) => {
             return getFormatArticle(f);
-        });
-});
+        }),
+);
+
+const articles = computed(() =>
+    currentSucategory.value
+        ? allArticles.value.filter(
+              (l) => l.subcategory_id === currentSucategory.value.id,
+          )
+        : allArticles.value,
+);
 
 const fixeds = computed(() => {
-    return articles.value.filter((f) => f.fixed);
+    return allArticles.value.filter((f) => f.fixed);
 });
 
 const getFormatArticle = (f) => {
@@ -299,6 +309,14 @@ const startVideo = (file) => {
     if (file.file_type === "video") {
         currentVideo.value = file;
         showVideo.value = true;
+    }
+};
+
+const onClickSubcategory = (s) => {
+    if (s.id === currentSucategory.value?.id) {
+        currentSucategory.value = null;
+    } else {
+        currentSucategory.value = s;
     }
 };
 </script>

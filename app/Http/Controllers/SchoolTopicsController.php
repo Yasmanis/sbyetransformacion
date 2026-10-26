@@ -202,6 +202,7 @@ class SchoolTopicsController extends Controller
         $msg->save();
         $msg->users()->attach($users);
         $msg->sendNotifications(false);
+
         return $msg;
     }
 
