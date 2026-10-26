@@ -54,8 +54,18 @@
                 :closable="false"
             />
 
-            <q-card-section class="justify">
-                <p>{{ editorialNotification }}</p>
+            <q-card-section>
+                <p
+                    class="text-justify"
+                    style="
+                        word-break: normal;
+                        overflow-wrap: normal;
+                        hyphens: none;
+                        text-align-last: left;
+                    "
+                >
+                    {{ editorialNotification }}
+                </p>
                 <checkbox-field
                     name="read"
                     v-model="read"
