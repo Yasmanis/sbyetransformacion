@@ -120,10 +120,6 @@ Route::get('/consulta_individual', function () {
     return Inertia('landing/consulta_individual');
 });
 
-Route::get('/taller_online', function () {
-    return Inertia('landing/taller_online');
-});
-
 Route::get('/maria', function () {
     return Inertia('landing/maria');
 });
@@ -163,8 +159,7 @@ Route::get('/publicaciones/{categ?}/{subcateg?}', function ($categ = null, $subc
         }
     }
     if (isset($category)) {
-        $queryFiles = File::query();
-        $queryFiles->where('category_id', $categ)->publicAccess()->wherePrincipal();
+        $queryFiles = File::query()->where('category_id', $category->id)->publicAccess()->wherePrincipal();
         if (isset($subcateg)) {
             $subcategory = PublicationSubcategory::find($subcateg);
             $queryFiles->where('subcategory_id', $subcateg);
@@ -459,6 +454,7 @@ Route::post('/send-question', [StoreController::class, 'sendQuestion']);
 Route::get('/categories', [SelectsController::class, 'categories']);
 
 Route::post('/publications-categories', [SelectsController::class, 'publicationsSubcategories']);
+Route::get('/publications-categories/{id}', [SelectsController::class, 'publicationSubcategories']);
 
 Route::get('/countries', [SelectsController::class, 'countries']);
 Route::post('/provinces', [SelectsController::class, 'provinces']);

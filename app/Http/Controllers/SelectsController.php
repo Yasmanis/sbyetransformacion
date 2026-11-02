@@ -128,6 +128,13 @@ class SelectsController extends Controller
         ]);
     }
 
+    public function publicationSubcategories($categoryId)
+    {
+        return response()->json([
+            'options' => PublicationSubcategory::select('id as value', 'name as label')->where('category_id', $categoryId)->orderBy('name', 'ASC')->withCasts(['value' => 'integer'])->get()
+        ]);
+    }
+
     public function productCategories()
     {
         return response()->json([

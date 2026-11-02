@@ -14,6 +14,7 @@
                 @close="showDialog = false"
             />
             <q-card-section class="scroll" style="max-height: 50vh">
+                <slot name="top"></slot>
                 <draggable
                     v-model="list"
                     group="people"
@@ -54,12 +55,11 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import BtnSortComponent from "../btn/BtnSortComponent.vue";
 import DialogHeaderComponent from "../base/DialogHeaderComponent.vue";
 import BtnSaveComponent from "../btn/BtnSaveComponent.vue";
 import BtnCancelComponent from "../btn/BtnCancelComponent.vue";
-import BtnPinComponent from "../btn/BtnPinComponent.vue";
 import FixedComponent from "./FixedComponent.vue";
 import draggable from "vuedraggable";
 import { useForm } from "@inertiajs/vue3";
@@ -87,10 +87,7 @@ const props = defineProps({
         type: String,
         default: "order",
     },
-    filterColumns: {
-        type: Array,
-        default: [],
-    },
+    filterColumns: Object,
     sortedColumns: {
         type: Object,
         default: {
@@ -127,6 +124,18 @@ const onBeforeShow = async () => {
             loading.value = false;
         });
 };
+
+watch(
+    () => props.filterColumns,
+    () => {
+        if (showDialog.value) {
+            onBeforeShow();
+        }
+    },
+    {
+        deep: true,
+    },
+);
 
 const save = () => {
     let sorteds = {},

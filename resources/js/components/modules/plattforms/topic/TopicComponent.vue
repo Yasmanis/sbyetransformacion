@@ -9,6 +9,7 @@
         }"
         :modelValue="formData.name"
         :btnDelete="btnDelete"
+        :publication-type="publicationType"
         @update="
             (name, val) => {
                 formData.name = val;
@@ -16,7 +17,20 @@
         "
         @remove="onRemove"
     />
-    <div class="row q-mt-md q-ml-none">
+    <select-field
+        name="subcategory_id"
+        :model-value="formData.subcategory_id"
+        label="subcategoria"
+        :othersProps="{
+            url_to_options: `/publications-categories/${$page.props.category.id}`,
+        }"
+        @update="
+            (name, val) => {
+                formData[name] = val;
+            }
+        "
+    />
+    <div class="row q-my-md q-ml-none">
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding: 0px">
             <image-field
                 name="poster"
@@ -160,7 +174,6 @@
                     :errorWhenEmpty="false"
                     :changeFromTopic="addNewAttachments"
                     url="/admin/plattforms/add-file-to-publication"
-                    @uploaded="onUploaded"
                     @change-files="
                         (files) => {
                             totalFiles = files;
@@ -172,6 +185,13 @@
             </div>
         </div>
     </div>
+
+    <checkbox-field
+        name="fixed"
+        label="fijar/destacar"
+        :model-value="formData.fixed"
+        @update="(name, val) => (formData[name] = val)"
+    />
 
     <confirm-component
         :show="confirm"
@@ -196,6 +216,8 @@ import BtnDeleteComponent from "../../../btn/BtnDeleteComponent.vue";
 import BtnEditComponent from "../../../btn/BtnEditComponent.vue";
 import BtnAddComponent from "../../../btn/BtnAddComponent.vue";
 import ConfirmComponent from "../../../base/ConfirmComponent.vue";
+import SelectField from "../../../form/input/SelectField.vue";
+import CheckboxField from "../../../form/input/CheckboxField.vue";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import { useForm } from "@inertiajs/vue3";
@@ -234,6 +256,10 @@ const props = defineProps({
         type: String,
         default: "publicacion principal",
     },
+    publicationType: {
+        type: String,
+        default: "publicacion",
+    },
 });
 
 const $q = useQuasar();
@@ -261,8 +287,16 @@ const confirm = ref(false);
 const currentAttachment = ref(null);
 
 onBeforeMount(() => {
-    let { id, name, description, poster, section_id, category_id } =
-        props.topic;
+    let {
+        id,
+        name,
+        description,
+        poster,
+        section_id,
+        category_id,
+        subcategory_id,
+        fixed,
+    } = props.topic;
     let resources = props.topic.childs || [];
     ppalVideo.value = props.topic?.id ? props.topic : null;
     formData.value = {
@@ -272,9 +306,12 @@ onBeforeMount(() => {
         poster,
         section_id,
         category_id,
+        subcategory_id,
         principalVideo: false,
         principal: 1,
+        fixed,
     };
+
     addDescription.value =
         props.topic && props.topic.description !== null ? true : false;
     attachments.value = resources;
@@ -299,15 +336,6 @@ const screen = computed(() => {
 
 const onRemove = () => {
     emits("remove");
-};
-
-const isOk = () => {
-    emits(
-        "is-ok",
-        (formData.value.principalVideo ||
-            (ppalVideo.value !== null && ppalVideo.value !== undefined)) &&
-            formData.value.poster !== null,
-    );
 };
 
 const store = async () => {
@@ -345,12 +373,15 @@ const store = async () => {
 };
 
 const update = async () => {
-    let { name, description, poster, file } = formData.value;
+    let { name, description, poster, file, subcategory_id, fixed } =
+        formData.value;
     const send = useForm({
         name,
         description,
         poster,
         file,
+        subcategory_id,
+        fixed,
         _method: "put",
         excludeFlash: totalFiles.value > 0 || formData.value.principalVideo,
     });
@@ -368,8 +399,6 @@ const update = async () => {
         },
     });
 };
-
-const onUploaded = () => {};
 
 const onFinishUploaded = (info, principal) => {
     if (principal) {

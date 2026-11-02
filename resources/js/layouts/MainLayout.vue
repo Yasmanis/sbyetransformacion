@@ -290,7 +290,7 @@ onMounted(() => {
     setTimeout(() => {
         const initialWidth = document.querySelector(".justify-end").offsetWidth;
         calculateVisible({ width: initialWidth });
-    }, 100);    
+    }, 100);
 });
 
 const authenticated = computed(() => {
@@ -319,12 +319,6 @@ const links = [
     {
         label: "consulta individual",
         url: "/consulta_individual",
-        flat: true,
-        rounded: false,
-    },
-    {
-        label: "taller online",
-        url: "/taller_online",
         flat: true,
         rounded: false,
     },

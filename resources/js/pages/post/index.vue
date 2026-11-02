@@ -13,6 +13,8 @@
                 </template>
                 <template #edit="{ props }">
                     <section-edit-component
+                        title="modificar seccion y publicaciones"
+                        topic-title="publicacion"
                         :segment="props.segment"
                         :has_add="props.has_add"
                         :has_edit="props.has_edit"
@@ -57,7 +59,10 @@
                                     </q-item>
                                 </template>
 
-                                <p class="q-pa-md text-caption" v-else>
+                                <p
+                                    class="q-pa-md text-caption text-center"
+                                    v-else
+                                >
                                     no existen subcategorias disponibles
                                 </p>
                             </q-list>

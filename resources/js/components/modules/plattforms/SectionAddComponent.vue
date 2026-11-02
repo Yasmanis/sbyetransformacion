@@ -56,7 +56,7 @@
             <q-separator />
             <q-card-actions align="right">
                 <q-btn-component
-                    tooltips="añadir tema"
+                    :tooltips="`añadir ${topicTitle}`"
                     icon="mdi-plus"
                     @click="addTopic"
                 />
@@ -134,6 +134,8 @@ const newTopic = (reset) => {
         visible: true,
         index: index.value,
         category_id: page.props?.category?.id || null,
+        subcategory_id: null,
+        fixed: false,
     };
     if (reset) {
         itemsTopics.value = [topic];
@@ -158,7 +160,9 @@ const addTopic = () => {
         if (success) {
             newTopic(false);
         } else {
-            error("rectifique los errores antes de agregar un nuevo tema");
+            error(
+                `rectifique los errores antes de agregar un nuevo ${props.topicTitle}`,
+            );
         }
     });
 };

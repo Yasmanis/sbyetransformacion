@@ -8,7 +8,28 @@
                 :createFields="fields"
                 :updateFields="fields"
                 :has_delete="true"
-            ></table-component>
+            >
+                <template #top-actions="{ props }">
+                    <sort-elements-component
+                        model="PublicationSubcategory"
+                        tooltips="ordenar subcategorias"
+                        :filter-columns="sortFilterColumns"
+                        v-if="props.has_edit"
+                    >
+                        <template #top>
+                            <select-field
+                                :model-value="sortFilterColumns['category_id']"
+                                name="category_id"
+                                label="categoria"
+                                :othersProps="{
+                                    url_to_options: '/categories',
+                                }"
+                                @update="onChangeCategory"
+                            />
+                        </template>
+                    </sort-elements-component>
+                </template>
+            </table-component>
         </q-page>
     </Layout>
 </template>
@@ -16,10 +37,15 @@
 <script setup>
 import Layout from "../../layouts/PublicationsLayout.vue";
 import TableComponent from "../../components/table/TableComponent.vue";
+import SortElementsComponent from "../../components/others/SortElementsComponent.vue";
+import SelectField from "../../components/form/input/SelectField.vue";
+import { ref } from "vue";
 
 defineOptions({
     name: "ListPage",
 });
+
+const sortFilterColumns = ref({});
 
 const name = {
     field: "name",
@@ -72,4 +98,8 @@ const columns = [
 ];
 
 const fields = [name, category];
+
+const onChangeCategory = (name, val) => {
+    sortFilterColumns.value[name] = val;
+};
 </script>

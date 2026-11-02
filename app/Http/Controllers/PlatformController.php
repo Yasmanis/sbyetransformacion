@@ -20,6 +20,12 @@ class PlatformController extends LifeController
         $data['public_access'] = true;
         $data['public_date'] = now();
 
+        if ($data['fixed'] === 'true') {
+            $data['fixed'] = 1;
+        } else if ($data['fixed'] === 'false') {
+            $data['fixed'] = 0;
+        }
+
         if ($request->hasFile('file')) {
             $properties = $this->getPropertiesFromFile($request->file('file'), 'files', 'public');
             if (!isset($request->name)) {

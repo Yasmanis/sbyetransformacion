@@ -1,8 +1,5 @@
 <template>
-    <btn-edit-component
-        tooltips="modificar seccion y publicaciones"
-        @click="showDialog = true"
-    />
+    <btn-edit-component :tooltips="title" @click="showDialog = true" />
 
     <q-dialog v-model="showDialog" persistent full-width>
         <q-card>
@@ -10,7 +7,7 @@
                 :icon="`img:${page.props.public_path}images/icon/${
                     Dark.isActive ? 'white' : 'black'
                 }-edit.png`"
-                title="modificar seccion y publicaciones"
+                :title="title"
                 closable
                 @close="showDialog = false"
             >
@@ -42,7 +39,6 @@
                     />
                 </template>
             </dialog-header-component>
-
             <q-card-section
                 class="col q-pt-none scroll"
                 style="max-height: 60vh"
@@ -70,7 +66,7 @@
                         </q-item-section>
                         <q-item-section avatar v-if="has_edit">
                             <btn-add-component
-                                tooltips="adicionar publicacion"
+                                :tooltips="`adicionar ${topicTitle}`"
                                 @click="
                                     () => {
                                         currentSection = s;
@@ -81,7 +77,7 @@
                         </q-item-section>
                         <q-item-section avatar v-if="has_edit">
                             <sort-elements-component
-                                tooltips="ordenar publicaciones"
+                                :tooltips="`ordenar ${plural[topicTitle]}`"
                                 :filter-columns="{
                                     section_id: s.id,
                                     principal: 1,
@@ -115,7 +111,7 @@
                         <cart-article :article="topic" />
                         <q-item-section avatar v-if="has_edit">
                             <btn-edit-component
-                                tooltips="editar tema"
+                                :tooltips="`editar ${topicTitle}`"
                                 @click="
                                     () => {
                                         currentSection = s;
@@ -127,7 +123,7 @@
                         </q-item-section>
                         <q-item-section avatar v-if="has_edit">
                             <btn-delete-component
-                                tooltips="eliminar tema"
+                                :tooltips="`eliminar ${topicTitle}`"
                                 @click="
                                     () => {
                                         currentTopic = topic;
@@ -220,8 +216,8 @@
                 "
                 :title="
                     currentTopic
-                        ? 'editar publicacion'
-                        : 'adicionar publicacion'
+                        ? `editar ${topicTitle}`
+                        : `adicionar ${topicTitle}`
                 "
                 closable
                 @close="showDialogTopic = false"
@@ -230,12 +226,13 @@
                 <q-form class="q-gutter-sm q-mt-sm" ref="formTopic" greedy>
                     <template v-for="(item, index) in itemsTopics" :key="index">
                         <topic-component
+                            :publication-type="topicTitle"
                             :segment="segment"
                             :skip="skip"
                             :label="
                                 index === 0
-                                    ? 'publicacion'
-                                    : `publicacion ${getIndex(item)}`
+                                    ? topicTitle
+                                    : `${topicTitle} ${getIndex(item)}`
                             "
                             :name="`topic-${index}`"
                             :btnDelete="index > 0"
@@ -267,7 +264,7 @@
             <q-separator />
             <q-card-actions align="right">
                 <btn-add-component
-                    tooltips="adicionar nueva publicacion"
+                    :tooltips="`adicionar ${topicTitle}`"
                     @click="addTopic"
                     v-if="!currentTopic"
                 />
@@ -348,7 +345,7 @@ import ConfirmComponent from "../../base/ConfirmComponent.vue";
 
 import CartArticle from "./CartArticle.vue";
 import { usePage, router } from "@inertiajs/vue3";
-import { useQuasar, Loading, Dark, date } from "quasar";
+import { Loading, Dark } from "quasar";
 import {
     error,
     errorValidation,
@@ -360,6 +357,14 @@ defineOptions({
 });
 
 const props = defineProps({
+    title: {
+        type: String,
+        default: "modificar seccion y temas",
+    },
+    topicTitle: {
+        type: String,
+        default: "tema",
+    },
     has_add: {
         type: Boolean,
         default: false,
@@ -379,8 +384,6 @@ const props = defineProps({
     },
 });
 
-const $q = useQuasar();
-
 const emits = defineEmits(["reload-sections"]);
 
 const page = usePage();
@@ -398,103 +401,6 @@ const index = ref(0);
 const confirmSection = ref(false);
 const confirmTopic = ref(false);
 
-const fields = [
-    {
-        field: "name",
-        name: "name",
-        label: "nombre",
-        align: "left",
-        sortable: true,
-        type: "text",
-        required: true,
-        othersProps: {
-            required: true,
-        },
-    },
-    {
-        field: "link",
-        name: "link",
-        label: "link",
-        align: "left",
-        sortable: true,
-        type: "text",
-        required: true,
-        othersProps: {
-            required: true,
-        },
-    },
-    {
-        type: "dynamicselects",
-        fields: [
-            {
-                name: "category_id",
-                label: "categoria",
-                dependsOn: [],
-                url: "/categories",
-                method: "get",
-                options: [],
-                value: null,
-                loading: false,
-                disabled: true,
-                resets: ["subcategory_id"],
-                type: "select",
-                scope: "whereCategory",
-                rules: ["required"],
-            },
-            {
-                name: "subcategory_id",
-                label: "subcategoria",
-                dependsOn: ["category_id"],
-                url: "/publications-categories",
-                method: "post",
-                options: [],
-                value: null,
-                loading: false,
-                disabled: true,
-                resets: [],
-                type: "select",
-                scope: "whereSubcategory",
-                rules: ["required"],
-            },
-        ],
-    },
-
-    {
-        field: "public_access",
-        name: "public_access",
-        label: "acceso publico",
-        align: "center",
-        type: "boolean",
-        othersProps: {
-            help: [
-                "marque esta casilla si desea que el/los fichero(s) tengan acceso publico",
-            ],
-        },
-    },
-    {
-        field: "public_date",
-        name: "public_date",
-        label: "publicacion",
-        type: "date",
-        sortable: true,
-        align: "left",
-    },
-    {
-        field: "file",
-        name: "file",
-        label: "archivo",
-        type: "file",
-        sortable: true,
-        align: "left",
-        othersProps: {
-            icon: "mdi-file-outline",
-            change: true,
-            helpCheck:
-                "marque esta casilla si desea reemplazar el fichero existente",
-        },
-    },
-];
-
 const sections = computed(() => {
     return page.props.sections || [];
 });
@@ -502,6 +408,12 @@ const sections = computed(() => {
 const files = computed(() => page.props.files);
 
 const module = computed(() => page.props.module);
+
+const plural = ref({
+    publicacion: "publicaciones",
+    tema: "temas",
+    articulo: "articulos",
+});
 
 const newTopic = (reset) => {
     index.value++;
@@ -522,6 +434,8 @@ const newTopic = (reset) => {
         visible_after_testimony: false,
         skip: false,
         category_id: page.props?.category?.id || null,
+        subcategory_id: null,
+        fixed: false,
     };
     if (reset) {
         itemsTopics.value = [topic];

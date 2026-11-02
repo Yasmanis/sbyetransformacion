@@ -40,7 +40,8 @@ class File extends Model
         'msg_to_admin',
         'amazon_image',
         'order',
-        'book_volume'
+        'book_volume',
+        'fixed'
     ];
 
     protected $appends = [

@@ -104,7 +104,7 @@ const cards = [
     {
         title: "taller online",
         subtitle: "un espacio para aprender <br/> compartir y transformar",
-        href: "/taller_online",
+        href: null,
         image: "tarjeta app-taller online.png",
         module: "free",
     },

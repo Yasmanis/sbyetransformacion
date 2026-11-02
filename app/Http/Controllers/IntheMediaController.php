@@ -28,9 +28,9 @@ class IntheMediaController extends LifeController
             return Inertia::render('in_the_media/index', [
                 'sections' => $this->getSections($module),
                 'module' => $module,
-                'private_messages' => $user->getPrivateMessages($request, 'received'),
                 'category' => $category,
-                'files' => $category?->files ?? []
+                'subcategories' => $category->subcategories,
+                'files' => $category->files()->with('childs')->wherePrincipal()->orderBy('fixed', 'DESC')->orderBy('order', 'ASC')->get()
             ]);
         }
         return $this->deny_access($request);

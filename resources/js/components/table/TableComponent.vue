@@ -63,6 +63,7 @@
                                 v-if="createFields.length > 0 && has_add"
                             />
                         </slot>
+                        <slot name="top-actions" :props="{ has_edit }"></slot>
                         <btn-reload-component @click="onRequest" />
                         <visible-columns-component
                             :columns="columns"

@@ -112,7 +112,9 @@ class UtilsController extends Controller
             }
             $objects = $model::query();
             foreach ($filterColumns as $key => $value) {
-                $objects->where($key, $value);
+                if (isset($value)) {
+                    $objects->where($key, $value);
+                }
             }
             foreach ($sortedColumns as $key => $value) {
                 $objects->orderBy($key, $value);

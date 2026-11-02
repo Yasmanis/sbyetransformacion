@@ -4,33 +4,36 @@
             <div class="text-h6 text-bold">{{ title }}</div>
         </q-card-section>
         <q-card-section class="q-pa-xs scroll" style="max-height: 400px">
-            <q-card-section
-                v-for="a in articles"
-                :key="`article-${a.id}`"
-                :horizontal="screen.gt.md"
-                class="q-my-xs"
-            >
-                <div
-                    class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 self-center"
+            <template v-if="articles.length > 0">
+                <q-card-section
+                    v-for="a in articles"
+                    :key="`article-${a.id}`"
+                    :horizontal="screen.gt.md"
+                    class="q-my-xs"
                 >
-                    <image-reproductor
-                        :src="a.image"
-                        :reproductor="a.file_type === 'video'"
-                    />
-                </div>
-                <q-card-section class="q-py-none self-center">
-                    <div class="text-subtitle1" v-if="a.title">
-                        {{ a.title }}
-                    </div>
                     <div
-                        class="text-body1"
-                        style="font-size: 15px"
-                        v-if="a.description"
+                        class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 self-center"
                     >
-                        {{ a.description }}
+                        <image-reproductor
+                            :src="a.image"
+                            :reproductor="a.file_type === 'video'"
+                        />
                     </div>
+                    <q-card-section class="q-py-none self-center">
+                        <div class="text-subtitle1" v-if="a.title">
+                            {{ a.title }}
+                        </div>
+                        <div
+                            class="text-body1"
+                            style="font-size: 15px"
+                            v-if="a.description"
+                        >
+                            {{ a.description }}
+                        </div>
+                    </q-card-section>
                 </q-card-section>
-            </q-card-section>
+            </template>
+            <p class="text-caption text-center" v-else>no existen articulos</p>
         </q-card-section>
     </q-card>
 </template>

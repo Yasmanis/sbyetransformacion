@@ -347,10 +347,6 @@ const links = ref([
         url: "/consulta_individual",
     },
     {
-        title: "taller online",
-        url: "/taller_online",
-    },
-    {
         title: "publicaciones",
         url: "/publicaciones",
     },

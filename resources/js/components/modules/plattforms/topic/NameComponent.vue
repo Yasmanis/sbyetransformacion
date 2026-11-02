@@ -34,12 +34,12 @@
         <template #after>
             <btn-add-component
                 @click="addTopic"
-                tooltips="adicionar nuevo tema"
+                :tooltips="`adicionar ${label}`"
                 v-if="btnAdd"
             />
             <btn-delete-component
                 @click="deleteTopic"
-                tooltips="eliminar tema"
+                :tooltips="`eliminar ${label}`"
                 v-if="btnDelete"
             />
         </template>
@@ -65,7 +65,7 @@ const props = defineProps({
     },
     label: {
         type: String,
-        required: true,
+        default: "publicacion",
     },
     dense: {
         type: Boolean,
