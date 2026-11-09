@@ -45,6 +45,11 @@ class Category extends Model
         return $this->hasMany(PublicationSubcategory::class, 'category_id')->orderBy('order', 'asc');
     }
 
+    public function families()
+    {
+        return $this->hasMany(Family::class, 'category_id');
+    }
+
     public function scopePublicAccess($query)
     {
         return $query->where('public_access', true);

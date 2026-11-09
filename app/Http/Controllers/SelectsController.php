@@ -6,6 +6,7 @@ use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\CategoryNomenclature;
 use App\Models\Country;
+use App\Models\Family;
 use App\Models\File;
 use App\Models\Module;
 use App\Models\Product;
@@ -27,6 +28,13 @@ class SelectsController extends Controller
     {
         return response()->json([
             'options' => Role::select('id as value', 'name as label')->get()
+        ]);
+    }
+
+    public function families($categoryId)
+    {
+        return response()->json([
+            'options' => Family::with('subcategories')->where('category_id', $categoryId)->get()
         ]);
     }
 

@@ -22,7 +22,7 @@ class Controller extends BaseController
         return to_route('login');
     }
 
-    public function data_index($repository, $request, $columns = ['*'], $data = null)
+    public function data_index($repository, $request, $columns = ['*'], $othersProps = null)
     {
         return Inertia::render($repository->component(), [
             'data' => $repository->paginate(isset($request->rowsPerPage) ? $request->rowsPerPage : 20, $columns, 'page', isset($request->page) ? $request->page : null),
@@ -31,7 +31,8 @@ class Controller extends BaseController
             'sort' => isset($request->sortBy) ? [
                 'sortBy' => $request->sortBy,
                 'sortDirection' => $request->sortDirection
-            ] : null
+            ] : null,
+            'othersProps' => $othersProps
         ]);
     }
 

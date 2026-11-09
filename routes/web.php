@@ -21,6 +21,7 @@ use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\ContactAdminController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\FamiliesController;
 use App\Http\Controllers\IntheMediaController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LearningController;
@@ -41,6 +42,7 @@ use App\Http\Controllers\ProductSubcategoryController;
 use App\Http\Controllers\ProductSubcategoryDiscountController;
 use App\Http\Controllers\ProductSubcategoryOffersController;
 use App\Http\Controllers\PublicationCategoryController;
+use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\PublicationSubcategoryController;
 use App\Http\Controllers\PushMessageController;
 use App\Http\Controllers\RealityController;
@@ -139,40 +141,42 @@ Route::get('/landings/{url}', function ($url) {
     ]);
 });
 
-Route::get('/publicaciones/{categ?}/{subcateg?}', function ($categ = null, $subcateg = null) {
-    $categories = Category::with([
-        'subcategories' => fn($query) => $query->orderBy('order', 'asc')
-    ])->where('public_access', true)->orderBy('order', 'ASC')->get();
-    $recent_files = File::publicAccess()->wherePrincipal()->orderBy('public_date', 'DESC')->take(6)->get();
-    $category = null;
-    $subcategory = null;
-    $testimonies = [];
-    if (count($categories) > 0) {
-        $category = $categories[0];
-    }
-    if (isset($categ)) {
-        $c = Category::find($categ);
-        if ($c && $c->public_access) {
-            $category = $c;
-        } else {
-            return to_route('publicaciones');
-        }
-    }
-    if (isset($category)) {
-        $queryFiles = File::query()->where('category_id', $category->id)->publicAccess()->wherePrincipal();
-        if (isset($subcateg)) {
-            $subcategory = PublicationSubcategory::find($subcateg);
-            $queryFiles->where('subcategory_id', $subcateg);
-        }
-        if ($category->sort_files) {
-            $queryFiles->orderBy('id', $category->sort_files);
-        } else {
-            $queryFiles->orderBy('fixed', 'DESC')->orderBy('order', 'ASC');
-        }
-        $category->files = $queryFiles->get();
-    }
-    return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'current_subcategory' => $subcategory, 'recent_files' => $recent_files, 'testimonies' => $testimonies])->with('error', 'asasdasd');
-})->name('publicaciones');
+Route::get('/publicaciones', [PublicationsController::class, 'index'])->name('publicaciones');
+
+// Route::get('/publicaciones/{categ?}/{subcateg?}', function ($categ = null, $subcateg = null) {
+//     $categories = Category::with([
+//         'subcategories' => fn($query) => $query->orderBy('order', 'asc')
+//     ])->where('public_access', true)->orderBy('order', 'ASC')->get();
+//     $recent_files = File::publicAccess()->wherePrincipal()->orderBy('public_date', 'DESC')->take(6)->get();
+//     $category = null;
+//     $subcategory = null;
+//     $testimonies = [];
+//     if (count($categories) > 0) {
+//         $category = $categories[0];
+//     }
+//     if (isset($categ)) {
+//         $c = Category::find($categ);
+//         if ($c && $c->public_access) {
+//             $category = $c;
+//         } else {
+//             return to_route('publicaciones');
+//         }
+//     }
+//     if (isset($category)) {
+//         $queryFiles = File::query()->where('category_id', $category->id)->publicAccess()->wherePrincipal();
+//         if (isset($subcateg)) {
+//             $subcategory = PublicationSubcategory::find($subcateg);
+//             $queryFiles->where('subcategory_id', $subcateg);
+//         }
+//         if ($category->sort_files) {
+//             $queryFiles->orderBy('id', $category->sort_files);
+//         } else {
+//             $queryFiles->orderBy('fixed', 'DESC')->orderBy('order', 'ASC');
+//         }
+//         $category->files = $queryFiles->get();
+//     }
+//     return Inertia('landing/publicaciones', ['categories' => $categories, 'current_category' => $category, 'current_subcategory' => $subcategory, 'recent_files' => $recent_files, 'testimonies' => $testimonies])->with('error', 'asasdasd');
+// })->name('publicaciones');
 
 Route::get('/shared_data', function () {
     $categories = Category::publicAccess()->orderBy('order', 'ASC')->get();
@@ -419,6 +423,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::resource('/admin/tikets-reply', TiketReplyController::class)->only(['store']);
 
     Route::resource('/admin/publication-subcategories', PublicationSubcategoryController::class);
+    Route::resource('/admin/families', FamiliesController::class);
+    Route::get('/admin/families/subcategories/{familyId}', [FamiliesController::class, 'getSubcategoriesFromFamily']);
 
     Route::resource('/admin/notes', NotesController::class)->only(['store', 'update', 'destroy']);
 
@@ -480,3 +486,4 @@ Route::get('/reasons-for-return', [SelectsController::class, 'reasonsForReturn']
 Route::post('/users', [SelectsController::class, 'users']);
 Route::get('/category-nomenclatures/{key}', [SelectsController::class, 'sections']);
 Route::get('/selects/campaigns', [SelectsController::class, 'campaigns']);
+Route::get('/selects/families/{categoryId}', [SelectsController::class, 'families']);

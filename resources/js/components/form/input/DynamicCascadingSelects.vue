@@ -12,10 +12,13 @@
                 :disable="select.disabled"
                 :options="select.options"
                 :model-value="select.value"
+                :option-label="select.optionLabel ?? 'label'"
+                :option-value="select.optionValue ?? 'value'"
+                :othersProps="select.othersProps ?? null"
+                :multiple="select.multiple ?? false"
                 @update="
                     (name, val) => {
-                        select.value = val;
-                        onSelectChange(select);
+                        onSelectChange(select, val);
                     }
                 "
             />
@@ -157,8 +160,10 @@ const loadSelectOptions = async (
             if (select.value) {
                 const valueExists = cachedData.some((opt) =>
                     Array.isArray(select.value)
-                        ? select.value.includes(opt.value)
-                        : select.value === opt.value,
+                        ? select.value.includes(
+                              opt[select.optionValue ?? "value"],
+                          )
+                        : select.value === opt[select.optionValue ?? "value"],
                 );
                 if (!valueExists) {
                     select.value = null;
@@ -174,10 +179,21 @@ const loadSelectOptions = async (
 
     const promise = (async () => {
         try {
-            const response = await axios[select.method ?? "get"](
-                select.url,
-                params,
-            );
+            const method = (select.method ?? "get").toLowerCase();
+            let url = select.url;
+            let config = {};
+
+            if (method === "get") {
+                url = Object.entries(params).reduce(
+                    (acc, [key, value]) => `${acc}/${value}`,
+                    url,
+                );
+            } else {
+                config.data = params;
+            }
+
+            const response = await axios.request({ url, method, ...config });
+
             let options = response?.data?.options ?? [];
 
             cacheManager.set(select.name, params, options);
@@ -188,8 +204,10 @@ const loadSelectOptions = async (
             if (currentValue) {
                 const valueExists = options.some((opt) =>
                     Array.isArray(currentValue)
-                        ? currentValue.includes(opt.value)
-                        : currentValue === opt.value,
+                        ? currentValue.includes(
+                              opt[select.optionValue ?? "value"],
+                          )
+                        : currentValue === opt[select.optionValue ?? "value"],
                 );
 
                 if (!valueExists) {
@@ -200,9 +218,12 @@ const loadSelectOptions = async (
                     const modelVal = props.modelValue[select.name];
                     const valueExists = options.some((opt) =>
                         Array.isArray(modelVal)
-                            ? modelVal.includes(opt.value)
-                            : modelVal === opt.value,
+                            ? modelVal.includes(
+                                  opt[select.optionValue ?? "value"],
+                              )
+                            : modelVal === opt[select.optionValue ?? "value"],
                     );
+
                     if (valueExists) {
                         select.value = modelVal;
                     }
@@ -295,7 +316,28 @@ const syncDependents = async (changedSelect) => {
     emitState(changedSelect);
 };
 
-const onSelectChange = async (changedSelect) => {
+const onSelectChange = async (changedSelect, val) => {
+    let values = null;
+    if (val) {
+        if (Array.isArray(val)) {
+            values = [];
+            val.forEach((v) => {
+                if (Object.keys(v).length > 0) {
+                    values.push(v[changedSelect.optionValue]);
+                } else {
+                    values.push(v);
+                }
+            });
+        } else {
+            if (Object.keys(val).length > 0) {
+                values = val[changedSelect.optionValue];
+            } else {
+                values = val;
+            }
+        }
+    }
+    changedSelect.value = values;
+
     isInternalUpdate.value = true;
 
     try {
@@ -464,8 +506,8 @@ watch(
                     const value = newVal[select.name];
                     const valueExists = select.options.some((opt) =>
                         Array.isArray(value)
-                            ? value.includes(opt.value)
-                            : value === opt.value,
+                            ? value.includes(opt[select.optionValue ?? "value"])
+                            : value === opt[select.optionValue ?? "value"],
                     );
 
                     if (valueExists) {
@@ -518,8 +560,8 @@ onMounted(async () => {
                 const value = props.modelValue[select.name];
                 const valueExists = select.options.some((opt) =>
                     Array.isArray(value)
-                        ? value.includes(opt.value)
-                        : value === opt.value,
+                        ? value.includes(opt[select.optionValue ?? "value"])
+                        : value === opt[select.optionValue ?? "value"],
                 );
 
                 if (valueExists) {

@@ -19,7 +19,7 @@
         >
             <div class="col-12 q-pb-md">
                 <h4 class="q-mb-sm">
-                    {{ currentCategory.name }}
+                    {{ currentCategory?.name }}
                     {{
                         $page.props.current_subcategory
                             ? ` > ${page.props.current_subcategory.name}`
@@ -28,13 +28,13 @@
                 </h4>
                 <h6
                     class="text-lowercase q-mb-md"
-                    v-if="currentCategory.subtitle"
+                    v-if="currentCategory?.subtitle"
                 >
                     {{ currentCategory.subtitle }}
                 </h6>
                 <span
-                    v-if="currentCategory.description"
                     v-html="currentCategory.description"
+                    v-if="currentCategory?.description"
                 >
                 </span>
                 <q-btn
@@ -43,7 +43,7 @@
                     label="contactame"
                     no-caps
                     href="/contactame"
-                    v-if="currentCategory.name === 'para prensa y medios'"
+                    v-if="currentCategory?.name === 'para prensa y medios'"
                 >
                     <q-icon name="fa fa-long-arrow-right" class="q-ml-md" />
                 </q-btn>
@@ -248,8 +248,8 @@
 
     <publications-msg-component
         v-if="
-            currentCategory.name === 'libro' ||
-            currentCategory.name === 'libros'
+            currentCategory?.name === 'libro' ||
+            currentCategory?.name === 'libros'
         "
     />
 </template>

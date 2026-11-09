@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Family;
 use App\Repositories\PublicationSubcategoryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -21,7 +22,10 @@ class PublicationSubcategoryController extends Controller
                 $sortDirection = 'ASC';
             }
             $repository->orderBy($sortBy, $sortDirection);
-            return $this->data_index($repository, $request);
+            $families = Family::with('subcategories')->get();
+            return $this->data_index($repository, $request, ['*'], [
+                'families' => $families
+            ]);
         }
         return $this->deny_access($request);
     }
@@ -37,7 +41,10 @@ class PublicationSubcategoryController extends Controller
             ]);
             $repository = new PublicationSubcategoryRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $repository->create($data);
+            $obj = $repository->create($data);
+            if (isset($request->families_id)) {
+                $obj->families()->attach($request->families_id);
+            }
             return redirect()->back()->with('success', 'subcategoria adicionada correctamente');
         }
         return $this->deny_access($request);
@@ -51,7 +58,12 @@ class PublicationSubcategoryController extends Controller
             ]);
             $repository = new PublicationSubcategoryRepository();
             $data = $request->only((new ($repository->model()))->getFillable());
-            $repository->updateById($id, $data);
+            $obj = $repository->updateById($id, $data);
+            if (isset($request->families_id)) {
+                $obj->families()->sync($request->families_id);
+            } else {
+                $obj->families()->detach();
+            }
             return redirect()->back()->with('success', 'subcategoria modificada correctamente');
         }
         return $this->deny_access($request);

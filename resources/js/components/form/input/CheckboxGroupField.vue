@@ -11,7 +11,7 @@
     />
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 defineOptions({
     name: "CheckboxGroupField",
@@ -60,6 +60,13 @@ const model = ref([]);
 onMounted(() => {
     model.value = props.modelValue ? props.modelValue : [];
 });
+
+watch(
+    () => props.modelValue,
+    (n) => {
+        model.value = n ?? [];
+    },
+);
 
 const onUpdate = (val) => {
     emits("update", props.name, val);

@@ -16,6 +16,8 @@
         :error="errorMsg !== null"
         :error-message="errorMsg"
         :loading="loading"
+        :option-label="optionLabel"
+        :option-value="optionValue"
         lazy-rules
         reactive-rules
         input-debounce="0"
@@ -37,10 +39,10 @@
                     @remove="scope.removeAtIndex(scope.index)"
                     :tabindex="scope.tabindex"
                     v-if="multiple"
-                    >{{ scope.opt.label }}</q-chip
+                    >{{ scope.opt[optionLabel] }}</q-chip
                 >
                 <span v-else>
-                    {{ scope.opt.label }}
+                    {{ scope.opt[optionLabel] }}
                 </span>
             </q-item-label>
         </template>
@@ -219,7 +221,7 @@ const setModelValue = async () => {
             model.value = [];
             props.modelValue.forEach((o) => {
                 let option = currentOptions.value.find(
-                    (opt) => opt.value === o,
+                    (opt) => opt[props.optionValue] === o,
                 );
                 if (option) {
                     model.value.push(option);
@@ -228,7 +230,7 @@ const setModelValue = async () => {
         } else {
             let option = await currentOptions.value.find(
                 (opt) =>
-                    opt.value ===
+                    opt[props.optionValue] ===
                     (Array.isArray(props.modelValue)
                         ? props.modelValue[0]
                         : props.modelValue),
@@ -250,9 +252,10 @@ const filterFn = (val, update, abort) => {
                     currentOptions.value = allOptions.value;
                 } else {
                     const needle = val.toLowerCase();
+                    const label = props.optionLabel;
                     currentOptions.value = allOptions.value.filter((v) =>
-                        v.label
-                            ? v.label.toLowerCase().indexOf(needle) > -1
+                        v[label]
+                            ? v[label].toLowerCase().indexOf(needle) > -1
                             : v.toLowerCase().indexOf(needle) > -1,
                     );
                 }
@@ -296,13 +299,17 @@ const updateModel = (val) => {
         if (props.multiple) {
             full_option = [];
             selected.forEach((s) => {
-                let opt = currentOptions.value.find((o) => o.value === s);
+                let opt = currentOptions.value.find(
+                    (o) => o[props.optionValue] === s,
+                );
                 if (opt) {
                     full_option.push(opt);
                 }
             });
         } else {
-            full_option = currentOptions.value.find((o) => o.value === val);
+            full_option = currentOptions.value.find(
+                (o) => o[props.optionValue] === val,
+            );
         }
     }
     emits("update", props.name, selected, full_option);

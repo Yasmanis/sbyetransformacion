@@ -18,7 +18,9 @@
                                     ? 'text-bold text-primary'
                                     : ''
                             "
-                            @click="router.get(`/publicaciones/${c.id}`)"
+                            @click="
+                                router.get(`/publicaciones?category_id=${c.id}`)
+                            "
                         >
                             <q-item-section>{{ c.name }}</q-item-section>
                         </q-item>
@@ -41,7 +43,7 @@
             <div style="border-bottom: 2px solid #407492"></div>
             <q-tree
                 id="menu-tree"
-                :nodes="nodes"
+                :nodes="$page.props.tree"
                 node-key="key"
                 no-connectors
                 accordion
@@ -51,16 +53,18 @@
                 <template v-slot:default-header="prop">
                     <q-item
                         clickable
-                        class="text-primary text-lowercase border-dashed-bottom-1"
+                        class="text-primary text-lowercase border-dashed-bottom-1 q-px-xs"
                         :class="{
-                            'text-bold': selected?.includes(prop.node.key),
+                            'text-bold': prop.node.key === selectedKey,
                         }"
                         style="width: 100%"
                     >
                         <q-item-section
                             avatar
                             :style="{
-                                'margin-left': `${prop.node.category_id ? 20 : 0}px`,
+                                'margin-left': `${prop.node.level * 20}px`,
+                                padding: '0px !important',
+                                'min-width': '30px',
                             }"
                         >
                             <q-icon
@@ -109,7 +113,7 @@
 
 <script setup>
 import { router, usePage } from "@inertiajs/vue3";
-import { computed, onBeforeMount, onMounted, ref } from "vue";
+import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 
 import QTooltipComponent from "../base/QTooltipComponent.vue";
 
@@ -133,47 +137,41 @@ const props = defineProps({
 });
 
 const expanded = ref([]);
-const selected = ref([]);
 
 const page = usePage();
 
-const nodes = computed(() => {
-    return props.categories.map((c, index) => {
-        let n = {
-            key: `categ-${c.id}`,
-            id: c.id,
-            label: c.name,
-            level: 1,
-            children: c.subcategories.map((s) => {
-                return {
-                    key: `subcateg-${s.id}`,
-                    id: s.id,
-                    label: s.name,
-                    level: 2,
-                    category_id: c.id,
-                };
-            }),
-        };
-        return n;
-    });
+const selectedKey = computed(() => {
+    if (
+        page.props.active_filter === "subcategory" &&
+        page.props.current_subcategory
+    )
+        return "sub_" + page.props.current_subcategory.id;
+    if (page.props.active_filter === "family" && page.props.current_family)
+        return "fam_" + page.props.current_family.id;
+    if (page.props.active_filter === "category" && page.props.current_category)
+        return "cat_" + page.props.current_category.id;
+    return null;
 });
 
-onBeforeMount(() => {
-    if (props.current) {
-        selected.value.push(`categ-${props.current.id}`);
-    }
-    if (page.props.current_subcategory) {
-        selected.value.push(`subcateg-${page.props.current_subcategory.id}`);
-        expanded.value.push(`categ-${props.current.id}`);
-    }
-});
+watch(
+    selectedKey,
+    (key) => {
+        if (!key) return;
+        console.log(key);
+    },
+    { immediate: true },
+);
 
 const onClickCategory = (categ) => {
-    if (categ["category_id"]) {
-        router.get(`/publicaciones/${categ.category_id}/${categ.id}`);
-    } else {
-        router.get(`/publicaciones/${categ.id}`);
-    }
+    const query = {};
+    if (categ.category_id) query.category_id = categ.category_id;
+    else if (categ.family_id) query.family_id = categ.family_id;
+    else if (categ.subcategory_id) query.subcategory_id = categ.subcategory_id;
+
+    router.get("/publicaciones", query, {
+        preserveState: true,
+        preserveScroll: true,
+    });
 };
 </script>
 <style>
